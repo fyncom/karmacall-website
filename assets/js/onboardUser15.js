@@ -1,13 +1,13 @@
-// UMSO VERSION 05/28/21
-let url = 'https://server.fyncom.com'
+let url = 'https://server.fyncom.com';
 const myForm = document.getElementById('phoneNumberInput');
+// let a = "d5a6c821-80a5-4a28-a603-b1eed1139689" // try this after verifying everything works
+
 myForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    var phoneNumber = document.getElementById("phoneNumber").value;
-    var codeDropdown = document.getElementById('countryCodes');
-    var IPcountryCode = codeDropdown.options[codeDropdown.selectedIndex].dataset.countryCode
+    let phoneNumber = document.getElementById("phoneNumber").value;
+    let codeDropdown = document.getElementById('countryCodes');
+    let IPcountryCode = codeDropdown.options[codeDropdown.selectedIndex].dataset.countryCode
 
-    // pull variable after the _?
     const urlParams = new URLSearchParams(window.location.search);
     // const myParam = urlParams.get('_ijt'); // local testing
     const referralCode = urlParams.get('_referralCode');
@@ -26,8 +26,8 @@ async function doWork(number, IPcountryCode) {
     headers.append('GET', 'POST', 'OPTIONS');
     headers.append('Key', a);
 
-    var sessionId = "none";
-    var thisUserId = 0;
+    let sessionId = "none";
+    let thisUserId = 0;
     const urlParams = new URLSearchParams(window.location.search);
     const referralCode = urlParams.get('_referralCode');
     // verify trigger
@@ -123,10 +123,10 @@ function verifyConfirm(sessionId) {
     headers.append('Access-Control-Allow-Credentials', 'true');
     headers.append('GET', 'POST', 'OPTIONS');
     headers.append('Key', a);
-    /*    var counter = 0;
+    /*    let counter = 0;
         verifyConfirm2(sessionId)*/
     // function verifyConfirm2(sessionId) {
-    var otp = prompt("Please enter the 6 digit OTP that was sent to your phone", '');
+    let otp = prompt("Please enter the 6 digit OTP that was sent to your phone", '');
     if (otp != null) {
         return new Promise((resolve, reject) => {
             fetch(url + '/verification/confirm', {
@@ -172,7 +172,7 @@ function handleVerifyResponse(response, number, IPcountryCode) {
     headers.append('Access-Control-Allow-Credentials', 'true');
     headers.append('GET', 'POST', 'OPTIONS');
     headers.append('Key', a);
-    var newUser = false
+    let newUser = false
     console.log(response)
     return new Promise((resolve, reject) => {
         if (response['verificationStatus'] === 'VERIFIED') {
@@ -326,10 +326,10 @@ function getCallingCode() {
 }
 
 function setCallingCode(countryCode) {
-    var IPcountryCode = countryCode;
-    var codeDropdown = document.getElementById('countryCodes');
+    let IPcountryCode = countryCode;
+    let codeDropdown = document.getElementById('countryCodes');
     localStorage.setItem("IPcountryCode", IPcountryCode)    
-    for (var i, j = 0; i = codeDropdown.options[j]; j++) {
+    for (let i, j = 0; i = codeDropdown.options[j]; j++) {
         if (i.dataset.countryCode == IPcountryCode) {
             codeDropdown.selectedIndex = j;
             i.selected = true
