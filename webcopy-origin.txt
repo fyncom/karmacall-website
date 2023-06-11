@@ -1,0 +1,192 @@
+Uri: https://assets.umso.co/1/calling_kpbp.svg
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\1\calling_kpbp.svg
+Content Type: image/svg+xml
+
+Uri: https://assets.umso.co/1/subscriber_vabu.svg
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\1\subscriber_vabu.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.umso.co/38gisxykki2r/assets/o6qkpium.png?w=64&h=64
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\o6qkpium.png
+Content Type: image/png
+
+Uri: https://code.jquery.com/jquery-3.6.0.slim.min.js
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\jquery-3.6.0.slim.min.js
+Content Type: application/javascript
+
+Uri: https://fyncom-static-files.s3.us-west-1.amazonaws.com/FynCoM-Words-Logo.png
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\FynCoM-Words-Logo.png
+Content Type: image/png
+
+Uri: https://js.chargebee.com/v2/chargebee.js
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\v2\chargebee.js
+Content Type: application/x-javascript
+
+Uri: https://karmacall.com/
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\index.htm
+Content Type: text/html
+
+Uri: https://karmacall.com/assets/js/blockCount2.js
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\assets\js\blockCount2.js
+Content Type: application/javascript
+
+Uri: https://karmacall.com/assets/js/onboardUser15.js
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\assets\js\onboardUser15.js
+Content Type: application/javascript
+
+Uri: https://karmacall.com/contact
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\contact.html
+Content Type: text/html
+
+Uri: https://karmacall.com/css/38gisxykki2r-c467b533bf666a9a4b613c9aef469968c5c881e6.css
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\css\38gisxykki2r-c467b533bf666a9a4b613c9aef469968c5c881e6.css
+Content Type: text/css
+
+Uri: https://karmacall.com/faq
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\faq.html
+Content Type: text/html
+
+Uri: https://karmacall.com/images/1mc_logo.png
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\images\1mc_logo.png
+Content Type: image/png
+
+Uri: https://karmacall.com/images/disruption-banking-logo.png
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\images\disruption-banking-logo.png
+Content Type: image/png
+
+Uri: https://karmacall.com/images/evonexus-logo.png
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\images\evonexus-logo.png
+Content Type: image/png
+
+Uri: https://karmacall.com/images/PRESSWIRE-LOGO-BLACK.png
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\images\PRESSWIRE-LOGO-BLACK.png
+Content Type: image/png
+
+Uri: https://karmacall.com/KarmaCallWhitePaper.pdf
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\KarmaCallWhitePaper.pdf
+Content Type: application/pdf
+
+Uri: https://karmacall.com/login
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\login.html
+Content Type: text/html
+
+Uri: https://karmacall.com/login-email
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\login-email.html
+Content Type: text/html
+
+Uri: https://karmacall.com/privacy-policy
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\privacy-policy.html
+Content Type: text/html
+
+Uri: https://karmacall.com/team
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\team.html
+Content Type: text/html
+
+Uri: https://karmacall.com/terms-and-conditions
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\terms-and-conditions.html
+Content Type: text/html
+
+Uri: https://karmacall.com/white-paper
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\white-paper.html
+Content Type: text/html
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/1aplqn0t.png?w=160&h=160&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\1aplqn0t.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/1aplqn0t.png?w=320&h=320&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\1aplqn0t-1.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/8iwbivsi.png?w=160&h=160&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\8iwbivsi.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/8iwbivsi.png?w=320&h=320&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\8iwbivsi-1.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/8lpq71yz.jpg?w=400&h=200&fit=crop
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\8lpq71yz.jpg
+Content Type: image/jpeg
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/8lpq71yz.jpg?w=800&h=400&fit=crop
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\8lpq71yz-1.jpg
+Content Type: image/jpeg
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/8movbzlr.png?w=160&h=160&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\8movbzlr.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/8movbzlr.png?w=320&h=320&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\8movbzlr-1.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/9t1x88ox.png?w=160&h=160&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\9t1x88ox.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/9t1x88ox.png?w=320&h=320&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\9t1x88ox-1.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/a4fcxhzp.png?w=160&h=160&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\a4fcxhzp.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/a4fcxhzp.png?w=320&h=320&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\a4fcxhzp-1.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/d1r4zgrk.jpg?w=400&h=200&fit=crop
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\d1r4zgrk.jpg
+Content Type: image/jpeg
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/d1r4zgrk.jpg?w=800&h=400&fit=crop
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\d1r4zgrk-1.jpg
+Content Type: image/jpeg
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/d56y5q4u.jpg?w=400&h=200&fit=crop
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\d56y5q4u.jpg
+Content Type: image/jpeg
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/d56y5q4u.jpg?w=800&h=400&fit=crop
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\d56y5q4u-1.jpg
+Content Type: image/jpeg
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/m2b65oxy.png?w=160&h=160&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\m2b65oxy.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/m2b65oxy.png?w=320&h=320&fit=crop&crop=faces
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\m2b65oxy-1.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/38gisxykki2r/assets/vi42j30n.png?w=300
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\vi42j30n.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/shared/apple-en.png
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\shared\apple-en.png
+Content Type: image/png
+
+Uri: https://landen.imgix.net/shared/google-play-en.png?trim=auto
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\shared\google-play-en.png
+Content Type: image/png
+
+Uri: https://myrobocash.com/images/LinkedinLogo.png
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\images\LinkedinLogo.png
+Content Type: image/png
+
+Uri: https://ws.zoominfo.com/pixel/628d65963ee21500139a1ab8
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\pixel\628d65963ee21500139a1ab8
+Content Type: 
+
+Uri: https://www.facebook.com/tr?id=814236575838213&ev=PageView&noscript=1
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\tr
+Content Type: text/plain
+
+Uri: https://www.googletagmanager.com/gtag/js?id=UA-144367210-5
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\gtag\js
+Content Type: application/javascript
+
