@@ -1,5 +1,5 @@
 // UMSO VERSION 05/28/21
-let url = 'https://server.robocashapp.com'
+let url = 'https://server.fyncom.com'
 const myForm = document.getElementById('phoneNumberInput');
 myForm.addEventListener('submit', function (e) {
     e.preventDefault();

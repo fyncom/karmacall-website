@@ -1,6 +1,6 @@
 var nanoAccount = "nano_3rcpayu3g39njpq3mkizuepfr5rh1nwuz4xypwsmubkoiww88wubff8d719t"
 var a = "d5a6c821-80a5-4a28-a603-b1eed1139689"
-let url = "https://server.robocashapp.com/";
+let url = "https://server.fyncom.com/";
 
 getAccountBlockCount()
 
