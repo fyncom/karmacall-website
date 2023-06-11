@@ -1,16 +1,17 @@
 # https://docs.netlify.com/routing/redirects/redirect-options/#app
 # Redirect with a 301
-/                       https://karmacall.fyncom.com                        301
+#/                       https://karmacall.fyncom.com                        301
 /business-dashboard     https://fyncom.com/business-dashboard               301
-/contact                https://karmacall.fyncom.com/contact                301
-/faq                    https://karmacall.fyncom.com/faq                    301
-/login                  https://karmacall.fyncom.com/login                  301
-/login-email            https://karmacall.fyncom.com/login-email            301
-/privacy-policy         https://karmacall.fyncom.com/privacy-policy         301
-/register               https://karmacall.fyncom.com/register               301
-/team                   https://karmacall.fyncom.com/team                   301
-/terms-and-conditions   https://karmacall.fyncom.com/terms-and-conditions   301
-/white-paper            https://karmacall.fyncom.com/white-paper            301
+https://karmacall.com    https://www.karmacall.com                          301
+#/contact                https://karmacall.fyncom.com/contact                301
+#/faq                    https://karmacall.fyncom.com/faq                    301
+#/login                  https://karmacall.fyncom.com/login                  301
+#/login-email            https://karmacall.fyncom.com/login-email            301
+#/privacy-policy         https://karmacall.fyncom.com/privacy-policy         301
+#/register               https://karmacall.fyncom.com/register               301
+#/team                   https://karmacall.fyncom.com/team                   301
+#/terms-and-conditions   https://karmacall.fyncom.com/terms-and-conditions   301
+#/white-paper            https://karmacall.fyncom.com/white-paper            301
 
 # Redirect with a 302
 #/my-redirect  /              302
