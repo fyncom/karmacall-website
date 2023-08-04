@@ -6,8 +6,8 @@ Uri: https://assets.umso.co/1/subscriber_vabu.svg
 File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\1\subscriber_vabu.svg
 Content Type: image/svg+xml
 
-Uri: https://cdn.umso.co/38gisxykki2r/assets/o6qkpium.png?w=64&h=64
-File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\o6qkpium.png
+Uri: https://cdn.umso.co/38gisxykki2r/assets/KarmaCall-favicon.png?w=64&h=64
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\KarmaCall-favicon.png
 Content Type: image/png
 
 Uri: https://code.jquery.com/jquery-3.6.0.slim.min.js
@@ -162,8 +162,8 @@ Uri: https://landen.imgix.net/38gisxykki2r/assets/m2b65oxy.png?w=320&h=320&fit=c
 File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\m2b65oxy-1.png
 Content Type: image/png
 
-Uri: https://landen.imgix.net/38gisxykki2r/assets/vi42j30n.png?w=300
-File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\vi42j30n.png
+Uri: https://landen.imgix.net/38gisxykki2r/assets/KarmaCall-Logo.png?w=300
+File Name: C:\Users\Adrian\Documents\Websites-Copied\karmacall.com\38gisxykki2r\assets\KarmaCall-Logo.png
 Content Type: image/png
 
 Uri: https://landen.imgix.net/shared/apple-en.png
