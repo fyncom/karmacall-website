@@ -71,6 +71,7 @@ async function doWork(number, IPcountryCode) {
         console.log(processedResponse);
         localStorage.setItem("userId", thisUserId)
 
+        // TODO - Move this code into new users when complete
         // handle referral code
         if (referralCode != null) {
             console.log("referralCode is not null. It is " + referralCode)
