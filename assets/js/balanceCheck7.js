@@ -122,7 +122,7 @@ function getNanoBalance() {
   headers.append("Key", a);
 
   return new Promise((resolve, reject) => {
-    fetch("https://server.robocashapp.com/nano/getNanoBalance", {
+    fetch("https://server.fyncom.com/nano/getNanoBalance", {
       method: "POST",
       headers: headers,
       body: JSON.stringify({
@@ -151,7 +151,7 @@ function getRate() {
   headers.append("Key", a);
   return new Promise((resolve, reject) => {
     fetch(
-      "https://server.robocashapp.com/payment/nano/get-conversion-rate/?currencyType=USD",
+      "https://server.fyncom.com/payment/nano/get-conversion-rate/?currencyType=USD",
       {
         method: "GET",
         headers: headers,
