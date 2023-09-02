@@ -14,7 +14,7 @@ if (!isBlank(sessionId) && !isBlank(nanoAccount)) {
   } else {
     getUsdValueOfBalance();
   }
-  var stringNanoAccount = "Your Nano account is ";
+  var stringNanoAccount = "Your nano account is ";
   document.getElementById("nanoAccountText").innerHTML =
     stringNanoAccount.concat(nanoAccount);
 }
@@ -35,7 +35,7 @@ async function getUsdValueOfBalance() {
     );
     if (processedRate > 0) {
       var stringUsd = "$";
-      var stringNano = "Your Nano balance is ";
+      var stringNano = "Your nano balance is ";
       document.getElementById("balanceText").innerHTML = stringUsd.concat(
         processedRate.toString()
       );
@@ -66,7 +66,7 @@ async function getBrlValueOfBalance() {
     if (processedRate > 0) {
       var stringBrl = "R$";
       // balanceText = R$0,00
-      var stringNano = "Your Nano balance is ";
+      var stringNano = "Your nano balance is ";
       document.getElementById("balanceText").innerHTML = stringBrl.concat(
         processedRate.toString().replace(".", `,`)
       );
