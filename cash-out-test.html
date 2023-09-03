@@ -19,7 +19,6 @@
     <meta name="keywords" content="onepage, Karmacall, scam, Scammers, Karma, Call, Spam, Spam Calls, scam call, robocalls, FinTech, data privacy, data, blockchain, Nano, cryptocurrency, app, crypto, distributed ledger tech, cash back, nanopayments, ">
     <link rel="stylesheet" href="/css/38gisxykki2r-c467b533bf666a9a4b613c9aef469968c5c881e6.css">
     <link rel="stylesheet" href="css/local.css">
-    <link rel="stylesheet" href="css/checkout.css">
     <style type="text/css">
       body {
         font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
@@ -226,6 +225,8 @@
         --color-link: rgba(255, 255, 255, 1);
       }
     </style>
+      <script src="https://js.stripe.com/v3/"></script>
+      <script src="assets/js/checkout.js" defer></script>
     <!-- Hotjar Tracking Code for https://karmacall.com -->
     <script>
         (function(h,o,t,j,a,r){
@@ -258,6 +259,21 @@
     <script async src="https://tag.clearbitscripts.com/v1/pk_bdde79908741db0186b976435a8a7c14/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>
   </head>
   <body>
+  <!-- Display a payment form -->
+  <form id="payment-form">
+      <div id="link-authentication-element">
+          <!--Stripe.js injects the Link Authentication Element-->
+      </div>
+      <div id="payment-element">
+          <!--Stripe.js injects the Payment Element-->
+      </div>
+      <button id="submit">
+          <div class="spinner hidden" id="spinner"></div>
+          <span id="button-text">Pay now</span>
+      </button>
+      <div id="payment-message" class="hidden"></div>
+  </form>
+
     <script>
       ! function() {
         const e = false;
