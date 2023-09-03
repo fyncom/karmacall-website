@@ -2,7 +2,10 @@
 const stripe = Stripe("pk_test_51Hs4deKTHvS3mtWxJdvaodvRgyXXOjobqGkPfehhE6LEpLM7kHXAAiDJpVitXbs0WklRVa1P8pDSK6uoRuopykGN00ByEwFm49");
 let url = "https://server.fyncom.com/";
 // The items the customer wants to buy
-const items = [{ id: "response-to-" }];
+// use the blocked emial id
+const items = [{ id: "response-to-",
+  blockedEmailId: "f7c91019-b4d7-411c-8da0-64ad4462aa80" ,
+  paymentAmount: "100" }];
 
 let elements;
 
