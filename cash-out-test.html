@@ -258,17 +258,6 @@
     <script async src="https://tag.clearbitscripts.com/v1/pk_bdde79908741db0186b976435a8a7c14/tags.js" referrerpolicy="strict-origin-when-cross-origin"></script>
   </head>
   <body>
-  <!-- Display a payment form -->
-  <h1>Stripe Payment Example</h1>
-  <form id="payment-form">
-    <div id="card-element">
-      <!-- Stripe.js will insert the card UI here -->
-    </div>
-
-    <button id="submit-button">Pay</button>
-  </form>
-  <script src="assets/js/checkout.js"></script>
-
     <script>
       ! function() {
         const e = false;
@@ -358,6 +347,18 @@
       </script>
       <div class="wr">
         <h1 class="color-1 weight-title-h font-title section__title center">Cash Out</h1>
+
+          <!-- Display a payment form -->
+          <h1>Stripe Payment Example</h1>
+          <form id="payment-form">
+              <div id="card-element">
+                  <!-- Stripe.js will insert the card UI here -->
+              </div>
+              <button id="submit-button">Pay</button>
+          </form>
+          <script src="assets/js/checkout.js"></script>
+
+
         <p class="weight-text section__subtitle center" style="margin-bottom:0">Copy in the nano account where you would like to send your nano to.</p>
       </div>
         <div class="wr titleAlign--">
