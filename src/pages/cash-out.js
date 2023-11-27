@@ -6,6 +6,7 @@ import Seo from "../components/seo"
 import { GiftCardModal, NanoNotEnoughModal, NanoSentModal } from "../components/Modal"
 
 const CashOut = () => {
+  const isBrowser = typeof window !== "undefined"
   const [userDetails, setUserDetails] = useState(null)
   const [dynamicMessage, setDynamicMessage] = useState("Your USD Balance is $0.00")
   const [userId, setUserId] = useState("")
@@ -16,9 +17,9 @@ const CashOut = () => {
   const [nanoRate, setNanoRate] = useState("")
   const [withdrawAmount, setWithdrawAmount] = useState("")
   const [destinationAccount, setDestinationAccount] = useState("")
-  const sessionId = localStorage.getItem("sessionId")
-  const phoneNumber = localStorage.getItem("phoneNumber")
-  const countryCode = localStorage.getItem("countryCode")
+  const sessionId = isBrowser ? localStorage.getItem("sessionId") : null
+  const phoneNumber = isBrowser ? localStorage.getItem("phoneNumber") : null
+  const countryCode = isBrowser ? localStorage.getItem("countryCode") : null
   const [isNanoSentModalOpen, setIsNanoSentModalOpen] = useState(false)
   const [isNanoOverBalanceModalOpen, setIsNanoOverBalanceModalOpen] = useState(false)
   const [isGiftCardModalOpen, setIsGiftCardModalOpen] = useState(false)
