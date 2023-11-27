@@ -15,20 +15,8 @@ const CashOut = () => {
     localStorage.setItem("nanoAccount", newAccount)
   }
   const [nanoBalance, setNanoBalance] = useState("")
-  const updateNanoBalance = newBalance => {
-    setNanoBalance(newBalance)
-    localStorage.setItem("nanoBalance", newBalance)
-  }
   const [nanoBalanceInFiat, setNanoBalanceInFiat] = useState("")
-  const updateNanoBalanceInFiat = newBalance => {
-    setNanoBalanceInFiat(newBalance)
-    localStorage.setItem("nanoBalanceInFiat", newBalance)
-  }
   const [fiatType, setFiatType] = useState("")
-  const updateFiatType = localFiatType => {
-    setFiatType(localFiatType)
-    localStorage.setItem("fiatType", localFiatType)
-  }
   const [nanoRate, setNanoRate] = useState("")
   const [withdrawAmount, setWithdrawAmount] = useState("")
   const [destinationAccount, setDestinationAccount] = useState("")
@@ -62,6 +50,18 @@ const CashOut = () => {
     updateNanoAccount(account)
   }, [])
 
+  useEffect(() => {
+    if (nanoBalance) {
+      localStorage.setItem("nanoBalanceInFiat", nanoBalance)
+    }
+    if (nanoAccount) {
+      localStorage.setItem("nanoAccount", nanoAccount)
+    }
+    if (fiatType) {
+      localStorage.setItem("fiatType", fiatType)
+    }
+  }, [nanoBalance, nanoAccount, fiatType])
+
   // todo rate-limit the balance check by last time checked.
   const getNanoBalanceAndUpdateMessage = async (nanoAccount, fiatType) => {
     try {
@@ -79,9 +79,9 @@ const CashOut = () => {
           5
         )}</span></p> <p>Your nano balance is Ӿ<span class="emphasis">${data.accountBalanceInNano.toFixed(5)}</span></p>`
         setDynamicMessage(newMessage)
-        updateNanoBalance(data.accountBalanceInNano)
-        updateNanoBalanceInFiat(data.accountBalanceInFiat)
-        updateFiatType(data.currencyType)
+        setNanoBalance(data.accountBalanceInNano)
+        setNanoBalanceInFiat(data.accountBalanceInFiat)
+        setFiatType(data.fiatType)
         setNanoRate(data.rate)
       } else {
         throw new Error("Failed to fetch user details")

@@ -13,6 +13,8 @@ const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("")
   const [sessionId, setSessionId] = useState("")
   const [otp, setOtp] = useState("")
+  const [userId, setUserId] = useState("")
+  const [nanoAccount, setNanoAccount] = useState("")
   const [countryCodesOption, setCountryCodesOption] = useState([])
   const location = useLocation()
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false)
@@ -41,6 +43,27 @@ const Login = () => {
     // getCallingCode()
   }, [])
 
+  useEffect(() => {
+    if (sessionId) {
+      localStorage.setItem("sessionId", sessionId)
+    }
+    if (phoneNumber) {
+      localStorage.setItem("phoneNumber", phoneNumber)
+    }
+    if (countryCode) {
+      localStorage.setItem("countryCode", countryCode)
+    }
+    if (otp) {
+      localStorage.setItem("otp", otp)
+    }
+    if (nanoAccount) {
+      localStorage.setItem("nanoAccount", nanoAccount)
+    }
+    if (userId) {
+      localStorage.setItem("userId", userId)
+    }
+  }, [sessionId, phoneNumber, countryCode, otp, nanoAccount, userId])
+
   const handlePhoneSubmit = async event => {
     event.preventDefault()
     try {
@@ -49,9 +72,6 @@ const Login = () => {
         setSessionId(result.data.sessionId)
         setPhoneNumber(phoneNumber)
         setCountryCode(countryCode)
-        localStorage.setItem("sessionId", result.data.sessionId)
-        localStorage.setItem("countryCode", countryCode)
-        localStorage.setItem("phoneNumber", phoneNumber)
         openOtpModal()
       } else if (result.banned) {
         return
@@ -101,7 +121,7 @@ const Login = () => {
       const response = await verifyConfirm(submittedOtp)
       if (response.status == 200) {
         setIsOtpModalOpen(false)
-        localStorage.setItem("otp", response.data.otp)
+        setOtp(response.data.opt)
         handleSignUp()
       } else if (response.status === 500) {
         openErrorModal()
@@ -173,9 +193,9 @@ const Login = () => {
         const connectedAccount = await connectNanoAccountWithUserId(thisUserId, nanoAccount.data.nanoNodeWalletAccount)
         if (["Account address successfully saved", "Welcome back!"].includes(connectedAccount.data.message)) {
           console.log("Account address successfully saved")
-          localStorage.setItem("nanoAccount", connectedAccount.data.currentDatabaseAccountAddress)
+          setNanoAccount(connectedAccount.data.currentDatabaseAccountAddress)
         }
-        localStorage.setItem("userId", thisUserId)
+        setUserId(thisUserId)
         navigate("/cash-out")
       } else {
         // put an error thing here
