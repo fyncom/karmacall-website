@@ -1,0 +1,12 @@
+.blog-item {
+  border: 1px solid var(--color-bar); /* Replace #ddd with the color you prefer for the outline */
+  padding: 5px;
+  border-radius: 5px; /* Optional: for rounded corners */
+}
+.blog-link {
+  color: unset;
+  text-decoration: none;
+}
+.gif-image {
+    margin-left: 0;
+}

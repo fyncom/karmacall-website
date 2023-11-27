@@ -1,0 +1,291 @@
+.AppText {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 2rem 0 2rem;
+  box-sizing: border-box; /* This ensures padding is included in the height calculation */
+  margin-bottom: 1rem;
+}
+.why-fyncom {
+  display: grid;
+  justify-content: center;
+}
+.payments-counter {
+  font-size: xx-large;
+  /* text-decoration: underline; */
+  color: var(--karmacall-gold);
+  padding: 0;
+}
+.why-fyncom h2,.why-fyncom p {
+  text-align: center;
+}
+.logo-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  flex: 1; /* Takes equal space as the text-block */
+}
+.top-logos {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.top-logos-left {
+  display: flex;
+}
+.bottom-logo {
+  display: flex;
+  justify-content: center;
+}
+.gatsby-image-wrapper:hover {
+  transform: scale(1.15);
+  transition: transform 0.3s;
+}
+.text-block {
+  margin-left: 1rem;
+  flex: 1; /* Takes equal space as the logo-container */
+  max-width: 600px; /* Adjust as needed */
+}
+.text-block-left {
+  margin-right: 1rem;
+  flex: 1; /* Takes equal space as the logo-container */
+  max-width: 600px; /* Adjust as needed */
+}
+
+/* social media css*/
+.social-media-container {
+  margin: auto;
+  display: flex;
+  align-items: center; /* Vertically centers children */
+  justify-content: center; /* Horizontally centers children */
+  width: 100%; /* Use the full width of the App container */
+  max-width: 1200px;
+  padding: 0.2rem;
+  max-height: 600px;
+}
+.content-container {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  width: 100%; /* Use the full width of the App container */
+  max-width: 1200px; /* Adjust as needed */
+}
+.payments-container {
+  text-align: center; /* Center the text */
+  max-width: 600px; /* Set a max width for the text block */
+  margin: 1rem auto; /* Center the container with automatic horizontal margins */
+  padding: 1rem; /* Optional padding */
+}
+.values-container-sub {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto -1rem auto; 
+  font-weight: 400;
+  font-size: larger;
+}
+.use-cases-sales-marketing-container {
+  margin-top: 0;
+}
+
+/* bits and pieces*/
+.AppText .span,
+.AppText .span a,
+.text-wrapper-3-red {
+  color: var(--fyncom-red);
+  padding: 0;
+}
+.underline {
+  text-decoration: underline;
+}
+.text-wrapper-2 {
+  color: var(--karmacall-green);
+  margin-bottom: 1rem;
+  font-size: 36px;
+}
+.text-wrapper-4 {
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    font-size: 36px;
+}
+.text-wrapper-5 {
+    color: var(--karmacall-green-variable);
+    margin-bottom: 1rem;
+    font-size: 36px;
+}
+.underline-red {
+    text-decoration: underline;
+    color: var(--fyncom-red);
+    padding: 0;
+}
+.underline-karma {
+    text-decoration: underline;
+    color: var(--karmacall-gold);
+    padding: 0;
+}
+.value-row {
+  display: flex;
+  flex-direction: row;
+    align-items: flex-start;
+}
+.text-container {
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.text-container h4 {
+  margin: unset;
+}
+
+.icon-container {
+  min-width: 50px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--karmacall-gold);
+  border-radius: 10%;
+}
+.icon-container svg {
+  width: 40px;
+  height: auto;
+}
+/* App store row to display app download images*/
+.app-store-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    gap: 50px;
+    padding-bottom: 2rem;
+}
+.index-links {
+  display: inline-flex; /* or 'inline-block' depending on your layout needs */
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+  padding: 0; /* Reset padding */
+  border: none; /* Reset border */
+  margin: 0; /* Reset margin */
+  max-width: fit-content; /* Use 'fit-content' to shrink-wrap the content */
+}
+.gatsby-image-wrapper {
+  max-width: 100%; 
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Make sure it behaves like a block-level element */
+}
+.values-column {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.values-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    gap: 50px;
+    padding-bottom: 2rem;    
+}
+.use-case h2 {
+  margin-bottom: 0 !important;
+}
+.use-case sub {
+  margin-top: -0.4rem;
+  margin-bottom: 10px;
+  font-weight: 300;
+}
+
+.video-row-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 2rem 0 2rem;
+  gap: 20px;
+  max-height: calc(56.25% * 100%); /* Adjust based on aspect ratio */
+  /* max-width: 1200px; */
+  margin: 20px 0;
+}
+.video-row-text-content {
+  flex: 1;
+  padding: 15px;
+}
+.video-row-video-container {
+  flex: 2;
+  position: relative;
+  padding-bottom: 56.25%; /* Aspect ratio for 16:9 */
+  height: 0;
+  overflow: hidden;
+}
+.video-row-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* MEDIA SIZES CSS */
+@media (max-width: 768px) {
+.values-container-sub {
+  font-weight: 400;
+  font-size: medium !important;
+}
+  .use-case sub {
+  margin-top: -0.2rem;
+  margin-bottom: 10px;
+}
+.parent-container {
+  margin-bottom: 4rem;
+}
+.AppText, .video-row-container {
+    padding: 0.2rem 0.2rem 0 0.2rem;
+    flex-direction: column; /* Stack the child elements vertically */
+  }
+    .video-row-video-container {
+    width: 100%; /* Full width on small screens */
+    padding-bottom: 56.25%; /* Maintain aspect ratio */
+  }
+  .video-row-text-content {
+  padding: 15px;
+  padding-bottom: 0;
+  margin-bottom: -0.2rem;
+}
+.text-container p {
+  text-align: left !important;
+}
+  .social-media-container.communities {
+    flex-direction: column-reverse;
+  }
+  .top-logos.communities {
+    flex-direction: row; /* Arrange the logos horizontally */
+    justify-content: center;
+  }
+  .app-store-row {
+      padding: 0 2rem 0rem 2rem;
+  }
+  .social-media-container,.text-block,.text-block-left,.logo-container,.bottom-logo {
+    flex-direction: column;
+    align-items: center; /* Center align items for mobile */
+    text-align: center; /* Center the text for mobile */
+    max-width: 100%; /* Override any max-width set for larger screens */
+  }
+  .logo-container.hero {
+    /* margin-bottom: 1rem; */
+    max-width: 300px;
+  }
+  .logo-container, .bottom-logo {
+    width: 100%; /* Take the full width of the container on small screens */
+    justify-content: space-evenly; /* Evenly space logos horizontally on small screens */
+    gap: 0;
+  }
+  .text-block, .text-block-left {
+    margin: 1rem 0; /* Add some top and bottom margin for spacing */
+    padding: 0 1rem; /* Add padding to ensure text doesn't touch the edges */
+  }
+  .AppText .span {
+    text-align: center;
+  }
+}

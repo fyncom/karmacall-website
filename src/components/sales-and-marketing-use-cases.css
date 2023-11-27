@@ -1,0 +1,128 @@
+.sales-use-cases,
+.marketing-use-cases {
+  max-width: 1400px; /* Sets the maximum width of the page */
+  margin: 0 auto; /* Centers the page */
+  overflow: hidden; /* Prevents child elements from overflowing */
+  padding: 0 20px; /* Optional: if you want some space on the sides */
+}
+.hero-section {
+  text-align: center;
+  padding: 50px;
+  flex: 1 1 auto;
+  display: flex;
+}
+.hero-section .story-image {
+  max-width: 100%; /* Ensures image is not larger than its container */
+  height: auto; /* Maintains aspect ratio */
+  object-fit: contain; /* Ensures the image is scaled properly within its box */
+}
+.hero-content {
+  /*max-width: 500px; !* Adjust the width as needed *!*/
+  background: var(--fyncom-blue);
+  padding: 15px;
+  flex: 1 1 auto;
+  max-width: 1000px;
+}
+.hero-content h1,
+.hero-content p {
+  color: #fff;
+}
+.demo-button {
+  background-color: var(--fyncom-red);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+}
+.demo-button:hover {
+  background-color: #e55055;
+}
+
+.use-cases-sales-marketing-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px;
+}
+.use-case {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--container-color);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 500px;
+  min-width: 250px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.background-stripe {
+  /*background-color: #3fa060;*/
+}
+.use-case h2 {
+  color: #ffffff;
+  margin-bottom: 15px;
+}
+.use-case p {
+  color: #ffffff;
+}
+.use-case-image {
+  max-width: 280px;
+  margin: 0;
+}
+
+.integrations-section {
+  text-align: center;
+  padding: 30px;
+}
+.integrations-section h2 {
+  text-align: center;
+}
+.call-to-action h2 {
+  margin-bottom: 30px;
+}
+.logos-container {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  align-items: center; /* Aligns logos vertically */
+}
+.logo {
+  height: auto;
+  object-fit: contain; /* Keeps the image's aspect ratio and scales it to fit the container */
+}
+.logo:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s;
+}
+
+/* Adjustments for responsive design */
+@media (max-width: 768px) {
+  .use-cases-sales-marketing-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .logos-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .logo {
+    max-width: 45%; /* or a specific pixel value if you want a max size */
+    height: auto;
+    object-fit: unset; /* Keeps the image's aspect ratio and scales it to fit the container */
+  }
+  .hero-section {
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero-content,
+  .use-case,
+  .integrations-section {
+    max-width: 1400px;
+    margin: 0 auto; /* This will center the content */
+  }
+}

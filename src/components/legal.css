@@ -1,0 +1,20 @@
+.legal-container {
+  display: flex;
+  flex-direction: column;
+}
+.legal-container p, .legal-container li {
+  align-self: start;
+  max-width: 1000px;
+}
+.legal-container ol {
+  margin-bottom: 0rem; 
+  margin-top: 0;
+}
+.legal-text-container-table {
+  margin-top: 0;
+  margin-bottom: 3rem;
+}
+.legal-text-container {
+  margin-top: 0;
+  margin-bottom: 3rem;
+}

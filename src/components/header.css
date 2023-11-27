@@ -1,0 +1,223 @@
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  padding: 10px 10px 10px 10px;
+  background-color: var(--color-background);
+}
+.header-top p {
+  flex: 1;
+  text-align: center;
+}
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.nav-links {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 15px;
+}
+.nav-links li a {
+  text-decoration: none;
+  color: var(--dropdown-text-color) !important;
+  padding: 5px 10px;
+  transition: background-color 0.3s;
+}
+.nav-links a:hover {
+  text-decoration: underline;
+  background-color: var(
+    --dropdown-container-color
+  ); /* Add a hover effect for better UX */
+}
+
+.login-buttons {
+  display: grid; /* Side by side buttons */
+  gap: 10px; /* Space between buttons */
+}
+button {
+  border-radius: 10px;
+  color: white;
+  padding: 6px 1px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+  width: 7rem;
+  margin-right: 10px;
+}
+
+button.business {
+  background-color: #ff5a5f;
+  color: var(--mobile-menu-text-color);
+}
+button.business:hover {
+  background-color: #e55055;
+}
+button.user {
+  background-color: var(--karmacall-green);
+  color: var(--mobile-menu-text-color);
+}
+button.user:hover {
+  /* background-color: green; */
+    background-color: var(--karmacall-gold);
+
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropbtn {
+  /*background-color: darkgray;*/
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--dropdown-container-color) !important;
+  min-width: 160px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+/* Style for dropdown links and text color*/
+.dropdown-content a {
+  color: var(--dropdown-text-color) !important;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+/* Display the dropdown content on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+/* Change background color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: var(--dropdown-hover-color);
+}
+
+.mobile-menu-icon,
+.mobile-menu {
+  display: none;
+}
+.right-header-logo {
+    margin-left: 20px;
+}
+.arrow-container {
+    width: 30px; /* Length of the arrow */
+    height: 2px; /* Thickness of the arrow */
+    background-color: var(--color-text); /* Color of the arrow */
+    position: absolute; /* Position the arrow absolutely */
+    left: 100px; /* Adjust this value to control the overlap */
+    z-index: 1; /* Ensure the arrow is above the logo images */
+}
+.arrow-container::before {
+    content: "";
+    border-top: 2px solid var(--color-text); /* Adjust border size and color as needed */
+    border-right: 2px solid var(--color-text); /* Adjust border size and color as needed */
+    width: 10px; /* Length of arrowhead */
+    height: 10px; /* Height of arrowhead */
+    position: absolute;
+    right: -7px; /* Position of arrowhead */
+    top: -5px; /* Position of arrowhead */
+    transform: rotate(45deg);
+}
+
+@media (max-width: 768px) {
+    .left-header-logo {
+        /*max-width: 40% !important; !* Smaller size for mobile, adjust as needed *!*/
+        max-width: 90px !important; /* Smaller size for mobile, adjust as needed */
+        height: 50px !important; /* Maintain aspect ratio */
+    }
+    .right-header-logo {
+        margin-left: 2px !important;
+    }
+    .arrow-container {
+        width: 20px; /* Length of the arrow */
+        left: 75px; /* Adjust this value to control the overlap */
+    }
+  ul {
+    padding: 0;
+  }
+  .mobile-menu-icon,
+  .mobile-menu {
+    display: revert;
+  }
+  .nav-links,
+  .dropdown {
+    display: none;
+  }
+  button,
+  .cta-button,
+  a {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .user {
+      /*min-height: ;*/
+      max-width: 40px;
+  }
+  .mobile-menu-icon {
+    font-size: 50px;
+    display: block;
+    cursor: pointer;
+  }
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    width: auto;
+    max-width: 500px;
+    height: 100%;
+    background: var(--mobile-menu-bg-color);
+    box-shadow: 4px 0px 16px rgba(0, 0, 0, 0.7);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+
+  .mobile-menu.open {
+    /*transform: translateX(100%);*/
+    transform: translateX(0);
+  }
+  .mobile-menu-item a {
+    color: var(--mobile-menu-text-color);
+    padding: 10px 20px;
+    display: block; /* This makes sure that the links take up the full available width */
+  }
+
+  /* Ensure the link and the pseudo-element fit on one line */
+  .mobile-menu-item .mobile-dropbtn {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  /* Toggle the dropdown within the mobile menu */
+  .mobile-menu-item .mobile-dropbtn:after {
+    content: " ▼"; /* Add a small arrow to denote that this is a dropdown */
+  }
+  .mobile-menu-item,
+  .mobile-dropdown-content {
+    display: block;
+  }
+  .mobile-menu-item.active .mobile-dropdown-content {
+    display: block;
+  }
+  .submenu {
+    display: none;
+  }
+  .menu-item-with-children.active .submenu {
+    display: block;
+  }
+}

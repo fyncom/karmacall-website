@@ -1,0 +1,35 @@
+.gatsby-focus-wrapper {
+  margin: 0 auto;
+  width: 80%;
+  max-width: 1200px;
+}
+img {
+  margin-left: unset;
+  margin-bottom: 3rem;
+}
+.gatsby-focus-wrapper p {
+  max-width: unset;
+}
+.float-left {
+  float: left;
+  max-width: 200px;
+  margin-right: 1rem;
+}
+.float-left.large {
+  max-width: 400px;
+}
+a {
+  color: var(--fyncom-light-blue);
+}
+.button-container {
+  display: flex;
+  justify-content: center; /* This will center the button horizontally */
+  align-items: center; /* This will center the button vertically */
+  /* Add other styles such as padding or margins if needed */
+}
+
+@media (max-width: 768px) {
+  .gatsby-focus-wrapper {
+    width: 95%;
+  }
+}

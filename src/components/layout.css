@@ -1,0 +1,468 @@
+/* LIGHT MODE COLORS */
+:root {
+  --border-radius: 4px;
+  --color-text: #333;
+  --color-primary: #7026b9;
+  --color-link: #007bff;
+  --color-link-custom: var(--color-link);
+  --color-code-bg: #fff4db;
+  --color-code: #8a6534;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  --font-lg: 18px;
+  --font-md: 16px;
+  --font-sm: 14px;
+  --font-sx: 12px;
+  --line-height-loose: 1.75;
+  --line-height-normal: 1.5;
+  --line-height-dense: 1.1;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 64px;
+  --size-content: 54rem;
+  --size-gutter: var(--space-5);
+  --size-gap: var(--space-6);
+  --color-background-light: #fff;
+  --color-background: #fff;
+  --fyncom-blue: #4a90e2;
+  --fyncom-blue-rgb: 74, 144, 226; /* The RGB equivalent of #4A90E2 */
+  --fyncom-light-blue: #13dcec;
+  --fyncom-lightest-blue: #80ded9;
+  --fyncom-red: #ff5a5f;
+  --fyncom-red-rgb: 255, 90, 95;
+  --fyncom-cyan: #408a97;
+  --fyncom-dark-cyan: #206076;
+  --fyncom-darkest-cyan: #003554;
+  --fyncom-yellow: #eee539;
+  --karmacall-gold: #ff8c00;
+  --karmacall-green: #008080;
+    --karmacall-green-variable: var(--karmacall-green);
+
+  --robocash-green: #3fa060;
+  --sub-color: var(--fyncom-cyan);
+  --color-bar: #000;
+  --help-box: #fff;
+  --dropdown-container-color: var(--fyncom-lightest-blue);
+  --dropdown-text-color: #000;
+  --dropdown-hover-color: white;
+  --button-learn-more: var(--fyncom-yellow);
+  --button-learn-more-hover: var(--karmacall-gold);
+  --container-color: var(--fyncom-cyan);
+
+  --logo-dark-mode: url("../images/fyncom-logo-white.png");
+  --logo-light-mode: url("../images/fyncom-logo.png");
+  --filters-gmail-dark-mode: url("../images/fyncom_filters_gmail_edition_no_logo-white.png");
+  --filters-gmail-light-mode: url("../images/fyncom_filters_gmail_edition_no_logo.png");
+  --img-brightness: brightness(1);
+  --navigation: rgba(0, 0, 0, 0.1);
+  --navigation-hover: rgba(0, 0, 0, 0.2);
+  .fyncom-logo {
+    content: var(--logo-light-mode);
+    display: block;
+    margin: 40px auto;
+    max-width: 300px;
+  }
+.fyncom-logo-header {
+    display: flex; /* Aligns children side by side */
+    align-items: center; /* Centers children vertically */
+    justify-content: center; /* Centers children horizontally */
+    position: relative;
+    gap: 10px; /* Adds space between children */
+    margin: 0 auto; /* Centers the logo-header in the parent container */
+  }
+  .semi-barlow-extra-bold {
+    font-family: 'Barlow SemiCondensed', sans-serif;
+    font-weight: 800;
+  }
+  .semi-barlow-extra-light {
+    font-family: 'Barlow SemiCondensed', sans-serif;
+    font-weight: 200;
+  }
+  --help-item-hover: #f0f8ff;
+  --mobile-menu-bg-color: var(--fyncom-blue);
+  --mobile-menu-text-color: white;
+}
+
+/* Automatically switch to dark mode based on user's system preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+      --karmacall-green-variable: var(--robocash-green);
+      --mobile-menu-text-color: white;
+    --mobile-menu-bg-color: var(--fyncom-darkest-cyan);
+    --color-text: #eaeaea;
+    --color-link-custom: var(--color-link-custom);
+    --color-background: #121212;
+    --color-primary: #bb86fc;
+    --sub-color: var(--fyncom-light-blue);
+    --color-bar: #fff;
+    --help-box: #000;
+    --dropdown-container-color: var(--fyncom-darkest-cyan);
+    --dropdown-text-color: #fff;
+    --dropdown-hover-color: #000;
+    --button-learn-more: var(--fyncom-blue);
+    --button-learn-more-hover: var(--fyncom-cyan);
+    --container-color: var(--fyncom-darkest-cyan);
+    --img-brightness: brightness(0.7);
+    --navigation: rgba(0, 0, 0, 0.2);
+    --navigation-hover: rgba(255, 255, 255, 0.2);
+    --help-item-hover: #2c3e50;
+    .fyncom-logo {
+      content: var(--logo-dark-mode);
+      display: block;
+      margin: 40px auto;
+      max-width: 300px;
+    }
+    /* dark mode inverter for pds when react-pdf is not usable */
+    .google-docs-iframe-container {
+      filter: invert(1) hue-rotate(180deg);
+    }
+  }
+}
+
+/* Manually switch to dark mode via class or data attribute */
+:root[data-theme="dark"] {
+    --karmacall-green-variable: var(--robocash-green);
+  --mobile-menu-text-color: white;
+  --mobile-menu-bg-color: var(--fyncom-darkest-cyan);
+  --color-text: #eaeaea;
+  --color-background: #121212;
+  --color-primary: #bb86fc;
+  --sub-color: var(--fyncom-red);
+  --color-bar: #fff;
+  --help-box: #000;
+  --dropdown-container-color: var(--fyncom-darkest-cyan);
+  --dropdown-text-color: #fff;
+  --dropdown-hover-color: #000;
+  --button-learn-more: var(--fyncom-blue);
+  --button-learn-more-hover: var(--fyncom-cyan);
+  --container-color: var(--fyncom-dark-cyan);
+  --img-brightness: brightness(0.7);
+  --navigation: rgba(0, 0, 0, 0.2);
+  --navigation-hover: rgba(255, 255, 255, 0.2);
+  --help-item-hover: #2c3e50;
+  .fyncom-logo {
+    content: var(--logo-dark-mode);
+    display: block;
+    margin: 40px auto;
+    max-width: 300px;
+  }
+  /* dark mode inverter for pds when react-pdf is not usable */
+  .google-docs-iframe-container {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+/****** *Setting mobile device css ******/
+/* Styles for tablets and above */
+@media (min-width: 769px) {
+  .use-case-section {
+    flex-direction: row;
+  }
+  .use-case-description {
+    width: 46%; /* Set to original width on larger screens */
+  }
+}
+
+/* Styles for mobile devices phones*/
+@media (max-width: 768px) {
+  h1, h2, h3, p, sub {
+    text-align: center !important;
+  }
+  h1 {
+    font-size: xx-large !important;
+  }
+  h2 {
+    font-size: x-large !important;
+  }
+  h3 {
+    font-size: larger !important;
+  }
+  sub {
+    font-size: large !important;
+  }
+  p {
+    font-size: medium !important;
+  }
+  .use-case-section {
+    flex-direction: column;
+  }
+  .use-case-image, .use-case-description {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+  /*sets the images / description in order for columns*/
+  .use-case-section:nth-child(odd) .use-case-description {
+    order: 2; /* Put the description second */
+  }
+  .use-case-section:nth-child(odd) .use-case-image {
+    order: 1; /* Put the image first */
+    margin-bottom: 20px; /* Add some spacing between the image and description */
+  }
+  .use-case-image img {
+    max-width: 100%; /* Full width on mobile */
+    margin-right: 0; /* Reset margin since it's now a column layout */
+  }
+}
+
+/* call to action button */
+.call-to-action {
+  text-align: center;
+  display: grid;
+  justify-content: center;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.cta-button {
+  display: block; /* Allows the element to take padding and margin properly */
+  background-color: var(--fyncom-red);
+  color: white;
+  padding: 20px 40px; /* Increase padding for a larger button */
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: 3rem; /* Adjust font-size for larger text */
+  transition: background-color 0.3s;
+  text-decoration: none; /* Remove underline from the link */
+  margin: auto; /* Centers the button */
+  max-width: 600px; /* Maximum width for the button */
+}
+
+.cta-button:hover {
+  background-color: #e55055;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  box-sizing: border-box;
+  font: sans-serif;
+  font-size: var(--font-md);
+  line-height: var(--line-height-normal);
+  overflow-y: scroll;
+}
+/*set the background of the site - consider later update*/
+body {
+  background-color: var(--color-background, var(--color-background-light));
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  color: var(--color-text);
+  font-family: "Barlow SemiCondensed", sans-serif;
+  font-weight: normal;
+  margin: 0;
+  word-wrap: break-word;
+}
+a {
+  background-color: transparent;
+  color: var(--color-link);
+  text-decoration: none;
+  font-weight: 400;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+}
+a:active,
+a:hover {
+  outline-width: 0;
+  text-decoration: none;
+}
+abbr[title] {
+  border-bottom: 1px dotted hsla(0, 0%, 0%, 0.5);
+  cursor: help;
+  text-decoration: none;
+}
+b,
+strong {
+  font-weight: inherit;
+  font-weight: bolder;
+}
+dfn {
+  font-style: italic;
+}
+h1 {
+  font-size: 48px;
+  /*font-weight: 900; !* Black/ Heavy *!*/
+  font-weight: 800; /* Extra Bold / Ultra Bold */
+  /*font-weight: 700; !* Bold *!*/
+  /*font-weight: 600; !* Semi Bold / Demi Bold *!*/
+  /*font-weight: 500; !* Medium *!*/
+  /*font-weight: 400; !* Normal / Regular *!*/
+  /*font-weight: 300; !* Light *!*/
+  /*font-weight: 200; !* Extra Light / Ultra Light *!*/
+  /*font-weight: 100; !* Thin *!*/
+  text-align: left;
+  margin: 0;
+  /*margin-bottom: 0.5rem;*/
+  padding: 0;
+  line-height: var(--line-height-dense);
+}
+.centered {
+  text-align: center;
+}
+h1 > b {
+  color: var(--color-primary);
+}
+h2 {
+  font-size: 42px;
+  font-weight: 600; /* Semi Bold / Demi Bold */
+  text-align: left;
+  margin: 0;
+  margin-bottom: 0.2rem;
+  padding: 0;
+  line-height: var(--line-height-dense);
+}
+h3 {
+  font-size: 32px;
+  font-weight: 500; /* Semi Bold / Demi Bold */
+  text-align: left;
+  margin: 0;
+  margin-bottom: 0.6rem;
+  padding: 0;
+  line-height: var(--line-height-dense);
+}
+p {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 300; /* Light */
+  margin-bottom: var(--space-4);
+}
+sub {
+  font-size: 22px;
+  text-align: left;
+  font-weight: 300; /* Light */
+  /*background-color: var(--color-background, var(--color-background-light));*/
+  /* DO NOT FOLLOW THE 2 VAR model below - it does not work - use the single var*/
+  /*color: var(--sub-color, var(--sub-color-light)); !*this seems backwards*!*/
+  color: var(--sub-color);
+}
+img {
+  border-style: none;
+  max-width: 100%;
+}
+code, kbd, pre, samp {
+  font-family: var(--font-mono);
+  font-size: 1em;
+  line-height: inherit;
+}
+hr {
+  box-sizing: content-box;
+  overflow: visible;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  padding: 0;
+  margin-bottom: calc(var(--space-4) - 1px);
+  background: hsla(0, 0%, 0%, 0.2);
+  border: none;
+  height: 1px;
+}
+* {
+  box-sizing: inherit;
+}
+*:before {
+  box-sizing: inherit;
+}
+*:after {
+  box-sizing: inherit;
+}
+
+/*NOTE: the img here, can sometimes disrupt certain images... but it does more good than bad*/
+hgroup, img, figure, fieldset, ul, ol, dl, dd, ul, ol {
+  margin-left: var(--space-4);
+  list-style-position: outside;
+  list-style-image: none;
+}
+pre {
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: var(--space-4);
+  font-size: 0.875rem;
+  line-height: var(--line-height-normal);
+  background: hsla(0, 0%, 0%, 0.04);
+  border-radius: var(--border-radius);
+  overflow: auto;
+  word-wrap: normal;
+  padding: var(--space-4);
+}
+b, strong, dt, th {
+  font-weight: bold;
+}
+li {
+  margin-bottom: calc(var(--space-4) / 2);
+}
+ol li,
+ul li {
+  padding-left: 0;
+}
+li > ol,
+li > ul {
+  margin-bottom: calc(var(--space-4) / 2);
+  margin-left: var(--space-4);
+  margin-top: calc(var(--space-4) / 2);
+}
+blockquote *:last-child {
+  margin-bottom: 0;
+}
+li *:last-child {
+  margin-bottom: 0;
+}
+p *:last-child {
+  margin-bottom: 0;
+}
+li > p {
+  margin-bottom: calc(var(--space-4) / 2);
+}
+/*This one also causes issues, but does more good than bad.*/
+p {
+  max-width: 680px;
+}
+code {
+  font-size: 0.875rem;
+}
+kbd {
+  font-size: 0.875rem;
+}
+samp {
+  font-size: 0.875rem;
+}
+abbr {
+  border-bottom: 1px dotted hsla(0, 0%, 0%, 0.5);
+  cursor: help;
+}
+acronym {
+  border-bottom: 1px dotted hsla(0, 0%, 0%, 0.5);
+  cursor: help;
+}
+tt,
+code {
+  background-color: var(--color-code-bg);
+  border-radius: var(--border-radius);
+  color: var(--color-code);
+  font-family: var(--font-mono);
+  padding-bottom: 0.25em;
+  padding-top: 0.25em;
+  word-break: normal;
+}
+pre code {
+  background: none;
+}
+code:before,
+code:after,
+tt:before,
+tt:after {
+  content: "\00a0";
+  letter-spacing: -0.2em;
+}
+pre code:before,
+pre code:after,
+pre tt:before,
+pre tt:after {
+  content: none;
+}

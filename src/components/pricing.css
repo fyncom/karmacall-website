@@ -1,0 +1,86 @@
+th {
+  border-right: hidden !important;
+  border-left: hidden !important;
+  border-top: hidden !important;
+  width: 23%;
+}
+th:first-child {
+  width: 31%;
+}
+tr {
+  border-left: 3px solid black;
+}
+table td:first-child {
+  font-size: 20px;
+  font-weight: bold;
+}
+table td {
+  font-size: 24px;
+}
+table {
+  margin-bottom: 3rem;
+}
+
+table.small td:first-child {
+  /*font-size: 14px;*/
+  font-weight: bold;
+  width: 31%;
+}
+table.small td {
+  font-size: 18px;
+}
+
+sup {
+  horiz-align: left;
+  vertical-align: baseline;
+  position: relative;
+  font-size: 18px;
+  top: -0.4em; /* Adjust as necessary */
+}
+
+.button {
+  font-size: 24px;
+}
+/* Apply the indentation to all p tags following the structure */
+p > sup + strong + br + span,
+p > sup + strong + br + span + br + span,
+p > sup + strong + br + span + br + span + br + span,
+P > span,
+table.small {
+  padding-left: 20px;
+  display: block;
+  margin-right: -20px;
+}
+
+/* To make the p elements as wide as the table, assuming the table is 100% width */
+p,
+table {
+  width: 100%; /* Adjust if the table has a different width */
+}
+
+.html-content {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  width: 80%; /* Adjust the width as needed */
+  /*max-width: 500px;  !* Adjust the maximum width as needed *!*/
+  margin: auto; /* Centers the content horizontally */
+  height: auto; /* Adjust the height as needed */
+  /*max-height: au; !* Adjust the maximum height as needed *!*/
+  /*max-height: 100vh; !* Adjust the maximum height as needed *!*/
+  overflow: auto; /* Adds scrollbars if content is larger than the element */
+  margin-bottom: 3rem;
+}
+
+.html-content-dropdown {
+  /*display: flex;*/
+  /*flex-direction: column;*/
+  /*align-content: center;*/
+  width: 80%; /* Adjust the width as needed */
+  /*max-width: 500px;  !* Adjust the maximum width as needed *!*/
+  margin: auto; /* Centers the content horizontally */
+  height: auto; /* Adjust the height as needed */
+  /*max-height: au; !* Adjust the maximum height as needed *!*/
+  /*max-height: 100vh; !* Adjust the maximum height as needed *!*/
+  overflow: auto; /* Adds scrollbars if content is larger than the element */
+}

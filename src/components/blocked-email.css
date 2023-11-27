@@ -1,0 +1,96 @@
+.modal-content h2 {
+  color: var(--karmacall-gold);
+  text-align: center;
+}
+.modal-content p {
+  text-align: center;
+  margin-bottom: 0.4rem;
+  max-width: 100%;
+}
+.modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--fyncom-blue);
+  background-color: rgba(var(--fyncom-blue-rgb), 0.7);
+  text-align: center;
+}
+.modal-content {
+  background-color: var(--color-background);
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid var(--color-bar);
+  max-height: 80vh; /* Prevents the modal from being too tall */
+  width: 80%;
+}
+
+.close {
+  color: var(--color-text);
+  float: right;
+  font-size: 60px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: var(--fyncom-yellow);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nano-address {
+  word-wrap: break-word;
+}
+.qr-code-container {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.qr-code-container img {
+  width: 80%;
+  max-height: 70vh;
+  margin: auto;
+  object-fit: contain;
+}
+
+.content-container sub {
+  text-align: center;
+  max-width: 70%;
+}
+.html-dynamic {
+  text-align: center;
+}
+.emphasis {
+  font-weight: bold;
+  white-space: nowrap; /* Prevent line breaks */
+  display: unset;
+  margin-right: unset;
+  padding-left: unset;
+}
+.learn-more-btn.xno {
+  background-color: var(--fyncom-blue);
+  color: #fff !important;
+}
+.learn-more-btn.xno:hover {
+  background-color: var(--karmacall-green);
+  color: #fff !important;
+}
+
+.learn-more-btn.cash {
+  background-color: var(--fyncom-red);
+  color: #fff !important;
+}
+.learn-more-btn.cash:hover {
+  background-color: var(--robocash-green);
+  color: #fff !important;
+}
+.nano-qr-code:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s;
+}

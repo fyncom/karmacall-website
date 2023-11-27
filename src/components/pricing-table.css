@@ -1,0 +1,53 @@
+/* Pricing Table Styling */
+.pricing-table {
+  display: flex;
+  justify-content: center;
+  align-items: stretch; /* Align the height of pricing options */
+  margin: 40px 0;
+}
+.pricing-option {
+  flex-basis: calc(33.333% - 20px); /* Subtract margin from width */
+  margin: 10px;
+  text-align: center;
+  border: 1px solid var(--color-bar); /* Adjust as needed */
+  padding: 20px;
+  border-radius: 5px;
+}
+.pricing-option h3 {
+  text-align: center;
+  background-color: var(--fyncom-blue);
+  margin: -20px; /* Align the title background with the edges */
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 5px 5px 0 0; /* Round only the top corners */
+}
+.price {
+  margin-bottom: unset;
+  font-size: 3rem; /* Adjust size as needed */
+  font-weight: bold;
+  text-align: center;
+}
+.period {
+  padding-left: 0;
+  margin-right: 0;
+  text-align: center;
+  display: block;
+  font-size: 1.5rem; /* Adjust size as needed */
+  font-weight: normal;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .price {
+    font-size: xx-large !important;
+  }
+  .period {
+    font-size: medium !important;
+  }
+  .pricing-option h3 {
+    font-size: xx-large !important;
+  }
+  .pricing-table {
+    flex-direction: column;
+  }
+}

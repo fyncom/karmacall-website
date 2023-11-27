@@ -1,0 +1,12 @@
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.content-container iframe {
+  width: 70%;
+  height: 1200px;
+}
+.content-container p {
+  text-align: center;
+}

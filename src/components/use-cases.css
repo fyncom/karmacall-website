@@ -1,0 +1,92 @@
+/* Container styling */
+.use-cases-container {
+  margin: 0 auto;
+  width: 80%;
+  max-width: 1000px;
+  padding: 20px 0;
+}
+
+/* Each Use Case Section */
+.use-case-section {
+  max-width: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 40px 0;
+  gap: 40px;
+}
+
+/* Learn More Button */
+.learn-more-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--button-learn-more);
+  color: var(--dropdown-text-color) !important;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 20px;
+  position: relative; /* Added to position the pseudo-element */
+  transition: transform 0.3s; /* Transition effect for expanding letters */
+  overflow: hidden; /* Clip the pseudo-element to the boundaries of the button */
+}
+.learn-more-btn:hover {
+  transform: scale(1.1); /* Increase the size of the letters by 10% */
+  background-color: var(--button-learn-more-hover);
+}
+/* Adding the underline effect */
+.learn-more-btn::after {
+  content: ""; /* Empty content for the pseudo-element */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-bar);
+  transition: width 0.3s;
+}
+.learn-more-btn:hover::after {
+  width: 100%; /* When hovering, expand the width to 100% */
+}
+/* can't figure out how to get 2nd button to align to end of container*/
+/*.use-case-section.close-more-deals .learn-more-btn {*/
+/*    align-self: flex-end;*/
+/*}*/
+
+/* Request a Demo Section */
+.demo-form {
+  background-color: var(--fyncom-blue);
+  padding: 40px 20px;
+  text-align: center;
+  margin-top: 40px;
+  border-radius: 10px;
+}
+.demo-form input,
+.demo-form textarea {
+  width: 80%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.demo-form button {
+  padding: 10px 20px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.demo-form button:hover {
+  background-color: #333;
+}
+
+@media (max-width: 768px) {
+  .use-case-section {
+    flex-direction: column;
+    gap: unset;
+    justify-content: space-between;
+  }
+  .use-case-section .learn-more-btn {
+    margin-top: 0;
+  }
+}

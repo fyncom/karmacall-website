@@ -1,0 +1,122 @@
+/* Mission and Story Section */
+.mission-section,
+.story-section {
+  margin: 40px 20px 40px;
+  padding-right: 40px;
+}
+.mission-section > h1 {
+  text-align: center;
+}
+.mission-section > sub {
+  text-align: center;
+  margin: 0 auto; /* Ensure any automatic margin that may affect alignment is set to auto */
+  width: 90%;
+  display: block;
+  font-size: 16pt;
+}
+
+/* Values Section */
+.values-section {
+  padding-left: 40px;
+  padding-right: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 40px 40px;
+}
+.values-header > h2, .mission-section > h2 {
+  text-align: center;
+}
+.story-text > p {
+  margin-top: 1.5rem;
+}
+.story-text {
+  margin-top: 1rem;
+}
+.value {
+  width: 30%;
+  margin-bottom: 20px;
+  text-align: center;
+  display: block;
+}
+.value img {
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto; /* This centers the image horizontally */
+}
+.value > p {
+  display: block;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Our Story Section */
+.story-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.story-text > h3,
+.story-text > h2 {
+  text-align: center;
+  position: relative; /* Makes sure the pseudo-element positions itself relative to the h3 */
+}
+
+.story-section .story-text h3::after,
+.mission-section h2::after {
+  content: ""; /* This is necessary for the pseudo-element to show */
+  position: absolute; /* Allows precise positioning */
+  left: 100px;
+  right: 100px;
+  bottom: -8px;
+  height: 2px; /* Thickness of the underline */
+  background: var(--color-bar);
+}
+.story-image img {
+  min-width: 300px;
+  display: block;
+}
+
+.p2-blue {
+  color: var(--fyncom-blue);
+}
+
+/** Responsive layout adjustments *!*/
+@media (max-width: 768px) {
+  /* Section adjustments for better mobile view */
+  .mission-section,
+  .story-section,
+  .values-section {
+    padding: 0.1rem;
+    margin: 0px 10px;
+    text-align: center;
+  }
+  .story-section {
+    flex-direction: column;
+    align-items: center;
+    margin: 15px; /* Adjust margin for mobile */
+    padding: 0; /* Reset padding */
+  }
+  .story-section .story-image,
+  .story-section .story-text {
+    width: 100%; /* Full width for mobile */
+    margin-bottom: 20px; /* Add some spacing between the image and text */
+  }
+  .story-section .story-image img {
+    max-width: 100%; /* Full width on mobile */
+    height: auto; /* Maintain aspect ratio */
+    margin: 0 auto 20px; /* Center image and add margin at the bottom */
+  }
+  .story-section .story-text {
+    text-align: justify; /* Optional: for better readability */
+    padding: 0 15px; /* Add padding on the sides */
+  }
+  .story-section .story-text h3::after {
+    left: 0; /* Align pseudo-element to the left */
+    right: 0; /* Align pseudo-element to the right */
+    bottom: -8px;
+    width: 50px; /* Set a fixed width for the underline */
+    margin: 0 auto; /* Center the underline */
+  }
+}

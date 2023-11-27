@@ -1,0 +1,81 @@
+.pdf-viewer {
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box; /* Recommended to ensure padding and borders are included in the element's dimensions */
+  height: auto;
+  overflow: auto; /* Allows scrolling if the PDF is larger than the viewer */
+  position: relative;
+}
+.pdf-viewer p {
+  text-align: center;
+}
+.pdf-document {
+  display: flex;
+  justify-content: center; /* Centers the PDF document if it's smaller than the viewer */
+}
+.pdf-page {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); /* Optional: adds shadow for depth */
+  margin-bottom: 1rem; /* Adds space below the page */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pdf-document.dark-mode canvas {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.pdf-navigation {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px; /* Width of the clickable area */
+  height: 100%; /* Full height of the PDF viewer */
+  background: var(--navigation);
+  cursor: pointer;
+  z-index: 10; /* Ensure it's above the PDF pages */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pdf-navigation.previous {
+  left: 0;
+  background-position: center;
+}
+.pdf-navigation.next {
+  right: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.pdf-navigation svg {
+  width: 24px; /* Example size */
+  height: 24px; /* Example size */
+}
+.pdf-navigation:hover {
+  background-color: var(--navigation-hover);
+}
+
+.pdf-container {
+  position: relative; /* Relative positioning for the navigation */
+  display: inline-block; /* Ensures the container only takes up as much width as it needs */
+}
+
+.pdf-download {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.pdf-download:hover {
+  background-color: #0056b3;
+}
+button {
+  color: var(--color-text);
+  background-color: var(--navigation-hover);
+}
+button:disabled {
+  background-color: var(--navigation);
+}
