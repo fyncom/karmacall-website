@@ -10,10 +10,6 @@ const CashOut = () => {
   const [dynamicMessage, setDynamicMessage] = useState("Your USD Balance is $0.00")
   const [userId, setUserId] = useState("")
   const [nanoAccount, setNanoAccount] = useState("")
-  const updateNanoAccount = newAccount => {
-    setNanoAccount(newAccount)
-    localStorage.setItem("nanoAccount", newAccount)
-  }
   const [nanoBalance, setNanoBalance] = useState("")
   const [nanoBalanceInFiat, setNanoBalanceInFiat] = useState("")
   const [fiatType, setFiatType] = useState("")
@@ -47,7 +43,7 @@ const CashOut = () => {
     if (account !== null) {
       getNanoBalanceAndUpdateMessage(account, "USD")
     }
-    updateNanoAccount(account)
+    setNanoAccount(newAccount)
   }, [])
 
   useEffect(() => {
@@ -59,6 +55,9 @@ const CashOut = () => {
     }
     if (fiatType) {
       localStorage.setItem("fiatType", fiatType)
+    }
+    if (nanoAccount) {
+      localStorage.setItem("nanoAccount", nanoAccount)
     }
   }, [nanoBalance, nanoAccount, fiatType])
 
