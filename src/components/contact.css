@@ -51,6 +51,18 @@
   width: 80%;
 }
 
+/* From Unicorner CSS */
+.store-badges img {
+  height: 40px;
+  margin: 0 10px 0 100px;
+  vertical-align: middle;
+  padding-left: 10px;
+  transition: transform 0.3s ease;
+}
+.app-img:hover {
+  transform: scale(1.2);
+}
+
 @media (max-width: 768px) {
   .contact-form .submit-btn {
     align-self: center;

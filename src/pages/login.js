@@ -3,9 +3,7 @@ import Header from "../components/header"
 import Footer from "../components/footer"
 import CountryCodeSelector from "../components/country-codes"
 import Seo from "../components/seo"
-import { useLocation } from "@reach/router"
 import { BannedNumberModal, OtpInputModal, ServerErrorModal } from "../components/Modal"
-import { Link } from "gatsby"
 import { navigate } from "gatsby" // or useNavigate from react-router-dom
 
 const Login = () => {
@@ -16,7 +14,6 @@ const Login = () => {
   const [userId, setUserId] = useState("")
   const [nanoAccount, setNanoAccount] = useState("")
   const [countryCodesOption, setCountryCodesOption] = useState([])
-  const location = useLocation()
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false)
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
   const [isBannedModalOpen, setIsBannedModalOpen] = useState(false)
@@ -30,7 +27,6 @@ const Login = () => {
     setIsErrorModalOpen(true)
   }
 
-  let url = `${process.env.GATSBY_API_URL}`
   let baseUrl = `${process.env.GATSBY_API_URL_BASE}`
   let headers = {
     "Content-Type": "application/json",
@@ -94,7 +90,7 @@ const Login = () => {
           number: phoneNumber,
         }),
       })
-      if (response.status == 418) {
+      if (response.status === 418) {
         openBannedModal()
         return {
           status: response.status,
@@ -119,7 +115,7 @@ const Login = () => {
   const handleOtpSubmit = async submittedOtp => {
     try {
       const response = await verifyConfirm(submittedOtp)
-      if (response.status == 200) {
+      if (response.status === 200) {
         setIsOtpModalOpen(false)
         setOtp(response.data.opt)
         handleSignUp()
@@ -172,16 +168,16 @@ const Login = () => {
       let signUpData = await signUpResponse.json()
       let successfulCall = false
       let thisUserId
-      if (signUpResponse.status == 200) {
+      if (signUpResponse.status === 200) {
         // new users
         console.log("New User %s successfully Registered with code 200", signUpData.userId)
         thisUserId = signUpData.userId
         successfulCall = true
-      } else if (signUpResponse.status == 400) {
+      } else if (signUpResponse.status === 400) {
         // existing users
         console.log("User already exists")
         const userResponse = await getUserId()
-        if (userResponse.status == 200) {
+        if (userResponse.status === 200) {
           thisUserId = userResponse.data.userId
           successfulCall = true
         }

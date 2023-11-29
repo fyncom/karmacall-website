@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLocation } from "react"
+import React, { useState, useEffect } from "react"
 import Header from "../components/header"
 import Footer from "../components/footer"
 import "../components/sales-and-marketing-use-cases.css"
@@ -9,7 +9,6 @@ const CashOut = () => {
   const isBrowser = typeof window !== "undefined"
   const [userDetails, setUserDetails] = useState(null)
   const [dynamicMessage, setDynamicMessage] = useState("Your USD Balance is $0.00")
-  const [userId, setUserId] = useState("")
   const [nanoAccount, setNanoAccount] = useState("")
   const updateNanoAccount = newAccount => {
     setNanoAccount(newAccount)
@@ -48,7 +47,6 @@ const CashOut = () => {
   const openGiftCardModal = () => {
     setIsGiftCardModalOpen(true)
   }
-  let url = `${process.env.GATSBY_API_URL}`
   let baseUrl = `${process.env.GATSBY_API_URL_BASE}`
   let headers = {
     "Content-Type": "application/json",

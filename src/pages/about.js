@@ -4,11 +4,8 @@ import Footer from "../components/footer"
 import "../components/about.css"
 import { Link } from "gatsby"
 import Seo from "../components/seo"
-import { GatsbyImage } from "gatsby-plugin-image"
-import { useCombinedQuery } from "../components/useCombinedQuery"
 
 const About = () => {
-  const { innovation, collaboration, transparency, teamMeeting, customerFocus, continuousImprovement } = useCombinedQuery()
   return (
     <div>
       <Seo
