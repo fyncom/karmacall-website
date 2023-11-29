@@ -9,6 +9,7 @@ import Seo from "../components/seo"
 import PdfContent from "../components/PdfContent"
 import { MakeADepositModal } from "../components/Modal"
 
+// TODO: Convert a copy of this page to take payments in nano
 const MakeADeposit = () => {
   const [blockedEmailDetails, setBlockedEmailDetails] = useState(null)
   const location = useLocation()

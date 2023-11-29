@@ -5,10 +5,8 @@ require("dotenv").config({
 /** @type {import('gatsby').GatsbyConfig} */
 module.exports = {
   siteMetadata: {
-    title: `Free Scam Call Blocker | Download today | KarmaCall`,
-    description: `Get more conversations by instantly rewarding prospects when they respond to emails or book meetings.
-      Break sales funnel bottlenecks with automated rewards. Get FynCom set up in minutes & enhance your tech stack.
-      Improve customer experience & max your chances of gaining & retaining customers.`,
+    title: `Block Spam, Get Cash. A Scam call Blocker App with Cash Back! Download today | KarmaCall`,
+    description: `Tired of scam calls? Get paid to block them! KarmaCall auto-blocks spam calls for you and pays you each time. Cash out to gift cards at $1.00 or withdraw anytime.`,
     author: `@adrianegraphene`,
     siteUrl: `https://www.karmcall.com`,
   },

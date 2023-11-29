@@ -6,7 +6,7 @@ import { Link } from "gatsby"
 
 const NotFoundPage = () => (
   <Layout>
-    <Seo title="404 FynCom" description="This page doesn't exist yet" />
+    <Seo title="404 KarmaCall" description="This page doesn't exist yet" />
     <h1>404: Not Found</h1>
     <p>You just hit a route that doesn&#39;t exist.</p>
     <p>
