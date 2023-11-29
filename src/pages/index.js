@@ -36,6 +36,10 @@ const BlockSpamEarnCash = () => {
     `<span className="payments-counter">108,777 instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://www.nanolooker.com/account/${nanoAccount}">See these payments happening in real-time!</a>`
   )
   const [nanoBlockCount, setNanoBlockCount] = useState("")
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false)
+  const handleThumbnailClick = () => {
+    setIsVideoLoaded(true)
+  }
   let baseUrl = `${process.env.GATSBY_API_URL_BASE}`
   let headers = {
     "Content-Type": "application/json",
@@ -226,14 +230,24 @@ const BlockSpamEarnCash = () => {
             <p>Check out this quick video about our easy to use app.</p>
           </div>
           <div className="video-row-video-container">
-            <iframe
-              className="video-row-video"
-              src="https://www.youtube.com/embed/VKuLB0CXzOM"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
+            {!isVideoLoaded ? (
+              <img
+                className="video-thumbnail"
+                src={`https://img.youtube.com/vi/VKuLB0CXzOM/hqdefault.jpg`}
+                onClick={handleThumbnailClick}
+                alt="Play Video"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <iframe
+                className="video-row-video"
+                src={`https://www.youtube.com/embed/VKuLB0CXzOM?autoplay=1`}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            )}
           </div>
         </div>
 
