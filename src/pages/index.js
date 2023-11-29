@@ -31,8 +31,9 @@ const BlockSpamEarnCash = () => {
   const toggleModal = () => {
     setModalOpen(!isModalOpen)
   }
+  const nanoAccount = "nano_3rcpayu3g39njpq3mkizuepfr5rh1nwuz4xypwsmubkoiww88wubff8d719t"
   const [dynamicMessage, setDynamicMessage] = useState(
-    '<span className="payments-counter">108,777 instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://www.nanolooker.com/account/nano_3rcpayu3g39njpq3mkizuepfr5rh1nwuz4xypwsmubkoiww88wubff8d719t">See these payments happening in real-time!</a>'
+    `<span className="payments-counter">108,777 instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://www.nanolooker.com/account/${nanoAccount}">See these payments happening in real-time!</a>`
   )
   const [nanoBlockCount, setNanoBlockCount] = useState("")
   let baseUrl = `${process.env.GATSBY_API_URL_BASE}`
@@ -48,7 +49,6 @@ const BlockSpamEarnCash = () => {
   const [evonexusLogo, setEvonexusLogo] = useState(evonexus)
 
   useEffect(() => {
-    getBlockCount("nano_3rcpayu3g39njpq3mkizuepfr5rh1nwuz4xypwsmubkoiww88wubff8d719t")
     if (typeof window !== "undefined") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
       // const handleChange = () => setIsDarkMode(mediaQuery.matches);
@@ -65,29 +65,31 @@ const BlockSpamEarnCash = () => {
     }
   }, [karmacallImage, karmacallImageDark, disruptionBanking, disruptionBankingDark, oneMillionCups, oneMillionCupsDark, evonexusDark, evonexus])
 
-  const getBlockCount = async nanoAccount => {
-    try {
-      const response = await fetch(`${baseUrl}nano/accountBlockCount`, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify({
-          destinationAddress: nanoAccount,
-        }),
-      })
-      if (response.ok) {
-        const data = await response.json()
-        if (data.accountBlockCount > 0) {
-          setNanoBlockCount(data.accountBlockCount)
-          const numberWithCommas = data.accountBlockCount.toLocaleString()
-          const newMessage = `<span class="payments-counter">${numberWithCommas} instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://www.nanolooker.com/account/nano_3rcpayu3g39njpq3mkizuepfr5rh1nwuz4xypwsmubkoiww88wubff8d719t">See these payments happening in real-time!</a>`
-
-          setDynamicMessage(newMessage)
+  useEffect(() => {
+    const getBlockCount = async () => {
+      try {
+        const response = await fetch(`${baseUrl}nano/accountBlockCount`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({
+            destinationAddress: nanoAccount,
+          }),
+        })
+        if (response.ok) {
+          const data = await response.json()
+          if (data.accountBlockCount > 0) {
+            setNanoBlockCount(data.accountBlockCount)
+            const numberWithCommas = data.accountBlockCount.toLocaleString()
+            const newMessage = `<span class="payments-counter">${numberWithCommas} instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://www.nanolooker.com/account/${nanoAccount}">See these payments happening in real-time!</a>`
+            setDynamicMessage(newMessage)
+          }
         }
+      } catch (error) {
+        console.error("ERROR", error)
       }
-    } catch (error) {
-      console.error("ERROR", error)
     }
-  }
+    getBlockCount()
+  }, [])
 
   return (
     <div>
