@@ -21,7 +21,7 @@
 }
 .modal-content {
   background-color: var(--color-background);
-  margin: 5% auto;
+  margin: 15% auto;
   padding: 20px;
   border: 1px solid var(--color-bar);
   max-height: 80vh; /* Prevents the modal from being too tall */
@@ -40,7 +40,6 @@
   text-decoration: none;
   cursor: pointer;
 }
-
 .nano-address {
   word-wrap: break-word;
 }
@@ -51,7 +50,6 @@
   justify-content: center;
   height: 100%;
 }
-
 .qr-code-container img {
   width: 80%;
   max-height: 70vh;
@@ -93,4 +91,37 @@
 .nano-qr-code:hover {
   transform: scale(1.02);
   transition: transform 0.3s;
+}
+
+/* Ensuring that the body does not scroll when the modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .modal .app-store-row {
+    flex-direction: column; /* Stack the app store buttons vertically */
+    align-items: center; /* Center buttons horizontally */
+  }
+  .modal-content {
+    width: 95%; /* Increase the width for mobile to almost full-width */
+    height: auto; /* Make the height dynamic */
+    max-height: 90vh; /* Increase the maximum height to give more room */
+    padding: 1rem; /* Adjust the padding if necessary */
+    margin: 50% auto; /* Ensure it's vertically centered with margin */
+    display: flex; /* Use flexbox to arrange children */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Center children vertically */
+  }
+  .close {
+    font-size: 4rem;
+    position: absolute;
+    margin: 50% auto;
+    top: 0; 
+    right: 2rem;
+  }
+  .modal .app-img-index {
+    width: 100%; 
+    margin: 0 auto; 
+  }
 }
