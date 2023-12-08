@@ -264,7 +264,16 @@
     justify-content: center;
   }
   .app-store-row {
-      padding: 0 2rem 0rem 2rem;
+      padding: 0 2rem 2rem 2rem;
+      /* gap: 5rem; */
+  }
+  .hero-index-image {
+      padding: 0rem 0rem 3rem 0rem;
+      /* gap: 5rem; */
+  }
+  .html-dynamic {
+      padding: 3rem 0rem 0rem 0rem;
+      /* gap: 5rem; */
   }
   .social-media-container,.text-block,.text-block-left,.logo-container,.bottom-logo {
     flex-direction: column;
