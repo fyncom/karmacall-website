@@ -2,17 +2,17 @@ import React from "react"
 import Header from "../components/header"
 import Footer from "../components/footer"
 import Seo from "../components/seo"
-import FaqAccordion from "../components/FaqAccordion"
+import FaqPage from "../components/FaqPage"
 
 const Faq = () => {
   return (
-    <div>
-      <Seo title="Terms of Use" description="Stay compliant with FynCom by ensuing you follow our Terms of Use dicussed here." />
+    <div className="email-filters-rewards-container">
+      <Seo title="Frequently Asked Questions" description="Find answers to commonly asked questions about KarmaCall." />
       <Header />
-      {/* <div className="content-container"> */}
-      <h1>Frequently Asked Questions</h1>
-      <FaqAccordion />
-      {/* </div>? */}
+      <div className="content-container">
+        <h1>Frequently Asked Questions</h1>
+        <FaqPage />
+      </div>
       <Footer />
     </div>
   )
