@@ -80,6 +80,9 @@ const Header = () => {
                 Download
               </Link>
             </li>
+            <li className="mobile-menu-item">
+              <Link to="/blog">Blog</Link>
+            </li>
           </ul>
         </nav>
 
@@ -97,6 +100,9 @@ const Header = () => {
             <Link to="#" onClick={toggleHeaderModal}>
               Download
             </Link>
+          </li>
+          <li>
+            <Link to="/blog">Blog</Link>
           </li>
         </ul>
         <div className="login-buttons">
