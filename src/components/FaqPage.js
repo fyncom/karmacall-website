@@ -163,8 +163,22 @@ const FaqPage = () => {
       title: "How can I find out more about Nano?",
       content: 'We recommend checking out the Nano community. <a href="https://www.reddit.com/r/nanocurrency/" target="_blank" rel="noopener">Nano Reddit</a>',
     },
-
-    // Other FAQ items...
+    {
+      id: 14,
+      title: "Does this work for Emails?",
+      content:
+        'Yes! This works for GMail only for now. You can <a href="https://fyncom.com/fyncom-filters-email-edition/" target="_blank" rel="noopener">purchase membership here</a> and see <a href="https://fyncom.com/user-help-center/email-filters-and-rewards/" target="_blank" rel="noopener">setup details here</a>',
+    },
+    {
+      id: 15,
+      title: "Does this work for SMS / text messages?",
+      content: "Not yet. We may work on this in Late Q2 2024, but it is not promised. Let us know if this is something you would want.",
+    },
+    {
+      id: 16,
+      title: "Does this work for my Social Media or Chat DMs (direct messages)?",
+      content: "Not yet, but we hope to make that happen soon. Let us know which sites/apps you would like this on?",
+    },
   ]
 
   return (
@@ -172,7 +186,6 @@ const FaqPage = () => {
       <div className="AppText">
         <div className="faq-accordion">
           <h1>KarmaCall FAQ</h1>
-
           {faqData.map(faq => (
             <FaqSection key={faq.id} id={faq.id} title={faq.title} content={faq.content} />
           ))}
