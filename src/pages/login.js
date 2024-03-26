@@ -28,6 +28,7 @@ const Login = () => {
   }
 
   let baseUrl = `${process.env.GATSBY_API_URL_BASE}`
+  let baseUrlV2 = `${process.env.GATSBY_API_URL}`
   let headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -81,32 +82,40 @@ const Login = () => {
 
   // get session ID & save number / country on success
   const triggerVerification = async () => {
-    try {
-      const response = await fetch(baseUrl + "verification/trigger", {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify({
-          countryCode: countryCode,
-          number: phoneNumber,
-        }),
-      })
-      if (response.status === 418) {
-        openBannedModal()
+    if (process.env.GATSBY_DEBUG_MODE === "true") {
+      console.log("in debug mode")
+      return {
+        status: 200, // Simulate successful response
+        data: { sessionId: process.env.GATSBY_DEBUG_SESSION_ID },
+      }
+    } else {
+      try {
+        const response = await fetch(baseUrl + "verification/trigger", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({
+            countryCode: countryCode,
+            number: phoneNumber,
+          }),
+        })
+        if (response.status === 418) {
+          openBannedModal()
+          return {
+            status: response.status,
+            banned: true,
+          }
+        }
+        const data = await response.json()
         return {
           status: response.status,
-          banned: true,
+          data: data,
         }
-      }
-      const data = await response.json()
-      return {
-        status: response.status,
-        data: data,
-      }
-    } catch (error) {
-      console.error("Error caught in triggerVerification:", error)
-      return {
-        error: true,
-        message: error.message || "An error occurred",
+      } catch (error) {
+        console.error("Error caught in triggerVerification:", error)
+        return {
+          error: true,
+          message: error.message || "An error occurred",
+        }
       }
     }
   }
@@ -157,7 +166,7 @@ const Login = () => {
   // complex user sign up flow since it handles both new users and existing users due to outdated backend.
   const handleSignUp = async () => {
     try {
-      const signUpResponse = await fetch(baseUrl + "user/register", {
+      const signUpResponse = await fetch(baseUrlV2 + "user/register", {
         method: "POST",
         headers: headers,
         body: JSON.stringify({
