@@ -5,6 +5,8 @@ import CountryCodeSelector from "../components/country-codes"
 import Seo from "../components/seo"
 import { BannedNumberModal, OtpInputModal, ServerErrorModal } from "../components/Modal"
 import { navigate } from "gatsby" // or useNavigate from react-router-dom
+import { useLocation } from "@reach/router"
+import { isEmpty } from "lodash"
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("")
@@ -17,6 +19,9 @@ const Login = () => {
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false)
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
   const [isBannedModalOpen, setIsBannedModalOpen] = useState(false)
+  const [referralCode, setReferralCode] = useState("")
+  const location = useLocation()
+
   const openOtpModal = () => {
     setIsOtpModalOpen(true)
   }
@@ -35,10 +40,14 @@ const Login = () => {
   }
 
   useEffect(() => {
-    // Fetch country codes or other initial data here
-    // setCountryCodes(...) after fetching
-    // getCallingCode()
-  }, [])
+    const searchParams = new URLSearchParams(location.search)
+    const referralCodeFromUrl = searchParams.get("_referralCode")
+
+    if (referralCodeFromUrl) {
+      console.log("found referral code %s", referralCodeFromUrl)
+      setReferralCode(referralCodeFromUrl)
+    }
+  }, [location])
 
   useEffect(() => {
     if (sessionId) {
@@ -194,13 +203,23 @@ const Login = () => {
       console.log("%s <- user Id", thisUserId)
       if (successfulCall) {
         const nanoAccount = await getNanoAccount()
-        console.log("userID IS %s and userAccount is %s", thisUserId, nanoAccount.data.nanoNodeWalletAccount)
         const connectedAccount = await connectNanoAccountWithUserId(thisUserId, nanoAccount.data.nanoNodeWalletAccount)
         if (["Account address successfully saved", "Welcome back!"].includes(connectedAccount.data.message)) {
-          console.log("Account address successfully saved")
+          console.log("Account address successfully saved with %s", nanoAccount.data.nanoNodeWalletAccount)
           setNanoAccount(connectedAccount.data.currentDatabaseAccountAddress)
         }
         setUserId(thisUserId)
+
+        // handle referrals
+        if (!referralCode.isEmpty) {
+          const refTx = await recordReferral(thisUserId)
+          if (refTx.data.referralResponse != null) {
+            console.log("The Referral was successfully recorded!")
+            //todo pop up a nice modal here....
+          } else {
+            console.error("referral detected, and user signed up, but tx failed")
+          }
+        }
         navigate("/cash-out")
       } else {
         // put an error thing here
@@ -257,6 +276,27 @@ const Login = () => {
           address: nanoAccount,
           addressType: "NANO",
           userId: userId,
+        }),
+      })
+      const data = await response.json()
+      return {
+        status: response.status,
+        data: data,
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // referral api
+  const recordReferral = async userId => {
+    try {
+      const response = await fetch(baseUrlV2 + "app/referral/record", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+          referralCode: referralCode,
+          referreeUserId: userId,
         }),
       })
       const data = await response.json()
