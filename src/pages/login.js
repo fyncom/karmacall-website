@@ -291,7 +291,7 @@ const Login = () => {
   // referral api
   const recordReferral = async userId => {
     try {
-      const response = await fetch(baseUrlV2 + "app/referral/record", {
+      const response = await fetch(baseUrlV2 + "referral/record", {
         method: "POST",
         headers: headers,
         body: JSON.stringify({
