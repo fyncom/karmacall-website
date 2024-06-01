@@ -179,6 +179,12 @@ const FaqPage = () => {
       title: "Does this work for my Social Media or Chat DMs (direct messages)?",
       content: "Not yet, but we hope to make that happen soon. Let us know which sites/apps you would like this on?",
     },
+    {
+      id: 17,
+      title: "How do I delete my KarmaCall data?",
+      content:
+        'To permanently delete your KarmaCall data, please visit our <a href="/delete-data">Data Deletion Page</a>. This will remove your account, phone number, Nano balance, call blocking settings, and any other information you provided. Please note that we may retain some anonymized data for analytical purposes and some data to comply with legal obligations or for fraud prevention.',
+    },
   ]
 
   return (
