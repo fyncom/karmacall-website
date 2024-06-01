@@ -50,7 +50,7 @@ const DataDeletionPage = () => {
 
           <ul>
             <li>Your phone number and associated information</li>
-            <li>Your Nano account balance and transaction history</li>
+            <li>Your Nano account balance and its relation to your phone number</li>
             <li>Your call blocking settings and logs</li>
             <li>Any other personal information you provided.</li>
           </ul>
