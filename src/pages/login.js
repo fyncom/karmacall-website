@@ -172,10 +172,11 @@ const Login = () => {
     }
   }
 
-  // complex user sign up flow since it handles both new users and existing users due to outdated backend.
+  // v2 user register handles all this now. Both new and existing users are handled here.
+  // todo update to v2/user/register when deprecation is complete
   const handleSignUp = async () => {
     try {
-      const signUpResponse = await fetch(baseUrlV2 + "user/register", {
+      const signUpResponse = await fetch(baseUrlV2 + "user/register/full", {
         method: "POST",
         headers: headers,
         body: JSON.stringify({
@@ -184,104 +185,23 @@ const Login = () => {
         }),
       })
       let signUpData = await signUpResponse.json()
-      let successfulCall = false
-      let thisUserId
       if (signUpResponse.status === 200) {
-        // new users
-        console.log("New User %s successfully Registered with code 200", signUpData.userId)
-        thisUserId = signUpData.userId
-        successfulCall = true
-      } else if (signUpResponse.status === 400) {
-        // existing users
-        console.log("User already exists")
-        const userResponse = await getUserId()
-        if (userResponse.status === 200) {
-          thisUserId = userResponse.data.userId
-          successfulCall = true
-        }
-      }
-      console.log("%s <- user Id", thisUserId)
-      if (successfulCall) {
-        const nanoAccount = await getNanoAccount()
-        const connectedAccount = await connectNanoAccountWithUserId(thisUserId, nanoAccount.data.nanoNodeWalletAccount)
-        if (["Account address successfully saved", "Welcome back!"].includes(connectedAccount.data.message)) {
-          console.log("Account address successfully saved with %s", nanoAccount.data.nanoNodeWalletAccount)
-          setNanoAccount(connectedAccount.data.currentDatabaseAccountAddress)
-        }
-        setUserId(thisUserId)
-
+        console.log("User %s successfully found with code 200", signUpData.userId)
+        setUserId(signUpData.userId)
+        setNanoAccount(signUpData.nanoAccount)
         // handle referrals
-        if (!referralCode.isEmpty) {
-          const refTx = await recordReferral(thisUserId)
+        if (referralCode !== "") {
+          const refTx = await recordReferral(signUpData.userId)
           if (refTx.data.referralResponse != null) {
             console.log("The Referral was successfully recorded!")
-            //todo pop up a nice modal here....
+            // TODO pop up a nice modal here....
           } else {
             console.error("referral detected, and user signed up, but tx failed")
           }
         }
         navigate("/cash-out")
       } else {
-        // put an error thing here
-        console.log("Failure at getting the user signed up")
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  // for existing users only
-  const getUserId = async () => {
-    try {
-      const userIdResponse = await fetch(baseUrl + "user/getUser", {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify({
-          countryCode: countryCode,
-          number: phoneNumber,
-        }),
-      })
-      const userIdData = await userIdResponse.json()
-      return {
-        status: userIdResponse.status,
-        data: userIdData,
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const getNanoAccount = async () => {
-    try {
-      const nanoWalletResponse = await fetch(baseUrl + "wallet/createSimpleNanoAccount", {
-        method: "GET",
-        headers: headers,
-      })
-      let nanoWalletData = await nanoWalletResponse.json()
-      return {
-        status: nanoWalletResponse.status,
-        data: nanoWalletData,
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const connectNanoAccountWithUserId = async (userId, nanoAccount) => {
-    try {
-      const response = await fetch(baseUrl + "payment/crypto/save", {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify({
-          address: nanoAccount,
-          addressType: "NANO",
-          userId: userId,
-        }),
-      })
-      const data = await response.json()
-      return {
-        status: response.status,
-        data: data,
+        console.log("Failed to sign up user")
       }
     } catch (error) {
       console.log(error)
