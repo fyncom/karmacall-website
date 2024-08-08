@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.fyncom.robocash",
+      "sha256_cert_fingerprints": ["68:F5:49:88:77:9C:B5:4A:C6:07:2B:E0:B3:65:87:EE:04:C9:9B:B5:4E:89:C5:1C:F0:48:1D:47:2C:46:6C:E3"]
+    }
+  }
+]
