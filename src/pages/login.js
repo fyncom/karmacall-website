@@ -173,7 +173,6 @@ const Login = () => {
   }
 
   // v2 user register handles all this now. Both new and existing users are handled here.
-  // todo update to v2/user/register when deprecation is complete
   const handleSignUp = async () => {
     try {
       const signUpResponse = await fetch(baseUrlV2 + "user/register/full", {
