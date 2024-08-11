@@ -6,11 +6,14 @@ import Seo from "../components/seo"
 import { BannedNumberModal, ServerErrorModal } from "../components/Modal"
 import { navigate } from "gatsby" // or useNavigate from react-router-dom
 import { useLocation } from "@reach/router"
+import "../components/verify.css"
 // https://www.karmacall.com/verify/?data=/ZSE86Sg8NEmy9D6yP7ta/lqkfGMyYr+R7ee83jHUQBbofhHSFVCRcAcNZ4Kl5qFmc1MUoza31QC7xM/CkA9pxVKRXdJVmuGbB9We/3Vs3Ia2LQUcO1UcUOTrfpvGkhnuw==I
 
-const Login = () => {
+const Verify = () => {
   const [userId, setUserId] = useState("")
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [verificationStatus, setVerificationStatus] = useState(null)
   const [data, setData] = useState("")
   const location = useLocation()
 
@@ -31,7 +34,14 @@ const Login = () => {
     if (dataFromUrl) {
       console.log("found data %s", dataFromUrl)
       setData(dataFromUrl)
-      verifyConfirm()
+      const result = verifyConfirm()
+      if (result.status === 200) {
+        // setNano
+        setUserId(result.data.userId)
+      }
+    } else {
+      setIsLoading(false)
+      setVerificationStatus("FAILED")
     }
   }, [location])
 
@@ -51,6 +61,10 @@ const Login = () => {
           verificationCode: submittedOtp,
         }),
       })
+      // verificationStatus
+      // nanoAccount
+      console.log("seeing verify response %s", verifyResponse.verificationStatus)
+      setVerificationStatus(verifyResponse.verificationStatus)
       const verifyData = await verifyResponse.json()
       return {
         status: verifyResponse.status,
@@ -58,63 +72,43 @@ const Login = () => {
       }
     } catch (error) {
       console.log(error)
-      openErrorModal() // consider changing this to return actual messages?
+      openErrorModal()
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleCloseModal = () => {
-    setIsBannedModalOpen(false)
     setIsErrorModalOpen(false)
   }
 
+  // Render content based on loading and verification status
   return (
     <div className="verify">
-      <Seo
-        title="Email Verification for KarmaCall"
-        description="A page that adds your email address to your KarmaCall Account. For this to work, you must start from the KarmaCall App."
-      />
+      <Seo title="Email Verification for KarmaCall" description="Verifying your email address for your KarmaCall account." />
       <Header />
       <div className="AppText">
         <section>
           <div id="phone-number-entry" className="network">
             <div className="container">
-              <form method="get" id="phoneNumberInput" onSubmit={handlePhoneSubmit}>
-                <div>
-                  <p>
-                    <CountryCodeSelector value={countryCodesOption} onChange={handleCountryChange} />
-                  </p>
-                  <p>
-                    <input
-                      type="tel"
-                      name="phoneNumber"
-                      id="phoneNumber"
-                      placeholder="Enter Phone Number"
-                      className="form-control"
-                      value={phoneNumber}
-                      onChange={e => setPhoneNumber(e.target.value)}
-                      pattern="[0-9]*"
-                      title="Phone number should only contain digits."
-                      required
-                    />
-                  </p>
+              {/* Display loading animation while verifying */}
+              {isLoading && (
+                <div className="loading-container">
+                  <div className="loading-spinner"></div>
+                  <p>Verifying your email...</p>
                 </div>
-                <div className="input-group-btn">
-                  <p>
-                    <span className="input-group-btn">
-                      <button type="submit" className="user">
-                        Confirm Phone Number
-                      </button>
-                    </span>
-                  </p>
+              )}
+
+              {/* Show modals based on verification status */}
+              {!isLoading && verificationStatus === "SUCCESS" && (
+                <div className="success-modal">
+                  <h2>Email Verified!</h2>
+                  <p>Your email has been successfully verified. You can now close this window and return to the app.</p>
                 </div>
-              </form>
-              {/* <h3> */}
-              {/* <a href="/login-email">Click here to login with email</a> */}
-              {/* </h3> */}
+              )}
+              <ServerErrorModal isOpen={isErrorModalOpen} onClose={handleCloseModal} />
             </div>
           </div>
-          <BannedNumberModal isOpen={isBannedModalOpen} onClose={handleCloseModal} />
-          <ServerErrorModal isOpen={isErrorModalOpen} onClose={handleCloseModal} />
         </section>
       </div>
       <Footer />
@@ -122,4 +116,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Verify
