@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react"
 import Header from "../components/header"
 import Footer from "../components/footer"
-import CountryCodeSelector from "../components/country-codes"
 import Seo from "../components/seo"
-import { BannedNumberModal, ServerErrorModal } from "../components/Modal"
+import { ServerErrorModal } from "../components/Modal"
 import { navigate } from "gatsby" // or useNavigate from react-router-dom
 import { useLocation } from "@reach/router"
 import "../components/verify.css"
@@ -17,6 +16,7 @@ const Verify = () => {
   const [data, setData] = useState("")
   const location = useLocation()
 
+  console.log("dkfjdasklfjadsk")
   const openErrorModal = () => {
     setIsErrorModalOpen(true)
   }
@@ -28,50 +28,49 @@ const Verify = () => {
   }
 
   useEffect(() => {
+    console.log("Parsing URL parameters")
     const searchParams = new URLSearchParams(location.search)
     const dataFromUrl = searchParams.get("_data")
 
     if (dataFromUrl) {
-      console.log("found data %s", dataFromUrl)
-      setData(dataFromUrl)
-      const result = verifyConfirm()
-      if (result.status === 200) {
-        // setNano
-        setUserId(result.data.userId)
-      }
+      const decodedData = decodeURIComponent(dataFromUrl)
+      console.log("Decoded data:", decodedData)
+      setData(decodedData)
+      verifyConfirm(decodedData)
+
+      // //
+      // console.log("Found encrypted data:", dataFromUrl)
+      // // Use encodeURIComponent to properly handle special characters
+      // const encodedData = encodeURIComponent(dataFromUrl)
+      // // Then decode it to get the original string with all special characters intact
+      // const decodedData = decodeURIComponent(encodedData)
+      // console.log("Decoded data:", decodedData)
+      // setData(decodedData)
+      // verifyConfirm(decodedData)
     } else {
+      console.log("No encrypted data found in URL")
       setIsLoading(false)
       setVerificationStatus("FAILED")
     }
   }, [location])
 
-  useEffect(() => {
-    if (userId) {
-      localStorage.setItem("userId", userId)
-    }
-  }, [userId])
-
-  const verifyConfirm = async submittedOtp => {
+  const verifyConfirm = async encryptedData => {
     try {
       const verifyResponse = await fetch(baseUrlV2 + "user/verify/email/magic-link/confirm", {
         method: "POST",
         headers: headers,
         body: JSON.stringify({
-          data: data,
-          verificationCode: submittedOtp,
+          data: encryptedData,
         }),
       })
-      // verificationStatus
-      // nanoAccount
-      console.log("seeing verify response %s", verifyResponse.verificationStatus)
-      setVerificationStatus(verifyResponse.verificationStatus)
       const verifyData = await verifyResponse.json()
-      return {
-        status: verifyResponse.status,
-        data: verifyData,
+      console.log("Verification response:", verifyData)
+      setVerificationStatus(verifyData.verificationStatus)
+      if (verifyResponse.status === 200) {
+        setUserId(verifyData.userId)
       }
     } catch (error) {
-      console.log(error)
+      console.error("Error during verification:", error)
       openErrorModal()
     } finally {
       setIsLoading(false)
@@ -82,6 +81,11 @@ const Verify = () => {
     setIsErrorModalOpen(false)
   }
 
+  useEffect(() => {
+    if (userId) {
+      localStorage.setItem("userId", userId)
+    }
+  }, [userId])
   // Render content based on loading and verification status
   return (
     <div className="verify">
