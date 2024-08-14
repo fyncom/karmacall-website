@@ -16,7 +16,6 @@ const Verify = () => {
   const [data, setData] = useState("")
   const location = useLocation()
 
-  console.log("dkfjdasklfjadsk")
   const openErrorModal = () => {
     setIsErrorModalOpen(true)
   }
@@ -28,25 +27,13 @@ const Verify = () => {
   }
 
   useEffect(() => {
-    console.log("Parsing URL parameters")
     const searchParams = new URLSearchParams(location.search)
     const dataFromUrl = searchParams.get("_data")
 
     if (dataFromUrl) {
       const decodedData = decodeURIComponent(dataFromUrl)
-      console.log("Decoded data:", decodedData)
       setData(decodedData)
-      verifyConfirm(decodedData)
-
-      // //
-      // console.log("Found encrypted data:", dataFromUrl)
-      // // Use encodeURIComponent to properly handle special characters
-      // const encodedData = encodeURIComponent(dataFromUrl)
-      // // Then decode it to get the original string with all special characters intact
-      // const decodedData = decodeURIComponent(encodedData)
-      // console.log("Decoded data:", decodedData)
-      // setData(decodedData)
-      // verifyConfirm(decodedData)
+      verifyConfirm()
     } else {
       console.log("No encrypted data found in URL")
       setIsLoading(false)
@@ -54,13 +41,13 @@ const Verify = () => {
     }
   }, [location])
 
-  const verifyConfirm = async encryptedData => {
+  const verifyConfirm = async () => {
     try {
       const verifyResponse = await fetch(baseUrlV2 + "user/verify/email/magic-link/confirm", {
         method: "POST",
         headers: headers,
         body: JSON.stringify({
-          data: encryptedData,
+          data: data,
         }),
       })
       const verifyData = await verifyResponse.json()
@@ -73,6 +60,7 @@ const Verify = () => {
       console.error("Error during verification:", error)
       openErrorModal()
     } finally {
+      console.log("in finally with email status %s!", verificationStatus)
       setIsLoading(false)
     }
   }
@@ -86,7 +74,7 @@ const Verify = () => {
       localStorage.setItem("userId", userId)
     }
   }, [userId])
-  // Render content based on loading and verification status
+
   return (
     <div className="verify">
       <Seo title="Email Verification for KarmaCall" description="Verifying your email address for your KarmaCall account." />
@@ -95,7 +83,6 @@ const Verify = () => {
         <section>
           <div id="phone-number-entry" className="network">
             <div className="container">
-              {/* Display loading animation while verifying */}
               {isLoading && (
                 <div className="loading-container">
                   <div className="loading-spinner"></div>
@@ -103,8 +90,7 @@ const Verify = () => {
                 </div>
               )}
 
-              {/* Show modals based on verification status */}
-              {!isLoading && verificationStatus === "SUCCESS" && (
+              {!isLoading && verificationStatus === "VERIFIED" && (
                 <div className="success-modal">
                   <h2>Email Verified!</h2>
                   <p>Your email has been successfully verified. You can now close this window and return to the app.</p>
