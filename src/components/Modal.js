@@ -95,7 +95,8 @@ export const NanoSentModal = ({ isOpen, nanoExternal, onClose }) => {
         <h2>Nano was successfully sent!</h2>
         <p>Check the external nano account below</p>
         <p>
-          <a href={`https://nanoblockexplorer.com/explorer/account/${nanoExternal}/history`}>{nanoExternal}</a>
+          {/* <a href={`https://nanoblockexplorer.com/explorer/account/${nanoExternal}/history`}>{nanoExternal}</a> */}
+          <a href={`https://nanexplorer.com/nano/account/${nanoExternal}`}>{nanoExternal}</a>
         </p>
       </div>
     </div>

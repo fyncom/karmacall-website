@@ -32,8 +32,11 @@ const BlockSpamEarnCash = () => {
     setModalOpen(!isModalOpen)
   }
   const nanoAccount = "nano_3rcpayu3g39njpq3mkizuepfr5rh1nwuz4xypwsmubkoiww88wubff8d719t"
+  // const [dynamicMessage, setDynamicMessage] = useState(
+  // `<span className="payments-counter">108,777 instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanoblockexplorer.com/explorer/account/${nanoAccount}/history">See these payments happening in real-time!</a>`
+  // )
   const [dynamicMessage, setDynamicMessage] = useState(
-    `<span className="payments-counter">108,777 instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanoblockexplorer.com/explorer/account/${nanoAccount}/history">See these payments happening in real-time!</a>`
+    `<span className="payments-counter">108,777 instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanexplorer.com/nano/account/${nanoAccount}">See these payments happening in real-time!</a>`
   )
   const [nanoBlockCount, setNanoBlockCount] = useState("")
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
@@ -84,7 +87,8 @@ const BlockSpamEarnCash = () => {
           if (data.accountBlockCount > 0) {
             setNanoBlockCount(data.accountBlockCount)
             const numberWithCommas = data.accountBlockCount.toLocaleString()
-            const newMessage = `<span class="payments-counter">${numberWithCommas} instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanoblockexplorer.com/explorer/account/${nanoAccount}/history">See these payments happening in real-time!</a>`
+            // const newMessage = `<span class="payments-counter">${numberWithCommas} instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanoblockexplorer.com/explorer/account/${nanoAccount}/history">See these payments happening in real-time!</a>`
+            const newMessage = `<span class="payments-counter">${numberWithCommas} instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanexplorer.com/nano/account/${nanoAccount}">See these payments happening in real-time!</a>`
             setDynamicMessage(newMessage)
           }
         }
