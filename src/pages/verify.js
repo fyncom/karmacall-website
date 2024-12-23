@@ -118,6 +118,9 @@ const Verify = () => {
 
               {!isLoading && verificationStatus === "VERIFIED" && (
                 <div className="success-modal">
+                  <svg width="48" height="48" viewBox="0 0 24 24" style={{ marginBottom: "16px" }}>
+                    <path fill="#2C3E50" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                  </svg>
                   <h2>Email Verified!</h2>
                   <p>Your email has been successfully verified. You can now close this window and return to the app.</p>
                 </div>
