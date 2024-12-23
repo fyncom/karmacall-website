@@ -32,15 +32,29 @@ const Verify = () => {
     const dataFromUrl = searchParams.get("_data") || searchParams.get("data")
 
     if (dataFromUrl) {
-      const decodedData = decodeURIComponent(dataFromUrl)
-      setData(decodedData)
-      verifyConfirm()
+      try {
+        // First decode the URI component
+        const decodedData = decodeURIComponent(dataFromUrl)
+        setData(decodedData)
+        // Don't call verifyConfirm() here
+      } catch (error) {
+        console.error("Error decoding URL data:", error)
+        setIsLoading(false)
+        setVerificationStatus("FAILED")
+      }
     } else {
       console.log("No encrypted data found in URL")
       setIsLoading(false)
       setVerificationStatus("FAILED")
     }
   }, [location])
+
+  // Add a new useEffect to handle verification after data is set
+  useEffect(() => {
+    if (data) {
+      verifyConfirm()
+    }
+  }, [data]) // This will run whenever data changes
 
   const verifyConfirm = async () => {
     if (!data) {
