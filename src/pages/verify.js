@@ -28,7 +28,8 @@ const Verify = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search)
-    const dataFromUrl = searchParams.get("_data")
+    // backend sometimes sends links with _ prepended, especially for mobile app email verifications.
+    const dataFromUrl = searchParams.get("_data") || searchParams.get("data")
 
     if (dataFromUrl) {
       const decodedData = decodeURIComponent(dataFromUrl)
@@ -42,7 +43,16 @@ const Verify = () => {
   }, [location])
 
   const verifyConfirm = async () => {
+    if (!data) {
+      console.error("No data available to send")
+      setIsLoading(false)
+      setVerificationStatus("FAILED")
+      return
+    }
+
     try {
+      console.log("Sending verification request with data:", data)
+
       const verifyResponse = await fetch(baseUrlV2 + "user/verify/email/magic-link/confirm", {
         method: "POST",
         headers: headers,
@@ -50,6 +60,8 @@ const Verify = () => {
           data: data,
         }),
       })
+      console.log("Raw response:", verifyResponse)
+
       const verifyData = await verifyResponse.json()
       console.log("Verification response:", verifyData)
       setVerificationStatus(verifyData.verificationStatus)
