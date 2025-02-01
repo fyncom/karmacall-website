@@ -1,15 +1,13 @@
-<!-- This is hosted on Auth0 for fyncom app - only kept here as a record -->
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>FynCom App Sign In</title>
+  <title>KarmaCall Sign In</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-  <link rel="icon" type="image/x-icon" href="https://dashboard.fyncom.com/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="https://karmacall.com/favicon.ico" />
 </head>
 <body>
-
   <script src="https://cdn.auth0.com/js/lock/11.32/lock.min.js"></script>
   <script>
     // Decode utf8 characters properly
@@ -22,20 +20,21 @@
     var css = '';
 
     if (config.dict && config.dict.signin && config.dict.signin.title) {
-      languageDictionary = { 
-       //     title: config.dict.signin.title };
-        title: "FynCom App Login",
-        //        description: "Ftestingn", // does not work
-        signUpTitle: "Create Your FynCom App Account",
+      languageDictionary = {
+        title: "KarmaCall Login",
+        signUpTitle: "Create Your KarmaCall Account",
         signUpLabel: 'Create Account',
         signUpSubmitLabel: 'Sign Up',
         signUpTerms: 'By signing up, you agree to our ' +
-          '<a href="https://www.fyncom.com/terms" class="custom-link">terms of use</a> and our ' +
-	        '<a href="https://www.fyncom.com/privacy-policy" class="custom-link">privacy policy</a>.',
+          '<a href="https://www.karmacall.com/terms-of-service" class="custom-link">terms of service</a> and our ' +
+          '<a href="https://www.karmacall.com/privacy-policy" class="custom-link">privacy policy</a>.',
         signUpWithLabel: 'Sign up with %s',
         emailInputPlaceholder: "Email address",
         passwordInputPlaceholder: "Password",
-        loginSubmitLabel: "Log in"
+        loginSubmitLabel: "Log in",
+        forgotPasswordTitle: "Reset Password",
+        forgotPasswordAction: "Forgot your password?",
+        forgotPasswordSubmitLabel: "Send reset email"
       };    
     } else if (typeof config.dict === 'string') {
       language = config.dict;
@@ -43,7 +42,7 @@
     var loginHint = config.extraParams.login_hint;
     var colors = config.colors || {};
 
-    // Available Lock configuration options: https://auth0.com/docs/libraries/lock/v11/configuration
+    // Lock configuration 
     var lock = new Auth0Lock(config.clientID, config.auth0Domain, {
       auth: {
         redirectUrl: config.callbackURL,
@@ -56,15 +55,15 @@
         __tenant: config.auth0Tenant,
         __token_issuer: config.authorizationServer.issuer
       },
-      assetsUrl:  config.assetsUrl,
+      assetsUrl: config.assetsUrl,
       allowedConnections: connection ? [connection] : null,
       rememberLastLogin: !prompt,
       language: language,
       languageBaseUrl: config.languageBaseUrl,
       languageDictionary: languageDictionary,
       theme: {
-        logo:            'https://fyncom-static-files.s3.us-west-1.amazonaws.com/FynCom_Logo_Circle.png',
-        primaryColor:    colors.primary ? colors.primary : 'green'
+        logo: 'https://karmacall.com/karmacall-favicon.png',
+        primaryColor: colors.primary ? colors.primary : '#008080' // KarmaCall teal
       },
       prefill: loginHint ? { email: loginHint, username: loginHint } : null,
       closable: false,
@@ -73,15 +72,11 @@
 
     if(colors.page_background) {
       css += '.auth0-lock.auth0-lock .auth0-lock-overlay { background: ' +
-                  colors.page_background +
-                ' }';
-      
-            // this CSS doesn't actually work or do anything :/
-      // the 1st part is to try to add text description below the title
-      // the 2nd part is to try to change the footer links to blue in the create page
-			css += '.auth0-lock.auth0-lock .auth0-lock-header { position: relative; height: 180px; }' + 
+        colors.page_background + ' }';
+                
+      css += '.auth0-lock.auth0-lock .auth0-lock-header { position: relative; height: 180px; }' + 
         '.auth0-lock.auth0-lock .auth0-lock-name::after {' +
-        'content: "For personal use only (non business)";' +
+        'content: "Block spam calls and get paid!";' + // Updated description
         'display: block;' +
         'position: absolute;' +
         'bottom: -20px;' +
@@ -94,13 +89,14 @@
         'z-index: 1;' +
         '}' +
         '.auth0-lock.auth0-lock .auth0-lock-form .auth0-lock-sign-up-terms > div > a.custom-link {' +
-        'color: #0000EE !important;' +
+        'color: #008080 !important;' + // KarmaCall teal
         'font-weight: bold !important;' +
         'text-decoration: none !important;' +
         '}' +
         '.auth0-lock.auth0-lock .auth0-lock-form .auth0-lock-sign-up-terms > div > a.custom-link:hover {' +
         'text-decoration: underline !important;' +
         '}';
+
       var style = document.createElement('style');
       style.appendChild(document.createTextNode(css));
       document.body.appendChild(style);
