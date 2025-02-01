@@ -62,7 +62,7 @@
       languageBaseUrl: config.languageBaseUrl,
       languageDictionary: languageDictionary,
       theme: {
-        logo: 'https://karmacall.com/karmacall-favicon.png',
+        logo: 'https://fyncom-static-files.s3.us-west-1.amazonaws.com/KarmaCall_Logo_Circle.png',
         primaryColor: colors.primary ? colors.primary : '#008080' // KarmaCall teal
       },
       prefill: loginHint ? { email: loginHint, username: loginHint } : null,
@@ -74,9 +74,10 @@
       css += '.auth0-lock.auth0-lock .auth0-lock-overlay { background: ' +
         colors.page_background + ' }';
                 
+      // this CSS doesn't actually work or do anything :/
       css += '.auth0-lock.auth0-lock .auth0-lock-header { position: relative; height: 180px; }' + 
         '.auth0-lock.auth0-lock .auth0-lock-name::after {' +
-        'content: "Block spam calls and get paid!";' + // Updated description
+        'content: "Block spam calls & get paid!";' + // Updated description
         'display: block;' +
         'position: absolute;' +
         'bottom: -20px;' +
