@@ -4,9 +4,27 @@ import "../components/blocked-email.css"
 import { GatsbyImage } from "gatsby-plugin-image"
 import { FaGift, FaFileAlt, FaSearch, FaSadCry, FaBan, FaBug, FaMoneyBill, FaGifts, FaSadTear } from "react-icons/fa"
 import { useCombinedQuery } from "./useCombinedQuery"
+import ReactGA from 'react-ga4';
 
 export const KarmacallAppStoreModal = ({ onClose }) => {
   const { appStoreBadge, googlePlayBadge } = useCombinedQuery()
+  
+  const handleAndroidClick = () => {
+    ReactGA.event({
+      category: 'App Store',
+      action: 'Play Store Visit',
+      label: 'Modal Play Store Button'
+    });
+  };
+
+  const handleIOSClick = () => {
+    ReactGA.event({
+      category: 'App Store',
+      action: 'App Store Visit',
+      label: 'Modal App Store Button'
+    });
+  };
+
   return (
     <div className="modal">
       <div className="modal-content">
@@ -16,10 +34,16 @@ export const KarmacallAppStoreModal = ({ onClose }) => {
         <h2>Ready for something new?</h2>
         <p>Download KarmaCall today!</p>
         <div className={"app-store-row"} id="app-store-row">
-          <a href="https://play.google.com/store/apps/details?id=com.fyncom.robocash">
+          <a 
+            href="https://play.google.com/store/apps/details?id=com.fyncom.robocash"
+            onClick={handleAndroidClick}
+          >
             <GatsbyImage className="app-img-index" image={googlePlayBadge} alt="Get KarmaCall on Google Play" />
           </a>
-          <a href="https://apps.apple.com/us/app/karmacall/id1574524278">
+          <a 
+            href="https://apps.apple.com/us/app/karmacall/id1574524278"
+            onClick={handleIOSClick}
+          >
             <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" />
           </a>
         </div>

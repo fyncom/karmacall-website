@@ -4,6 +4,7 @@ import Footer from "../components/footer"
 import "../components/sales-and-marketing-use-cases.css"
 import Seo from "../components/seo"
 import { GiftCardModal, NanoNotEnoughModal, NanoSentModal } from "../components/Modal"
+import ReactGA from 'react-ga4';
 
 const CashOut = () => {
   const isBrowser = typeof window !== "undefined"
@@ -160,6 +161,24 @@ const CashOut = () => {
     setIsNanoOverBalanceModalOpen(false)
     setIsGiftCardModalOpen(false)
   }
+
+  const handleAndroidDownload = () => {
+    ReactGA.event({
+      category: 'App Download',
+      action: 'Android Download Click',
+      label: 'Play Store Button'
+    });
+    window.open('YOUR_PLAY_STORE_URL', '_blank');
+  };
+
+  const handleIOSDownload = () => {
+    ReactGA.event({
+      category: 'App Download',
+      action: 'iOS Download Click',
+      label: 'App Store Button'
+    });
+    window.open('YOUR_APP_STORE_URL', '_blank');
+  };
 
   return (
     <div className="cash-out">
