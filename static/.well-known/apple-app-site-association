@@ -1,0 +1,29 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "8DQL627556.com.robocash.KarmaCall",
+        "paths": [
+          "/invite/*",
+          "/reset-password/*",
+          "/profile/*",
+          "/call/*",
+          "/settings/*",
+          "/verification/*",
+          "/dashboard/*",
+          "/cash-out/*",
+          "/login*",
+          "/rewards/*",
+          "/blocked/*",
+          "/account/*",
+          "/referrals/*",
+          "/blogs/*",
+          "NOT /api/*",
+          "NOT /admin/*",
+          "NOT /images/*"
+        ]
+      }
+    ]
+  }
+}
