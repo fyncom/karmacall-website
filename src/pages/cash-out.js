@@ -3,8 +3,8 @@ import Header from "../components/header"
 import Footer from "../components/footer"
 import "../components/sales-and-marketing-use-cases.css"
 import Seo from "../components/seo"
-import { GiftCardModal, NanoNotEnoughModal, NanoSentModal } from "../components/Modal"
-import ReactGA from 'react-ga4';
+import { GiftCardModal, NanoNotEnoughModal, NanoSentModal, ReferralAppDownloadModal } from "../components/Modal"
+import ReactGA from "react-ga4"
 
 const CashOut = () => {
   const isBrowser = typeof window !== "undefined"
@@ -39,6 +39,7 @@ const CashOut = () => {
   const [isNanoSentModalOpen, setIsNanoSentModalOpen] = useState(false)
   const [isNanoOverBalanceModalOpen, setIsNanoOverBalanceModalOpen] = useState(false)
   const [isGiftCardModalOpen, setIsGiftCardModalOpen] = useState(false)
+  const [isReferralModalOpen, setIsReferralModalOpen] = useState(false)
   const openNanoSentModal = () => {
     setIsNanoSentModalOpen(true)
   }
@@ -60,7 +61,15 @@ const CashOut = () => {
       getNanoBalanceAndUpdateMessage(account, "USD")
     }
     updateNanoAccount(account)
-  }, [])
+
+    // Check if there's a saved referral code and we're logged in
+    const savedReferralCode = localStorage.getItem("pendingReferralCode")
+    if (savedReferralCode && sessionId) {
+      setIsReferralModalOpen(true)
+      // Clear the saved code once we've shown the modal
+      localStorage.removeItem("pendingReferralCode")
+    }
+  }, [sessionId])
 
   // todo rate-limit the balance check by last time checked.
   const getNanoBalanceAndUpdateMessage = async (nanoAccount, fiatType) => {
@@ -162,24 +171,6 @@ const CashOut = () => {
     setIsGiftCardModalOpen(false)
   }
 
-  const handleAndroidDownload = () => {
-    ReactGA.event({
-      category: 'App Download',
-      action: 'Android Download Click',
-      label: 'Play Store Button'
-    });
-    window.open('YOUR_PLAY_STORE_URL', '_blank');
-  };
-
-  const handleIOSDownload = () => {
-    ReactGA.event({
-      category: 'App Download',
-      action: 'iOS Download Click',
-      label: 'App Store Button'
-    });
-    window.open('YOUR_APP_STORE_URL', '_blank');
-  };
-
   return (
     <div className="cash-out">
       <Seo title="Wallet Page" description="Manage your KarmaCall account here." />
@@ -223,6 +214,7 @@ const CashOut = () => {
       <NanoSentModal isOpen={isNanoSentModalOpen} nanoExternal={destinationAccount} onClose={handleCloseModal} />
       <NanoNotEnoughModal isOpen={isNanoOverBalanceModalOpen} onClose={handleCloseModal} />
       <GiftCardModal isOpen={isGiftCardModalOpen} onClose={handleCloseModal} />
+      <ReferralAppDownloadModal isOpen={isReferralModalOpen} onClose={() => setIsReferralModalOpen(false)} />
       <Footer />
     </div>
   )

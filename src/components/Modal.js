@@ -285,3 +285,45 @@ export const GiftCardNotEnoughBalance = ({ isOpen, onClose }) => {
     </div>
   )
 }
+
+export const ReferralAppDownloadModal = ({ isOpen, onClose }) => {
+  const { appStoreBadge, googlePlayBadge } = useCombinedQuery()
+
+  const handleAndroidClick = () => {
+    ReactGA.event({
+      category: "App Store",
+      action: "Play Store Visit",
+      label: "Referral Modal Play Store Button",
+    })
+  }
+
+  const handleIOSClick = () => {
+    ReactGA.event({
+      category: "App Store",
+      action: "App Store Visit",
+      label: "Referral Modal App Store Button",
+    })
+  }
+
+  if (!isOpen) return null
+
+  return (
+    <div className="modal">
+      <div className="modal-content">
+        <span className="close" onClick={onClose}>
+          &times;
+        </span>
+        <h2>Thanks for signing up!</h2>
+        <p>Download KarmaCall to start earning rewards</p>
+        <div className={"app-store-row"} id="app-store-row">
+          <a href="https://play.google.com/store/apps/details?id=com.fyncom.robocash" onClick={handleAndroidClick}>
+            <GatsbyImage className="app-img-index" image={googlePlayBadge} alt="Get KarmaCall on Google Play" />
+          </a>
+          <a href="https://apps.apple.com/us/app/karmacall/id1574524278" onClick={handleIOSClick}>
+            <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" />
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -193,7 +193,7 @@ const Login = () => {
           const refTx = await recordReferral(signUpData.userId)
           if (refTx.data.referralResponse != null) {
             console.log("The Referral was successfully recorded!")
-            // TODO pop up a nice modal here....
+            localStorage.setItem("pendingReferralCode", referralCode)
           } else {
             console.error("referral detected, and user signed up, but tx failed")
           }
