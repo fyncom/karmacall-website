@@ -19,6 +19,8 @@
           "/account/*",
           "/referrals/*",
           "/blogs/*",
+          "/callback*",
+          "/ios/com.robocash.KarmaCall/callback*",
           "NOT /api/*",
           "NOT /admin/*",
           "NOT /images/*"
