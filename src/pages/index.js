@@ -115,10 +115,17 @@ const BlockSpamEarnCash = () => {
               <div className="text-block">
                 <h1>Get Paid to Block Scam Calls.</h1>
                 <h2>Cash out with no limits</h2>
-                <p>
-                  Hang up on scam phone call and take the caller's deposit! Get immediate financial revenge against scammers who waste your time. Join us in the
-                  fight against malicious phone spammers by downloading KarmaCall today.
-                </p>
+                {/*move text from here to   */}
+                {
+                  <p>
+                    If you like "do not disturb" mode on your phone, you'll love the KarmaCall mobile app's "cash-back" strategy to fix the spam call problem.
+                    Download the app today to find out more.{" "}
+                  </p>
+                }
+                {/* <p>
+                  If you like "do not disturb" mode on your phone, you'll love the KarmaCall mobile app's "cash-back" strategy to fix the scam, spam, and fraud
+                  that happens daily. Download today!
+                </p> */}
               </div>
             </div>
           </div>
@@ -142,15 +149,12 @@ const BlockSpamEarnCash = () => {
               <div className={"values-column"}>
                 <div className="value-row">
                   <div className="icon-container">
-                    {/* <div className="logo-container"> */}
-                    <FaDollarSign />
+                    <FaUserShield />
                   </div>
                   <div className="text-container">
-                    <h4>Get Paid!</h4>
-                    <p>
-                      For every call you let us block on your behalf, you get paid <a href="https://nano.org/en/foundation">nano</a>. Instantly. Cash-out at any
-                      time to nano, cash, or gift cards!
-                    </p>
+                    {/* /want to change this up a bit to focus on sanity / mental wellness / uniqueness */}
+                    <h4>Your mind. Your time.</h4>
+                    <p>Your data is valuable. We make sure you get paid for your data and time.</p>
                   </div>
                 </div>
                 <div className="value-row">
@@ -167,12 +171,15 @@ const BlockSpamEarnCash = () => {
                 </div>
                 <div className="value-row">
                   <div className="icon-container">
-                    <FaUserShield />
+                    {/* <div className="logo-container"> */}
+                    <FaDollarSign />
                   </div>
                   <div className="text-container">
-                    {/* /want to change this up a bit to focus on sanity / mental wellness / uniqueness */}
-                    <h4>Your mind. Your time.</h4>
-                    <p>Your data is valuable. We make sure you get paid for your data and time.</p>
+                    <h4>Get Paid!</h4>
+                    <p>
+                      Hang up on scam phone call and take the caller's deposit! Get immediate financial revenge against scammers who waste your time. Join us in
+                      the fight against malicious phone spammers by downloading KarmaCall today.
+                    </p>
                   </div>
                 </div>
               </div>
