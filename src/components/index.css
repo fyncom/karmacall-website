@@ -229,72 +229,96 @@
 
 /* MEDIA SIZES CSS */
 @media (max-width: 768px) {
-.values-container-sub {
-  font-weight: 400;
-  font-size: medium !important;
-}
-  .use-case sub {
-  margin-top: -0.2rem;
-  margin-bottom: 10px;
-}
-.parent-container {
-  margin-bottom: 4rem;
-}
-.AppText, .video-row-container {
-    padding: 0.2rem 0.2rem 0 0.2rem;
-    flex-direction: column; /* Stack the child elements vertically */
+  /* General Text and Spacing Adjustments */
+  h1, h2, h3, p, sub {
+    text-align: center !important; /* Good practice to center most text */
   }
-    .video-row-video-container {
-    width: 100%; /* Full width on small screens */
+  h1 { font-size: xx-large !important; }
+  h2 { font-size: x-large !important; }
+  h3 { font-size: larger !important; }
+  sub { font-size: large !important; }
+  p { font-size: medium !important; }
+   .values-container-sub {
+      font-weight: 400;
+      font-size: medium !important;
+    }
+  .use-case sub {
+      margin-top: -0.2rem;
+      margin-bottom: 10px;
+  }
+
+  /* Container Adjustments */
+  .AppText, .video-row-container {
+    padding: 0.2rem; /* Reduced padding */
+    flex-direction: column; /* Stack items */
+  }
+  .parent-container {
+    margin-bottom: 4rem; /*Consistent spacing*/
+  }
+  .video-row-video-container {
+    width: 100%; /* Full width */
     padding-bottom: 56.25%; /* Maintain aspect ratio */
   }
   .video-row-text-content {
-  padding: 15px;
-  padding-bottom: 0;
-  margin-bottom: -0.2rem;
-}
-.text-container p {
-  text-align: left !important;
-}
-  .social-media-container.communities {
-    flex-direction: column-reverse;
+    padding: 15px;
+    padding-bottom: 0;
+    margin-bottom: -0.2rem; /* Adjust as needed */
   }
-  .top-logos.communities {
-    flex-direction: row; /* Arrange the logos horizontally */
-    justify-content: center;
+
+  /* Text Block Adjustments */
+  .text-block, .text-block-left {
+    margin: 1rem 0; /* Spacing */
+    padding: 0 1rem; /* Padding */
+    max-width: 100%; /* Full width */
+    text-align: center; /* Center text */
   }
-  .app-store-row {
-      padding: 0 2rem 2rem 2rem;
-      /* gap: 5rem; */
+   .text-container p {
+    text-align: left !important; /*Override*/
   }
-  .hero-index-image {
-      padding: 0rem 0rem 3rem 0rem;
-      /* gap: 5rem; */
+
+  /* Logo Container Adjustments */
+  .logo-container, .bottom-logo {
+    width: 100%; /* Full width */
+    justify-content: center; /* Center logos */
+    gap: 1rem;  /* Consistent spacing, even when stacked */
+    flex-direction: column; /* Stack logos */
+    align-items: center;
+  }
+  .logo-container.hero {
+      max-width: 300px; /*Image was to large, set to max-width */
+    }
+  .top-logos.communities{
+      flex-direction: row; /*Arrange horizontally*/
+  }
+  /* Social Media Container */
+  .social-media-container, .social-media-container.communities {
+    flex-direction: column; /* Stack items */
+    align-items: center;
+    gap: 1rem; /*Consistent spacing*/
+  }
+  /*App store row - make sure this works as expected */
+   .app-store-row {
+      flex-direction: row;
+      /* gap: 0 2rem 2rem 2rem; */
+      gap: 1rem;
+  }
+  .app-img-index{
+      max-width: fit-content; /*Prevents images from being cut-off*/
   }
   .html-dynamic {
       padding: 3rem 0rem 0rem 0rem;
       /* gap: 5rem; */
   }
-  .social-media-container,.text-block,.text-block-left,.logo-container,.bottom-logo {
-    flex-direction: column;
-    align-items: center; /* Center align items for mobile */
-    text-align: center; /* Center the text for mobile */
-    max-width: 100%; /* Override any max-width set for larger screens */
-  }
-  .logo-container.hero {
-    /* margin-bottom: 1rem; */
-    max-width: 300px;
-  }
-  .logo-container, .bottom-logo {
-    width: 100%; /* Take the full width of the container on small screens */
-    justify-content: space-evenly; /* Evenly space logos horizontally on small screens */
-    gap: 0;
-  }
-  .text-block, .text-block-left {
-    margin: 1rem 0; /* Add some top and bottom margin for spacing */
-    padding: 0 1rem; /* Add padding to ensure text doesn't touch the edges */
-  }
-  .AppText .span {
-    text-align: center;
+    /* Make elements take full width */
+    .text-block,.text-block-left,.logo-container,.bottom-logo{
+        flex-direction: column;
+        align-items: center;  /*Center align items*/
+        text-align: center;  /*Center the text */
+        max-width: 100%;  /*Override max-width*/
+    }
+    /*Consistent spacing*/
+    .text-block, .text-block-left {
+    margin: 1rem 0;  /*Spacing */
+    padding: 0 1rem;  /*Add padding to ensure text doesn't touch the edges */
   }
 }

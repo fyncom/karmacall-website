@@ -115,7 +115,6 @@ const BlockSpamEarnCash = () => {
               <div className="text-block">
                 <h1>Get Paid to Block Scam Calls.</h1>
                 <h2>Cash out with no limits</h2>
-                {/*move text from here to   */}
                 {
                   <p>
                     If you like "do not disturb" mode on your phone, you'll love the KarmaCall mobile app's "cash-back" strategy to fix the spam call problem.
