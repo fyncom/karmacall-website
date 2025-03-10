@@ -5,3 +5,11 @@
  */
 
 // You can delete this file if you're not using it
+import posthog from "posthog-js"
+
+export const onRouteUpdate = ({ location }) => {
+  // Track page views on route change
+  if (typeof posthog !== "undefined") {
+    posthog.capture("$pageview")
+  }
+}

@@ -8,6 +8,7 @@ import Seo from "../components/seo"
 import { GatsbyImage } from "gatsby-plugin-image"
 import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "../components/useCombinedQuery"
+import { PostHogProvider } from "posthog-js/react"
 
 const BlockSpamEarnCash = () => {
   const {

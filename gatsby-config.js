@@ -84,6 +84,14 @@ module.exports = {
       },
     },
     {
+      resolve: require.resolve(`./gatsby-plugin-posthog`),
+      options: {
+        apiKey: process.env.GATSBY_POSTHOG_API_KEY,
+        apiHost: process.env.GATSBY_POSTHOG_API_HOST || "https://app.posthog.com",
+        enableSessionRecording: true,
+      },
+    },
+    {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `blogs`,
