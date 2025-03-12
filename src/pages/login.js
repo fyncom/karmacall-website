@@ -7,6 +7,7 @@ import { BannedNumberModal, OtpInputModal, ServerErrorModal } from "../component
 import { navigate } from "gatsby" // or useNavigate from react-router-dom
 import { useLocation } from "@reach/router"
 import { isEmpty } from "lodash"
+import { getBrowserEnvironment } from "../utils/browserUtils"
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("")
@@ -21,7 +22,9 @@ const Login = () => {
   const [isBannedModalOpen, setIsBannedModalOpen] = useState(false)
   const [referralCode, setReferralCode] = useState("")
   const location = useLocation()
+  const environment = getBrowserEnvironment()
 
+  console.log("environment", environment)
   const openOtpModal = () => {
     setIsOtpModalOpen(true)
   }
@@ -136,13 +139,44 @@ const Login = () => {
       if (response.status === 200) {
         setIsOtpModalOpen(false)
         setOtp(response.data.opt)
-        handleSignUp()
+
+        // Construct authentication data
+        const authData = {
+          sessionId: sessionId,
+          otp: submittedOtp,
+          phoneNumber: phoneNumber,
+          countryCode: countryCode,
+        }
+        const encodedData = encodeURIComponent(JSON.stringify(authData))
+
+        // Detect platform
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+
+        // Construct store URLs with deep link data
+        const appStoreUrl = `https://apps.apple.com/us/app/karmacall/id1574524278?referrer=${encodedData}`
+        const playStoreUrl = `https://play.google.com/store/apps/details?id=com.fyncom.robocash&referrer=${encodedData}`
+
+        // Try opening app first
+        const appUrl = `karmacall://login?data=${encodedData}`
+        window.location.href = appUrl
+
+        // After short delay, check if we're still on the same page
+        // If so, user likely doesn't have app installed
+        setTimeout(() => {
+          if (document.hidden) {
+            // App opened successfully
+            return
+          }
+          // Redirect to appropriate store with deep link data
+          window.location.href = isIOS ? appStoreUrl : playStoreUrl
+        }, 1000)
+
+        return
       } else if (response.status === 500) {
         openErrorModal()
       } else if (response.status === 418) {
         openBannedModal()
       } else if (response.data.verificationStatus === "FAILED") {
-        // todo add a "service failed modal"
         console.log("response failure")
       }
       setIsOtpModalOpen(false)
@@ -175,9 +209,13 @@ const Login = () => {
   // v2 user register handles all this now. Both new and existing users are handled here.
   const handleSignUp = async () => {
     try {
+      const environment = getBrowserEnvironment()
       const signUpResponse = await fetch(baseUrlV2 + "user/register/full", {
         method: "POST",
-        headers: headers,
+        headers: {
+          ...headers,
+          "device-os": environment,
+        },
         body: JSON.stringify({
           countryCode: countryCode,
           number: phoneNumber,
