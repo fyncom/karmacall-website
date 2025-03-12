@@ -149,8 +149,9 @@ const Login = () => {
         }
         const encodedData = encodeURIComponent(JSON.stringify(authData))
 
-        // Detect platform
-        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+        // Detect platform - safely check for browser environment
+        const isBrowser = typeof window !== "undefined" && typeof navigator !== "undefined"
+        const isIOS = isBrowser ? /iPhone|iPad|iPod/i.test(navigator.userAgent) : false
 
         // Construct store URLs with deep link data
         const appStoreUrl = `https://apps.apple.com/us/app/karmacall/id1574524278?referrer=${encodedData}`

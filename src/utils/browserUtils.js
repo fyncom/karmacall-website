@@ -1,4 +1,9 @@
 export const getBrowserEnvironment = () => {
+  // Check if window is defined (so we're in the browser)
+  if (typeof window === "undefined" || typeof navigator === "undefined") {
+    return "Server Environment"
+  }
+
   const ua = navigator.userAgent
   let browser = ""
   let os = ""
@@ -12,7 +17,6 @@ export const getBrowserEnvironment = () => {
     os = "Linux"
   } else if (ua.includes("Android")) {
     os = "Android"
-  } else if (ua.includes("iPhone") || ua.includes("iPad") || ua.includes("iPod")) {
   } else if (ua.includes("iPhone") || ua.includes("iPad") || ua.includes("iPod")) {
     os = "iOS"
   } else {

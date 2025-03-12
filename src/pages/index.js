@@ -9,11 +9,15 @@ import { GatsbyImage } from "gatsby-plugin-image"
 import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "../components/useCombinedQuery"
 
-// Detect platform
-const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+// Detect platform - safely check for browser environment
+const isBrowser = typeof window !== "undefined" && typeof navigator !== "undefined"
+const isIOS = isBrowser ? /iPhone|iPad|iPod/i.test(navigator.userAgent) : false
 
-console.log("isIOS", isIOS)
-console.log("navigator.userAgent", navigator.userAgent)
+if (isBrowser) {
+  console.log("isIOS", isIOS)
+  console.log("navigator.userAgent", navigator.userAgent)
+}
+
 const BlockSpamEarnCash = () => {
   const {
     heroKarmaCallImage,
