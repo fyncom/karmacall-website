@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import "./header.css"
 import { Link } from "gatsby"
-import { FaBars } from "react-icons/fa"
+import { FaBars, FaUserSecret } from "react-icons/fa"
 import Img from "gatsby-image"
 import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "./useCombinedQuery"
@@ -55,9 +55,12 @@ const Header = () => {
       <div className="header-container">
         <Link to="/">
           <div className="fyncom-logo-header">
-            <Img className="left-header-logo" fixed={karmacallLogoData} alt="KarmaCall Logo" />
+            <div className="secret-service-logo">
+              <FaUserSecret className="secret-service-icon" />
+              <span className="secret-service-text">The Secret Service App</span>
+            </div>
             <div className="arrow-container"></div>
-            <Img className="right-header-logo" fixed={logoData} alt="FynCom Logo, which indicates that KarmaCall is built with FynCom tech" />
+            <Img className="right-header-logo" fixed={logoData} alt="FynCom Logo, which indicates that the app is built with FynCom tech" />
           </div>
         </Link>
         <div ref={hamburgerRef} className="mobile-menu-icon" onClick={toggleMenu}>
@@ -73,7 +76,7 @@ const Header = () => {
               <Link to="/faq">FAQ</Link>
             </li>
             <li className="mobile-menu-item">
-              <Link to="/white-paper-original-scam-calls">Why?</Link>
+              <Link to="/white-paper-original-scam-calls">Mission</Link>
             </li>
             <li className="mobile-menu-item">
               <Link to="#" onClick={toggleHeaderModal}>
@@ -94,7 +97,7 @@ const Header = () => {
             <Link to="/faq">FAQ</Link>
           </li>
           <li>
-            <Link to="/white-paper-original-scam-calls">Why?</Link>
+            <Link to="/white-paper-original-scam-calls">Mission</Link>
           </li>
           <li>
             <Link to="#" onClick={toggleHeaderModal}>

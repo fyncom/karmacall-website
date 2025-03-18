@@ -134,6 +134,24 @@ button.user:hover {
     transform: rotate(45deg);
 }
 
+/* Secret Service App Logo Styling */
+.secret-service-logo {
+  display: flex;
+  align-items: center;
+  color: #000c30;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.secret-service-icon {
+  font-size: 1.8rem;
+  margin-right: 0.5rem;
+  color: #bb9d3a;
+}
+.secret-service-text {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 768px) {
     .left-header-logo {
         /*max-width: 40% !important; !* Smaller size for mobile, adjust as needed *!*/
@@ -219,5 +237,11 @@ button.user:hover {
   }
   .menu-item-with-children.active .submenu {
     display: block;
+  }
+  .secret-service-text {
+    font-size: 1rem;
+  }
+  .secret-service-icon {
+    font-size: 1.5rem;
   }
 }
