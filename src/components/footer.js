@@ -47,6 +47,9 @@ const Footer = () => {
             <li>
               <Link to="/about">About</Link>
             </li>
+            <li>
+              <Link to="/compare">Compare Apps</Link>
+            </li>
           </ul>
           <ul className="footer-links right">
             <li>

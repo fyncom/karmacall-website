@@ -9,6 +9,7 @@ module.exports = {
     description: `Tired of scam calls? Get paid to block them! KarmaCall auto-blocks spam calls for you and pays you each time. Cash out to gift cards at $1.00 or withdraw anytime.`,
     author: `@adrianegraphene`,
     siteUrl: `https://www.karmcall.com`,
+    keywords: `spam call blocker, robocall blocker, truecaller alternative, robokiller alternative, nomorobo alternative, hiya alternative, get paid to block spam, spam call protection, scam call blocker, earn money blocking spam`,
   },
   plugins: [
     {
