@@ -157,11 +157,67 @@ const CompareIndex = () => {
 
           <div className="faq-item">
             <h3>Do I really get paid for blocking spam calls with KarmaCall?</h3>
-            <p>
-              Yes! KarmaCall rewards you for blocking unwanted calls. Android users can start earning with the free plan at $0.0001 per blocked call, while
-              premium plans ($4.99/month) offer 10x rewards. Supreme users ($9.99/month) can earn up to $0.01 per blocked call. iOS users can access these
-              features starting at $1.99/month.
-            </p>
+            <p>Yes! KarmaCall rewards you for blocking unwanted calls. Choose your platform to see available plans:</p>
+            <div className="platform-pricing-grid">
+              <div className="platform-card">
+                <h4>Android</h4>
+                <ul>
+                  <li>Free plan: $0.0001 per blocked call</li>
+                  <li>
+                    Premium ($4.99/month):
+                    <ul>
+                      <li>$0.001 per blocked call</li>
+                      <li>Customize minimum deposit (default: 5¢)</li>
+                      <li>Customize verification timer (default: 25s)</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Supreme ($9.99/month):
+                    <ul>
+                      <li>$0.01 per blocked call</li>
+                      <li>Customize minimum deposit (default: 5¢)</li>
+                      <li>Customize verification timer (default: 25s)</li>
+                    </ul>
+                  </li>
+                  <li>Lifetime plan: $99 one-time payment</li>
+                </ul>
+              </div>
+              <div className="platform-card">
+                <h4>iOS</h4>
+                <ul>
+                  <li>
+                    Basic ($1.99/month):
+                    <ul>
+                      <li>$0.0001 per blocked call</li>
+                      <li>Standard protection settings</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Premium ($4.99/month):
+                    <ul>
+                      <li>$0.001 per blocked call</li>
+                      <li>Customize minimum deposit (default: 5¢)</li>
+                      <li>Customize verification timer (default: 25s)</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Supreme ($9.99/month):
+                    <ul>
+                      <li>$0.01 per blocked call</li>
+                      <li>Customize minimum deposit (default: 5¢)</li>
+                      <li>Customize verification timer (default: 25s)</li>
+                    </ul>
+                  </li>
+                  <li>Lifetime plan: $99 one-time payment</li>
+                </ul>
+              </div>
+            </div>
+            <div className="pricing-disclaimer">
+              <p>
+                <strong>Note:</strong> iOS version is currently only available in the United States. Android version is available globally, with prices adjusted
+                for each region (prices shown above are US rates - other countries may have lower rates).
+              </p>
+            </div>
           </div>
 
           <div className="faq-item">

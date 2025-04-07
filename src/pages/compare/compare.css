@@ -405,4 +405,87 @@
   .comparison-row:first-child .feature-cell {
     margin-top: 0;
   }
+}
+
+.platform-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+.platform-card {
+  background-color: var(--color-background-card, #f9f9f9);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.platform-card h4 {
+  color: #0066cc;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.platform-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.platform-card li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.platform-card ul ul {
+  margin-top: 0.5rem;
+  margin-left: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.platform-card ul ul li {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary, #555);
+  margin-bottom: 0.3rem;
+}
+
+.platform-card > ul > li {
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.platform-card > ul > li:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .platform-pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pricing-disclaimer {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--color-background-alt, #f5f5f5);
+  border-radius: 8px;
+  grid-column: 1 / -1;
+}
+
+.pricing-disclaimer p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary, #666);
+  line-height: 1.5;
+}
+
+.pricing-disclaimer strong {
+  color: var(--color-text, #333);
+}
+
+@media (prefers-color-scheme: dark) {
+  .pricing-disclaimer strong {
+    color: var(--color-text, #e0e0e0);
+  }
 } 
