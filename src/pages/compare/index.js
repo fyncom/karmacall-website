@@ -51,7 +51,10 @@ const CompareIndex = () => {
         <div className="comparison-summary">
           <p>
             See how KarmaCall stacks up against other spam call blocking solutions. Unlike traditional apps, KarmaCall{" "}
-            <span className="pays-you-text">pays you to block spam calls</span> while providing superior protection.
+            <Link to="#" className="pays-you-text">
+              pays you to block spam calls
+            </Link>{" "}
+            while providing superior protection.
           </p>
         </div>
 

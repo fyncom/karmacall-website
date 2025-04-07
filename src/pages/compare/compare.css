@@ -30,6 +30,12 @@
   line-height: 1.6;
 }
 
+.comparison-summary p {
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
+
 .comparison-summary strong {
   color: #0066cc;
 }
@@ -325,6 +331,11 @@
 .pays-you-text {
   color: #0066cc;
   font-weight: bold;
+  text-decoration: none;
+}
+
+.pays-you-text:hover {
+  text-decoration: underline;
 }
 
 /* Dark mode overrides */
