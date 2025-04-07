@@ -76,6 +76,9 @@ const Header = () => {
               <Link to="/white-paper-original-scam-calls">Why?</Link>
             </li>
             <li className="mobile-menu-item">
+              <Link to="/compare">Compare</Link>
+            </li>
+            <li className="mobile-menu-item">
               <Link to="#" onClick={toggleHeaderModal}>
                 Download
               </Link>
@@ -95,6 +98,9 @@ const Header = () => {
           </li>
           <li>
             <Link to="/white-paper-original-scam-calls">Why?</Link>
+          </li>
+          <li>
+            <Link to="/compare">Compare</Link>
           </li>
           <li>
             <Link to="#" onClick={toggleHeaderModal}>

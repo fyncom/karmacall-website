@@ -110,7 +110,11 @@ const BlockSpamEarnCash = () => {
 
   return (
     <div>
-      <Seo title="KarmaCall" />
+      <Seo
+        title="KarmaCall"
+        description="Get paid to block spam calls with KarmaCall - the app that turns unwanted calls into cash. Download today and start earning money while fighting scammers."
+        keywords={["spam blocker", "spam call blocker", "block spam calls", "get paid to block calls", "spam calls", "stop spam calling", "stop robocalls"]}
+      />
       <Header />
       <section>
         <div className="parent-container">
@@ -277,9 +281,14 @@ const BlockSpamEarnCash = () => {
             Our mission is to create a privacy focused market that financially rewards all its participants and is strengthened by numbers. Through KarmaCall,
             data control becomes your commodity which you can sell or keep to yourself. We believe the future of great businesses is in shared prosperity and
             that requires that you are financially compensated for your data and time. <br />
-            <button className="learn-more-btn" onClick={toggleModal}>
-              Download Today!
-            </button>
+            <div className="cta-buttons-container">
+              <button className="learn-more-btn" onClick={toggleModal}>
+                Download Today!
+              </button>
+              <Link to="/compare" className="compare-link">
+                Compare with Other Apps
+              </Link>
+            </div>
             {isModalOpen && <KarmacallAppStoreModal onClose={toggleModal} />}
           </p>
         </section>
