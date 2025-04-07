@@ -56,22 +56,71 @@ const CompareIndex = () => {
         </div>
 
         <div className="comparison-cards">
-          {competitors.map(competitor => (
-            <div key={competitor.name} className="comparison-card">
-              <h2>
-                <span className="vs-text">KarmaCall vs</span>
-                <span className="competitor-name">{competitor.name}</span>
-              </h2>
-              <p>{competitor.description}</p>
-              <div className="key-advantage">
-                <h3>Key Advantage</h3>
-                <p>{competitor.key_difference}</p>
-              </div>
-              <Link to={competitor.link} className="comparison-link">
-                See Full Comparison
-              </Link>
-            </div>
-          ))}
+          <div className="comparison-card">
+            <h2>
+              <span className="vs-text">KarmaCall vs</span>
+              <span className="competitor-name">RoboKiller</span>
+            </h2>
+            <p>See how KarmaCall's financial verification system compares to RoboKiller's audio fingerprinting approach.</p>
+            <Link to="/compare/karmacall-vs-robokiller" className="learn-more">
+              Learn More
+            </Link>
+          </div>
+
+          <div className="comparison-card">
+            <h2>
+              <span className="vs-text">KarmaCall vs</span>
+              <span className="competitor-name">Hiya</span>
+            </h2>
+            <p>Compare KarmaCall's proactive blocking with Hiya's pattern detection system.</p>
+            <Link to="/compare/karmacall-vs-hiya" className="learn-more">
+              Learn More
+            </Link>
+          </div>
+
+          <div className="comparison-card">
+            <h2>
+              <span className="vs-text">KarmaCall vs</span>
+              <span className="competitor-name">Truecaller</span>
+            </h2>
+            <p>Discover the differences between KarmaCall's financial verification and Truecaller's crowdsourced database.</p>
+            <Link to="/compare/karmacall-vs-truecaller" className="learn-more">
+              Learn More
+            </Link>
+          </div>
+
+          <div className="comparison-card">
+            <h2>
+              <span className="vs-text">KarmaCall vs</span>
+              <span className="competitor-name">Call Control</span>
+            </h2>
+            <p>Learn how KarmaCall's financial verification differs from Call Control's community-driven blocking.</p>
+            <Link to="/compare/karmacall-vs-callcontrol" className="learn-more">
+              Learn More
+            </Link>
+          </div>
+
+          <div className="comparison-card">
+            <h2>
+              <span className="vs-text">KarmaCall vs</span>
+              <span className="competitor-name">NoMoRobo</span>
+            </h2>
+            <p>Compare KarmaCall's innovative financial verification with NoMoRobo's traditional blacklist approach.</p>
+            <Link to="/compare/karmacall-vs-nomorobo" className="learn-more">
+              Learn More
+            </Link>
+          </div>
+
+          <div className="comparison-card">
+            <h2>
+              <span className="vs-text">KarmaCall vs</span>
+              <span className="competitor-name">YouMail</span>
+            </h2>
+            <p>See how KarmaCall's financial verification system compares to YouMail's voicemail-focused approach.</p>
+            <Link to="/compare/karmacall-vs-youmail" className="learn-more">
+              Learn More
+            </Link>
+          </div>
         </div>
 
         <div className="why-karmacall-section">
