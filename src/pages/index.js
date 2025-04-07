@@ -110,7 +110,11 @@ const BlockSpamEarnCash = () => {
 
   return (
     <div>
-      <Seo title="KarmaCall" />
+      <Seo
+        title="KarmaCall"
+        description="Get paid to block spam calls with KarmaCall - the app that turns unwanted calls into cash. Download today and start earning money while fighting scammers."
+        keywords={["spam blocker", "spam call blocker", "block spam calls", "get paid to block calls", "spam calls", "stop spam calling", "stop robocalls"]}
+      />
       <Header />
       <section>
         <div className="parent-container">

@@ -29,10 +29,10 @@ const Footer = () => {
         <div className="footer-links-container">
           <div className="footer-socials">
             <a href="https://www.linkedin.com/company/fyncom">
-              <Img fixed={linkedInlogo} alt="KarmaCall Company's Linkedin Page, FynCom" />
+              <Img fixed={linkedInlogo} alt="KarmaCall Company's LinkedIn Page, FynCom" />
             </a>
             <a href="https://twitter.com/GetKarmaCall">
-              <Img fixed={xLogo} alt="KarmaCall's X (formally known as Twitter) logo" />
+              <Img fixed={xLogo} alt="KarmaCall's X (formally known as Twitter) page" />
             </a>
             <a href="https://www.facebook.com/GetKarmaCall">
               <Img fixed={fbLogo} alt="KarmaCall's Facebook page" />
@@ -46,6 +46,9 @@ const Footer = () => {
             </li>
             <li>
               <Link to="/about">About</Link>
+            </li>
+            <li>
+              <Link to="/compare">Compare</Link>
             </li>
           </ul>
           <ul className="footer-links right">
