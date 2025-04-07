@@ -91,11 +91,11 @@ const KarmaCallVsTruecaller = () => {
           <div className="comparison-row">
             <div className="comparison-cell feature-cell">Rewards</div>
             <div className="comparison-cell">
-              Free: $0.001 per blocked call
+              Free: $0.0001 per blocked call
               <br />
-              Premium: $0.01 per blocked call
+              Premium: $0.001 per blocked call
               <br />
-              Supreme: $0.1 per blocked call
+              Supreme: $0.01 per blocked call
               <br />
               <span className="highlight">Customizable settings</span>
             </div>
