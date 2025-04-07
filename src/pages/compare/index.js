@@ -10,21 +10,27 @@ const CompareIndex = () => {
   const competitors = [
     {
       name: "Truecaller",
-      description: "See how KarmaCall's unique rewards system compares to Truecaller's traditional approach.",
+      description: "See how KarmaCall's innovative financial verification system compares to Truecaller's traditional approach.",
       link: "/compare/karmacall-vs-truecaller/",
-      key_difference: "Get paid for blocking spam calls",
+      key_difference: "Financial verification vs pattern detection",
     },
     {
       name: "RoboKiller",
-      description: "Compare KarmaCall's free service with RoboKiller's subscription model.",
+      description: "Compare KarmaCall's reward-based model with RoboKiller's subscription service.",
       link: "/compare/karmacall-vs-robokiller/",
-      key_difference: "No subscription fees + earn money",
+      key_difference: "Earn rewards while blocking spam",
     },
     {
       name: "Hiya",
-      description: "Discover why KarmaCall is better for individual users compared to Hiya's enterprise focus.",
+      description: "Discover why KarmaCall's financial verification is better than Hiya's enterprise pattern detection.",
       link: "/compare/karmacall-vs-hiya/",
-      key_difference: "User-focused with cash rewards",
+      key_difference: "User rewards with guaranteed accuracy",
+    },
+    {
+      name: "Call Control",
+      description: "See how KarmaCall's deposit-based system beats Call Control's pattern detection approach.",
+      link: "/compare/karmacall-vs-callcontrol/",
+      key_difference: "Financial verification vs community reports",
     },
   ]
 
@@ -75,10 +81,10 @@ const CompareIndex = () => {
             <div className="benefit-column">
               <h3>For Users</h3>
               <ul className="benefits-list">
-                <li>Earn money while blocking spam</li>
-                <li>Free to use - no subscriptions</li>
-                <li>Modern, user-friendly interface</li>
-                <li>Advanced protection against unwanted calls</li>
+                <li>Earn rewards for blocking spam</li>
+                <li>Free plan for Android users</li>
+                <li>Premium features with higher rewards</li>
+                <li>Customizable protection settings</li>
               </ul>
             </div>
 
@@ -100,16 +106,18 @@ const CompareIndex = () => {
           <div className="faq-item">
             <h3>Do I really get paid for blocking spam calls with KarmaCall?</h3>
             <p>
-              Yes! Unlike other call blocking apps that charge you subscription fees, KarmaCall actually pays you real money each time you block unwanted calls.
-              You're helping fight spam while earning cash.
+              Yes! KarmaCall rewards you for blocking unwanted calls. Android users can start earning with the free plan at $0.001 per blocked call, while
+              premium plans ($4.99/month) offer 10x rewards. Supreme users ($9.99/month) can earn up to $0.01 per blocked call. iOS users can access these
+              features starting at $1.99/month.
             </p>
           </div>
 
           <div className="faq-item">
             <h3>How does KarmaCall compare to subscription-based blockers?</h3>
             <p>
-              While apps like RoboKiller and premium Truecaller charge monthly fees, KarmaCall is completely free AND puts money in your pocket. Our unique
-              refundable deposit system creates accountability while rewarding you.
+              While other apps just charge you monthly fees, KarmaCall's premium plans ($4.99-$9.99/month) come with increasing rewards for blocked calls.
+              Android users can start with a free plan, and all users can access advanced features like custom deposit requirements and verification timers with
+              premium plans. There's also a one-time lifetime package available for $99.
             </p>
           </div>
 

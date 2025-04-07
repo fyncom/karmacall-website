@@ -7,7 +7,7 @@ import { KarmacallAppStoreModal } from "../../components/Modal"
 import "../../components/index.css"
 import "./compare.css"
 
-const KarmaCallVsHiya = () => {
+const KarmaCallVsCallControl = () => {
   const [isModalOpen, setModalOpen] = useState(false)
   const toggleModal = () => {
     setModalOpen(!isModalOpen)
@@ -16,22 +16,23 @@ const KarmaCallVsHiya = () => {
   return (
     <div>
       <Seo
-        title="KarmaCall vs Hiya | Compare Spam Call Blockers"
-        description="Compare KarmaCall and Hiya spam call blockers - See how KarmaCall pays you to block spam calls while Hiya charges you monthly fees. Find the best solution for unwanted calls."
+        title="KarmaCall vs Call Control | Compare Spam Call Blockers"
+        description="Compare KarmaCall and Call Control spam call blockers - See how KarmaCall's unique financial verification system differs from traditional pattern detection methods. Find out which offers better protection."
       />
       <Header />
 
       <div className="comparison-container">
         <div className="comparison-header">
-          <h1>KarmaCall vs Hiya</h1>
+          <h1>KarmaCall vs Call Control</h1>
           <p className="comparison-subtitle">Find out which spam call blocker is right for you</p>
         </div>
 
         <div className="comparison-summary">
           <p>
-            Both KarmaCall and Hiya help protect you from unwanted calls, but with fundamentally different approaches. While Hiya focuses on identifying and
-            blocking calls through advanced AI, KarmaCall adds a unique dimension by
-            <strong> paying you for every blocked spam call</strong>. Let's see how they compare.
+            While both KarmaCall and Call Control aim to protect you from unwanted calls, they use fundamentally different approaches. Call Control relies on
+            traditional pattern detection and community reporting, while KarmaCall introduces a revolutionary approach using
+            <strong> financial verification and pays you for blocked calls</strong>. Instead of trying to predict if a call is spam, KarmaCall simply requires
+            unknown callers to prove their legitimacy through a refundable deposit.
           </p>
         </div>
 
@@ -39,20 +40,24 @@ const KarmaCallVsHiya = () => {
           <div className="comparison-row header-row">
             <div className="comparison-cell feature-cell">Features</div>
             <div className="comparison-cell">KarmaCall</div>
-            <div className="comparison-cell">Hiya</div>
+            <div className="comparison-cell">Call Control</div>
           </div>
 
           <div className="comparison-row">
             <div className="comparison-cell feature-cell">Spam Call Blocking</div>
             <div className="comparison-cell">
-              <span className="check">✓</span> Block unwanted calls
+              <span className="check">✓</span> Financial verification system
               <br />
               <span className="highlight">Get paid for blocked calls</span>
+              <br />
+              No guesswork - requires caller deposit
             </div>
             <div className="comparison-cell">
-              <span className="check">✓</span> Identifies and blocks spam calls
+              <span className="check">✓</span> Pattern detection & blacklists
               <br />
-              Automatic blocking (premium only)
+              Community-based reporting
+              <br />
+              FTC/FCC Do Not Call list integration
             </div>
           </div>
 
@@ -62,7 +67,7 @@ const KarmaCallVsHiya = () => {
               <span className="partial">⟳</span> Coming soon
             </div>
             <div className="comparison-cell">
-              <span className="partial">⟳</span> Limited; focus on call blocking
+              <span className="check">✓</span> Text message blocking
             </div>
           </div>
 
@@ -80,11 +85,11 @@ const KarmaCallVsHiya = () => {
               <span className="highlight">Lifetime plan: $99</span>
             </div>
             <div className="comparison-cell">
-              Limited free version
+              Free version with basic features
               <br />
-              Premium: $3.99/month
+              Premium: $42.99/year
               <br />
-              14-day trial
+              7-day free trial
             </div>
           </div>
 
@@ -117,12 +122,12 @@ const KarmaCallVsHiya = () => {
               <br />• Enhanced control
             </div>
             <div className="comparison-cell">
-              Basic features:
+              Basic customization:
               <br />
-              • Caller ID
+              • Block/allow lists
               <br />
-              • Block list
-              <br />• Spam detection
+              • Wildcard blocking
+              <br />• Do Not Disturb settings
             </div>
           </div>
 
@@ -131,18 +136,20 @@ const KarmaCallVsHiya = () => {
             <div className="comparison-cell">
               <span className="highlight">Get paid for blocked calls</span>
               <br />
-              Refundable Paywall for unknown callers
+              Refundable deposit system
               <br />
-              Monetary incentive system for legitimate callers
+              Financial verification of callers
+              <br />
+              No reliance on pattern detection
             </div>
             <div className="comparison-cell">
-              Caller ID for businesses
+              CommunityIQ (12M+ users)
               <br />
-              Call Screener (Premium)
+              Wildcard blocking
               <br />
-              Reverse Number Lookup
+              Personal block/allow lists
               <br />
-              Deepfake detection (AI Phone app)
+              Reverse phone lookup
             </div>
           </div>
 
@@ -151,54 +158,67 @@ const KarmaCallVsHiya = () => {
             <div className="comparison-cell">
               <span className="check">✓</span> Privacy-focused
               <br />
+              No content analysis needed
+              <br />
               You control your data
             </div>
             <div className="comparison-cell">
-              <span className="partial">⟳</span> Uses call data for detection
+              <span className="partial">⟳</span> Relies on community data
               <br />
-              Relies on community feedback
+              Pattern analysis required
+              <br />
+              Data sharing for blocking
             </div>
           </div>
 
           <div className="comparison-row">
-            <div className="comparison-cell feature-cell">Platform Integration</div>
+            <div className="comparison-cell feature-cell">Blocking Approach</div>
             <div className="comparison-cell">
-              <span className="check">✓</span> Standalone app with direct benefits
+              <span className="check">✓</span> Financial verification
+              <br />
+              100% certainty - no false positives
             </div>
             <div className="comparison-cell">
-              <span className="check">✓</span> Standalone app
+              Pattern detection
               <br />
-              Also powers some carrier-based solutions
+              Community reports
+              <br />
+              Potential false positives
             </div>
           </div>
         </div>
 
         <div className="why-choose-section">
-          <h2>Why Choose KarmaCall over Hiya?</h2>
+          <h2>Why Choose KarmaCall over Call Control?</h2>
 
           <div className="reasons-grid">
             <div className="reason-card">
-              <h3>Get Paid, Not Pay</h3>
-              <p>While Hiya charges up to $99.99/year for their premium services, KarmaCall is completely free AND pays you each time you block a spam call.</p>
-            </div>
-
-            <div className="reason-card">
-              <h3>Financial Accountability</h3>
+              <h3>Revolutionary Approach</h3>
               <p>
-                KarmaCall's unique deposit system adds financial accountability for callers that Hiya doesn't offer, ensuring only people with legitimate
-                reasons can reach you.
+                While Call Control tries to predict spam through patterns and community reports, KarmaCall's financial verification system provides 100%
+                certainty. No more guessing or false positives.
               </p>
             </div>
 
             <div className="reason-card">
-              <h3>Simple and Effective</h3>
-              <p>KarmaCall offers a straightforward solution without the tiered pricing and complex feature sets of Hiya and its separate AI Phone app.</p>
+              <h3>Earn Instead of Pay</h3>
+              <p>
+                Call Control charges up to $42.99/year for premium features, while KarmaCall is not only free but actually pays you for blocking spam calls.
+              </p>
             </div>
 
             <div className="reason-card">
-              <h3>True Control</h3>
+              <h3>Better Privacy</h3>
               <p>
-                With KarmaCall, you're not just blocking calls - you're actively profiting from the spam call problem while maintaining control over your data.
+                KarmaCall doesn't need to analyze call patterns or share community data. It simply verifies callers through deposits, keeping your privacy
+                intact.
+              </p>
+            </div>
+
+            <div className="reason-card">
+              <h3>Proactive Protection</h3>
+              <p>
+                Instead of reacting to spam patterns after they emerge, KarmaCall prevents unwanted calls before they happen through financial accountability.
               </p>
             </div>
           </div>
@@ -224,4 +244,4 @@ const KarmaCallVsHiya = () => {
   )
 }
 
-export default KarmaCallVsHiya
+export default KarmaCallVsCallControl
