@@ -8,9 +8,10 @@ module.exports = {
     title: `Block Spam, Get Cash. A Scam call Blocker App with Cash Back! Download today | KarmaCall`,
     description: `Tired of scam calls? Get paid to block them! KarmaCall auto-blocks spam calls for you and pays you each time. Cash out to gift cards at $1.00 or withdraw anytime.`,
     author: `@adrianegraphene`,
-    siteUrl: `https://www.karmcall.com`,
+    siteUrl: `https://www.karmacall.com`,
   },
   plugins: [
+    `gatsby-plugin-sitemap`,
     {
       resolve: `gatsby-plugin-web-font-loader`,
       options: {
