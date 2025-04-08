@@ -89,7 +89,7 @@ const FaqPage = () => {
                   <li>Italian</li>
                   <li>Malay</li>
                   <li>Russian</li>
-                  <li>Portugeuse</li>
+                  <li>Portuguese</li>
                   <li>Sinhalese</li>
                   <li>Spanish</li>
                   <li>Zulu</li>

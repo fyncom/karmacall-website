@@ -17,7 +17,7 @@ const TermsOfService = () => {
           <p>
             <strong>
               <br />
-              Last updated November 25, 2023
+              Last updated November 25, 2023
             </strong>
             <br />
             <br />
@@ -81,7 +81,7 @@ const TermsOfService = () => {
                   <a href="#section-11">TERMINATION</a>
                 </li>
                 <li>
-                  <a href="#section-13">THIRD-PARTY TERMS OF AGREEMENTS AND BENEFICIARY</a>
+                  <a href="#section-12">THIRD-PARTY TERMS OF AGREEMENTS AND BENEFICIARY</a>
                 </li>
                 <li>
                   <a href="#section-13">INTELLECTUAL PROPERTY RIGHTS</a>
@@ -252,7 +252,7 @@ const TermsOfService = () => {
                 </li>
               </ol>
               FynCom and the End-User acknowledge that FynCom, and not Google or Apple, is responsible for addressing any claims of the End-User or any third
-              party relating to the licensed Application or the End-User’s possession and/or use of that licensed Application, including, but not limited to:
+              party relating to the licensed Application or the End-User's possession and/or use of that licensed Application, including, but not limited to:
               <br />
               <br />
               (i) product liability claims;
@@ -261,7 +261,7 @@ const TermsOfService = () => {
               (ii) any claim that the licensed Application fails to conform to any applicable legal or regulatory requirement; and
               <br />
               <br />
-              (iii) claims arising under consumer protection, privacy, or similar legislation, including in connection with Your Licensed Application’s use of
+              (iii) claims arising under consumer protection, privacy, or similar legislation, including in connection with Your Licensed Application's use of
               the HealthKit and HomeKit.
             </div>
             <div className="legal-text-container">
