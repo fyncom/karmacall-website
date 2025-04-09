@@ -25,8 +25,14 @@ export const KarmacallAppStoreModal = ({ onClose }) => {
     });
   };
 
+  const handleBackgroundClick = (e) => {
+    if (e.target.className === 'modal') {
+      onClose();
+    }
+  };
+
   return (
-    <div className="modal">
+    <div className="modal" onClick={handleBackgroundClick}>
       <div className="modal-content">
         <span className="close" onClick={onClose}>
           &times;

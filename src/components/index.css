@@ -9,6 +9,8 @@
 .why-fyncom {
   display: grid;
   justify-content: center;
+  padding-top: 0;
+  margin-top: 0;
 }
 .payments-counter {
   font-size: xx-large;
@@ -202,15 +204,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 2rem 0 2rem;
+  padding: 1rem 2rem 1rem 1rem;
   gap: 20px;
   max-height: calc(56.25% * 100%); /* Adjust based on aspect ratio */
-  /* max-width: 1200px; */
-  margin: 20px 0;
+  margin: 0;
 }
 .video-row-text-content {
   flex: 1;
   padding: 15px;
+  margin-bottom: 0;
 }
 .video-row-video-container {
   flex: 2;
@@ -218,6 +220,7 @@
   padding-bottom: 56.25%; /* Aspect ratio for 16:9 */
   height: 0;
   overflow: hidden;
+  margin-bottom: 0;
 }
 .video-row-video {
   position: absolute;
@@ -225,6 +228,15 @@
   left: 0;
   width: 100%;
   height: 100%;
+}
+.video-thumbnail {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  margin-bottom: 0;
 }
 
 /* MEDIA SIZES CSS */

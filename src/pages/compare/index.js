@@ -1,12 +1,17 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "gatsby"
 import Header from "../../components/header"
 import Footer from "../../components/footer"
 import Seo from "../../components/seo"
 import "../../components/index.css"
 import "./compare.css"
+import { KarmacallAppStoreModal } from "../../components/Modal"
 
 const CompareIndex = () => {
+  const [isModalOpen, setModalOpen] = useState(false)
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen)
+  }
   const competitors = [
     {
       name: "Truecaller",
@@ -240,11 +245,13 @@ const CompareIndex = () => {
 
         <div className="cta-section">
           <h2>Ready to start earning money while blocking spam calls?</h2>
-          <Link to="/" className="primary-cta">
+          <button onClick={toggleModal} className="primary-cta">
             Download KarmaCall Now
-          </Link>
+          </button>
         </div>
       </div>
+
+      {isModalOpen && <KarmacallAppStoreModal onClose={toggleModal} />}
 
       <Footer />
     </div>
