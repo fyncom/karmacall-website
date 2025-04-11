@@ -5,6 +5,8 @@ import "../../components/help-center.css"
 import "../../components/email-filters-and-rewards.css"
 import Seo from "../../components/seo"
 import GoogleDocsViewer from "../../components/GoogleDocsViewer"
+import Layout from "../../components/Layout"
+import VideoEmbed from "../../components/VideoEmbed"
 import Breadcrumbs from "../../components/Breadcrumbs"
 
 const EmailFiltersAndRewards = () => {
@@ -80,25 +82,23 @@ const EmailFiltersAndRewards = () => {
           <div className="videos-container">
             <div className="video-description">
               <p>Watch this first. It's our most recent video</p>
-              <iframe
-                className="video"
-                src="https://www.youtube.com/embed/BKLMSqC9mtA"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+              <VideoEmbed
+                videoUrl="https://www.youtube.com/embed/BKLMSqC9mtA"
+                title="FynCom Email Filters: Latest Tutorial"
+                description="Latest tutorial on setting up and using FynCom's email filters to manage your inbox and earn rewards."
+                thumbnailUrl="https://i.ytimg.com/vi/BKLMSqC9mtA/maxresdefault.jpg"
+                uploadDate="2024-01-11"
+              />
             </div>
             <div className="video-description">
               <p>Only watch this if you want to see the first version</p>
-              <iframe
-                className="video"
-                src="https://www.youtube.com/embed/XgVJ7qrwlHk"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+              <VideoEmbed
+                videoUrl="https://www.youtube.com/embed/XgVJ7qrwlHk"
+                title="FynCom Filters: Email Edition Tutorial"
+                description="Learn how to set up and use FynCom's email filters to manage your inbox and earn rewards."
+                thumbnailUrl="https://i.ytimg.com/vi/XgVJ7qrwlHk/maxresdefault.jpg"
+                uploadDate="2024-01-11"
+              />
             </div>
           </div>
         </div>

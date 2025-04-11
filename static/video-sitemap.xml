@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url>
+    <loc>https://www.karmacall.com/user-help-center/email-filters-and-rewards/</loc>
+    <video:video>
+      <video:thumbnail_loc>https://i.ytimg.com/vi/XgVJ7qrwlHk/maxresdefault.jpg</video:thumbnail_loc>
+      <video:title>Email Filters and Rewards - KarmaCall Help Center</video:title>
+      <video:description>Learn about email filters and rewards in KarmaCall</video:description>
+      <video:content_loc>https://www.youtube.com/watch?v=XgVJ7qrwlHk</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/XgVJ7qrwlHk</video:player_loc>
+      <video:duration>300</video:duration>
+      <video:publication_date>2024-01-11T08:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:requires_subscription>no</video:requires_subscription>
+    </video:video>
+  </url>
+</urlset>
