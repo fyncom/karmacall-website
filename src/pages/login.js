@@ -52,6 +52,14 @@ const Login = () => {
     }
   }, [location])
 
+  // Auto-detect user's country code on component mount
+  useEffect(() => {
+    // Only run in browser environment
+    if (typeof window !== "undefined") {
+      getCallingCode()
+    }
+  }, [])
+
   useEffect(() => {
     if (sessionId) {
       localStorage.setItem("sessionId", sessionId)
@@ -295,38 +303,80 @@ const Login = () => {
     setCountryCodesOption(e.target.value)
   }
 
-  // NOTE: Things like FastForward will block this.
-  // This function will be used to get the user's country code on load
-  // todo - handle this later
-  // const getCallingCode = () => {
-  //   // Fetch the country code based on the user's IP
-  //   const url = "https://api.ipgeolocation.io/ipgeo?apiKey=9d0005d72b1a45619e83ccb9446e930b"
-  //   fetch(url)
-  //     .then(response => {
-  //       return response.json()
-  //     })
-  //     .then(data => {
-  //       country = data.country_code2
-  //       setCallingCode(country)
-  //     })
-  //     .catch(err => {
-  //       // Do something for an error here
-  //     })
-  // }
+    // NOTE: Things like FastForward will block this.
+  // Get the user's country code on load using a geolocation API
+  const getCallingCode = () => {
+    // Fetch the country code based on the user's IP
+    // Using a free IP geolocation API
+    const url = "https://ipapi.co/json/"
+    
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok")
+        }
+        return response.json()
+      })
+      .then(data => {
+        if (data && data.country) {
+          setCallingCode(data.country)
+        } else {
+          // Default to US if no country detected
+          setCallingCode("US")
+        }
+      })
+      .catch(err => {
+        console.log("Error detecting country:", err)
+        // Default to US if there's an error
+        setCallingCode("US")
+      })
+  }
 
-  // This function will be used to get the user's country code on load
-  // const setCallingCode = () => {
-  //   let IPcountryCode = countryCode
-  //   let codeDropdown = document.getElementById("countryCodes")
-  //   localStorage.setItem("IPcountryCode", IPcountryCode)
-  //   for (let i, j = 0; (i = codeDropdown.options[j]); j++) {
-  //     if (i.dataset.countryCode == IPcountryCode) {
-  //       codeDropdown.selectedIndex = j
-  //       i.selected = true
-  //       return IPcountryCode
-  //     }
-  //   }
-  // }
+  // Set the detected country code in the dropdown
+  const setCallingCode = (detectedCountryCode) => {
+    // First find the matching country in our list
+    const countryCodes = document.getElementById("countryCodes")
+    if (!countryCodes) return
+    
+    let found = false
+    
+    // Loop through all options to find the matching country code
+    for (let i = 0; i < countryCodes.options.length; i++) {
+      const option = countryCodes.options[i]
+      const countryCode = option.dataset.countryCode
+      
+      if (countryCode === detectedCountryCode) {
+        // Found the matching country
+        const value = option.value
+        setCountryCodesOption(value)
+        
+        // Extract the dial code for our state
+        const [code, dialCode] = value.split("-")
+        setCountryCode(code)
+        
+        console.log(`Auto-detected country: ${detectedCountryCode} with dial code ${dialCode}`)
+        found = true
+        break
+      }
+    }
+    
+    if (!found) {
+      // Default to US if country not found in our list
+      for (let i = 0; i < countryCodes.options.length; i++) {
+        const option = countryCodes.options[i]
+        if (option.dataset.countryCode === "US") {
+          const value = option.value
+          setCountryCodesOption(value)
+          
+          const [code, dialCode] = value.split("-")
+          setCountryCode(code)
+          
+          console.log(`Defaulting to US with dial code +1`)
+          break
+        }
+      }
+    }
+  }
 
   const handleCloseModal = () => {
     setIsBannedModalOpen(false)
