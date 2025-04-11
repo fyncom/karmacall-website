@@ -4,6 +4,7 @@ import Footer from "../components/footer"
 import "../components/sales-and-marketing-use-cases.css"
 import Seo from "../components/seo"
 import { GiftCardModal, NanoNotEnoughModal, NanoSentModal, ReferralAppDownloadModal } from "../components/Modal"
+import AppDownloadButton from "../components/AppDownloadButton"
 import ReactGA from "react-ga4"
 
 const CashOut = () => {
@@ -209,6 +210,11 @@ const CashOut = () => {
           <form method="post" id="giftCardCashOut" onSubmit={handleGiftCardWithdraw}>
             <button className="submit-btn"> Cash Out To Gift Cards </button>
           </form>
+          
+          {/* App download section with platform-specific button */}
+          <div className="app-download-container" style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "20px" }}>
+            <AppDownloadButton />
+          </div>
         </div>
       </div>
       <NanoSentModal isOpen={isNanoSentModalOpen} nanoExternal={destinationAccount} onClose={handleCloseModal} />
