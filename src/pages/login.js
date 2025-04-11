@@ -142,9 +142,20 @@ const Login = () => {
 
   // OTP value gets set in the Modal - cannot use states here..
   const handleOtpSubmit = async submittedOtp => {
+    console.log("[DEBUG] handleOtpSubmit - Starting OTP verification with code", submittedOtp ? "[REDACTED]" : "null")
+    console.log("[DEBUG] Browser info:", {
+      userAgent: navigator.userAgent,
+      browser: getBrowserName(),
+      environment: environment,
+    })
+    
     try {
+      console.log("[DEBUG] handleOtpSubmit - Calling verifyConfirm")
       const response = await verifyConfirm(submittedOtp)
+      console.log("[DEBUG] handleOtpSubmit - verifyConfirm response:", response)
+      
       if (response.status === 200) {
+        console.log("[DEBUG] handleOtpSubmit - OTP verification successful")
         setIsOtpModalOpen(false)
         setOtp(response.data.opt)
 
@@ -155,25 +166,52 @@ const Login = () => {
           phoneNumber: phoneNumber,
           countryCode: countryCode,
         }
+        console.log("[DEBUG] handleOtpSubmit - Authentication data prepared (phoneNumber & countryCode redacted)")
 
         // Use the existing handleSignUp function to check if user exists
         // and handle appropriate redirection
         // If user exists, it will redirect to cash-out page
         // If user doesn't exist, it will redirect to app stores
+        console.log("[DEBUG] handleOtpSubmit - Calling handleSignUp with redirectToApp=true")
         const result = await handleSignUp(authData, true)
+        console.log("[DEBUG] handleOtpSubmit - handleSignUp result:", result)
         return
       } else if (response.status === 500) {
+        console.log("[DEBUG] handleOtpSubmit - Server error (500)")
         openErrorModal()
       } else if (response.status === 418) {
+        console.log("[DEBUG] handleOtpSubmit - Banned number (418)")
         openBannedModal()
       } else if (response.data.verificationStatus === "FAILED") {
-        console.log("response failure")
+        console.log("[DEBUG] handleOtpSubmit - Verification failed")
       }
       setIsOtpModalOpen(false)
     } catch (error) {
+      console.error("[DEBUG] handleOtpSubmit - Error occurred:", error)
       setIsOtpModalOpen(false)
-      console.log(error)
     }
+  }
+  
+  // Helper function to identify browser
+  const getBrowserName = () => {
+    const userAgent = navigator.userAgent;
+    let browserName;
+    
+    if (userAgent.match(/firefox|fxios/i)) {
+      browserName = "Firefox";
+    } else if (userAgent.match(/chrome|chromium|crios/i)) {
+      browserName = "Chrome";
+    } else if (userAgent.match(/safari/i)) {
+      browserName = "Safari";
+    } else if (userAgent.match(/opr\//i)) {
+      browserName = "Opera";
+    } else if (userAgent.match(/edg/i)) {
+      browserName = "Edge";
+    } else {
+      browserName = "Unknown";
+    }
+    
+    return browserName;
   }
 
   const verifyConfirm = async submittedOtp => {
@@ -197,10 +235,21 @@ const Login = () => {
   }
 
   // v2 user register handles all this now. Both new and existing users are handled here.
+  // NOTE: "new" users are those who have never signed up before
+  // TODO: get backend to return a "new user" flag so we can redirect to app later.
   // redirectToApp parameter controls whether to redirect to app stores for new users
   const handleSignUp = async (authData = null, redirectToApp = false) => {
+    console.log("[DEBUG] handleSignUp - Starting with params:", { 
+      hasAuthData: authData !== null, 
+      redirectToApp 
+    })
+    
     try {
       const environment = getBrowserEnvironment()
+      console.log("[DEBUG] handleSignUp - Environment detected:", environment)
+      console.log("[DEBUG] handleSignUp - Browser:", getBrowserName())
+      console.log("[DEBUG] handleSignUp - Making API call to user/register/full")
+      
       const signUpResponse = await fetch(baseUrlV2 + "user/register/full", {
         method: "POST",
         headers: {
@@ -212,39 +261,61 @@ const Login = () => {
           number: phoneNumber,
         }),
       })
+      
+      console.log("[DEBUG] handleSignUp - API Response status:", signUpResponse.status)
       let signUpData = await signUpResponse.json()
+      console.log("[DEBUG] handleSignUp - API Response data:", {
+        // Redact sensitive info but show structure
+        hasUserId: !!signUpData.userId,
+        hasNanoAccount: !!signUpData.nanoAccount,
+        responseKeys: Object.keys(signUpData)
+      })
+      
       if (signUpResponse.status === 200) {
-        console.log("User %s successfully found with code 200", signUpData.userId)
+        console.log("[DEBUG] handleSignUp - User %s successfully found with code 200", signUpData.userId)
         setUserId(signUpData.userId)
         setNanoAccount(signUpData.nanoAccount)
+        
         // handle referrals
         if (referralCode !== "") {
+          console.log("[DEBUG] handleSignUp - Processing referral code")
           const refTx = await recordReferral(signUpData.userId)
           if (refTx.data.referralResponse != null) {
-            console.log("The Referral was successfully recorded!")
+            console.log("[DEBUG] handleSignUp - The Referral was successfully recorded!")
             localStorage.setItem("pendingReferralCode", referralCode)
           } else {
-            console.error("referral detected, and user signed up, but tx failed")
+            console.error("[DEBUG] handleSignUp - Referral detected, and user signed up, but tx failed")
           }
         }
         
         // If redirectToApp is false or not provided, direct to cash-out page
         if (!redirectToApp) {
+          console.log("[DEBUG] handleSignUp - Redirecting to /cash-out (redirectToApp=false)")
+          navigate("/cash-out")
+          return true
+        } else {
+          console.log("[DEBUG] handleSignUp - User exists, but redirectToApp=true. Redirecting to /cash-out anyway for existing user")
           navigate("/cash-out")
           return true
         }
       } else {
-        console.log("Failed to sign up user")
+        console.log("[DEBUG] handleSignUp - Failed to sign up user with status:", signUpResponse.status)
         return false
       }
       
+      // This code should no longer be reachable for existing users,
+      // as they should have been redirected to /cash-out above
+      console.log("[DEBUG] handleSignUp - Code path for NEW USERS ONLY. If this is an existing user, this is a problem!")
+      
       // If we're here and redirectToApp is true, proceed with app redirection
       if (redirectToApp && authData) {
+        console.log("[DEBUG] handleSignUp - Preparing app redirection for NEW user")
         const encodedData = encodeURIComponent(JSON.stringify(authData))
         
         // Detect platform - safely check for browser environment
         const isBrowser = typeof window !== "undefined" && typeof navigator !== "undefined"
         const isIOS = isBrowser ? /iPhone|iPad|iPod/i.test(navigator.userAgent) : false
+        console.log("[DEBUG] handleSignUp - Platform detection: isIOS=", isIOS)
         
         // Construct store URLs with deep link data
         const appStoreUrl = `https://apps.apple.com/us/app/karmacall/id1574524278?referrer=${encodedData}`
@@ -252,25 +323,31 @@ const Login = () => {
         
         // Try opening app first
         const appUrl = `karmacall://login?data=${encodedData}`
+        console.log("[DEBUG] handleSignUp - Attempting to open app with URL:", appUrl.substring(0, 20) + "...")
         window.location.href = appUrl
         
         // After short delay, check if we're still on the same page
         // If so, user likely doesn't have app installed
         setTimeout(() => {
+          console.log("[DEBUG] handleSignUp - In setTimeout callback, document.hidden=", document.hidden)
           if (document.hidden) {
             // App opened successfully
+            console.log("[DEBUG] handleSignUp - App opened successfully (document.hidden=true)")
             return
           }
           // Redirect to appropriate store with deep link data
-          window.location.href = isIOS ? appStoreUrl : playStoreUrl
+          const storeUrl = isIOS ? appStoreUrl : playStoreUrl
+          console.log("[DEBUG] handleSignUp - Redirecting to app store:", storeUrl.substring(0, 30) + "...")
+          window.location.href = storeUrl
         }, 1000)
         
         return true
       }
       
+      console.log("[DEBUG] handleSignUp - Reached end of function with no redirection")
       return false
     } catch (error) {
-      console.log(error)
+      console.error("[DEBUG] handleSignUp - Error occurred:", error)
       return false
     }
   }
