@@ -5,7 +5,7 @@ import "../../components/help-center.css"
 import "../../components/email-filters-and-rewards.css"
 import Seo from "../../components/seo"
 import GoogleDocsViewer from "../../components/GoogleDocsViewer"
-import Layout from "../../components/Layout"
+import Layout from "../../components/layout"
 import VideoEmbed from "../../components/VideoEmbed"
 import Breadcrumbs from "../../components/Breadcrumbs"
 
