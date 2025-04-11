@@ -8,6 +8,7 @@ import { navigate } from "gatsby" // or useNavigate from react-router-dom
 import { useLocation } from "@reach/router"
 import { isEmpty } from "lodash"
 import { getBrowserEnvironment } from "../utils/browserUtils"
+import "../components/login.css" // Import the login-specific CSS
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("")
@@ -488,7 +489,7 @@ const Login = () => {
                     />
                   </p>
                 </div>
-                <div className="input-group-btn">
+                <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
                   <p>
                     <span className="input-group-btn">
                       <button type="submit" className="user">

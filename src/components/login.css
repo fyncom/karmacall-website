@@ -1,0 +1,76 @@
+/* Login page specific styles */
+.login .input-group-btn button.user {
+  width: auto;
+  min-width: 200px;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+/* Fix container alignment issues */
+.login .input-group-btn {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.login .input-group-btn p,
+.login .input-group-btn span.input-group-btn {
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  /* Center all elements in the form */
+  .login #phoneNumberInput,
+  .login #phoneNumberInput > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .login #phoneNumberInput > div > p {
+    width: 100%;
+  }
+  
+  /* Button styling */
+  .login .input-group-btn button.user {
+    width: 100%;
+    min-width: 280px;
+    max-width: 90vw;
+    padding: 15px 20px;
+    font-size: 18px;
+    margin-top: 15px;
+  }
+  
+  /* Make the phone number input field fill the width */
+  .login #phoneNumber {
+    width: 100%;
+    min-width: 280px;
+    max-width: 90vw;
+    padding: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  /* Style the country code selector */
+  .login #countryCodes {
+    width: 100%;
+    min-width: 280px;
+    max-width: 90vw;
+    padding: 12px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+  
+  /* Fix any additional container issues */
+  .login .container {
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
+}
