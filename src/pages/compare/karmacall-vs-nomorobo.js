@@ -74,13 +74,13 @@ const KarmaCallVsNoMoRobo = () => {
           <div className="comparison-row">
             <div className="comparison-cell feature-cell">Pricing</div>
             <div className="comparison-cell">
-              Android: Free plan available
+              Android: Free basic plan available
               <br />
               Premium: $4.99/month (10x rewards)
               <br />
               Supreme: $9.99/month (100x rewards)
               <br />
-              iOS: Starting at $1.99/month
+              iOS: Plans start at $1.99/month (no free plan)
               <br />
               <span className="highlight">Lifetime plan: $99</span>
             </div>
@@ -118,8 +118,8 @@ const KarmaCallVsNoMoRobo = () => {
             <div className="comparison-cell">
               Mobile focus:
               <br />
-              • Android (free & paid plans)
-              <br />• iOS (paid plans)
+              • Android (free basic & paid plans)
+              <br />• iOS (paid plans only)
             </div>
             <div className="comparison-cell">
               • VoIP landlines (primary)
@@ -182,7 +182,7 @@ const KarmaCallVsNoMoRobo = () => {
               <h3>Earn While Blocking</h3>
               <p>
                 Instead of just blocking calls, KarmaCall pays you for each blocked call. NoMoRobo charges for mobile protection while offering no financial
-                benefits.
+                benefits. Note: Free plan is available for Android users only; iOS requires a paid plan.
               </p>
             </div>
 

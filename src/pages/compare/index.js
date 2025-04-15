@@ -139,7 +139,7 @@ const CompareIndex = () => {
               <h3>For Users</h3>
               <ul className="benefits-list">
                 <li>Earn rewards for blocking spam</li>
-                <li>Free plan for Android users</li>
+                <li>Free basic plan for Android users (iOS: paid plans only)</li>
                 <li>Premium features with higher rewards</li>
                 <li>Customizable protection settings</li>
               </ul>
@@ -229,8 +229,7 @@ const CompareIndex = () => {
             <h3>How does KarmaCall compare to subscription-based blockers?</h3>
             <p>
               While other apps just charge you monthly fees, KarmaCall's premium plans ($4.99-$9.99/month) come with increasing rewards for blocked calls.
-              Android users can start with a free plan, and all users can access advanced features like custom deposit requirements and verification timers with
-              premium plans. There's also a one-time lifetime package available for $99.
+              Android users can start with a free basic plan (no premium features), while iOS users must choose a paid plan. All users can access advanced features like custom deposit requirements and verification timers with premium plans. There's also a one-time lifetime package available for $99.
             </p>
           </div>
 

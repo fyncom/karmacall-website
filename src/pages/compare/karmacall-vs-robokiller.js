@@ -69,13 +69,13 @@ const KarmaCallVsRoboKiller = () => {
           <div className="comparison-row">
             <div className="comparison-cell feature-cell">Pricing</div>
             <div className="comparison-cell">
-              Android: Free plan available
+              Android: Free basic plan available
               <br />
               Premium: $4.99/month (10x rewards)
               <br />
               Supreme: $9.99/month (100x rewards)
               <br />
-              iOS: Starting at $1.99/month
+              iOS: Plans start at $1.99/month (no free plan)
               <br />
               <span className="highlight">Lifetime plan: $99</span>
             </div>
@@ -161,7 +161,7 @@ const KarmaCallVsRoboKiller = () => {
           <div className="reasons-grid">
             <div className="reason-card">
               <h3>Earn Money vs Pay Money</h3>
-              <p>While RoboKiller charges $39.99/year with no free version, KarmaCall is completely free AND pays you each time you block a spam call.</p>
+              <p>While RoboKiller charges $39.99/year with no free version, KarmaCall offers a free basic plan for Android users (paid plans on iOS) and pays you each time you block a spam call.</p>
             </div>
 
             <div className="reason-card">
