@@ -69,13 +69,13 @@ const KarmaCallVsTruecaller = () => {
           <div className="comparison-row">
             <div className="comparison-cell feature-cell">Pricing</div>
             <div className="comparison-cell">
-              Android: Free plan available
+              Android: Free basic plan available
               <br />
               Premium: $4.99/month (10x rewards)
               <br />
               Supreme: $9.99/month (100x rewards)
               <br />
-              iOS: Starting at $1.99/month
+              iOS: Plans start at $1.99/month (no free plan)
               <br />
               <span className="highlight">Lifetime plan: $99</span>
             </div>
@@ -161,8 +161,8 @@ const KarmaCallVsTruecaller = () => {
             </div>
 
             <div className="reason-card">
-              <h3>Completely Free</h3>
-              <p>While Truecaller charges up to $74.99/year for premium features, KarmaCall is completely free AND pays you to use it.</p>
+              <h3>Affordable and Rewarding</h3>
+              <p>While Truecaller charges up to $74.99/year for premium features, KarmaCall offers affordable plans for both Android and iOS, and pays you to block spam calls.</p>
             </div>
 
             <div className="reason-card">
