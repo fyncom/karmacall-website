@@ -77,6 +77,22 @@ module.exports = {
         pluginConfig: {
           head: true,
           respectDNT: true,
+          // Initialize in default mode, consent will be managed by our CookieConsentEEA component
+          defaultDataLayer: {
+            type: 'function',
+            function: () => {
+              // Set default consent mode to denied
+              // This will be overridden for non-EEA users or when consent is given
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function(){window.dataLayer.push(arguments);};
+              window.gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied',
+                'wait_for_update': 500
+              });
+              return {};
+            },
+          },
         },
       },
     },
@@ -86,6 +102,8 @@ module.exports = {
         includeInDevelopment: true,
         id: process.env.GATSBY_HOTJAR_ID,
         sv: 6,
+        // Hotjar will be initialized immediately for all users
+        // Our consent management will only disable it if an EEA user rejects consent
       },
     },
     {
@@ -93,12 +111,15 @@ module.exports = {
       options: {
         publishableKey: process.env.GATSBY_CLEARBIT_ID,
         enableOnDevMode: true,
+        // Clearbit doesn't have built-in consent management
+        // Our CookieConsentEEA component will handle this
       },
     },
     {
       resolve: `gatsby-plugin-facebook-pixel`,
       options: {
         pixelId: process.env.GATSBY_FACEBOOK_PIXEL,
+        // Facebook Pixel will be managed by our consent management
       },
     },
     {
