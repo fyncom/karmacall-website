@@ -98,6 +98,9 @@ const CookieConsentEEA = () => {
           if (window.fbq) {
             window.fbq('consent', 'revoke');
           }
+          
+          // Note: Clearbit doesn't have a specific consent API to disable it
+          // It will be loaded based on the consent status
         } else {
           // For non-EEA users, initialize all tracking without asking for consent
           initializeTracking();
