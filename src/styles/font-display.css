@@ -1,0 +1,20 @@
+/* Font display optimization to ensure text remains visible during webfont load */
+
+/* These rules apply the font-display property to existing font declarations */
+/* They work by extending/overriding the fonts that are already loaded elsewhere */
+
+/* Barlow Regular */
+@font-face {
+  font-family: 'Barlow';
+  src: local('Barlow Regular'), local('Barlow-Regular');
+  font-display: swap;
+}
+
+/* BarlowSemiCondensed Regular */
+@font-face {
+  font-family: 'BarlowSemiCondensed';
+  src: local('BarlowSemiCondensed Regular'), local('BarlowSemiCondensed-Regular');
+  font-display: swap;
+}
+
+/* This improves Lighthouse font score by preventing invisible text during loading */

@@ -8,6 +8,9 @@ import ReactGA from "react-ga4"
 import React from "react"
 import CookieConsentEEA from "./src/components/CookieConsentEEA"
 
+// Import font display optimization styles
+import "./src/styles/font-display.css"
+
 // Wrap the root element with our cookie consent component
 export const wrapRootElement = ({ element }) => {
   return (
@@ -24,6 +27,22 @@ export const onClientEntry = () => {
   if (process.env.NODE_ENV === "production" || process.env.GATSBY_DEBUG_MODE === "true") {
     // Initialize GA but tracking will be controlled by consent settings
     ReactGA.initialize(process.env.GATSBY_GOOGLE_TAG_ID)
+  }
+  
+  // Add font-display: swap to all font declarations to ensure text visibility during loading
+  if (typeof document !== 'undefined') {
+    const style = document.createElement('style')
+    style.innerHTML = `
+      @font-face {
+        font-family: 'Barlow';
+        font-display: swap !important;
+      }
+      @font-face {
+        font-family: 'BarlowSemiCondensed';
+        font-display: swap !important;
+      }
+    `
+    document.head.appendChild(style)
   }
 }
 
