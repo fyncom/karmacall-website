@@ -13,7 +13,6 @@
     "fs-extra": "^11.1.1",
     "gatsby": "^5.12.9",
     "gatsby-image": "^3.11.0",
-    "gatsby-plugin-clearbit": "^1.1.0",
     "gatsby-plugin-facebook-pixel": "^1.0.8",
     "gatsby-plugin-google-fonts": "^1.0.1",
     "gatsby-plugin-google-gtag": "^5.12.3",
