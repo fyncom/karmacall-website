@@ -5,8 +5,7 @@
 
 ## Performance optimization plugins
 #[[plugins]]
-# ADDED GRIDSOME cahce
-#package = "netlify-plugin-gatsby-cache"
+# ADDED GRIDSOME cache
 #
 
 # THIS WAS ALREADY HERE
