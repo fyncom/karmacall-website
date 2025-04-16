@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, lazy, Suspense } from "react"
 import Header from "../components/header"
-import Footer from "../components/footer"
 import { Link } from "gatsby"
 import { FaRobot, FaDollarSign, FaUserShield } from "react-icons/fa"
 import "../components/index.css"
@@ -8,6 +7,9 @@ import Seo from "../components/seo"
 import { GatsbyImage } from "gatsby-plugin-image"
 import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "../components/useCombinedQuery"
+
+// Lazy load components that are below the fold for better performance
+const Footer = lazy(() => import("../components/footer"))
 
 // Detect platform - safely check for browser environment
 const isBrowser = typeof window !== "undefined" && typeof navigator !== "undefined"
@@ -143,10 +145,10 @@ const BlockSpamEarnCash = () => {
           </div>
           <div className={"app-store-row"} id="app-store-row">
             <a href="https://play.google.com/store/apps/details?id=com.fyncom.robocash">
-              <GatsbyImage className="app-img-index" image={googlePlayBadge} alt="Get KarmaCall on Google Play" />
+              <GatsbyImage className="app-img-index" image={googlePlayBadge} alt="Get KarmaCall on Google Play" loading="eager" />
             </a>
             <a href="https://apps.apple.com/us/app/karmacall/id1574524278">
-              <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" />
+              <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" loading="eager" />
             </a>
           </div>
         </div>
@@ -222,7 +224,11 @@ const BlockSpamEarnCash = () => {
         </div>
         <div className="use-cases-sales-marketing-container">
           <div className="use-case">
-            <GatsbyImage image={smugLady} alt="The most common kind of KarmaCall interaction. Unknown calls get blocked and you get instant cash-back!" />
+            <GatsbyImage 
+              image={smugLady} 
+              loading="lazy" 
+              alt="The most common kind of KarmaCall interaction. Unknown calls get blocked and you get instant cash-back!" 
+            />
             <h2>Blocked</h2>
             <sub className="sub-features">Instant CashBack!</sub>
             <p>Your phone will not ring. The call is sent to voicemail and we instantly pay you as thanks for fighting scams!</p>
@@ -230,6 +236,7 @@ const BlockSpamEarnCash = () => {
           <div className="use-case">
             <GatsbyImage
               image={harold}
+              loading="lazy"
               alt="A unique kind of KarmaCall. Like a bank micro-deposit to verify ownership, this caller's deposited 5 cents to your account to verify they're willing to take a chance at losing money in order to talk to you. Give these callers a chance! Or don't - it's totally up to you!"
             />
             <h2>Refundable</h2>
@@ -239,6 +246,7 @@ const BlockSpamEarnCash = () => {
           <div className="use-case">
             <GatsbyImage
               image={happyLady}
+              loading="lazy"
               alt="These are commmercial callers who are paying you for every second you're on the phone with them! You'll make more here by staying on the line, than you would by hanging up on them."
             />
             <h2>Cash</h2>
@@ -287,7 +295,9 @@ const BlockSpamEarnCash = () => {
           </p>
         </section>
       </section>
-      <Footer />
+      <Suspense fallback={<div>Loading footer...</div>}>
+        <Footer />
+      </Suspense>
     </div>
   )
 }

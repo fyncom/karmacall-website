@@ -52,10 +52,28 @@ const AppDownloadButton = ({ className = "", style = {} }) => {
     }
   }, [])
 
-  // Don't render anything during SSR
-  if (!isClient) return null
+  // Render a consistent skeleton during SSR to prevent hydration mismatch
+  // This ensures the server and initial client render match exactly
+  if (!isClient) {
+    return (
+      <div className={`app-download-section ${className}`} style={style}>
+        <h3>Download our app for a better experience</h3>
+        <div className="app-store-row">
+          {/* Render both buttons in a hidden state during SSR to match DOM structure */}
+          <div style={{ visibility: 'hidden' }}>
+            <a className="store-button">
+              <div className="app-img-index gatsby-image-wrapper"></div>
+            </a>
+            <a className="store-button">
+              <div className="app-img-index gatsby-image-wrapper"></div>
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  // Show platform-specific button or both if platform cannot be determined
+  // Client-side render with platform detection
   return (
     <div className={`app-download-section ${className}`} style={style}>
       <h3>Download our app for a better experience</h3>

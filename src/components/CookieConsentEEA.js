@@ -21,8 +21,15 @@ const initializeTracking = () => {
     window.fbq('consent', 'grant');
   }
   
-  // Clearbit is typically loaded via script tag and doesn't have a specific consent API
-  // It will be loaded normally for all users
+  // Initialize Clearbit safely - using try/catch to avoid any script errors
+  try {
+    // Prevent direct CORS requests to Clearbit by controlling when the script loads
+    if (window.clearbit && typeof window.clearbit.initialize === 'function') {
+      window.clearbit.initialize();
+    }
+  } catch (e) {
+    console.warn('Clearbit initialization error:', e);
+  }
 };
 
 // Function to disable tracking for users who reject consent
