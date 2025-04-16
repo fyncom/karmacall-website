@@ -3,6 +3,26 @@
     [headers.values]
         X-Robots-Tag = "index, follow"
 
+## Performance optimization plugins
+#[[plugins]]
+# ADDED GRIDSOME cahce
+#package = "netlify-plugin-gatsby-cache"
+#
+
+# THIS WAS ALREADY HERE
+#[[plugins]]
+#package = "@netlify/plugin-lighthouse"
+#  [plugins.inputs]
+#  audit_url = "https://karmacall.com"
+
+# ADDED THIS
+#[[plugins]]
+#package = "netlify-plugin-inline-critical-css"
+#
+# DID NOT ADD THIS SINCE GOOGLE HANDLES IT
+#[[plugins]]
+#package = "netlify-plugin-submit-sitemap"
+
 # CORS headers for API requests
 [[headers]]
   for = "/api/*"
