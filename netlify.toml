@@ -38,13 +38,13 @@ package = "netlify-plugin-checklinks"
   # Skip external links from failing the build
   skipPatterns = [
     "www.googletagmanager.com", 
-    "googletagmanager.com"
-  ]
-  skipPrefix = [
+    "googletagmanager.com",
     "https://www.googletagmanager.com",
-    "https://googletagmanager.com" 
+    "https://googletagmanager.com"
   ]
   # Don't throw error on missing service worker
   todoPatterns = [
     "sw.js"
   ]
+  # Disable checking external URLs to avoid certificate issues
+  checkExternal = false
