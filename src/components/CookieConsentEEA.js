@@ -57,6 +57,16 @@ const CookieConsentEEA = () => {
     // Only run on client
     if (typeof window === "undefined") return;
 
+    // Set default consent mode for Google Analytics
+    // This will be overridden based on user location and consent
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'wait_for_update': 500
+    });
+
     // Initialize Hotjar immediately for all users
     // This ensures we capture user interactions from the start
     if (window._hjSettings) {

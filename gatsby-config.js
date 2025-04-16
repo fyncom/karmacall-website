@@ -77,22 +77,7 @@ module.exports = {
         pluginConfig: {
           head: true,
           respectDNT: true,
-          // Initialize in default mode, consent will be managed by our CookieConsentEEA component
-          defaultDataLayer: {
-            type: 'function',
-            function: () => {
-              // Set default consent mode to denied
-              // This will be overridden for non-EEA users or when consent is given
-              window.dataLayer = window.dataLayer || [];
-              window.gtag = function(){window.dataLayer.push(arguments);};
-              window.gtag('consent', 'default', {
-                'ad_storage': 'denied',
-                'analytics_storage': 'denied',
-                'wait_for_update': 500
-              });
-              return {};
-            },
-          },
+          // Consent will be managed by our CookieConsentEEA component
         },
       },
     },
