@@ -9,6 +9,7 @@ import { useLocation } from "@reach/router"
 import { isEmpty } from "lodash"
 import { getBrowserEnvironment } from "../utils/browserUtils"
 import "../components/login.css" // Import the login-specific CSS
+import CookieConsentEEA from "../components/CookieConsentEEA"
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("")
@@ -463,6 +464,7 @@ const Login = () => {
 
   return (
     <div className="login">
+      <CookieConsentEEA />
       <Seo title="Login KarmaCall" description="A simple login page to let you manage your account" />
       <Header />
       <div className="AppText">
