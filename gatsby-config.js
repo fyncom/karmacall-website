@@ -92,16 +92,6 @@ module.exports = {
       },
     },
     {
-      resolve: "gatsby-plugin-clearbit",
-      options: {
-        publishableKey: process.env.GATSBY_CLEARBIT_ID,
-        enableOnDevMode: false, // Disable in dev mode to prevent CORS issues
-        // Clearbit doesn't have built-in consent management
-        // Our CookieConsentEEA component will handle this
-        // We'll load Clearbit through a proxy in production to avoid CORS issues
-      },
-    },
-    {
       resolve: `gatsby-plugin-facebook-pixel`,
       options: {
         pixelId: process.env.GATSBY_FACEBOOK_PIXEL,

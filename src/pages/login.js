@@ -10,6 +10,7 @@ import { isEmpty } from "lodash"
 import { getBrowserEnvironment } from "../utils/browserUtils"
 import "../components/login.css" // Import the login-specific CSS
 import CookieConsentEEA from "../components/CookieConsentEEA"
+import ClientOnly from "../components/ClientOnly"
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("")
@@ -52,13 +53,13 @@ const Login = () => {
       console.log("found referral code %s", referralCodeFromUrl)
       setReferralCode(referralCodeFromUrl)
     }
-  }, [location])
-
-  // Auto-detect user's country code on component mount
-  useEffect(() => {
-    // Only run in browser environment
-    if (typeof window !== "undefined") {
-      getCallingCode()
+    
+    // Auto-detect country code only on client-side, wrapped in a setTimeout 
+    // to ensure it runs after initial hydration is complete
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        getCallingCode()
+      }, 0)
     }
   }, [])
 
@@ -413,6 +414,9 @@ const Login = () => {
 
   // Set the detected country code in the dropdown
   const setCallingCode = (detectedCountryCode) => {
+    // Only run on client-side
+    if (typeof document === 'undefined') return
+    
     // First find the matching country in our list
     const countryCodes = document.getElementById("countryCodes")
     if (!countryCodes) return
@@ -471,36 +475,38 @@ const Login = () => {
         <section>
           <div id="phone-number-entry" className="network">
             <div className="container">
-              <form method="get" id="phoneNumberInput" onSubmit={handlePhoneSubmit}>
-                <div>
-                  <p>
-                    <CountryCodeSelector value={countryCodesOption} onChange={handleCountryChange} />
-                  </p>
-                  <p>
-                    <input
-                      type="tel"
-                      name="phoneNumber"
-                      id="phoneNumber"
-                      placeholder="Enter Phone Number"
-                      className="form-control"
-                      value={phoneNumber}
-                      onChange={e => setPhoneNumber(e.target.value)}
-                      pattern="[0-9]*"
-                      title="Phone number should only contain digits."
-                      required
-                    />
-                  </p>
-                </div>
-                <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
-                  <p>
-                    <span className="input-group-btn">
-                      <button type="submit" className="user">
-                        Confirm Phone Number
-                      </button>
-                    </span>
-                  </p>
-                </div>
-              </form>
+              <ClientOnly>
+                <form method="get" id="phoneNumberInput" onSubmit={handlePhoneSubmit}>
+                  <div>
+                    <p>
+                      <CountryCodeSelector value={countryCodesOption} onChange={handleCountryChange} />
+                    </p>
+                    <p>
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        id="phoneNumber"
+                        placeholder="Enter Phone Number"
+                        className="form-control"
+                        value={phoneNumber}
+                        onChange={e => setPhoneNumber(e.target.value)}
+                        pattern="[0-9]*"
+                        title="Phone number should only contain digits."
+                        required
+                      />
+                    </p>
+                  </div>
+                  <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
+                    <p>
+                      <span className="input-group-btn">
+                        <button type="submit" className="user">
+                          Confirm Phone Number
+                        </button>
+                      </span>
+                    </p>
+                  </div>
+                </form>
+              </ClientOnly>
               {/* <h3> */}
               {/* <a href="/login-email">Click here to login with email</a> */}
               {/* </h3> */}

@@ -8,8 +8,8 @@ import ReactGA from "react-ga4"
 import React from "react"
 import CookieConsentEEA from "./src/components/CookieConsentEEA"
 
-// Import font display optimization styles
-import "./src/styles/font-display.css"
+// Import proper font definitions with font-display: swap
+import "./src/components/fonts.css"
 
 // Wrap the root element with our cookie consent component
 export const wrapRootElement = ({ element }) => {
@@ -29,20 +29,22 @@ export const onClientEntry = () => {
     ReactGA.initialize(process.env.GATSBY_GOOGLE_TAG_ID)
   }
   
-  // Add font-display: swap to all font declarations to ensure text visibility during loading
+  // Add preload links for critical fonts to improve loading performance
   if (typeof document !== 'undefined') {
-    const style = document.createElement('style')
-    style.innerHTML = `
-      @font-face {
-        font-family: 'Barlow';
-        font-display: swap !important;
-      }
-      @font-face {
-        font-family: 'BarlowSemiCondensed';
-        font-display: swap !important;
-      }
-    `
-    document.head.appendChild(style)
+    const preloadFonts = [
+      '/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-Regular.ttf',
+      '/Barlow-AllFonts_Includes_SemiCondensed/Barlow-Regular.ttf'
+    ]
+    
+    preloadFonts.forEach(fontUrl => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.href = fontUrl
+      link.as = 'font'
+      link.type = 'font/ttf'
+      link.crossOrigin = 'anonymous'
+      document.head.appendChild(link)
+    })
   }
 }
 
