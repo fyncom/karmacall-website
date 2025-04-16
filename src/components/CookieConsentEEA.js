@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import CookieConsent from "react-cookie-consent";
+import ClientOnly from "./ClientOnly";
 
 const EEA_COUNTRIES = [
   "AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO","SK","SI","ES","SE", 
@@ -19,16 +21,6 @@ const initializeTracking = () => {
   // Enable Facebook Pixel
   if (window.fbq) {
     window.fbq('consent', 'grant');
-  }
-  
-  // Initialize Clearbit safely - using try/catch to avoid any script errors
-  try {
-    // Prevent direct CORS requests to Clearbit by controlling when the script loads
-    if (window.clearbit && typeof window.clearbit.initialize === 'function') {
-      window.clearbit.initialize();
-    }
-  } catch (e) {
-    console.warn('Clearbit initialization error:', e);
   }
 };
 
@@ -115,9 +107,6 @@ const CookieConsentEEA = () => {
           if (window.fbq) {
             window.fbq('consent', 'revoke');
           }
-          
-          // Note: Clearbit doesn't have a specific consent API to disable it
-          // It will be loaded based on the consent status
         } else {
           // For non-EEA users, initialize all tracking without asking for consent
           initializeTracking();
@@ -134,40 +123,37 @@ const CookieConsentEEA = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleConsent = (accepted) => {
-    localStorage.setItem("cookie_consent_eea", accepted ? "accepted" : "rejected");
-    setShowBanner(false);
-    
-    if (accepted) {
-      initializeTracking();
-    } else {
-      // If rejected, disable all tracking including Hotjar recording
-      disableTracking();
-    }
+  const handleCookieAccept = () => {
+    localStorage.setItem("cookie_consent_eea", "accepted");
+    initializeTracking();
   };
 
-  // We don't need this useEffect anymore since we're handling
-  // the consent in the initial useEffect and handleConsent functions
-  // Hotjar will always be recording from the start
+  const handleCookieDecline = () => {
+    localStorage.setItem("cookie_consent_eea", "rejected");
+    disableTracking();
+  };
 
   if (!showBanner || loading) return null;
 
   return (
-    <div style={{
-      position: "fixed",
-      bottom: 0,
-      left: 0,
-      width: "100%",
-      background: "#222",
-      color: "#fff",
-      padding: "16px 8px",
-      zIndex: 9999,
-      textAlign: "center",
-      fontSize: "1rem"
-    }}>
-      We use cookies for analytics and improving your experience. Only enabled if you accept. <button style={{marginLeft:8,marginRight:8}} onClick={() => handleConsent(true)}>Accept</button>
-      <button onClick={() => handleConsent(false)}>Reject</button>
-    </div>
+    <ClientOnly>
+      <CookieConsent
+        enableDeclineButton
+        flipButtons
+        location="bottom"
+        buttonText="Accept"
+        declineButtonText="Decline"
+        cookieName="karmacall-marketing-consent"
+        style={{ background: "#2B373B" }}
+        buttonStyle={{ background: "#4e9815", color: "#fff", fontSize: "13px" }}
+        declineButtonStyle={{ background: "#c12f2f", color: "#fff", fontSize: "13px" }}
+        expires={150}
+        onAccept={handleCookieAccept}
+        onDecline={handleCookieDecline}
+      >
+        This website uses cookies to enhance the user experience and analyze site traffic.
+      </CookieConsent>
+    </ClientOnly>
   );
 };
 
