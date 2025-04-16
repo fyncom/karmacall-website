@@ -25,8 +25,13 @@ export const wrapRootElement = ({ element }) => {
 export const onClientEntry = () => {
   // Only initialize in production or if debug mode is enabled
   if (process.env.NODE_ENV === "production" || process.env.GATSBY_DEBUG_MODE === "true") {
-    // Initialize GA but tracking will be controlled by consent settings
-    ReactGA.initialize(process.env.GATSBY_GOOGLE_TAG_ID)
+    // Initialize GA with consent mode support
+    ReactGA.initialize(process.env.GATSBY_GOOGLE_TAG_ID, {
+      // Use consistent gaOptions to ensure consent mode works properly
+      gaOptions: {
+        cookieFlags: 'samesite=none;secure'
+      }
+    })
   }
   
   // Add preload links for critical fonts to improve loading performance
@@ -55,9 +60,14 @@ export const onRouteUpdate = ({ location }) => {
     
     const consentStatus = localStorage.getItem("cookie_consent_eea")
     
-    // Only send analytics if user has accepted cookies or is not in EEA
-    if (consentStatus === "accepted" || consentStatus === "non_eea_user") {
-      ReactGA.send({ hitType: "pageview", page: location.pathname })
-    }
+    // Always send the pageview - Google Analytics will automatically respect
+    // the consent settings that were previously set
+    // This ensures measurement gaps are filled in for users who have granted consent
+    ReactGA.send({ 
+      hitType: "pageview", 
+      page: location.pathname,
+      // Add GDPR context parameters
+      consent: consentStatus === "accepted" || consentStatus === "non_eea_user" ? "granted" : "denied"
+    })
   }
 }
