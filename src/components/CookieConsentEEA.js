@@ -72,7 +72,7 @@ const CookieConsentEEA = () => {
       if (consentStatus === "accepted" || consentStatus === "non_eea_user") {
         initializeTracking();
       } else if (consentStatus === "rejected") {
-        // If previously rejected, disable tracking except Hotjar which continues recording
+        // If previously rejected, disable all tracking including Hotjar recording
         disableTracking();
       }
       setLoading(false);
@@ -121,8 +121,7 @@ const CookieConsentEEA = () => {
     if (accepted) {
       initializeTracking();
     } else {
-      // If rejected, disable other tracking but Hotjar continues recording
-      // until explicitly stopped
+      // If rejected, disable all tracking including Hotjar recording
       disableTracking();
     }
   };
