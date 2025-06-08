@@ -1,0 +1,359 @@
+.mentions-header {
+  text-align: center;
+  padding: 3rem 2rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mentions-header h1 {
+  color: var(--karmacall-green);
+  font-size: 48px;
+  margin-bottom: 1rem;
+}
+
+.mentions-header p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-text);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.mentions-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem 3rem;
+}
+
+.mention-section {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.mention-section:last-child {
+  border-bottom: none;
+}
+
+.mention-section h2 {
+  color: var(--karmacall-green);
+  font-size: 32px;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.video-trigger {
+  background: linear-gradient(135deg, var(--karmacall-green), #0066cc);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+  border: none;
+  width: 100%;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.video-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #0066cc, var(--karmacall-green));
+}
+
+.video-trigger-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.video-trigger h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.video-trigger .timestamp {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: bold;
+  font-size: 14px;
+  margin: 0.5rem 0 0 0;
+}
+
+.play-icon {
+  font-size: 24px;
+  opacity: 0.8;
+}
+
+.video-trigger:hover .play-icon {
+  opacity: 1;
+}
+
+.mention-content h3 {
+  color: var(--karmacall-green);
+  font-size: 24px;
+  margin-bottom: 0.5rem;
+}
+
+.timestamp {
+  color: var(--karmacall-gold);
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 1rem;
+}
+
+.highlight-text {
+  background-color: var(--highlight-bg, #f8f9fa);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--karmacall-green);
+  margin-top: 1rem;
+  color: var(--color-text);
+}
+
+.highlight-text p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.highlight-text p:last-child {
+  margin-bottom: 0;
+}
+
+.conversation-format {
+  background-color: var(--highlight-bg, #f8f9fa);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--karmacall-gold);
+  margin-top: 1rem;
+  color: var(--color-text);
+}
+
+.exchange {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.exchange:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.exchange h4 {
+  color: var(--karmacall-green);
+  font-size: 18px;
+  margin-bottom: 1rem;
+}
+
+.exchange p {
+  margin-bottom: 0.8rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.exchange p strong {
+  color: var(--karmacall-gold);
+}
+
+/* Modal Styles */
+.video-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.video-modal.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.video-modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 800px;
+  background: var(--color-background);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.video-modal.open .video-modal-content {
+  transform: scale(1);
+}
+
+.video-modal-header {
+  padding: 1.5rem;
+  background: var(--karmacall-green);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.video-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.close-modal:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --highlight-bg: #2c2c2c;
+    --border-color: #444;
+    --text-color: var(--color-text);
+  }
+  
+  .highlight-text {
+    background-color: var(--highlight-bg);
+    color: var(--color-text);
+  }
+  
+  .conversation-format {
+    background-color: var(--highlight-bg);
+    color: var(--color-text);
+  }
+  
+  .exchange {
+    border-bottom-color: var(--border-color);
+  }
+  
+  .mention-section {
+    border-bottom-color: var(--border-color);
+  }
+}
+
+/* Manual dark mode support */
+:root[data-theme="dark"] {
+  --highlight-bg: #2c2c2c;
+  --border-color: #444;
+  --text-color: var(--color-text);
+}
+
+:root[data-theme="dark"] .highlight-text {
+  background-color: var(--highlight-bg);
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .conversation-format {
+  background-color: var(--highlight-bg);
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .exchange {
+  border-bottom-color: var(--border-color);
+}
+
+:root[data-theme="dark"] .mention-section {
+  border-bottom-color: var(--border-color);
+}
+
+@media (max-width: 768px) {
+  .mentions-header {
+    padding: 2rem 1rem 1rem;
+  }
+  
+  .mentions-header h1 {
+    font-size: 36px;
+  }
+  
+  .mentions-container {
+    padding: 0 1rem 2rem;
+  }
+  
+  .mention-section {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+  }
+  
+  .mention-section h2 {
+    font-size: 24px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .mention-content h3 {
+    font-size: 20px;
+  }
+  
+  .highlight-text,
+  .conversation-format {
+    padding: 1rem;
+  }
+  
+  .exchange h4 {
+    font-size: 16px;
+  }
+
+  .video-trigger h3 {
+    font-size: 16px;
+  }
+
+  .video-trigger .timestamp {
+    font-size: 12px;
+  }
+
+  .video-modal-content {
+    width: 95%;
+    margin: 1rem;
+  }
+
+  .video-modal-header {
+    padding: 1rem;
+  }
+
+  .video-modal-header h3 {
+    font-size: 16px;
+  }
+} 

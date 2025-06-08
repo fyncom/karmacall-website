@@ -84,8 +84,15 @@ const Header = () => {
               </Link>
             </li>
             <li className="mobile-menu-item">
+              <Link to="/mentions">Mentions</Link>
+            </li>
+            <li className="mobile-menu-item">
               <Link to="/blog">Blog</Link>
             </li>
+            {/* this is from fyncom site - if you want it - change for karamcall relevance and update content */}
+            {/* <li className="mobile-menu-item">
+              <Link to="/help-center">Help</Link>
+            </li> */}
           </ul>
         </nav>
 
@@ -108,8 +115,14 @@ const Header = () => {
             </Link>
           </li>
           <li>
+            <Link to="/mentions">Mentions</Link>
+          </li>
+          <li>
             <Link to="/blog">Blog</Link>
           </li>
+          {/* <li>
+            <Link to="/help-center">Help</Link>
+          </li> */}
         </ul>
         <div className="login-buttons">
           <Link to="/login">
