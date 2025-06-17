@@ -76,6 +76,19 @@ const Verify = () => {
       })
       console.log("Raw response:", verifyResponse)
 
+      // Check for HTTP error status codes before trying to parse JSON
+      if (!verifyResponse.ok) {
+        console.error(`Email verification failed with status: ${verifyResponse.status}`)
+        if (verifyResponse.status >= 500) {
+          // Server error (5xx)
+          openErrorModal()
+        } else if (verifyResponse.status >= 400) {
+          // Client error (4xx) - treat as verification failure
+          setVerificationStatus("FAILED")
+        }
+        return
+      }
+
       const verifyData = await verifyResponse.json()
       console.log("Verification response:", verifyData)
       setVerificationStatus(verifyData.verificationStatus)
@@ -123,6 +136,16 @@ const Verify = () => {
                   </svg>
                   <h2>Email Verified!</h2>
                   <p>Your email has been successfully verified. You can now close this window and return to the app.</p>
+                </div>
+              )}
+
+              {!isLoading && (verificationStatus === "FAILED" || verificationStatus === null) && (
+                <div className="error-modal">
+                  <svg width="48" height="48" viewBox="0 0 24 24" style={{ marginBottom: "16px" }}>
+                    <path fill="#E74C3C" d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z" />
+                  </svg>
+                  <h2>Verification Failed</h2>
+                  <p>Unable to verify your email. The link may be expired or invalid. Please try requesting a new verification email from the app.</p>
                 </div>
               )}
               <ServerErrorModal isOpen={isErrorModalOpen} onClose={handleCloseModal} />
