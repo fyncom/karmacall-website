@@ -67,13 +67,12 @@
     margin: 40px auto;
     max-width: 300px;
   }
-.fyncom-logo-header {
+  .fyncom-logo-header {
     display: flex; /* Aligns children side by side */
     align-items: center; /* Centers children vertically */
-    justify-content: center; /* Centers children horizontally */
+    justify-content: flex-start; /* Aligns children to the left */
     position: relative;
     gap: 10px; /* Adds space between children */
-    margin: 0 auto; /* Centers the logo-header in the parent container */
   }
   .semi-barlow-extra-bold {
     font-family: 'Barlow SemiCondensed', sans-serif;

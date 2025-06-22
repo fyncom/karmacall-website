@@ -53,13 +53,15 @@ const Header = () => {
   return (
     <header className="header-top">
       <div className="header-container">
-        <Link to="/">
-          <div className="fyncom-logo-header">
+        <div className="fyncom-logo-header">
+          <Link to="/">
             <Img className="left-header-logo" fixed={karmacallLogoData} alt="KarmaCall Logo" />
-            <div className="arrow-container"></div>
+          </Link>
+          <div className="arrow-container"></div>
+          <a href="https://fyncom.com">
             <Img className="right-header-logo" fixed={logoData} alt="FynCom Logo, which indicates that KarmaCall is built with FynCom tech" />
-          </div>
-        </Link>
+          </a>
+        </div>
         <div ref={hamburgerRef} className="mobile-menu-icon" onClick={toggleMenu}>
           <FaBars />
         </div>
