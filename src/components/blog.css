@@ -1,6 +1,6 @@
 .blog-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 30px;
   padding: 20px 0;
 }
@@ -17,6 +17,28 @@
 .blog-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.blog-placeholder {
+  background: transparent;
+  border: 2px dashed var(--border-color, rgba(0, 0, 0, 0.2));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  opacity: 0.6;
+}
+
+.blog-placeholder-content {
+  text-align: center;
+  padding: 20px;
+}
+
+.blog-placeholder-text {
+  color: var(--color-text-secondary, #999);
+  font-style: italic;
+  font-size: 0.9rem;
 }
 
 .blog-link {
@@ -81,6 +103,14 @@
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
   
+  .blog-placeholder {
+    border-color: var(--border-color, #444);
+  }
+  
+  .blog-placeholder-text {
+    color: var(--color-text-secondary, #888);
+  }
+  
   .blog-title {
     color: var(--color-text, #fff);
   }
@@ -109,6 +139,14 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
+:root[data-theme="dark"] .blog-placeholder {
+  border-color: var(--border-color, #444);
+}
+
+:root[data-theme="dark"] .blog-placeholder-text {
+  color: var(--color-text-secondary, #888);
+}
+
 :root[data-theme="dark"] .blog-title {
   color: var(--color-text, #fff);
 }
@@ -125,6 +163,31 @@
   color: var(--color-text-secondary, #ccc);
 }
 
+/* Tablet breakpoint - 3 columns */
+@media (max-width: 1200px) {
+  .blog-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+  }
+  
+  .blog-placeholder {
+    display: none;
+  }
+}
+
+/* Small tablet breakpoint - 2 columns */
+@media (max-width: 900px) {
+  .blog-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .blog-placeholder {
+    display: none;
+  }
+}
+
+/* Mobile breakpoint - 1 column */
 @media (max-width: 768px) {
   .blog-grid {
     grid-template-columns: 1fr;
@@ -134,6 +197,10 @@
   
   .blog-card {
     margin: 0 10px;
+  }
+  
+  .blog-placeholder {
+    display: none;
   }
   
   .blog-content {

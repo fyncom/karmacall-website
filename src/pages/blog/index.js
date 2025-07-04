@@ -11,10 +11,14 @@ export default function BlogIndex({ data }) {
     description: "Stay updated on the latest in KarmaCall technology.",
   }
 
+  const blogPosts = data.allMdx.nodes
+  const remainder = blogPosts.length % 4
+  const placeholdersNeeded = remainder === 0 ? 0 : 4 - remainder
+
   return (
     <Wrapper seo={seo}>
       <div className="blog-grid">
-        {data.allMdx.nodes.map(({ id, frontmatter, fields }) => (
+        {blogPosts.map(({ id, frontmatter, fields }) => (
           <div className="blog-card" key={id}>
             <Link to={`${fields.slug}`} className="blog-link">
               <div className="blog-image-container">
@@ -32,6 +36,13 @@ export default function BlogIndex({ data }) {
                 </div>
               </div>
             </Link>
+          </div>
+        ))}
+        {Array.from({ length: placeholdersNeeded }, (_, index) => (
+          <div className="blog-placeholder" key={`placeholder-${index}`}>
+            <div className="blog-placeholder-content">
+              <div className="blog-placeholder-text">More articles coming soon...</div>
+            </div>
           </div>
         ))}
       </div>
