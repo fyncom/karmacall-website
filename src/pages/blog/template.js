@@ -16,51 +16,74 @@ export default function Template() {
 
   return (
     <Wrapper seo={seo}>
-      <div style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem" }}>
-        {/* Blog post layout */}
-        <div style={{ marginBottom: "3rem" }}>
-          {/* Title */}
-          <h1
-            style={{
-              fontSize: "2.5rem",
-              fontWeight: "700",
-              lineHeight: "1.2",
-              marginBottom: "1rem",
-              color: "var(--color-text, #333)",
-            }}
-          >
-            Your Article Title Goes Here
-          </h1>
-
-          {/* Meta information */}
-          <div
-            className="blog-meta"
-            style={{
-              marginBottom: "2rem",
-              fontSize: "1rem",
-              borderBottom: "1px solid var(--border-color, #eee)",
-              paddingBottom: "1rem",
-            }}
-          >
-            <span className="blog-author">Author Name</span>
-            <span className="blog-date">March 15, 2024</span>
-          </div>
-
-          {/* Article summary/blurb */}
-          <div style={{ marginBottom: "2rem" }}>
-            <p
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
+        {/* Header section with same width as main content */}
+        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginBottom: "3rem" }}>
+          {/* Header content - same width as main content column */}
+          <div style={{ flex: "1", minWidth: "0" }}>
+            {/* Title */}
+            <h1
               style={{
-                fontSize: "1.2rem",
-                lineHeight: "1.6",
-                color: "var(--color-text-secondary, #666)",
-                fontStyle: "italic",
-                marginBottom: "2rem",
+                fontSize: "2.5rem",
+                fontWeight: "700",
+                lineHeight: "1.2",
+                marginBottom: "1rem",
+                color: "var(--color-text, #333)",
               }}
             >
-              This is a short article summary or blurb that gives readers a quick overview of what they'll learn. It should be engaging and informative, setting
-              expectations for the content below.
-            </p>
+              Your Article Title Goes Here
+            </h1>
 
+            {/* Meta information */}
+            <div
+              className="blog-meta"
+              style={{
+                marginBottom: "2rem",
+                fontSize: "1rem",
+                borderBottom: "1px solid var(--border-color, #eee)",
+                paddingBottom: "1rem",
+              }}
+            >
+              <span className="blog-author">Author Name</span>
+              <span className="blog-date">March 15, 2024</span>
+            </div>
+
+            {/* Article summary/blurb */}
+            <div
+              style={{
+                marginBottom: "0",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "1.2rem",
+                  lineHeight: "1.6",
+                  color: "var(--color-text-secondary, #666)",
+                  fontStyle: "italic",
+                  marginBottom: "0",
+                }}
+              >
+                This is a short article summary or blurb that gives readers a quick overview of what they'll learn. It should be engaging and informative,
+                setting expectations for the content below.
+              </p>
+            </div>
+          </div>
+
+          {/* Empty space to match sidebar width */}
+          <div
+            style={{
+              width: "280px",
+              flexShrink: 0,
+            }}
+          >
+            {/* This empty div ensures the header content aligns with main content */}
+          </div>
+        </div>
+
+        {/* Main content container with sidebar layout - starts at featured image level */}
+        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
+          {/* Main article content */}
+          <div style={{ flex: "1", minWidth: "0" }}>
             {/* Featured image */}
             <div
               className="blog-image-container"
@@ -104,45 +127,295 @@ export default function Template() {
                 <strong>Credits:</strong> Image source, photographer, or attribution information goes here.
               </p>
             </div>
-          </div>
 
-          {/* Placeholder content */}
-          <div
-            style={{
-              lineHeight: "1.7",
-              fontSize: "1.1rem",
-              color: "var(--color-text, #333)",
-            }}
-          >
-            <p style={{ marginBottom: "1.5rem" }}>
-              <strong>This is where your lead paragraph would go.</strong> It should hook the reader and summarize what they'll learn from your article. Keep it
-              engaging and concise.
-            </p>
-
-            <p style={{ marginBottom: "1.5rem" }}>
-              This is regular paragraph text. You can write about your topic here, explaining key concepts and providing valuable insights to your readers. Make
-              sure to break up long content into digestible paragraphs.
-            </p>
-
-            <h2
+            {/* Placeholder content */}
+            <div
               style={{
-                fontSize: "1.8rem",
-                fontWeight: "600",
-                marginTop: "2.5rem",
-                marginBottom: "1rem",
+                lineHeight: "1.7",
+                fontSize: "1.1rem",
                 color: "var(--color-text, #333)",
               }}
             >
-              Section Heading Example
-            </h2>
+              <p style={{ marginBottom: "1.5rem" }}>
+                <strong>This is where your lead paragraph would go.</strong> It should hook the reader and summarize what they'll learn from your article. Keep
+                it engaging and concise.
+              </p>
 
-            <p style={{ marginBottom: "1.5rem" }}>
-              Use headings to organize your content and make it scannable. This helps readers find the information they're looking for quickly.
-            </p>
+              <h2
+                id="introduction"
+                style={{
+                  fontSize: "1.8rem",
+                  fontWeight: "600",
+                  marginTop: "2.5rem",
+                  marginBottom: "1rem",
+                  color: "var(--color-text, #333)",
+                }}
+              >
+                Introduction
+              </h2>
 
-            <p style={{ marginBottom: "1.5rem" }}>
-              You can continue adding more paragraphs, lists, images, and other content elements as needed for your specific article.
-            </p>
+              <p style={{ marginBottom: "1.5rem" }}>
+                This is regular paragraph text. You can write about your topic here, explaining key concepts and providing valuable insights to your readers.
+                Make sure to break up long content into digestible paragraphs.
+              </p>
+
+              <p style={{ marginBottom: "1.5rem" }}>
+                Continue with more introductory content that sets the stage for the main sections of your article. This helps readers understand the context and
+                importance of the topic.
+              </p>
+
+              <h2
+                id="main-concepts"
+                style={{
+                  fontSize: "1.8rem",
+                  fontWeight: "600",
+                  marginTop: "2.5rem",
+                  marginBottom: "1rem",
+                  color: "var(--color-text, #333)",
+                }}
+              >
+                Main Concepts and Ideas
+              </h2>
+
+              <p style={{ marginBottom: "1.5rem" }}>
+                Use headings to organize your content and make it scannable. This helps readers find the information they're looking for quickly. Each section
+                should focus on a specific aspect of your topic.
+              </p>
+
+              <h3
+                id="concept-one"
+                style={{
+                  fontSize: "1.4rem",
+                  fontWeight: "600",
+                  marginTop: "2rem",
+                  marginBottom: "1rem",
+                  color: "var(--color-text, #333)",
+                }}
+              >
+                First Key Concept
+              </h3>
+
+              <p style={{ marginBottom: "1.5rem" }}>
+                Explain your first key concept here. Provide detailed information, examples, and context that helps readers understand this particular aspect of
+                your topic.
+              </p>
+
+              <h3
+                id="concept-two"
+                style={{
+                  fontSize: "1.4rem",
+                  fontWeight: "600",
+                  marginTop: "2rem",
+                  marginBottom: "1rem",
+                  color: "var(--color-text, #333)",
+                }}
+              >
+                Second Key Concept
+              </h3>
+
+              <p style={{ marginBottom: "1.5rem" }}>
+                Continue with your second key concept. Use clear, conversational language that's easy to read and understand. Consider including examples or
+                case studies to illustrate your points.
+              </p>
+
+              <h2
+                id="practical-applications"
+                style={{
+                  fontSize: "1.8rem",
+                  fontWeight: "600",
+                  marginTop: "2.5rem",
+                  marginBottom: "1rem",
+                  color: "var(--color-text, #333)",
+                }}
+              >
+                Practical Applications
+              </h2>
+
+              <p style={{ marginBottom: "1.5rem" }}>
+                Show readers how to apply what they've learned. This section should provide actionable advice and practical steps they can take based on the
+                information in your article.
+              </p>
+
+              <p style={{ marginBottom: "1.5rem" }}>
+                Include specific examples, tips, or step-by-step instructions that make your content immediately useful to your audience.
+              </p>
+
+              <h2
+                id="conclusion"
+                style={{
+                  fontSize: "1.8rem",
+                  fontWeight: "600",
+                  marginTop: "2.5rem",
+                  marginBottom: "1rem",
+                  color: "var(--color-text, #333)",
+                }}
+              >
+                Conclusion
+              </h2>
+
+              <p style={{ marginBottom: "1.5rem" }}>
+                Wrap up your article with key takeaways and next steps for readers. Summarize the most important points and provide guidance on what they should
+                do with this information.
+              </p>
+
+              <p style={{ marginBottom: "1.5rem" }}>End with a call-to-action or invitation for readers to engage further with your content or brand.</p>
+            </div>
+          </div>
+
+          {/* Table of Contents Sidebar */}
+          <div
+            style={{
+              width: "280px",
+              flexShrink: 0,
+              position: "sticky",
+              top: "2rem",
+              alignSelf: "flex-start",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "var(--color-background-alt, #f9f9f9)",
+                border: "1px solid var(--border-color, #eee)",
+                borderRadius: "8px",
+                padding: "1.5rem",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: "600",
+                  margin: "0 0 1rem 0",
+                  color: "var(--color-text, #333)",
+                }}
+              >
+                Table of Contents
+              </h3>
+
+              <nav>
+                <ul
+                  style={{
+                    listStyle: "none",
+                    padding: 0,
+                    margin: 0,
+                  }}
+                >
+                  <li style={{ marginBottom: "0.5rem" }}>
+                    <a
+                      href="#introduction"
+                      style={{
+                        color: "var(--karmacall-green, #2d5a27)",
+                        textDecoration: "none",
+                        fontSize: "0.95rem",
+                        lineHeight: "1.4",
+                        display: "block",
+                        padding: "0.25rem 0",
+                        borderLeft: "3px solid transparent",
+                        paddingLeft: "0.75rem",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      Introduction
+                    </a>
+                  </li>
+                  <li style={{ marginBottom: "0.5rem" }}>
+                    <a
+                      href="#main-concepts"
+                      style={{
+                        color: "var(--karmacall-green, #2d5a27)",
+                        textDecoration: "none",
+                        fontSize: "0.95rem",
+                        lineHeight: "1.4",
+                        display: "block",
+                        padding: "0.25rem 0",
+                        borderLeft: "3px solid transparent",
+                        paddingLeft: "0.75rem",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      Main Concepts and Ideas
+                    </a>
+                    <ul
+                      style={{
+                        listStyle: "none",
+                        padding: 0,
+                        margin: "0.5rem 0 0 1rem",
+                      }}
+                    >
+                      <li style={{ marginBottom: "0.25rem" }}>
+                        <a
+                          href="#concept-one"
+                          style={{
+                            color: "var(--color-text-secondary, #666)",
+                            textDecoration: "none",
+                            fontSize: "0.85rem",
+                            lineHeight: "1.4",
+                            display: "block",
+                            padding: "0.25rem 0",
+                            paddingLeft: "0.75rem",
+                            transition: "all 0.2s ease",
+                          }}
+                        >
+                          First Key Concept
+                        </a>
+                      </li>
+                      <li style={{ marginBottom: "0.25rem" }}>
+                        <a
+                          href="#concept-two"
+                          style={{
+                            color: "var(--color-text-secondary, #666)",
+                            textDecoration: "none",
+                            fontSize: "0.85rem",
+                            lineHeight: "1.4",
+                            display: "block",
+                            padding: "0.25rem 0",
+                            paddingLeft: "0.75rem",
+                            transition: "all 0.2s ease",
+                          }}
+                        >
+                          Second Key Concept
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li style={{ marginBottom: "0.5rem" }}>
+                    <a
+                      href="#practical-applications"
+                      style={{
+                        color: "var(--karmacall-green, #2d5a27)",
+                        textDecoration: "none",
+                        fontSize: "0.95rem",
+                        lineHeight: "1.4",
+                        display: "block",
+                        padding: "0.25rem 0",
+                        borderLeft: "3px solid transparent",
+                        paddingLeft: "0.75rem",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      Practical Applications
+                    </a>
+                  </li>
+                  <li style={{ marginBottom: "0.5rem" }}>
+                    <a
+                      href="#conclusion"
+                      style={{
+                        color: "var(--karmacall-green, #2d5a27)",
+                        textDecoration: "none",
+                        fontSize: "0.95rem",
+                        lineHeight: "1.4",
+                        display: "block",
+                        padding: "0.25rem 0",
+                        borderLeft: "3px solid transparent",
+                        paddingLeft: "0.75rem",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      Conclusion
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
 
@@ -165,7 +438,7 @@ export default function Template() {
             }}
           >
             <strong>Developer Note:</strong> This is a template page only visible during development. Replace the placeholder content above with your actual
-            article content.
+            article content. The table of contents will automatically work with any headings that have id attributes.
           </p>
         </div>
       </div>
