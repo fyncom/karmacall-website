@@ -39,11 +39,7 @@ export default function BlogIndex({ data }) {
           </div>
         ))}
         {Array.from({ length: placeholdersNeeded }, (_, index) => (
-          <div className="blog-placeholder" key={`placeholder-${index}`}>
-            <div className="blog-placeholder-content">
-              <div className="blog-placeholder-text">More articles coming soon...</div>
-            </div>
-          </div>
+          <div className="blog-placeholder" key={`placeholder-${index}`}></div>
         ))}
       </div>
     </Wrapper>
