@@ -65,12 +65,44 @@ export default function Template() {
             <div
               className="blog-image-container"
               style={{
-                marginBottom: "2rem",
+                marginBottom: "1rem",
                 borderRadius: "8px",
                 boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
               }}
             >
               {/* This will show the same loading animation and placeholder as blog cards */}
+            </div>
+
+            {/* Image credits and description */}
+            <div
+              style={{
+                marginBottom: "2rem",
+                padding: "0.75rem",
+                backgroundColor: "var(--color-background-alt, #f9f9f9)",
+                borderRadius: "4px",
+                border: "1px solid var(--border-color, #eee)",
+              }}
+            >
+              <p
+                style={{
+                  margin: "0 0 0.5rem 0",
+                  fontSize: "0.9rem",
+                  lineHeight: "1.4",
+                  color: "var(--color-text, #333)",
+                }}
+              >
+                <strong>Image description:</strong> Brief description of what the image shows and its relevance to the article content.
+              </p>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "0.8rem",
+                  color: "var(--color-text-secondary, #666)",
+                  fontStyle: "italic",
+                }}
+              >
+                <strong>Credits:</strong> Image source, photographer, or attribution information goes here.
+              </p>
             </div>
           </div>
 
