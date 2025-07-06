@@ -46,6 +46,34 @@ export default function Template() {
             <span className="blog-date">March 15, 2024</span>
           </div>
 
+          {/* Article summary/blurb */}
+          <div style={{ marginBottom: "2rem" }}>
+            <p
+              style={{
+                fontSize: "1.2rem",
+                lineHeight: "1.6",
+                color: "var(--color-text-secondary, #666)",
+                fontStyle: "italic",
+                marginBottom: "2rem",
+              }}
+            >
+              This is a short article summary or blurb that gives readers a quick overview of what they'll learn. It should be engaging and informative, setting
+              expectations for the content below.
+            </p>
+
+            {/* Featured image */}
+            <div
+              className="blog-image-container"
+              style={{
+                marginBottom: "2rem",
+                borderRadius: "8px",
+                boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              {/* This will show the same loading animation and placeholder as blog cards */}
+            </div>
+          </div>
+
           {/* Placeholder content */}
           <div
             style={{
