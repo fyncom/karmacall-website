@@ -77,3 +77,22 @@ exports.createPages = async ({ actions }) => {
   // Create pages for user help center
   await createHelpPages(helpItemsUser, "/user-help-center");
 };
+
+exports.onCreatePage = ({ page, actions }) => {
+  const { deletePage } = actions
+
+  // Delete template page in production
+  if (process.env.NODE_ENV === "production" && page.path === "/blog/template/") {
+    deletePage(page)
+  }
+
+  // Delete any template pages (files starting with underscore)
+  if (page.path.includes("/_")) {
+    deletePage(page)
+  }
+
+  // Delete README pages
+  if (page.path.includes("/readme/") || page.path.includes("/README/")) {
+    deletePage(page)
+  }
+}

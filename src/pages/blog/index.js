@@ -2,13 +2,29 @@ import React from "react"
 import "../../components/help-center.css"
 import { graphql, Link } from "gatsby"
 import { Wrapper } from "../../components/Markdown-Wrapper"
-import Img from "gatsby-image"
 import "../../components/blog.css"
 
 export default function BlogIndex({ data }) {
   const seo = {
     title: "KarmaCall Blog",
     description: "Stay updated on the latest in KarmaCall technology.",
+  }
+
+  const formatDate = dateString => {
+    if (!dateString) return "Date not available"
+
+    const date = new Date(dateString)
+
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return dateString // Return original string if parsing fails
+    }
+
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
   }
 
   const blogPosts = data.allMdx.nodes
@@ -22,17 +38,29 @@ export default function BlogIndex({ data }) {
           <div className="blog-card" key={id}>
             <Link to={`${fields.slug}`} className="blog-link">
               <div className="blog-image-container">
-                {frontmatter.featuredImage?.childImageSharp ? (
-                  <Img fluid={frontmatter.featuredImage.childImageSharp.fluid} className="blog-image" alt={frontmatter.title} />
-                ) : (
-                  <img className="blog-image" src={frontmatter.featuredImage?.publicURL} alt={frontmatter.title} />
+                {frontmatter.featuredImage && (
+                  <img
+                    className="blog-image"
+                    src={frontmatter.featuredImage}
+                    alt={frontmatter.title}
+                    loading="lazy"
+                    onLoad={e => {
+                      e.target.style.opacity = "1"
+                      e.target.style.transform = "scale(1)"
+                    }}
+                    style={{
+                      opacity: "0",
+                      transform: "scale(1.05)",
+                      transition: "opacity 0.3s ease, transform 0.3s ease",
+                    }}
+                  />
                 )}
               </div>
               <div className="blog-content">
                 <h3 className="blog-title">{frontmatter.title}</h3>
                 <div className="blog-meta">
                   <span className="blog-author">{frontmatter.author || "KarmaCall Team"}</span>
-                  <span className="blog-date">{frontmatter.date}</span>
+                  <span className="blog-date">{formatDate(frontmatter.date)}</span>
                 </div>
               </div>
             </Link>
@@ -48,21 +76,17 @@ export default function BlogIndex({ data }) {
 
 export const pageQuery = graphql`
   query {
-    allMdx(sort: { frontmatter: { date: DESC } }) {
+    allMdx(
+      sort: { frontmatter: { date: DESC } }
+      filter: { fields: { slug: { regex: "/^(?!/blog/_).*$/" } }, internal: { contentFilePath: { regex: "/^((?!README).)*$/" } } }
+    ) {
       nodes {
         id
         frontmatter {
           title
-          date(formatString: "MMMM DD, YYYY")
+          date
           author
-          featuredImage {
-            publicURL
-            childImageSharp {
-              fluid(maxWidth: 400, maxHeight: 400) {
-                ...GatsbyImageSharpFluid
-              }
-            }
-          }
+          featuredImage
         }
         fields {
           slug
