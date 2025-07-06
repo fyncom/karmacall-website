@@ -1,7 +1,8 @@
 import React from "react"
 import { Wrapper } from "../../components/Markdown-Wrapper"
+import "../../components/blog.css"
 
-export default function DevTemplate() {
+export default function Template() {
   // This page is completely removed in production builds via gatsby-node.js
   // This is just an extra safety check
   if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
@@ -13,179 +14,99 @@ export default function DevTemplate() {
     description: "Template for creating new blog articles",
   }
 
-  const templateContent = `---
-title: "Article Title: Keep It Clear and Engaging"
-date: "YYYY-MM-DD"
-author: "Author Name"
-featuredImage: "../../images/blog/your-image-filename.jpg"
-description: "Brief description of the article (150-160 characters for SEO). This appears in search results and social shares."
----
-
-import { Link } from "gatsby"
-import { Wrapper } from "../../components/Markdown-Wrapper"
-import yourImage from "../../images/blog/your-image-filename.jpg"
-
-export const meta = {
-  title: "Article Title: Keep It Clear and Engaging",
-  description: "Brief description of the article (150-160 characters for SEO). This appears in search results and social shares.",
-}
-
-<Wrapper seo={meta}>
-
-# Main Article Title
-
-**Lead paragraph with bold opening.** This should hook the reader and summarize what they'll learn. Keep it concise but compelling.
-
-## Section Heading
-
-Regular paragraph text goes here. Keep paragraphs focused on one main idea. Use clear, conversational language that's easy to read.
-
-### Subsection Heading
-
-Use subsections to break up longer sections and improve readability.
-
-## Key Features or Benefits
-
-Use bullet points for lists:
-
-* **Bold key point**: Description of the point
-* **Another key point**: More details here
-* **Third point**: Keep it scannable
-
-## Data or Statistics Section
-
-When presenting data, use tables for better readability:
-
-<div style={{ overflowX: 'auto', margin: '20px 0' }}>
-  <div style={{ display: 'table', width: '100%', borderCollapse: 'collapse', border: '1px solid var(--border-color, #ddd)' }}>
-    <div style={{ display: 'table-header-group', backgroundColor: 'var(--table-header-bg, rgba(0,0,0,0.1))', fontWeight: 'bold' }}>
-      <div style={{ display: 'table-row' }}>
-        <div style={{ display: 'table-cell', padding: '12px', border: '1px solid var(--border-color, #ddd)', textAlign: 'left' }}>Metric</div>
-        <div style={{ display: 'table-cell', padding: '12px', border: '1px solid var(--border-color, #ddd)', textAlign: 'left' }}>Value</div>
-        <div style={{ display: 'table-cell', padding: '12px', border: '1px solid var(--border-color, #ddd)', textAlign: 'left' }}>Impact</div>
-      </div>
-    </div>
-    <div style={{ display: 'table-row-group' }}>
-      <div style={{ display: 'table-row' }}>
-        <div style={{ display: 'table-cell', padding: '12px', border: '1px solid var(--border-color, #ddd)' }}>Example Metric</div>
-        <div style={{ display: 'table-cell', padding: '12px', border: '1px solid var(--border-color, #ddd)' }}>Sample Data</div>
-        <div style={{ display: 'table-cell', padding: '12px', border: '1px solid var(--border-color, #ddd)' }}>Description</div>
-      </div>
-      <div style={{ display: 'table-row', backgroundColor: 'var(--table-alt-bg, rgba(128,128,128,0.1))' }}>
-        <div style={{ display: 'table-cell', padding: '12px', border: '1px solid var(--border-color, #ddd)' }}>Another Metric</div>
-        <div style={{ display: 'table-cell', padding: '12px', border: '1px solid var(--border-color, #ddd)' }}>More Data</div>
-        <div style={{ display: 'table-cell', padding: '12px', border: '1px solid var(--border-color, #ddd)' }}>More Description</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-## Call-to-Action Section
-
-End with a clear call-to-action:
-
-<div className="button-container">
-  <a className="learn-more-btn cash centered" href="https://play.google.com/store/apps/details?id=com.fyncom.robocash">
-    Download KarmaCall Today!
-  </a>
-</div>
-
-## Conclusion
-
-Wrap up the article with key takeaways and next steps for readers.
-
----
-
-**About the Author**: Brief author bio can go here if needed.
-
-</Wrapper>`
-
   return (
     <Wrapper seo={seo}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
-        <h1>Blog Article Template (Development Only)</h1>
-        <p>
-          <strong>This page is only visible during development.</strong>
-        </p>
-
-        <div style={{ marginBottom: "2rem" }}>
-          <h2>Instructions:</h2>
-          <ol>
-            <li>Copy the template code below</li>
-            <li>
-              Create a new file: <code>your-article-name.mdx</code>
-            </li>
-            <li>Paste and modify the template</li>
-            <li>
-              Add your featured image to <code>src/images/blog/</code>
-            </li>
-          </ol>
-        </div>
-
-        <div style={{ marginBottom: "2rem" }}>
-          <h2>Template Code:</h2>
-          <div
+      <div style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem" }}>
+        {/* Blog post layout */}
+        <div style={{ marginBottom: "3rem" }}>
+          {/* Title */}
+          <h1
             style={{
-              backgroundColor: "var(--color-code-bg, #f5f5f5)",
-              padding: "1rem",
-              borderRadius: "8px",
-              border: "1px solid var(--border-color, #ddd)",
-              position: "relative",
+              fontSize: "2.5rem",
+              fontWeight: "700",
+              lineHeight: "1.2",
+              marginBottom: "1rem",
+              color: "var(--color-text, #333)",
             }}
           >
-            <button
-              onClick={() => navigator.clipboard.writeText(templateContent)}
+            Your Article Title Goes Here
+          </h1>
+
+          {/* Meta information */}
+          <div
+            className="blog-meta"
+            style={{
+              marginBottom: "2rem",
+              fontSize: "1rem",
+              borderBottom: "1px solid var(--border-color, #eee)",
+              paddingBottom: "1rem",
+            }}
+          >
+            <span className="blog-author">Author Name</span>
+            <span className="blog-date">March 15, 2024</span>
+          </div>
+
+          {/* Placeholder content */}
+          <div
+            style={{
+              lineHeight: "1.7",
+              fontSize: "1.1rem",
+              color: "var(--color-text, #333)",
+            }}
+          >
+            <p style={{ marginBottom: "1.5rem" }}>
+              <strong>This is where your lead paragraph would go.</strong> It should hook the reader and summarize what they'll learn from your article. Keep it
+              engaging and concise.
+            </p>
+
+            <p style={{ marginBottom: "1.5rem" }}>
+              This is regular paragraph text. You can write about your topic here, explaining key concepts and providing valuable insights to your readers. Make
+              sure to break up long content into digestible paragraphs.
+            </p>
+
+            <h2
               style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                padding: "0.5rem 1rem",
-                backgroundColor: "var(--karmacall-green)",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
+                fontSize: "1.8rem",
+                fontWeight: "600",
+                marginTop: "2.5rem",
+                marginBottom: "1rem",
+                color: "var(--color-text, #333)",
               }}
             >
-              Copy Template
-            </button>
-            <pre
-              style={{
-                overflow: "auto",
-                margin: 0,
-                paddingTop: "2rem",
-                fontSize: "0.9rem",
-                lineHeight: "1.4",
-              }}
-            >
-              <code>{templateContent}</code>
-            </pre>
+              Section Heading Example
+            </h2>
+
+            <p style={{ marginBottom: "1.5rem" }}>
+              Use headings to organize your content and make it scannable. This helps readers find the information they're looking for quickly.
+            </p>
+
+            <p style={{ marginBottom: "1.5rem" }}>
+              You can continue adding more paragraphs, lists, images, and other content elements as needed for your specific article.
+            </p>
           </div>
         </div>
 
+        {/* Developer note */}
         <div
           style={{
             backgroundColor: "var(--color-background-alt, #f9f9f9)",
-            padding: "1rem",
+            padding: "1.5rem",
             borderRadius: "8px",
             border: "1px solid var(--border-color, #ddd)",
+            marginTop: "3rem",
           }}
         >
-          <h3>Quick Reference:</h3>
-          <ul>
-            <li>
-              <strong>Template file location:</strong> <code>src/pages/blog/_TEMPLATE.mdx</code>
-            </li>
-            <li>
-              <strong>Images directory:</strong> <code>src/images/blog/</code>
-            </li>
-            <li>
-              <strong>Recommended image size:</strong> 1200x630px
-            </li>
-            <li>
-              <strong>Date format:</strong> YYYY-MM-DD
-            </li>
-          </ul>
+          <p
+            style={{
+              margin: 0,
+              fontSize: "0.9rem",
+              color: "var(--color-text-secondary, #666)",
+              fontStyle: "italic",
+            }}
+          >
+            <strong>Developer Note:</strong> This is a template page only visible during development. Replace the placeholder content above with your actual
+            article content.
+          </p>
         </div>
       </div>
     </Wrapper>
