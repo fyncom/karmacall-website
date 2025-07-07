@@ -23,6 +23,17 @@ export default function Template() {
     setTocCollapsed(!tocCollapsed)
   }
 
+  const handleSmoothScroll = (e, targetId) => {
+    e.preventDefault()
+    const targetElement = document.getElementById(targetId)
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }
+  }
+
   const handleShareAction = platform => {
     if (typeof window !== "undefined") {
       const currentPath = window.location.pathname
@@ -641,6 +652,7 @@ export default function Template() {
                     <li style={{ marginBottom: "0.5rem" }}>
                       <a
                         href="#introduction"
+                        onClick={e => handleSmoothScroll(e, "introduction")}
                         style={{
                           color: "var(--karmacall-green, #2d5a27)",
                           textDecoration: "none",
@@ -659,6 +671,7 @@ export default function Template() {
                     <li style={{ marginBottom: "0.5rem" }}>
                       <a
                         href="#main-concepts"
+                        onClick={e => handleSmoothScroll(e, "main-concepts")}
                         style={{
                           color: "var(--karmacall-green, #2d5a27)",
                           textDecoration: "none",
@@ -683,6 +696,7 @@ export default function Template() {
                         <li style={{ marginBottom: "0.25rem" }}>
                           <a
                             href="#concept-one"
+                            onClick={e => handleSmoothScroll(e, "concept-one")}
                             style={{
                               color: "var(--color-text-secondary, #666)",
                               textDecoration: "none",
@@ -700,6 +714,7 @@ export default function Template() {
                         <li style={{ marginBottom: "0.25rem" }}>
                           <a
                             href="#concept-two"
+                            onClick={e => handleSmoothScroll(e, "concept-two")}
                             style={{
                               color: "var(--color-text-secondary, #666)",
                               textDecoration: "none",
@@ -719,6 +734,7 @@ export default function Template() {
                     <li style={{ marginBottom: "0.5rem" }}>
                       <a
                         href="#practical-applications"
+                        onClick={e => handleSmoothScroll(e, "practical-applications")}
                         style={{
                           color: "var(--karmacall-green, #2d5a27)",
                           textDecoration: "none",
@@ -737,6 +753,7 @@ export default function Template() {
                     <li style={{ marginBottom: "0.5rem" }}>
                       <a
                         href="#conclusion"
+                        onClick={e => handleSmoothScroll(e, "conclusion")}
                         style={{
                           color: "var(--karmacall-green, #2d5a27)",
                           textDecoration: "none",
