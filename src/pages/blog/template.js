@@ -266,7 +266,7 @@ export default function Template() {
     <Wrapper seo={seo}>
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
         {/* Header section with same width as main content */}
-        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginBottom: "3rem" }}>
+        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginBottom: "1.5rem" }}>
           {/* Header content - same width as main content column */}
           <div style={{ flex: "1", minWidth: "0" }}>
             {/* Title */}
@@ -329,7 +329,7 @@ export default function Template() {
         </div>
 
         {/* Main content container with sidebar layout - starts at featured image level */}
-        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginTop: "1rem", position: "relative" }}>
+        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginTop: "0.5rem", position: "relative" }}>
           {/* Main article content */}
           <div style={{ flex: "1", minWidth: "0" }}>
             {/* Action bar above featured image */}
