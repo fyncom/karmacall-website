@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react"
 import { createShortUrl, preloadUrls } from "../utils/urlShortener"
+import { getShareCount, incrementShareCount, formatShareCount } from "../utils/shareCounter"
 
-// Custom hook for sharing functionality
+// Custom hook for sharing functionality with share counting
 export const useShareUrls = () => {
   const [linkCopied, setLinkCopied] = useState(false)
+  const [shareCount, setShareCount] = useState(0)
 
-  // Preload URLs when hook is used
+  // Preload URLs and load share count when hook is used
   useEffect(() => {
     preloadUrls()
+
+    if (typeof window !== "undefined") {
+      const currentPath = window.location.pathname
+      const currentCount = getShareCount(currentPath)
+      setShareCount(currentCount)
+    }
   }, [])
 
   // Get current page URL without parameters
@@ -22,6 +30,16 @@ export const useShareUrls = () => {
     return createShortUrl(currentUrl, platform)
   }
 
+  // Handle share action with counting
+  const handleShareAction = platform => {
+    if (typeof window !== "undefined") {
+      const currentPath = window.location.pathname
+      const newCount = incrementShareCount(currentPath)
+      setShareCount(newCount)
+      console.log(`📈 Share count incremented to ${newCount} for ${platform}`)
+    }
+  }
+
   // Copy link to clipboard
   const copyToClipboard = async () => {
     if (typeof window === "undefined" || !navigator.clipboard) return false
@@ -30,6 +48,9 @@ export const useShareUrls = () => {
       const shortUrl = getShortUrl("copy_link")
       await navigator.clipboard.writeText(shortUrl)
       setLinkCopied(true)
+
+      // Increment share count
+      handleShareAction("copy_link")
 
       // Track with Google Analytics
       if (window.gtag) {
@@ -54,6 +75,9 @@ export const useShareUrls = () => {
     const body = encodeURIComponent(shortUrl)
 
     window.open(`mailto:?subject=${subject}&body=${body}`)
+
+    // Increment share count
+    handleShareAction("email")
 
     // Track with Google Analytics
     if (typeof window !== "undefined" && window.gtag) {
@@ -96,6 +120,9 @@ export const useShareUrls = () => {
     if (shareUrl) {
       window.open(shareUrl)
 
+      // Increment share count
+      handleShareAction(platform)
+
       // Track with Google Analytics
       if (typeof window !== "undefined" && window.gtag) {
         window.gtag("event", "share", {
@@ -114,10 +141,12 @@ export const useShareUrls = () => {
 
   return {
     linkCopied,
+    shareCount,
     copyToClipboard,
     shareViaEmail,
     shareOnPlatform,
     getShortUrl,
     resetCopiedState,
+    formatShareCount: () => formatShareCount(shareCount),
   }
 }

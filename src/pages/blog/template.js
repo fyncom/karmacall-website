@@ -2,10 +2,12 @@ import React from "react"
 import { Wrapper } from "../../components/Markdown-Wrapper"
 import "../../components/blog.css"
 import { createShortUrl, preloadUrls } from "../../utils/urlShortener"
+import { getShareCount, incrementShareCount, formatShareCount, setMockShareCount } from "../../utils/shareCounter"
 
 export default function Template() {
   const [showShareDialog, setShowShareDialog] = React.useState(false)
   const [linkCopied, setLinkCopied] = React.useState(false)
+  const [shareCount, setShareCount] = React.useState(0)
 
   const handleShare = () => {
     setShowShareDialog(!showShareDialog)
@@ -16,9 +18,69 @@ export default function Template() {
     setLinkCopied(false) // Reset copied state when dialog closes
   }
 
-  // Preload URLs when component mounts
+  const handleShareAction = platform => {
+    if (typeof window !== "undefined") {
+      const currentPath = window.location.pathname
+      const newCount = incrementShareCount(currentPath)
+      setShareCount(newCount)
+      console.log(`📈 Share count incremented to ${newCount} for ${platform}`)
+    }
+  }
+
+  // Preload URLs and load share count when component mounts
   React.useEffect(() => {
     preloadUrls()
+
+    if (typeof window !== "undefined") {
+      const currentPath = window.location.pathname
+
+      // Set mock data for testing (remove in production)
+      setMockShareCount("/blog/template", 150) // Mock 150 shares for testing
+
+      // Load current share count
+      const currentCount = getShareCount(currentPath)
+      setShareCount(currentCount)
+
+      console.log(`📊 Share count for ${currentPath}: ${currentCount}`)
+
+      // Add testing functions to window for easy testing
+      window.setShareCount = count => {
+        setMockShareCount(currentPath, count)
+        setShareCount(count)
+        console.log(`🧪 Test: Set share count to ${count}`)
+        console.log(`📊 Formatted: ${formatShareCount(count) || "Hidden (< 100)"}`)
+      }
+
+      window.testShareCounts = () => {
+        console.log("🧪 Testing different share count formats:")
+        console.log("50:", formatShareCount(50) || "Hidden")
+        console.log("99:", formatShareCount(99) || "Hidden")
+        console.log("100:", formatShareCount(100))
+        console.log("999:", formatShareCount(999))
+        console.log("1000:", formatShareCount(1000))
+        console.log("1100:", formatShareCount(1100))
+        console.log("9999:", formatShareCount(9999))
+        console.log("10000:", formatShareCount(10000))
+        console.log("15500:", formatShareCount(15500))
+        console.log("100000:", formatShareCount(100000))
+        console.log("999999:", formatShareCount(999999))
+        console.log("1000000:", formatShareCount(1000000))
+        console.log("1100000:", formatShareCount(1100000))
+        console.log("9900000:", formatShareCount(9900000))
+        console.log("10000000:", formatShareCount(10000000))
+        console.log("150000000:", formatShareCount(150000000))
+        console.log("999000000:", formatShareCount(999000000))
+        console.log("1000000000:", formatShareCount(1000000000))
+        console.log("1100000000:", formatShareCount(1100000000))
+        console.log("9900000000:", formatShareCount(9900000000))
+        console.log("10000000000:", formatShareCount(10000000000))
+        console.log("150000000000:", formatShareCount(150000000000))
+      }
+
+      console.log("🧪 Test functions available:")
+      console.log("- setShareCount(150) - Set share count to 150")
+      console.log("- testShareCounts() - View all formatting examples")
+    }
   }, [])
 
   const copyToClipboard = () => {
@@ -27,6 +89,9 @@ export default function Template() {
       const shortUrl = createShortUrl(currentUrl, "copy_link")
       navigator.clipboard.writeText(shortUrl)
       setLinkCopied(true)
+
+      // Increment share count
+      handleShareAction("copy_link")
 
       // Track with Google Analytics
       if (typeof window !== "undefined" && window.gtag) {
@@ -55,6 +120,9 @@ export default function Template() {
           const shortUrl = createShortUrl(currentUrl, "email")
           window.open(`mailto:?subject=Check out this article&body=${shortUrl}`)
 
+          // Increment share count
+          handleShareAction("email")
+
           // Track with Google Analytics
           if (window.gtag) {
             window.gtag("event", "share", {
@@ -74,6 +142,9 @@ export default function Template() {
           const currentUrl = window.location.href.split("?")[0]
           const shortUrl = createShortUrl(currentUrl, "facebook")
           window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shortUrl)}`)
+
+          // Increment share count
+          handleShareAction("facebook")
 
           // Track with Google Analytics
           if (window.gtag) {
@@ -95,6 +166,9 @@ export default function Template() {
           const shortUrl = createShortUrl(currentUrl, "twitter")
           window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shortUrl)}&text=Check out this article`)
 
+          // Increment share count
+          handleShareAction("twitter")
+
           // Track with Google Analytics
           if (window.gtag) {
             window.gtag("event", "share", {
@@ -114,6 +188,9 @@ export default function Template() {
           const currentUrl = window.location.href.split("?")[0]
           const shortUrl = createShortUrl(currentUrl, "linkedin")
           window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shortUrl)}`)
+
+          // Increment share count
+          handleShareAction("linkedin")
 
           // Track with Google Analytics
           if (window.gtag) {
@@ -135,6 +212,9 @@ export default function Template() {
           const shortUrl = createShortUrl(currentUrl, "reddit")
           window.open(`https://reddit.com/submit?url=${encodeURIComponent(shortUrl)}&title=Check out this article`)
 
+          // Increment share count
+          handleShareAction("reddit")
+
           // Track with Google Analytics
           if (window.gtag) {
             window.gtag("event", "share", {
@@ -154,6 +234,9 @@ export default function Template() {
           const currentUrl = window.location.href.split("?")[0]
           const shortUrl = createShortUrl(currentUrl, "bluesky")
           window.open(`https://bsky.app/intent/compose?text=Check out this article: ${encodeURIComponent(shortUrl)}`)
+
+          // Increment share count
+          handleShareAction("bluesky")
 
           // Track with Google Analytics
           if (window.gtag) {
@@ -255,7 +338,7 @@ export default function Template() {
                 display: "flex",
                 justifyContent: "flex-end",
                 alignItems: "center",
-                gap: "0.5rem",
+                gap: "0.1rem",
                 marginBottom: "0.75rem",
                 position: "relative",
               }}
@@ -266,18 +349,22 @@ export default function Template() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: "32px",
+                  gap: formatShareCount(shareCount) ? "0.3rem" : "0",
+                  width: formatShareCount(shareCount) ? "auto" : "32px",
                   height: "32px",
+                  padding: formatShareCount(shareCount) ? "0 0.6rem" : "0",
                   backgroundColor: showShareDialog ? "lightblue" : "transparent",
                   border: "2px solid var(--border-color, #ddd)",
-                  borderRadius: "50%",
+                  borderRadius: formatShareCount(shareCount) ? "16px" : "50%",
                   color: "var(--color-text, #333)",
                   fontSize: "0.9rem",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
+                  whiteSpace: "nowrap",
                 }}
               >
-                📤
+                <span>📤</span>
+                {formatShareCount(shareCount) && <span style={{ fontSize: "0.8rem", fontWeight: "600" }}>{formatShareCount(shareCount)}</span>}
               </button>
 
               <button
