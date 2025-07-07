@@ -22,7 +22,7 @@ const DYNAMIC_SLUGS = {}
 
 // Predefined slugs for existing articles (for consistency)
 const PREDEFINED_SLUGS = {
-  "/blog/template": {
+  "/blog/template/": {
     copy_link: "KX9PCX23",
     email: "M7NQFM45",
     facebook: "R3VKQZ67",
@@ -31,7 +31,7 @@ const PREDEFINED_SLUGS = {
     reddit: "D4MYJK34",
     bluesky: "F6PZNP56",
   },
-  "/blog/future-of-spam-blocking": {
+  "/blog/future-of-spam-blocking/": {
     copy_link: "G7QACX78",
     email: "H8RBFM90",
     facebook: "J9SCQZ12",
@@ -40,7 +40,7 @@ const PREDEFINED_SLUGS = {
     reddit: "M4VFJK78",
     bluesky: "N5WGNP90",
   },
-  "/blog/job-scam-texts-surge-2024": {
+  "/blog/job-scam-texts-surge-2024/": {
     copy_link: "P6XHCX12",
     email: "Q7YIFM34",
     facebook: "R8ZJQZ56",
@@ -56,34 +56,34 @@ const autoDetectAndGenerateSlugs = () => {
   if (typeof window === "undefined") return
 
   const currentPath = window.location.pathname
-  
+
   // Only run on blog pages
-  if (!currentPath.startsWith('/blog/')) return
-  
+  if (!currentPath.startsWith("/blog/")) return
+
   // Normalize the current path
   let normalizedPath = currentPath
-  if (normalizedPath.length > 1 && normalizedPath.endsWith('/')) {
+  if (normalizedPath.length > 1 && normalizedPath.endsWith("/")) {
     normalizedPath = normalizedPath.slice(0, -1)
   }
-  
+
   // Check if this path already has predefined slugs
   if (PREDEFINED_SLUGS[normalizedPath]) {
     console.log(`Debug: Path ${normalizedPath} already has predefined slugs`)
     return
   }
-  
+
   // Check if we've already generated dynamic slugs for this path
   if (DYNAMIC_SLUGS[normalizedPath]) {
     console.log(`Debug: Path ${normalizedPath} already has dynamic slugs`)
     return
   }
-  
+
   // Auto-generate slugs for this new article
   console.log(`Debug: 🆕 Auto-generating slugs for new article: ${normalizedPath}`)
-  
+
   const sources = ["copy_link", "email", "facebook", "twitter", "linkedin", "reddit", "bluesky"]
   DYNAMIC_SLUGS[normalizedPath] = {}
-  
+
   sources.forEach(source => {
     // Generate unique slug
     let slug
@@ -96,22 +96,22 @@ const autoDetectAndGenerateSlugs = () => {
         break
       }
     } while (
-      URL_HASH_TABLE.has(slug) || 
+      URL_HASH_TABLE.has(slug) ||
       Object.values(PREDEFINED_SLUGS).some(article => Object.values(article).includes(slug)) ||
       Object.values(DYNAMIC_SLUGS).some(article => Object.values(article).includes(slug))
     )
-    
+
     // Store the slug
     DYNAMIC_SLUGS[normalizedPath][source] = slug
-    
+
     // Add to hash table
     const currentDomain = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://karmacall.com"
     const fullUrl = `${currentDomain}${normalizedPath}?utm_source=${source}&utm_medium=${source === "email" ? "email" : "social"}&utm_campaign=blog_share`
     URL_HASH_TABLE.set(slug, fullUrl)
-    
+
     console.log(`Debug: Generated ${source}: ${slug}`)
   })
-  
+
   console.log(`Debug: ✅ Auto-generated all slugs for ${normalizedPath}`)
   console.log("Debug: 💡 Tip: Use exportDynamicSlugs() to make these permanent")
 }
@@ -120,6 +120,12 @@ const autoDetectAndGenerateSlugs = () => {
 const initializeHashTable = () => {
   if (typeof window === "undefined") {
     console.log("Debug: Skipping hash table init - no window object")
+    return
+  }
+
+  // If already initialized, don't reinitialize
+  if (URL_HASH_TABLE.size > 0) {
+    console.log("Debug: Hash table already initialized with", URL_HASH_TABLE.size, "entries")
     return
   }
 
@@ -133,41 +139,54 @@ const initializeHashTable = () => {
       const currentDomain = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://karmacall.com"
       const fullUrl = `${currentDomain}${path}?utm_source=${source}&utm_medium=${source === "email" ? "email" : "social"}&utm_campaign=blog_share`
 
-      // Only add if not already present
-      if (!URL_HASH_TABLE.has(slug)) {
-        URL_HASH_TABLE.set(slug, fullUrl)
-        addedCount++
-        console.log(`Debug: Added mapping: ${slug} -> ${fullUrl}`)
-      } else {
-        console.log(`Debug: Slug ${slug} already exists, skipping`)
-      }
+      // Always add the mapping
+      URL_HASH_TABLE.set(slug, fullUrl)
+      addedCount++
+      console.log(`Debug: Added mapping: ${slug} -> ${fullUrl}`)
     })
   })
 
   console.log(`Debug: Hash table initialization complete. Added ${addedCount} new mappings. Total size: ${URL_HASH_TABLE.size}`)
 
-  // Auto-detect and generate slugs for current article if needed
-  autoDetectAndGenerateSlugs()
+  // Only auto-detect if we're on a blog page
+  if (window.location.pathname.startsWith("/blog/")) {
+    autoDetectAndGenerateSlugs()
+  }
 }
 
 // Get or create a slug for a specific URL + source combination
 const getOrCreateSlug = (url, source) => {
-  let urlPath = url.replace(/^https?:\/\/[^\/]+/, "") // Remove domain, keep path
+  // Remove hash fragments (#introduction, etc.) before processing
+  let cleanUrl = url.split("#")[0]
+  let urlPath = cleanUrl.replace(/^https?:\/\/[^\/]+/, "") // Remove domain, keep path
 
-  // Normalize path by removing trailing slash (except for root)
-  if (urlPath.length > 1 && urlPath.endsWith("/")) {
-    urlPath = urlPath.slice(0, -1)
+  console.log("Debug: === getOrCreateSlug called ===")
+  console.log("Debug: Input URL:", url)
+  console.log("Debug: Clean URL (no hash):", cleanUrl)
+  console.log("Debug: Input source:", source)
+  console.log("Debug: Extracted path (before normalization):", urlPath)
+
+  // Always normalize to use trailing slash for consistency (except root)
+  if (urlPath !== "/" && !urlPath.endsWith("/")) {
+    urlPath = urlPath + "/"
   }
 
-  console.log("Debug: Original URL:", url)
-  console.log("Debug: Normalized path:", urlPath, "source:", source)
+  console.log("Debug: Normalized path:", urlPath)
   console.log("Debug: Available predefined paths:", Object.keys(PREDEFINED_SLUGS))
+  console.log("Debug: Looking for path:", urlPath, "in predefined slugs...")
 
   // Check if we have a predefined slug for this combination
   if (PREDEFINED_SLUGS[urlPath] && PREDEFINED_SLUGS[urlPath][source]) {
     const slug = PREDEFINED_SLUGS[urlPath][source]
     console.log("Debug: ✅ Using predefined slug:", slug, "for", urlPath, "+", source)
     return slug
+  } else {
+    console.log("Debug: ❌ Path not found in predefined slugs")
+    console.log("Debug: PREDEFINED_SLUGS[urlPath]:", PREDEFINED_SLUGS[urlPath])
+    if (PREDEFINED_SLUGS[urlPath]) {
+      console.log("Debug: Available sources for this path:", Object.keys(PREDEFINED_SLUGS[urlPath]))
+      console.log("Debug: Looking for source:", source)
+    }
   }
 
   // Check if we have a dynamically generated slug for this combination
@@ -178,6 +197,7 @@ const getOrCreateSlug = (url, source) => {
   }
 
   console.log("Debug: ❌ No existing slug found for:", urlPath, "+", source)
+  console.log("Debug: Will generate new random slug...")
 
   // Generate a new unique slug
   let slug
@@ -191,7 +211,7 @@ const getOrCreateSlug = (url, source) => {
     }
   } while (URL_HASH_TABLE.has(slug) || Object.values(PREDEFINED_SLUGS).some(article => Object.values(article).includes(slug)))
 
-  // Store the mapping in hash table
+  // Store the mapping in hash table (use clean URL without hash)
   const currentDomain = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://karmacall.com"
   const fullUrl = `${currentDomain}${urlPath}?utm_source=${source}&utm_medium=${source === "email" ? "email" : "social"}&utm_campaign=blog_share`
   URL_HASH_TABLE.set(slug, fullUrl)
@@ -213,12 +233,15 @@ const getOrCreateSlug = (url, source) => {
 export const createShortUrl = (originalUrl, source, articleMeta = null) => {
   if (typeof window === "undefined") return originalUrl
 
+  // Remove hash fragments from the original URL before processing
+  const cleanUrl = originalUrl.split("#")[0]
+
   // Initialize hash table if not already done
   if (URL_HASH_TABLE.size === 0) {
     initializeHashTable()
   }
 
-  const slug = getOrCreateSlug(originalUrl, source)
+  const slug = getOrCreateSlug(cleanUrl, source)
 
   // Use localhost for development, karmacall.com for production
   const baseUrl = window.location.hostname === "localhost" ? `http://localhost:8000` : `https://karmacall.com`

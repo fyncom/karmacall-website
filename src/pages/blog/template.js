@@ -56,67 +56,152 @@ export default function Template() {
     preloadUrls()
 
     if (typeof window !== "undefined") {
-      const currentPath = window.location.pathname
+      // Add a small delay to ensure the page is fully loaded
+      const timer = setTimeout(() => {
+        const currentPath = window.location.pathname
 
-      // Set mock data for testing (remove in production)
-      setMockShareCount("/blog/template", 150) // Mock 150 shares for testing
+        // Capture and clean UTM parameters
+        const urlParams = new URLSearchParams(window.location.search)
+        const utmData = {
+          source: urlParams.get("utm_source"),
+          medium: urlParams.get("utm_medium"),
+          campaign: urlParams.get("utm_campaign"),
+          content: urlParams.get("utm_content"),
+          term: urlParams.get("utm_term"),
+        }
 
-      // Load current share count
-      const currentCount = getShareCount(currentPath)
-      setShareCount(currentCount)
+        console.log("Debug: Current URL:", window.location.href)
+        console.log("Debug: URL search params:", window.location.search)
+        console.log("Debug: Extracted UTM data:", utmData)
 
-      console.log(`📊 Share count for ${currentPath}: ${currentCount}`)
+        // Store UTM data for analytics if any UTM parameters exist
+        if (Object.values(utmData).some(value => value !== null)) {
+          // Store in sessionStorage for this session
+          sessionStorage.setItem("utm_data", JSON.stringify(utmData))
 
-      // Add testing functions to window for easy testing
-      window.setShareCount = count => {
-        setMockShareCount(currentPath, count)
-        setShareCount(count)
-        console.log(`🧪 Test: Set share count to ${count}`)
-        console.log(`📊 Formatted: ${formatShareCount(count) || "Hidden (< 100)"}`)
-      }
+          console.log("Debug: Stored UTM data in sessionStorage")
 
-      window.testShareCounts = () => {
-        console.log("🧪 Testing different share count formats:")
-        console.log("50:", formatShareCount(50) || "Hidden")
-        console.log("99:", formatShareCount(99) || "Hidden")
-        console.log("100:", formatShareCount(100))
-        console.log("999:", formatShareCount(999))
-        console.log("1000:", formatShareCount(1000))
-        console.log("1100:", formatShareCount(1100))
-        console.log("9999:", formatShareCount(9999))
-        console.log("10000:", formatShareCount(10000))
-        console.log("15500:", formatShareCount(15500))
-        console.log("100000:", formatShareCount(100000))
-        console.log("999999:", formatShareCount(999999))
-        console.log("1000000:", formatShareCount(1000000))
-        console.log("1100000:", formatShareCount(1100000))
-        console.log("9900000:", formatShareCount(9900000))
-        console.log("10000000:", formatShareCount(10000000))
-        console.log("150000000:", formatShareCount(150000000))
-        console.log("999000000:", formatShareCount(999000000))
-        console.log("1000000000:", formatShareCount(1000000000))
-        console.log("1100000000:", formatShareCount(1100000000))
-        console.log("9900000000:", formatShareCount(9900000000))
-        console.log("10000000000:", formatShareCount(10000000000))
-        console.log("150000000000:", formatShareCount(150000000000))
-      }
+          // Track with Google Analytics immediately
+          if (window.gtag) {
+            window.gtag("event", "page_view_with_utm", {
+              utm_source: utmData.source,
+              utm_medium: utmData.medium,
+              utm_campaign: utmData.campaign,
+              utm_content: utmData.content,
+              utm_term: utmData.term,
+              page_path: currentPath,
+            })
+            console.log("Debug: Sent UTM data to Google Analytics")
+          }
 
-      console.log("🧪 Test functions available:")
-      console.log("- setShareCount(150) - Set share count to 150")
-      console.log("- testShareCounts() - View all formatting examples")
+          // Clean the URL by removing UTM parameters
+          const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname
+          window.history.replaceState({}, document.title, cleanUrl)
 
-      // Add scroll listener for scroll-to-top button
-      const handleScroll = () => {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-        setShowScrollToTop(scrollTop > 300) // Show button after scrolling 300px
-      }
+          console.log(`📊 UTM data captured and URL cleaned:`, utmData)
+          console.log(`📊 Clean URL: ${cleanUrl}`)
+        } else {
+          console.log("Debug: No UTM parameters found")
+        }
 
-      window.addEventListener("scroll", handleScroll)
+        // Set mock data for testing (remove in production)
+        setMockShareCount("/blog/template", 150) // Mock 150 shares for testing
 
-      // Cleanup scroll listener
-      return () => {
-        window.removeEventListener("scroll", handleScroll)
-      }
+        // Load current share count
+        const currentCount = getShareCount(currentPath)
+        setShareCount(currentCount)
+
+        console.log(`📊 Share count for ${currentPath}: ${currentCount}`)
+
+        // Add testing functions to window for easy testing
+        window.setShareCount = count => {
+          setMockShareCount(currentPath, count)
+          setShareCount(count)
+          console.log(`🧪 Test: Set share count to ${count}`)
+          console.log(`📊 Formatted: ${formatShareCount(count) || "Hidden (< 100)"}`)
+        }
+
+        window.testShareCounts = () => {
+          console.log("🧪 Testing different share count formats:")
+          console.log("50:", formatShareCount(50) || "Hidden")
+          console.log("99:", formatShareCount(99) || "Hidden")
+          console.log("100:", formatShareCount(100))
+          console.log("999:", formatShareCount(999))
+          console.log("1000:", formatShareCount(1000))
+          console.log("1100:", formatShareCount(1100))
+          console.log("9999:", formatShareCount(9999))
+          console.log("10000:", formatShareCount(10000))
+          console.log("15500:", formatShareCount(15500))
+          console.log("100000:", formatShareCount(100000))
+          console.log("999999:", formatShareCount(999999))
+          console.log("1000000:", formatShareCount(1000000))
+          console.log("1100000:", formatShareCount(1100000))
+          console.log("9900000:", formatShareCount(9900000))
+          console.log("10000000:", formatShareCount(10000000))
+          console.log("150000000:", formatShareCount(150000000))
+          console.log("999000000:", formatShareCount(999000000))
+          console.log("1000000000:", formatShareCount(1000000000))
+          console.log("1100000000:", formatShareCount(1100000000))
+          console.log("9900000000:", formatShareCount(9900000000))
+          console.log("10000000000:", formatShareCount(10000000000))
+          console.log("150000000000:", formatShareCount(150000000000))
+        }
+
+        // Add UTM testing function
+        window.testUTM = () => {
+          const storedUTM = sessionStorage.getItem("utm_data")
+          if (storedUTM) {
+            console.log("🔍 Stored UTM data:", JSON.parse(storedUTM))
+          } else {
+            console.log("🔍 No UTM data found in session")
+          }
+        }
+
+        // Add URL shortener testing function
+        window.testShortener = () => {
+          console.log("🔗 Testing URL shortener...")
+          const currentUrl = window.location.href.split("?")[0]
+          const testUrl = createShortUrl(currentUrl, "copy_link")
+          console.log("Created short URL:", testUrl)
+
+          // Test the slug extraction and resolution
+          const slug = testUrl.split("/s/")[1]
+          console.log("Extracted slug:", slug)
+
+          // Import and test resolution
+          import("../../utils/urlShortener").then(({ resolveShortUrl }) => {
+            const resolved = resolveShortUrl(slug)
+            console.log("Resolved URL:", resolved)
+
+            if (resolved) {
+              console.log("✅ URL shortener working correctly")
+            } else {
+              console.log("❌ URL shortener resolution failed")
+            }
+          })
+        }
+
+        console.log("🧪 Test functions available:")
+        console.log("- setShareCount(150) - Set share count to 150")
+        console.log("- testShareCounts() - View all formatting examples")
+        console.log("- testUTM() - View captured UTM data")
+        console.log("- testShortener() - Test URL shortener functionality")
+
+        // Add scroll listener for scroll-to-top button
+        const handleScroll = () => {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+          setShowScrollToTop(scrollTop > 300) // Show button after scrolling 300px
+        }
+
+        window.addEventListener("scroll", handleScroll)
+
+        // Cleanup scroll listener
+        return () => {
+          window.removeEventListener("scroll", handleScroll)
+        }
+      }, 250) // Delay to ensure page is fully loaded
+
+      return () => clearTimeout(timer)
     }
   }, [])
 
@@ -130,12 +215,20 @@ export default function Template() {
       // Increment share count
       handleShareAction("copy_link")
 
+      // Get stored UTM data for enhanced tracking
+      const storedUTM = sessionStorage.getItem("utm_data")
+      const utmData = storedUTM ? JSON.parse(storedUTM) : {}
+
       // Track with Google Analytics
       if (typeof window !== "undefined" && window.gtag) {
         window.gtag("event", "share", {
           method: "copy_link",
           content_type: "blog_post",
           item_id: window.location.pathname,
+          // Include original UTM data to track full journey
+          original_utm_source: utmData.source || null,
+          original_utm_medium: utmData.medium || null,
+          original_utm_campaign: utmData.campaign || null,
         })
       }
     }
@@ -160,12 +253,20 @@ export default function Template() {
           // Increment share count
           handleShareAction("email")
 
+          // Get stored UTM data for enhanced tracking
+          const storedUTM = sessionStorage.getItem("utm_data")
+          const utmData = storedUTM ? JSON.parse(storedUTM) : {}
+
           // Track with Google Analytics
           if (window.gtag) {
             window.gtag("event", "share", {
               method: "email",
               content_type: "blog_post",
               item_id: window.location.pathname,
+              // Include original UTM data to track full journey
+              original_utm_source: utmData.source || null,
+              original_utm_medium: utmData.medium || null,
+              original_utm_campaign: utmData.campaign || null,
             })
           }
         }

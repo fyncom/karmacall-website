@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Shortener Test</title>
+</head>
+<body>
+    <h1>URL Shortener Test</h1>
+    <p>Testing the URL shortener functionality...</p>
+    
+    <div id="results"></div>
+    
+    <script>
+        // Mock the URL shortener functionality for testing
+        const PREDEFINED_SLUGS = {
+            "/blog/template/": {
+                copy_link: "KX9PCX23",
+                email: "M7NQFM45",
+                facebook: "R3VKQZ67",
+                twitter: "B8JTWR89",
+                linkedin: "C9KXBT12",
+                reddit: "D4MYJK34",
+                bluesky: "F6PZNP56",
+            },
+            "/blog/future-of-spam-blocking/": {
+                copy_link: "G7QACX78",
+                email: "H8RBFM90",
+                facebook: "J9SCQZ12",
+                twitter: "K2TDWR34",
+                linkedin: "L3UEBT56",
+                reddit: "M4VFJK78",
+                bluesky: "N5WGNP90",
+            }
+        };
+        
+        const URL_HASH_TABLE = new Map();
+        
+        // Initialize hash table
+        function initializeHashTable() {
+            Object.entries(PREDEFINED_SLUGS).forEach(([path, sources]) => {
+                Object.entries(sources).forEach(([source, slug]) => {
+                    const currentDomain = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://karmacall.com";
+                    const fullUrl = `${currentDomain}${path}?utm_source=${source}&utm_medium=${source === "email" ? "email" : "social"}&utm_campaign=blog_share`;
+                    URL_HASH_TABLE.set(slug, fullUrl);
+                });
+            });
+        }
+        
+        // Resolve short code
+        function resolveShortUrl(slug) {
+            initializeHashTable();
+            return URL_HASH_TABLE.get(slug);
+        }
+        
+        // Test the functionality
+        function runTests() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<h2>Test Results:</h2>';
+            
+            const testSlugs = ['KX9PCX23', 'M7NQFM45', 'G7QACX78', 'INVALID123'];
+            
+            testSlugs.forEach(slug => {
+                const result = resolveShortUrl(slug);
+                const status = result ? '✅ SUCCESS' : '❌ FAILED';
+                results.innerHTML += `<p><strong>${slug}:</strong> ${status}<br/>→ ${result || 'NOT FOUND'}</p>`;
+            });
+            
+            // Test redirect for KX9PCX23
+            results.innerHTML += '<hr><button onclick="testRedirect()">Test Redirect for KX9PCX23</button>';
+        }
+        
+        function testRedirect() {
+            const url = resolveShortUrl('KX9PCX23');
+            if (url) {
+                alert(`Redirecting to: ${url}`);
+                window.location.href = url;
+            } else {
+                alert('URL not found!');
+            }
+        }
+        
+        // Run tests when page loads
+        window.onload = runTests;
+    </script>
+</body>
+</html> 
