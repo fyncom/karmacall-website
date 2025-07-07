@@ -17,6 +17,9 @@ const generateBase32Slug = () => {
 // In production, this would be stored in a database
 const URL_HASH_TABLE = new Map()
 
+// Store for dynamically generated slugs (for export/persistence)
+const DYNAMIC_SLUGS = {}
+
 // Predefined slugs for existing articles (for consistency)
 const PREDEFINED_SLUGS = {
   "/blog/template": {
@@ -48,6 +51,71 @@ const PREDEFINED_SLUGS = {
   },
 }
 
+// Auto-detect blog articles and pre-generate slugs
+const autoDetectAndGenerateSlugs = () => {
+  if (typeof window === "undefined") return
+
+  const currentPath = window.location.pathname
+  
+  // Only run on blog pages
+  if (!currentPath.startsWith('/blog/')) return
+  
+  // Normalize the current path
+  let normalizedPath = currentPath
+  if (normalizedPath.length > 1 && normalizedPath.endsWith('/')) {
+    normalizedPath = normalizedPath.slice(0, -1)
+  }
+  
+  // Check if this path already has predefined slugs
+  if (PREDEFINED_SLUGS[normalizedPath]) {
+    console.log(`Debug: Path ${normalizedPath} already has predefined slugs`)
+    return
+  }
+  
+  // Check if we've already generated dynamic slugs for this path
+  if (DYNAMIC_SLUGS[normalizedPath]) {
+    console.log(`Debug: Path ${normalizedPath} already has dynamic slugs`)
+    return
+  }
+  
+  // Auto-generate slugs for this new article
+  console.log(`Debug: 🆕 Auto-generating slugs for new article: ${normalizedPath}`)
+  
+  const sources = ["copy_link", "email", "facebook", "twitter", "linkedin", "reddit", "bluesky"]
+  DYNAMIC_SLUGS[normalizedPath] = {}
+  
+  sources.forEach(source => {
+    // Generate unique slug
+    let slug
+    let attempts = 0
+    do {
+      slug = generateBase32Slug()
+      attempts++
+      if (attempts > 100) {
+        console.error("Failed to generate unique slug after 100 attempts")
+        break
+      }
+    } while (
+      URL_HASH_TABLE.has(slug) || 
+      Object.values(PREDEFINED_SLUGS).some(article => Object.values(article).includes(slug)) ||
+      Object.values(DYNAMIC_SLUGS).some(article => Object.values(article).includes(slug))
+    )
+    
+    // Store the slug
+    DYNAMIC_SLUGS[normalizedPath][source] = slug
+    
+    // Add to hash table
+    const currentDomain = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://karmacall.com"
+    const fullUrl = `${currentDomain}${normalizedPath}?utm_source=${source}&utm_medium=${source === "email" ? "email" : "social"}&utm_campaign=blog_share`
+    URL_HASH_TABLE.set(slug, fullUrl)
+    
+    console.log(`Debug: Generated ${source}: ${slug}`)
+  })
+  
+  console.log(`Debug: ✅ Auto-generated all slugs for ${normalizedPath}`)
+  console.log("Debug: 💡 Tip: Use exportDynamicSlugs() to make these permanent")
+}
+
 // Initialize hash table with predefined slugs
 const initializeHashTable = () => {
   if (typeof window === "undefined") {
@@ -77,6 +145,9 @@ const initializeHashTable = () => {
   })
 
   console.log(`Debug: Hash table initialization complete. Added ${addedCount} new mappings. Total size: ${URL_HASH_TABLE.size}`)
+
+  // Auto-detect and generate slugs for current article if needed
+  autoDetectAndGenerateSlugs()
 }
 
 // Get or create a slug for a specific URL + source combination
@@ -97,9 +168,16 @@ const getOrCreateSlug = (url, source) => {
     const slug = PREDEFINED_SLUGS[urlPath][source]
     console.log("Debug: ✅ Using predefined slug:", slug, "for", urlPath, "+", source)
     return slug
-  } else {
-    console.log("Debug: ❌ No predefined slug found for:", urlPath, "+", source)
   }
+
+  // Check if we have a dynamically generated slug for this combination
+  if (DYNAMIC_SLUGS[urlPath] && DYNAMIC_SLUGS[urlPath][source]) {
+    const slug = DYNAMIC_SLUGS[urlPath][source]
+    console.log("Debug: ✅ Using auto-generated slug:", slug, "for", urlPath, "+", source)
+    return slug
+  }
+
+  console.log("Debug: ❌ No existing slug found for:", urlPath, "+", source)
 
   // Generate a new unique slug
   let slug
@@ -111,15 +189,22 @@ const getOrCreateSlug = (url, source) => {
       console.error("Failed to generate unique slug after 100 attempts")
       break
     }
-  } while (URL_HASH_TABLE.has(slug))
+  } while (URL_HASH_TABLE.has(slug) || Object.values(PREDEFINED_SLUGS).some(article => Object.values(article).includes(slug)))
 
-  // Store the mapping
+  // Store the mapping in hash table
   const currentDomain = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://karmacall.com"
   const fullUrl = `${currentDomain}${urlPath}?utm_source=${source}&utm_medium=${source === "email" ? "email" : "social"}&utm_campaign=blog_share`
   URL_HASH_TABLE.set(slug, fullUrl)
 
-  console.log("Debug: Generated new slug:", slug, "for", urlPath, "+", source)
+  // Store in dynamic slugs for export
+  if (!DYNAMIC_SLUGS[urlPath]) {
+    DYNAMIC_SLUGS[urlPath] = {}
+  }
+  DYNAMIC_SLUGS[urlPath][source] = slug
+
+  console.log("Debug: 🆕 Generated new slug:", slug, "for", urlPath, "+", source)
   console.log("Debug: Maps to:", fullUrl)
+  console.log("Debug: Added to dynamic slugs for export")
 
   return slug
 }
@@ -252,6 +337,70 @@ export const showAllMappings = () => {
   URL_HASH_TABLE.forEach((url, slug) => {
     console.log(`${slug} -> ${url}`)
   })
+}
+
+// Export dynamically generated slugs for permanent storage
+export const exportDynamicSlugs = () => {
+  if (Object.keys(DYNAMIC_SLUGS).length === 0) {
+    console.log("No dynamic slugs to export")
+    return null
+  }
+
+  console.log("=== Dynamically Generated Slugs ===")
+  console.log("Add these to PREDEFINED_SLUGS in urlShortener.js:")
+  console.log("")
+
+  Object.entries(DYNAMIC_SLUGS).forEach(([path, sources]) => {
+    console.log(`'${path}': {`)
+    Object.entries(sources).forEach(([source, slug]) => {
+      console.log(`  '${source}': '${slug}',`)
+    })
+    console.log("},")
+  })
+
+  console.log("")
+  console.log("Copy the above and add to PREDEFINED_SLUGS, then clear dynamic slugs with clearDynamicSlugs()")
+
+  return DYNAMIC_SLUGS
+}
+
+// Clear dynamic slugs after they've been moved to predefined
+export const clearDynamicSlugs = () => {
+  const count = Object.keys(DYNAMIC_SLUGS).length
+  Object.keys(DYNAMIC_SLUGS).forEach(key => delete DYNAMIC_SLUGS[key])
+  console.log(`Cleared ${count} dynamic slug entries`)
+}
+
+// Show current dynamic slugs
+export const showDynamicSlugs = () => {
+  console.log("=== Current Dynamic Slugs ===")
+  if (Object.keys(DYNAMIC_SLUGS).length === 0) {
+    console.log("No dynamic slugs generated yet")
+  } else {
+    console.log(JSON.stringify(DYNAMIC_SLUGS, null, 2))
+  }
+  return DYNAMIC_SLUGS
+}
+
+// Auto-generate slugs for a specific article path
+export const autoGenerateSlugsForPath = articlePath => {
+  const sources = ["copy_link", "email", "facebook", "twitter", "linkedin", "reddit", "bluesky"]
+  const generatedSlugs = {}
+
+  console.log(`Auto-generating slugs for: ${articlePath}`)
+
+  sources.forEach(source => {
+    // This will automatically generate and store the slug
+    const dummyUrl = `http://localhost:8000${articlePath}`
+    const shortUrl = createShortUrl(dummyUrl, source)
+    const slug = shortUrl.split("/s/")[1]
+    generatedSlugs[source] = slug
+  })
+
+  console.log("Generated slugs:", generatedSlugs)
+  console.log("Use exportDynamicSlugs() to get the code to add to PREDEFINED_SLUGS")
+
+  return generatedSlugs
 }
 
 // Test function to verify hash table functionality
