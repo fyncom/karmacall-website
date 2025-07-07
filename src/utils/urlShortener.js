@@ -1,174 +1,188 @@
 // URL Shortener Utility for KarmaCall
-// Uses Base64-encoded IDs: 4 chars for articles + 2 chars for sources
+// Uses 8-character Base32 slugs with hash table mapping
 
-// Base64 character set for encoding/decoding
-const BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+// Base32 character set (no confusing characters like 0/O or 1/l)
+const BASE32_CHARS = "ABCDEFGHJKMNPQRSTVWXYZ23456789"
 
-// Convert number to 4-character Base64 ID
-const numberToBase64Id = (num, length) => {
+// Generate a random 8-character Base32 slug
+const generateBase32Slug = () => {
   let result = ""
-  for (let i = 0; i < length; i++) {
-    result = BASE64_CHARS[num % 64] + result
-    num = Math.floor(num / 64)
+  for (let i = 0; i < 8; i++) {
+    result += BASE32_CHARS[Math.floor(Math.random() * BASE32_CHARS.length)]
   }
   return result
 }
 
-// Convert Base64 ID back to number
-const base64IdToNumber = id => {
-  let result = 0
-  for (let i = 0; i < id.length; i++) {
-    result = result * 64 + BASE64_CHARS.indexOf(id[i])
-  }
-  return result
+// Hash table to store slug -> full URL mappings
+// In production, this would be stored in a database
+const URL_HASH_TABLE = new Map()
+
+// Predefined slugs for existing articles (for consistency)
+const PREDEFINED_SLUGS = {
+  "/blog/template": {
+    copy_link: "KX9PCX23",
+    email: "M7NQFM45",
+    facebook: "R3VKQZ67",
+    twitter: "B8JTWR89",
+    linkedin: "C9KXBT12",
+    reddit: "D4MYJK34",
+    bluesky: "F6PZNP56",
+  },
+  "/blog/future-of-spam-blocking": {
+    copy_link: "G7QACX78",
+    email: "H8RBFM90",
+    facebook: "J9SCQZ12",
+    twitter: "K2TDWR34",
+    linkedin: "L3UEBT56",
+    reddit: "M4VFJK78",
+    bluesky: "N5WGNP90",
+  },
+  "/blog/job-scam-texts-surge-2024": {
+    copy_link: "P6XHCX12",
+    email: "Q7YIFM34",
+    facebook: "R8ZJQZ56",
+    twitter: "S9AKWR78",
+    linkedin: "T2BLBT90",
+    reddit: "V3CMJK12",
+    bluesky: "W4DNNP34",
+  },
 }
 
-// Article ID mappings (4-char Base64 IDs that don't look like a pattern)
-const ARTICLE_IDS = {
-  "/blog/template": "Kx9P", // Random-looking ID
-  "/blog/future-of-spam-blocking": "M7nQ", // Random-looking ID
-  "/blog/job-scam-texts-surge-2024": "R3vK", // Random-looking ID
-  // Add new articles with random-looking 4-char IDs
-}
-
-// Reverse lookup for article IDs
-const ID_TO_ARTICLE = Object.fromEntries(Object.entries(ARTICLE_IDS).map(([path, id]) => [id, path]))
-
-// Source ID mappings (2-char Base64 IDs)
-const SOURCE_IDS = {
-  copy_link: "Cx", // Random-looking
-  email: "Fm", // Random-looking
-  facebook: "Qz", // Random-looking
-  twitter: "Wr", // Random-looking
-  linkedin: "Bt", // Random-looking
-  reddit: "Jk", // Random-looking
-  bluesky: "Np", // Random-looking
-}
-
-// Reverse lookup for source IDs
-const ID_TO_SOURCE = Object.fromEntries(Object.entries(SOURCE_IDS).map(([source, id]) => [id, source]))
-
-// Generate a random-looking 4-character article ID
-const generateArticleId = () => {
-  // Generate a random number and convert to Base64
-  const randomNum = Math.floor(Math.random() * 64 ** 4) // 0 to 16,777,215
-  return numberToBase64Id(randomNum, 4)
-}
-
-// Generate a random-looking 2-character source ID
-const generateSourceId = () => {
-  const randomNum = Math.floor(Math.random() * 64 ** 2) // 0 to 4,095
-  return numberToBase64Id(randomNum, 2)
-}
-
-// Get article ID from various sources (frontmatter, static mapping, etc.)
-const getArticleId = (urlPath, articleMeta = null) => {
-  // First, try to get from article metadata (for MDX files)
-  if (articleMeta && articleMeta.articleId) {
-    return articleMeta.articleId
+// Initialize hash table with predefined slugs
+const initializeHashTable = () => {
+  if (typeof window === "undefined") {
+    console.log("Debug: Skipping hash table init - no window object")
+    return
   }
 
-  // Fallback to static mapping
-  return ARTICLE_IDS[urlPath] || null
+  console.log("Debug: Starting hash table initialization...")
+  console.log("Debug: Current domain:", window.location.hostname)
+
+  let addedCount = 0
+  Object.entries(PREDEFINED_SLUGS).forEach(([path, sources]) => {
+    console.log("Debug: Processing path:", path)
+    Object.entries(sources).forEach(([source, slug]) => {
+      const currentDomain = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://karmacall.com"
+      const fullUrl = `${currentDomain}${path}?utm_source=${source}&utm_medium=${source === "email" ? "email" : "social"}&utm_campaign=blog_share`
+
+      // Only add if not already present
+      if (!URL_HASH_TABLE.has(slug)) {
+        URL_HASH_TABLE.set(slug, fullUrl)
+        addedCount++
+        console.log(`Debug: Added mapping: ${slug} -> ${fullUrl}`)
+      } else {
+        console.log(`Debug: Slug ${slug} already exists, skipping`)
+      }
+    })
+  })
+
+  console.log(`Debug: Hash table initialization complete. Added ${addedCount} new mappings. Total size: ${URL_HASH_TABLE.size}`)
 }
 
-// Encode URL path and source into a short code
-const encodeUrl = (url, source, articleMeta = null) => {
-  // Extract just the path from the URL
-  const urlPath = url.replace(/^https?:\/\/[^\/]+/, "") // Remove domain, keep path
+// Get or create a slug for a specific URL + source combination
+const getOrCreateSlug = (url, source) => {
+  let urlPath = url.replace(/^https?:\/\/[^\/]+/, "") // Remove domain, keep path
 
-  console.log("Debug: Encoding path:", urlPath, "source:", source)
-
-  // Look up IDs
-  const articleId = getArticleId(urlPath, articleMeta)
-  const sourceId = SOURCE_IDS[source]
-
-  if (!articleId || !sourceId) {
-    console.warn("Debug: Unknown article or source:", { urlPath, source, articleId, sourceId })
-    console.warn("Debug: Available articles:", Object.keys(ARTICLE_IDS))
-    console.warn("Debug: Available sources:", Object.keys(SOURCE_IDS))
-
-    // Fallback: generate temporary IDs for unknown articles
-    const tempArticleId = generateArticleId()
-    const tempSourceId = sourceId || generateSourceId()
-    console.warn("Debug: Using temporary IDs:", { tempArticleId, tempSourceId })
-    return tempArticleId + tempSourceId
+  // Normalize path by removing trailing slash (except for root)
+  if (urlPath.length > 1 && urlPath.endsWith("/")) {
+    urlPath = urlPath.slice(0, -1)
   }
 
-  // Combine IDs: 4-char article + 2-char source = 6 chars total
-  const shortCode = articleId + sourceId
-  console.log("Debug: Generated short code:", shortCode)
+  console.log("Debug: Original URL:", url)
+  console.log("Debug: Normalized path:", urlPath, "source:", source)
+  console.log("Debug: Available predefined paths:", Object.keys(PREDEFINED_SLUGS))
 
-  return shortCode
-}
-
-// Decode a short code back to path and source
-const decodeUrl = code => {
-  console.log("Debug: Attempting to decode code:", code)
-
-  if (code.length !== 6) {
-    console.log("Debug: Invalid code length:", code.length, "expected 6")
-    return null
-  }
-
-  // Split into article ID (first 4 chars) and source ID (last 2 chars)
-  const articleId = code.substring(0, 4)
-  const sourceId = code.substring(4, 6)
-
-  console.log("Debug: Parsed IDs - article:", articleId, "source:", sourceId)
-
-  const path = ID_TO_ARTICLE[articleId]
-  const source = ID_TO_SOURCE[sourceId]
-
-  if (path && source) {
-    console.log("Debug: Successfully decoded - path:", path, "source:", source)
-    return { path, source }
+  // Check if we have a predefined slug for this combination
+  if (PREDEFINED_SLUGS[urlPath] && PREDEFINED_SLUGS[urlPath][source]) {
+    const slug = PREDEFINED_SLUGS[urlPath][source]
+    console.log("Debug: ✅ Using predefined slug:", slug, "for", urlPath, "+", source)
+    return slug
   } else {
-    console.log("Debug: Unknown IDs:", { articleId, sourceId, path, source })
-    console.log("Debug: Available article IDs:", Object.keys(ID_TO_ARTICLE))
-    console.log("Debug: Available source IDs:", Object.keys(ID_TO_SOURCE))
-    return null
+    console.log("Debug: ❌ No predefined slug found for:", urlPath, "+", source)
   }
+
+  // Generate a new unique slug
+  let slug
+  let attempts = 0
+  do {
+    slug = generateBase32Slug()
+    attempts++
+    if (attempts > 100) {
+      console.error("Failed to generate unique slug after 100 attempts")
+      break
+    }
+  } while (URL_HASH_TABLE.has(slug))
+
+  // Store the mapping
+  const currentDomain = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://karmacall.com"
+  const fullUrl = `${currentDomain}${urlPath}?utm_source=${source}&utm_medium=${source === "email" ? "email" : "social"}&utm_campaign=blog_share`
+  URL_HASH_TABLE.set(slug, fullUrl)
+
+  console.log("Debug: Generated new slug:", slug, "for", urlPath, "+", source)
+  console.log("Debug: Maps to:", fullUrl)
+
+  return slug
 }
 
-// Generate short URL (no storage needed!)
+// Generate short URL using hash table approach
 export const createShortUrl = (originalUrl, source, articleMeta = null) => {
   if (typeof window === "undefined") return originalUrl
 
-  const shortCode = encodeUrl(originalUrl, source, articleMeta)
+  // Initialize hash table if not already done
+  if (URL_HASH_TABLE.size === 0) {
+    initializeHashTable()
+  }
+
+  const slug = getOrCreateSlug(originalUrl, source)
 
   // Use localhost for development, karmacall.com for production
   const baseUrl = window.location.hostname === "localhost" ? `http://localhost:8000` : `https://karmacall.com`
 
-  const shortUrl = `${baseUrl}/s/${shortCode}`
+  const shortUrl = `${baseUrl}/s/${slug}`
   console.log("Debug: Created short URL:", shortUrl)
 
   return shortUrl
 }
 
-// Resolve short code back to original URL (no storage lookup needed!)
-export const resolveShortUrl = shortCode => {
+// Resolve short code back to original URL (hash table lookup)
+export const resolveShortUrl = slug => {
   if (typeof window === "undefined") return null
 
-  console.log("Debug: Decoding short code:", shortCode)
+  console.log("Debug: Looking up slug:", slug)
+  console.log("Debug: Hash table size before init:", URL_HASH_TABLE.size)
 
-  const decoded = decodeUrl(shortCode)
-  if (!decoded) {
-    console.log("Debug: Could not decode short code")
+  // Always initialize hash table to ensure it's populated
+  initializeHashTable()
+
+  console.log("Debug: Hash table size after init:", URL_HASH_TABLE.size)
+  console.log("Debug: All available slugs:", Array.from(URL_HASH_TABLE.keys()))
+
+  const fullUrl = URL_HASH_TABLE.get(slug)
+
+  if (fullUrl) {
+    console.log("Debug: SUCCESS - Found mapping:", slug, "->", fullUrl)
+    return fullUrl
+  } else {
+    console.log("Debug: FAILED - No mapping found for slug:", slug)
+    console.log("Debug: Checking if slug exists in any form...")
+
+    // Check if the slug exists with different casing
+    const lowerSlug = slug.toLowerCase()
+    const upperSlug = slug.toUpperCase()
+
+    for (const [key, value] of URL_HASH_TABLE.entries()) {
+      if (key.toLowerCase() === lowerSlug) {
+        console.log("Debug: Found case mismatch - stored:", key, "received:", slug)
+        return value
+      }
+    }
+
+    console.log("Debug: No case variations found either")
     return null
   }
-
-  const { path, source } = decoded
-
-  // Reconstruct the full URL
-  const currentDomain = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://karmacall.com"
-  const fullUrl = `${currentDomain}${path}?utm_source=${source}&utm_medium=${source === "email" ? "email" : "social"}&utm_campaign=blog_share`
-
-  console.log("Debug: Reconstructed URL:", fullUrl)
-  return fullUrl
 }
 
-// Preload URLs (now just generates codes without storing)
+// Preload URLs for current page
 export const preloadUrls = (articleMeta = null) => {
   if (typeof window === "undefined") return
 
@@ -182,7 +196,7 @@ export const preloadUrls = (articleMeta = null) => {
   })
 }
 
-// Get all possible mappings for current page (for debugging)
+// Get all mappings for current page (for debugging)
 export const getAllMappings = (articleMeta = null) => {
   if (typeof window === "undefined") return {}
 
@@ -191,48 +205,74 @@ export const getAllMappings = (articleMeta = null) => {
   const mappings = {}
 
   sources.forEach(source => {
-    const code = encodeUrl(currentUrl, source, articleMeta)
-    const fullUrl = `${currentUrl}?utm_source=${source}&utm_medium=${source === "email" ? "email" : "social"}&utm_campaign=blog_share`
-    mappings[code] = fullUrl
+    const shortUrl = createShortUrl(currentUrl, source, articleMeta)
+    const slug = shortUrl.split("/s/")[1]
+    const fullUrl = URL_HASH_TABLE.get(slug)
+    mappings[slug] = fullUrl
   })
 
   return mappings
 }
 
-// Helper functions for managing article IDs
-export const generateNewArticleId = () => {
-  let newId
-  do {
-    newId = generateArticleId()
-  } while (Object.values(ARTICLE_IDS).includes(newId)) // Ensure uniqueness
-
-  console.log("Generated new article ID:", newId)
-  return newId
-}
-
-export const addArticleId = (path, id = null) => {
-  const articleId = id || generateNewArticleId()
-  console.log(`Add this to ARTICLE_IDS in urlShortener.js:`)
-  console.log(`'${path}': '${articleId}',`)
-  console.log(`\nOR better, add this to your MDX frontmatter:`)
-  console.log(`articleId: "${articleId}"`)
-  return articleId
-}
-
-// Utility to generate article IDs for existing posts
-export const generateIdsForExistingPosts = () => {
-  console.log("=== Article ID Generation ===")
-  console.log("Add these to your MDX frontmatter:")
+// Generate slugs for a new article
+export const generateSlugsForNewArticle = articlePath => {
+  console.log(`=== Slugs for new article: ${articlePath} ===`)
+  console.log("Add these to PREDEFINED_SLUGS in urlShortener.js:")
   console.log("")
+  console.log(`'${articlePath}': {`)
 
-  const posts = ["/blog/future-of-spam-blocking", "/blog/job-scam-texts-surge-2024"]
+  const sources = ["copy_link", "email", "facebook", "twitter", "linkedin", "reddit", "bluesky"]
+  const slugs = {}
 
-  posts.forEach(path => {
-    const existingId = ARTICLE_IDS[path]
-    console.log(`${path}:`)
-    console.log(`articleId: "${existingId}"`)
-    console.log("")
+  sources.forEach(source => {
+    let slug
+    do {
+      slug = generateBase32Slug()
+    } while (Object.values(PREDEFINED_SLUGS).some(article => Object.values(article).includes(slug)))
+
+    slugs[source] = slug
+    console.log(`  '${source}': '${slug}',`)
   })
 
-  console.log("For the template page, the ID is already set: Kx9P")
+  console.log("},")
+  console.log("")
+
+  return slugs
+}
+
+// Utility to show all current mappings
+export const showAllMappings = () => {
+  if (typeof window === "undefined") return
+
+  if (URL_HASH_TABLE.size === 0) {
+    initializeHashTable()
+  }
+
+  console.log("=== All URL Mappings ===")
+  URL_HASH_TABLE.forEach((url, slug) => {
+    console.log(`${slug} -> ${url}`)
+  })
+}
+
+// Test function to verify hash table functionality
+export const testHashTable = () => {
+  console.log("=== Hash Table Test ===")
+
+  // Initialize
+  initializeHashTable()
+
+  // Test a known slug
+  const testSlug = "KX9PCX23" // Template copy_link
+  console.log(`Testing slug: ${testSlug}`)
+
+  const result = resolveShortUrl(testSlug)
+  console.log(`Result: ${result}`)
+
+  if (result) {
+    console.log("✅ Hash table lookup working correctly!")
+  } else {
+    console.log("❌ Hash table lookup failed!")
+  }
+
+  return result
 }
