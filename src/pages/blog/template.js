@@ -38,6 +38,9 @@ export default function Template() {
     preloadUrls()
 
     if (typeof window !== "undefined") {
+      // Scroll to top when component mounts (for navigation from other articles)
+      window.scrollTo({ top: 0, behavior: "instant" })
+
       // Add a small delay to ensure the page is fully loaded
       const timer = setTimeout(() => {
         const currentPath = window.location.pathname

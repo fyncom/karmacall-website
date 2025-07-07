@@ -116,14 +116,17 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
           >
             <div
               style={{
-                height: "140px",
+                position: "relative",
+                width: "100%",
+                aspectRatio: "4 / 3", // Force 4:3 aspect ratio to match main featured images
                 backgroundColor: "var(--color-background-alt, #f9f9f9)",
                 backgroundImage: `url('${article.image}')`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
+                borderRadius: "8px 8px 0 0", // Only round top corners
               }}
             />
-            <div style={{ padding: "1rem" }}>
+            <div style={{ padding: "1rem", display: "flex", flexDirection: "column", height: "200px" }}>
               <h3
                 style={{
                   fontSize: "1.1rem",
@@ -140,10 +143,12 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                   fontSize: "0.85rem",
                   color: "var(--color-text-secondary, #666)",
                   lineHeight: "1.4",
-                  margin: "0 0 0.75rem 0",
+                  margin: "0 0 auto 0", // Push the date/author to bottom
+                  flex: "1", // Take available space
+                  overflow: "hidden",
                 }}
               >
-                {article.description}
+                {article.description.length > 140 ? `${article.description.substring(0, 140)}...` : article.description}
               </p>
               <div
                 style={{
@@ -152,6 +157,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  marginTop: "0.75rem", // Fixed spacing from description
                 }}
               >
                 <span>
@@ -188,8 +194,14 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
               border: "2px dashed var(--border-color, #eee)",
               borderRadius: "8px",
               padding: "1.5rem",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
               textAlign: "center",
               backgroundColor: "var(--color-background-alt, #f9f9f9)",
+              height: "calc(200px + 4:3 aspect ratio height)", // Match the total height of real cards
+              minHeight: "280px", // Ensure consistent height with image + content
             }}
           >
             <div
@@ -216,6 +228,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                 fontSize: "0.85rem",
                 color: "var(--color-text-secondary, #666)",
                 margin: "0",
+                lineHeight: "1.4",
               }}
             >
               More insightful articles about communication technology and digital privacy coming soon.

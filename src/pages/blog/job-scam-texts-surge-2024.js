@@ -48,6 +48,9 @@ export default function JobScamTextsSurge2024() {
   // Share count handling
   React.useEffect(() => {
     if (typeof window !== "undefined") {
+      // Scroll to top when component mounts (for navigation from other articles)
+      window.scrollTo({ top: 0, behavior: "instant" })
+
       const currentPath = window.location.pathname
 
       // Set mock data for testing (remove in production)
