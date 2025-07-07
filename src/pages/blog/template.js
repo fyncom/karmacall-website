@@ -4,12 +4,31 @@ import "../../components/blog.css"
 import { createShortUrl, preloadUrls } from "../../utils/urlShortener"
 import { getShareCount, incrementShareCount, formatShareCount, setMockShareCount } from "../../utils/shareCounter"
 
+// ============================================================
+// ARTICLE METADATA - EDIT THIS SECTION FOR EACH NEW ARTICLE
+// ============================================================
+const articleMetadata = {
+  title: "JavaScript Blog Template Guide - How to Create Articles",
+  description: "Complete guide for developers on how to use the JavaScript template system for creating KarmaCall blog articles. Includes metadata setup, content structure, and advanced features.",
+  author: "Draven Grondona",
+  date: "2025-06-07", // Format: YYYY-MM-DD
+  featuredImage: "../../images/blog/your-image-filename.jpg", // Place image in src/images/blog/
+
+  // 2 Core Topics (2-3), Audiance Tags (1-2), Article Type (1-2), Technical / Concept Tags (1-2), Trends Tag (1), Product Tag (1-2)  |  (any of these are optional)
+  keywords: ["javascript", "blog", "template", "employee", "how to", "guide", "metadata", "comand line interface", "cli", "karmacall", "fyncom"], // Optional: for additional SEO targeting
+  slug: "/blog/template", // Used for share tracking - update this to match your article's URL
+}
+
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
 export default function Template() {
   const [showShareDialog, setShowShareDialog] = React.useState(false)
   const [linkCopied, setLinkCopied] = React.useState(false)
   const [shareCount, setShareCount] = React.useState(0)
   const [tocCollapsed, setTocCollapsed] = React.useState(false)
   const [showScrollToTop, setShowScrollToTop] = React.useState(false)
+  const [headings, setHeadings] = React.useState([])
 
   const handleShare = () => {
     setShowShareDialog(!showShareDialog)
@@ -50,6 +69,47 @@ export default function Template() {
       console.log(`📈 Share count incremented to ${newCount} for ${platform}`)
     }
   }
+
+  // Generate table of contents from headings
+  React.useEffect(() => {
+    const generateTOC = () => {
+      if (typeof window !== "undefined") {
+        // Find all H2 and H3 elements with IDs in document order
+        const allHeadings = Array.from(document.querySelectorAll("h2[id], h3[id]"))
+
+        const headingsList = []
+        let currentH2 = null
+
+        allHeadings.forEach(heading => {
+          if (heading.tagName === "H2") {
+            // Start a new H2 section
+            currentH2 = {
+              id: heading.id,
+              text: heading.textContent,
+              level: 2,
+              children: [],
+            }
+            headingsList.push(currentH2)
+          } else if (heading.tagName === "H3" && currentH2) {
+            // Add H3 as child of current H2
+            currentH2.children.push({
+              id: heading.id,
+              text: heading.textContent,
+              level: 3,
+            })
+          }
+        })
+
+        setHeadings(headingsList)
+        console.log("📋 Generated table of contents:", headingsList)
+      }
+    }
+
+    // Generate TOC after component mounts and content is rendered
+    const timer = setTimeout(generateTOC, 100)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   // Preload URLs and load share count when component mounts
   React.useEffect(() => {
@@ -105,7 +165,7 @@ export default function Template() {
         }
 
         // Set mock data for testing (remove in production)
-        setMockShareCount("/blog/template", 150) // Mock 150 shares for testing
+        setMockShareCount(articleMetadata.slug, 150) // Mock 150 shares for testing
 
         // Load current share count
         const currentCount = getShareCount(currentPath)
@@ -395,9 +455,11 @@ export default function Template() {
     return <div>Page not found</div>
   }
 
+  // SEO metadata using articleMetadata
   const seo = {
-    title: "Blog Template - Developer Only",
-    description: "Template for creating new blog articles",
+    title: articleMetadata.title,
+    description: articleMetadata.description,
+    keywords: articleMetadata.keywords,
   }
 
   return (
@@ -417,7 +479,7 @@ export default function Template() {
                 color: "var(--color-text, #333)",
               }}
             >
-              Your Article Title Goes Here
+              {articleMetadata.title}
             </h1>
 
             {/* Meta information */}
@@ -430,8 +492,14 @@ export default function Template() {
                 paddingBottom: "1rem",
               }}
             >
-              <span className="blog-author">Author Name</span>
-              <span className="blog-date">March 15, 2024</span>
+              <span className="blog-author">{articleMetadata.author}</span>
+              <span className="blog-date">
+                {new Date(articleMetadata.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
             </div>
 
             {/* Article summary/blurb */}
@@ -449,8 +517,7 @@ export default function Template() {
                   marginBottom: "0",
                 }}
               >
-                This is a short article summary or blurb that gives readers a quick overview of what they'll learn. It should be engaging and informative,
-                setting expectations for the content below.
+                {articleMetadata.description}
               </p>
             </div>
           </div>
@@ -660,7 +727,7 @@ export default function Template() {
               </p>
             </div>
 
-            {/* Placeholder content */}
+            {/* Guide content */}
             <div
               style={{
                 lineHeight: "1.7",
@@ -669,12 +736,28 @@ export default function Template() {
               }}
             >
               <p style={{ marginBottom: "1.5rem" }}>
-                <strong>This is where your lead paragraph would go.</strong> It should hook the reader and summarize what they'll learn from your article. Keep
-                it engaging and concise.
+                <strong>Welcome to the JavaScript Blog Template System!</strong> This template provides a complete solution for creating KarmaCall blog articles
+                using JavaScript instead of MDX. All metadata, SEO, and advanced features are centralized in the JavaScript file for easy management.
               </p>
 
+              <div
+                style={{
+                  backgroundColor: "var(--color-background-alt, #f9f9f9)",
+                  border: "1px solid var(--border-color, #eee)",
+                  borderRadius: "8px",
+                  padding: "1.5rem",
+                  marginBottom: "2rem",
+                  borderLeft: "4px solid #007acc",
+                }}
+              >
+                <p style={{ margin: "0", fontWeight: "600", color: "#007acc" }}>
+                  📝 <strong>Quick Start:</strong> Copy this `template.js` file, rename it to your article name (e.g., `my-article.js`), update the metadata at
+                  the top, and replace this content with your article.
+                </p>
+              </div>
+
               <h2
-                id="introduction"
+                id="getting-started"
                 style={{
                   fontSize: "1.8rem",
                   fontWeight: "600",
@@ -683,21 +766,69 @@ export default function Template() {
                   color: "var(--color-text, #333)",
                 }}
               >
-                Introduction
+                Getting Started
               </h2>
 
               <p style={{ marginBottom: "1.5rem" }}>
-                This is regular paragraph text. You can write about your topic here, explaining key concepts and providing valuable insights to your readers.
-                Make sure to break up long content into digestible paragraphs.
+                The JavaScript template system centralizes all article configuration in the `articleMetadata` object at the top of the file. This approach
+                provides better maintainability and ensures consistent SEO handling across all articles.
               </p>
 
-              <p style={{ marginBottom: "1.5rem" }}>
-                Continue with more introductory content that sets the stage for the main sections of your article. This helps readers understand the context and
-                importance of the topic.
-              </p>
+              <h3 id="copy-rename" style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}>
+                Step 1: Copy and Rename
+              </h3>
+
+              <p style={{ marginBottom: "1.5rem" }}>Copy `template.js` to your new article filename:</p>
+
+              <div
+                style={{
+                  backgroundColor: "#1e1e1e",
+                  color: "#d4d4d4",
+                  padding: "1rem",
+                  borderRadius: "6px",
+                  fontFamily: "monospace",
+                  fontSize: "0.9rem",
+                  marginBottom: "1.5rem",
+                  overflow: "auto",
+                }}
+              >
+                cp template.js my-awesome-article.js
+              </div>
+
+              <h3
+                id="update-metadata"
+                style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}
+              >
+                Step 2: Update Article Metadata
+              </h3>
+
+              <p style={{ marginBottom: "1.5rem" }}>Edit the `articleMetadata` object at the top of your file:</p>
+
+              <div
+                style={{
+                  backgroundColor: "#1e1e1e",
+                  color: "#d4d4d4",
+                  padding: "1rem",
+                  borderRadius: "6px",
+                  fontFamily: "monospace",
+                  fontSize: "0.9rem",
+                  marginBottom: "1.5rem",
+                  overflow: "auto",
+                }}
+              >
+                {`const articleMetadata = {
+  title: "Your Compelling Article Title",
+  description: "SEO description 150-160 chars for search results",
+  author: "Your Name",
+  date: "2024-01-15", // YYYY-MM-DD format
+  featuredImage: "../../images/blog/your-image.jpg",
+  keywords: ["keyword1", "keyword2", "keyword3"],
+  slug: "/blog/your-article-url", // Must match filename
+}`}
+              </div>
 
               <h2
-                id="main-concepts"
+                id="metadata-configuration"
                 style={{
                   fontSize: "1.8rem",
                   fontWeight: "600",
@@ -706,52 +837,111 @@ export default function Template() {
                   color: "var(--color-text, #333)",
                 }}
               >
-                Main Concepts and Ideas
+                Metadata Configuration
               </h2>
 
+              <p style={{ marginBottom: "1.5rem" }}>Each field in the metadata object serves a specific purpose:</p>
+
+              <h3
+                id="required-fields"
+                style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}
+              >
+                Required Fields
+              </h3>
+
+              <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
+                <li style={{ marginBottom: "0.5rem" }}>
+                  <strong>title:</strong> Appears in browser tab, search results, and social shares
+                </li>
+                <li style={{ marginBottom: "0.5rem" }}>
+                  <strong>description:</strong> SEO meta description (150-160 characters optimal)
+                </li>
+                <li style={{ marginBottom: "0.5rem" }}>
+                  <strong>author:</strong> Displayed in article byline
+                </li>
+                <li style={{ marginBottom: "0.5rem" }}>
+                  <strong>date:</strong> Publication date in YYYY-MM-DD format
+                </li>
+                <li style={{ marginBottom: "0.5rem" }}>
+                  <strong>slug:</strong> URL path for share tracking (must match your filename)
+                </li>
+              </ul>
+
+              <h3
+                id="optional-fields"
+                style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}
+              >
+                Optional Fields
+              </h3>
+
+              <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
+                <li style={{ marginBottom: "0.5rem" }}>
+                  <strong>featuredImage:</strong> Path to hero image (place in `src/images/blog/`)
+                </li>
+                <li style={{ marginBottom: "0.5rem" }}>
+                  <strong>keywords:</strong> Array of SEO keywords for additional targeting
+                </li>
+              </ul>
+
+              <h2
+                id="content-structure"
+                style={{
+                  fontSize: "1.8rem",
+                  fontWeight: "600",
+                  marginTop: "2.5rem",
+                  marginBottom: "1rem",
+                  color: "var(--color-text, #333)",
+                }}
+              >
+                Content Structure
+              </h2>
+
+              <p style={{ marginBottom: "1.5rem" }}>Replace this guide content with your article. Use the following structure for consistency:</p>
+
+              <h3
+                id="heading-hierarchy"
+                style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}
+              >
+                Heading Hierarchy
+              </h3>
+
+              <div
+                style={{
+                  backgroundColor: "#1e1e1e",
+                  color: "#d4d4d4",
+                  padding: "1rem",
+                  borderRadius: "6px",
+                  fontFamily: "monospace",
+                  fontSize: "0.9rem",
+                  marginBottom: "1.5rem",
+                  overflow: "auto",
+                }}
+              >
+                {`<h2 id="section-id" style={{...}}>Main Section</h2>
+<h3 id="subsection-id" style={{...}}>Subsection</h3>
+<p style={{...}}>Paragraph content...</p>`}
+              </div>
+
               <p style={{ marginBottom: "1.5rem" }}>
-                Use headings to organize your content and make it scannable. This helps readers find the information they're looking for quickly. Each section
-                should focus on a specific aspect of your topic.
+                Always include `id` attributes on H2 and H3 headings for table of contents navigation. The template automatically handles smooth scrolling.
               </p>
 
               <h3
-                id="concept-one"
-                style={{
-                  fontSize: "1.4rem",
-                  fontWeight: "600",
-                  marginTop: "2rem",
-                  marginBottom: "1rem",
-                  color: "var(--color-text, #333)",
-                }}
+                id="styling-guidelines"
+                style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}
               >
-                First Key Concept
+                Styling Guidelines
               </h3>
 
-              <p style={{ marginBottom: "1.5rem" }}>
-                Explain your first key concept here. Provide detailed information, examples, and context that helps readers understand this particular aspect of
-                your topic.
-              </p>
-
-              <h3
-                id="concept-two"
-                style={{
-                  fontSize: "1.4rem",
-                  fontWeight: "600",
-                  marginTop: "2rem",
-                  marginBottom: "1rem",
-                  color: "var(--color-text, #333)",
-                }}
-              >
-                Second Key Concept
-              </h3>
-
-              <p style={{ marginBottom: "1.5rem" }}>
-                Continue with your second key concept. Use clear, conversational language that's easy to read and understand. Consider including examples or
-                case studies to illustrate your points.
-              </p>
+              <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
+                <li style={{ marginBottom: "0.5rem" }}>Use CSS variables for colors: `var(--color-text, #333)`</li>
+                <li style={{ marginBottom: "0.5rem" }}>Maintain consistent spacing: `marginBottom: "1.5rem"`</li>
+                <li style={{ marginBottom: "0.5rem" }}>Keep line height readable: `lineHeight: "1.7"`</li>
+                <li style={{ marginBottom: "0.5rem" }}>Use responsive font sizes: `fontSize: "1.1rem"`</li>
+              </ul>
 
               <h2
-                id="practical-applications"
+                id="advanced-features"
                 style={{
                   fontSize: "1.8rem",
                   fontWeight: "600",
@@ -760,17 +950,113 @@ export default function Template() {
                   color: "var(--color-text, #333)",
                 }}
               >
-                Practical Applications
+                Advanced Features
               </h2>
 
-              <p style={{ marginBottom: "1.5rem" }}>
-                Show readers how to apply what they've learned. This section should provide actionable advice and practical steps they can take based on the
-                information in your article.
-              </p>
+              <p style={{ marginBottom: "1.5rem" }}>This template includes several advanced features that work automatically:</p>
 
-              <p style={{ marginBottom: "1.5rem" }}>
-                Include specific examples, tips, or step-by-step instructions that make your content immediately useful to your audience.
-              </p>
+              <h3
+                id="share-system"
+                style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}
+              >
+                Share System
+              </h3>
+
+              <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
+                <li style={{ marginBottom: "0.5rem" }}>Automatic URL shortening for all share platforms</li>
+                <li style={{ marginBottom: "0.5rem" }}>Share count tracking and display</li>
+                <li style={{ marginBottom: "0.5rem" }}>UTM parameter handling and Google Analytics integration</li>
+                <li style={{ marginBottom: "0.5rem" }}>Support for 7 platforms: Copy Link, Email, Facebook, X, LinkedIn, Reddit, Bluesky</li>
+              </ul>
+
+              <h3
+                id="table-of-contents"
+                style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}
+              >
+                Table of Contents
+              </h3>
+
+              <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
+                <li style={{ marginBottom: "0.5rem" }}>Automatically generated from H2 and H3 headings</li>
+                <li style={{ marginBottom: "0.5rem" }}>Smooth scrolling navigation</li>
+                <li style={{ marginBottom: "0.5rem" }}>Collapsible sidebar design</li>
+                <li style={{ marginBottom: "0.5rem" }}>Responsive mobile behavior</li>
+              </ul>
+
+              <h3
+                id="seo-optimization"
+                style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}
+              >
+                SEO Optimization
+              </h3>
+
+              <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
+                <li style={{ marginBottom: "0.5rem" }}>Automatic meta tag generation from metadata</li>
+                <li style={{ marginBottom: "0.5rem" }}>Open Graph and Twitter Card support</li>
+                <li style={{ marginBottom: "0.5rem" }}>Structured data markup</li>
+                <li style={{ marginBottom: "0.5rem" }}>Optimized for search engine indexing</li>
+              </ul>
+
+              <h2
+                id="best-practices"
+                style={{
+                  fontSize: "1.8rem",
+                  fontWeight: "600",
+                  marginTop: "2.5rem",
+                  marginBottom: "1rem",
+                  color: "var(--color-text, #333)",
+                }}
+              >
+                Best Practices
+              </h2>
+
+              <h3
+                id="content-guidelines"
+                style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}
+              >
+                Content Guidelines
+              </h3>
+
+              <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
+                <li style={{ marginBottom: "0.5rem" }}>Write engaging headlines that include target keywords</li>
+                <li style={{ marginBottom: "0.5rem" }}>Keep descriptions between 150-160 characters for optimal SEO</li>
+                <li style={{ marginBottom: "0.5rem" }}>Use descriptive H2/H3 headings for better navigation</li>
+                <li style={{ marginBottom: "0.5rem" }}>Include relevant internal and external links</li>
+                <li style={{ marginBottom: "0.5rem" }}>Optimize images for web (1200x630px for social sharing)</li>
+              </ul>
+
+              <h3
+                id="development-workflow"
+                style={{ fontSize: "1.4rem", fontWeight: "600", marginTop: "2rem", marginBottom: "1rem", color: "var(--color-text, #333)" }}
+              >
+                Development Workflow
+              </h3>
+
+              <ol style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
+                <li style={{ marginBottom: "0.5rem" }}>Copy template.js to your article filename</li>
+                <li style={{ marginBottom: "0.5rem" }}>Update articleMetadata with your content</li>
+                <li style={{ marginBottom: "0.5rem" }}>Replace this guide content with your article</li>
+                <li style={{ marginBottom: "0.5rem" }}>Add featured image to `src/images/blog/`</li>
+                <li style={{ marginBottom: "0.5rem" }}>Test locally with `gatsby develop`</li>
+                <li style={{ marginBottom: "0.5rem" }}>No need to manually update table of contents - it's automatic!</li>
+                <li style={{ marginBottom: "0.5rem" }}>Commit and deploy</li>
+              </ol>
+
+              <div
+                style={{
+                  backgroundColor: "#f0f8ff",
+                  border: "1px solid #b0d4f1",
+                  borderRadius: "8px",
+                  padding: "1.5rem",
+                  marginBottom: "2rem",
+                  borderLeft: "4px solid #007acc",
+                }}
+              >
+                <p style={{ margin: "0", fontWeight: "600", color: "#007acc" }}>
+                  💡 <strong>Pro Tip:</strong> This template is only visible in development mode. It's automatically excluded from production builds, so you can
+                  safely keep it as a reference while developing new articles.
+                </p>
+              </div>
 
               <h2
                 id="conclusion"
@@ -782,15 +1068,33 @@ export default function Template() {
                   color: "var(--color-text, #333)",
                 }}
               >
-                Conclusion
+                Ready to Create Your Article?
               </h2>
 
               <p style={{ marginBottom: "1.5rem" }}>
-                Wrap up your article with key takeaways and next steps for readers. Summarize the most important points and provide guidance on what they should
-                do with this information.
+                You now have everything you need to create professional blog articles using the JavaScript template system. The centralized metadata approach
+                ensures consistent SEO, while the advanced features provide a rich reading experience for your audience.
               </p>
 
-              <p style={{ marginBottom: "1.5rem" }}>End with a call-to-action or invitation for readers to engage further with your content or brand.</p>
+              <p style={{ marginBottom: "1.5rem" }}>
+                Start by copying this file, updating the metadata, and replacing this content with your article. The template handles all the technical details,
+                so you can focus on creating great content.
+              </p>
+
+              <div
+                style={{
+                  backgroundColor: "var(--color-background-alt, #f9f9f9)",
+                  border: "2px solid #28a745",
+                  borderRadius: "8px",
+                  padding: "1.5rem",
+                  marginBottom: "2rem",
+                  textAlign: "center",
+                }}
+              >
+                <p style={{ margin: "0", fontWeight: "600", color: "#28a745", fontSize: "1.1rem" }}>
+                  🚀 <strong>Happy Writing!</strong> Create engaging content that helps KarmaCall users and grows our community.
+                </p>
+              </div>
             </div>
 
             {/* Related Articles Section */}
@@ -1037,7 +1341,7 @@ export default function Template() {
                     lineHeight: "1.3",
                   }}
                 >
-                  Your Article Title Goes Here
+                  {articleMetadata.title}
                 </h3>
                 <div
                   style={{
@@ -1062,132 +1366,72 @@ export default function Template() {
                       margin: 0,
                     }}
                   >
-                    <li style={{ marginBottom: "0.5rem" }}>
-                      <a
-                        href="#introduction"
-                        onClick={e => handleSmoothScroll(e, "introduction")}
-                        style={{
-                          color: "white",
-                          textDecoration: "none",
-                          fontSize: "0.95rem",
-                          fontWeight: "600",
-                          lineHeight: "1.4",
-                          display: "block",
-                          padding: "0.25rem 0",
-                          borderLeft: "3px solid transparent",
-                          paddingLeft: "0.75rem",
-                          transition: "all 0.2s ease",
-                        }}
-                      >
-                        Introduction
-                      </a>
-                    </li>
-                    <li style={{ marginBottom: "0.5rem" }}>
-                      <a
-                        href="#main-concepts"
-                        onClick={e => handleSmoothScroll(e, "main-concepts")}
-                        style={{
-                          color: "white",
-                          textDecoration: "none",
-                          fontSize: "0.95rem",
-                          fontWeight: "600",
-                          lineHeight: "1.4",
-                          display: "block",
-                          padding: "0.25rem 0",
-                          borderLeft: "3px solid transparent",
-                          paddingLeft: "0.75rem",
-                          transition: "all 0.2s ease",
-                        }}
-                      >
-                        Main Concepts and Ideas
-                      </a>
-                      <ul
-                        style={{
-                          listStyle: "none",
-                          padding: 0,
-                          margin: "0.5rem 0 0 1rem",
-                        }}
-                      >
-                        <li style={{ marginBottom: "0.25rem" }}>
-                          <a
-                            href="#concept-one"
-                            onClick={e => handleSmoothScroll(e, "concept-one")}
+                    {headings.map((heading, index) => (
+                      <li key={heading.id} style={{ marginBottom: "0.5rem" }}>
+                        <a
+                          href={`#${heading.id}`}
+                          onClick={e => handleSmoothScroll(e, heading.id)}
+                          style={{
+                            color: "white",
+                            textDecoration: "none",
+                            fontSize: "0.95rem",
+                            fontWeight: "600",
+                            lineHeight: "1.4",
+                            display: "block",
+                            padding: "0.25rem 0",
+                            borderLeft: "3px solid transparent",
+                            paddingLeft: "0.75rem",
+                            transition: "all 0.2s ease",
+                          }}
+                        >
+                          {heading.text}
+                        </a>
+                        {heading.children.length > 0 && (
+                          <ul
                             style={{
-                              color: "#e0e0e0",
-                              textDecoration: "none",
-                              fontSize: "0.85rem",
-                              fontWeight: "500",
-                              lineHeight: "1.4",
-                              display: "block",
-                              padding: "0.25rem 0",
-                              paddingLeft: "0.75rem",
-                              transition: "all 0.2s ease",
+                              listStyle: "none",
+                              padding: 0,
+                              margin: "0.5rem 0 0 1rem",
                             }}
                           >
-                            First Key Concept
-                          </a>
-                        </li>
-                        <li style={{ marginBottom: "0.25rem" }}>
-                          <a
-                            href="#concept-two"
-                            onClick={e => handleSmoothScroll(e, "concept-two")}
-                            style={{
-                              color: "#e0e0e0",
-                              textDecoration: "none",
-                              fontSize: "0.85rem",
-                              fontWeight: "500",
-                              lineHeight: "1.4",
-                              display: "block",
-                              padding: "0.25rem 0",
-                              paddingLeft: "0.75rem",
-                              transition: "all 0.2s ease",
-                            }}
-                          >
-                            Second Key Concept
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li style={{ marginBottom: "0.5rem" }}>
-                      <a
-                        href="#practical-applications"
-                        onClick={e => handleSmoothScroll(e, "practical-applications")}
+                            {heading.children.map((child, childIndex) => (
+                              <li key={child.id} style={{ marginBottom: "0.25rem" }}>
+                                <a
+                                  href={`#${child.id}`}
+                                  onClick={e => handleSmoothScroll(e, child.id)}
+                                  style={{
+                                    color: "#e0e0e0",
+                                    textDecoration: "none",
+                                    fontSize: "0.85rem",
+                                    fontWeight: "500",
+                                    lineHeight: "1.4",
+                                    display: "block",
+                                    padding: "0.25rem 0",
+                                    paddingLeft: "0.75rem",
+                                    transition: "all 0.2s ease",
+                                  }}
+                                >
+                                  {child.text}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </li>
+                    ))}
+                    {headings.length === 0 && (
+                      <li
                         style={{
-                          color: "white",
-                          textDecoration: "none",
-                          fontSize: "0.95rem",
-                          fontWeight: "600",
-                          lineHeight: "1.4",
-                          display: "block",
-                          padding: "0.25rem 0",
-                          borderLeft: "3px solid transparent",
-                          paddingLeft: "0.75rem",
-                          transition: "all 0.2s ease",
+                          padding: "1rem",
+                          textAlign: "center",
+                          color: "var(--color-text-secondary, #666)",
+                          fontSize: "0.9rem",
+                          fontStyle: "italic",
                         }}
                       >
-                        Practical Applications
-                      </a>
-                    </li>
-                    <li style={{ marginBottom: "0.5rem" }}>
-                      <a
-                        href="#conclusion"
-                        onClick={e => handleSmoothScroll(e, "conclusion")}
-                        style={{
-                          color: "white",
-                          textDecoration: "none",
-                          fontSize: "0.95rem",
-                          fontWeight: "600",
-                          lineHeight: "1.4",
-                          display: "block",
-                          padding: "0.25rem 0",
-                          borderLeft: "3px solid transparent",
-                          paddingLeft: "0.75rem",
-                          transition: "all 0.2s ease",
-                        }}
-                      >
-                        Conclusion
-                      </a>
-                    </li>
+                        No headings found. Add H2 or H3 elements with id attributes to generate the table of contents.
+                      </li>
+                    )}
                   </ul>
                 </nav>
               )}
