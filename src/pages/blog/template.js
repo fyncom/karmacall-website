@@ -729,9 +729,9 @@ export default function Template() {
                 <h3
                   style={{
                     fontSize: "1.1rem",
-                    fontWeight: "600",
+                    fontWeight: "700",
                     margin: "0",
-                    color: "var(--color-text, #333)",
+                    color: "white",
                     pointerEvents: "none",
                     lineHeight: "1.3",
                   }}
@@ -766,9 +766,10 @@ export default function Template() {
                         href="#introduction"
                         onClick={e => handleSmoothScroll(e, "introduction")}
                         style={{
-                          color: "var(--karmacall-green, #2d5a27)",
+                          color: "white",
                           textDecoration: "none",
                           fontSize: "0.95rem",
+                          fontWeight: "600",
                           lineHeight: "1.4",
                           display: "block",
                           padding: "0.25rem 0",
@@ -785,9 +786,10 @@ export default function Template() {
                         href="#main-concepts"
                         onClick={e => handleSmoothScroll(e, "main-concepts")}
                         style={{
-                          color: "var(--karmacall-green, #2d5a27)",
+                          color: "white",
                           textDecoration: "none",
                           fontSize: "0.95rem",
+                          fontWeight: "600",
                           lineHeight: "1.4",
                           display: "block",
                           padding: "0.25rem 0",
@@ -810,9 +812,10 @@ export default function Template() {
                             href="#concept-one"
                             onClick={e => handleSmoothScroll(e, "concept-one")}
                             style={{
-                              color: "var(--color-text-secondary, #666)",
+                              color: "#e0e0e0",
                               textDecoration: "none",
                               fontSize: "0.85rem",
+                              fontWeight: "500",
                               lineHeight: "1.4",
                               display: "block",
                               padding: "0.25rem 0",
@@ -828,9 +831,10 @@ export default function Template() {
                             href="#concept-two"
                             onClick={e => handleSmoothScroll(e, "concept-two")}
                             style={{
-                              color: "var(--color-text-secondary, #666)",
+                              color: "#e0e0e0",
                               textDecoration: "none",
                               fontSize: "0.85rem",
+                              fontWeight: "500",
                               lineHeight: "1.4",
                               display: "block",
                               padding: "0.25rem 0",
@@ -848,9 +852,10 @@ export default function Template() {
                         href="#practical-applications"
                         onClick={e => handleSmoothScroll(e, "practical-applications")}
                         style={{
-                          color: "var(--karmacall-green, #2d5a27)",
+                          color: "white",
                           textDecoration: "none",
                           fontSize: "0.95rem",
+                          fontWeight: "600",
                           lineHeight: "1.4",
                           display: "block",
                           padding: "0.25rem 0",
@@ -867,9 +872,10 @@ export default function Template() {
                         href="#conclusion"
                         onClick={e => handleSmoothScroll(e, "conclusion")}
                         style={{
-                          color: "var(--karmacall-green, #2d5a27)",
+                          color: "white",
                           textDecoration: "none",
                           fontSize: "0.95rem",
+                          fontWeight: "600",
                           lineHeight: "1.4",
                           display: "block",
                           padding: "0.25rem 0",
