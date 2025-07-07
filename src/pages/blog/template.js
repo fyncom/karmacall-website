@@ -722,29 +722,6 @@ export default function Template() {
           </div>
         </div>
 
-        {/* Developer note */}
-        <div
-          style={{
-            backgroundColor: "var(--color-background-alt, #f9f9f9)",
-            padding: "1.5rem",
-            borderRadius: "8px",
-            border: "1px solid var(--border-color, #ddd)",
-            marginTop: "3rem",
-          }}
-        >
-          <p
-            style={{
-              margin: 0,
-              fontSize: "0.9rem",
-              color: "var(--color-text-secondary, #666)",
-              fontStyle: "italic",
-            }}
-          >
-            <strong>Developer Note:</strong> This is a template page only visible during development. Replace the placeholder content above with your actual
-            article content. The table of contents will automatically work with any headings that have id attributes.
-          </p>
-        </div>
-
         {/* Share Dialog - positioned to the left of share button, overlaying content */}
         {showShareDialog && (
           <>
