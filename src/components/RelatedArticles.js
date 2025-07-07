@@ -1,30 +1,64 @@
 import React from "react"
+import { findRelatedArticles, articlesDatabase } from "../utils/articleSimilarity"
 
-const RelatedArticles = ({ currentArticleSlug, className, style }) => {
-  // Hardcoded articles for now - could be made dynamic later
-  const articles = [
-    {
-      slug: "/blog/future-of-spam-blocking",
-      title: "Get Cash Back for Blocking Spam, with KarmaCall Version 4.0",
-      description:
-        "KarmaCall 4.0 is a revolutionary new app that pays you to block spam calls. With its fresh new UI and infinitely long call blocking capability...",
-      date: "March 11, 2024",
-      author: "KarmaCall Team",
-      image: "../../images/blog/interactive-rewards-blog-social-graphic.jpg",
-    },
-    {
-      slug: "/blog/job-scam-texts-surge-2024",
-      title: "Job Scam Texts Cost Americans $470M in 2024 - Here's the Economic Solution",
-      description:
-        "Job scam texts were the #2 most common hoax in 2024, costing Americans nearly half a billion dollars. Discover how FynCom's refundable deposit technology...",
-      date: "June 7, 2024",
-      author: "KarmaCall Team",
-      image: "../../images/illustrations/inbox-money.png",
-    },
-  ]
+const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style }) => {
+  // Get similar articles and most recent article
+  const similarArticles = findRelatedArticles(currentArticleSlug, maxArticles + 1, 10) // Get extra in case recent is in similar
+  const mostRecentArticle = articlesDatabase.filter(article => article.slug !== currentArticleSlug).sort((a, b) => new Date(b.date) - new Date(a.date))[0]
 
-  // Filter out the current article
-  const relatedArticles = articles.filter(article => article.slug !== currentArticleSlug)
+  // Build the final related articles array with specific strategy
+  const buildRelatedArticles = () => {
+    const result = []
+
+    // First 2 spots: most similar articles
+    const topSimilar = similarArticles.slice(0, 2)
+    result.push(...topSimilar)
+
+    console.log(`📊 Added ${topSimilar.length} most similar articles to slots 1-2`)
+
+    // 3rd spot: most recent article (unless already in first 2 spots)
+    if (result.length < maxArticles && mostRecentArticle) {
+      const alreadyIncluded = result.some(article => article.slug === mostRecentArticle.slug)
+
+      if (!alreadyIncluded) {
+        result.push({
+          ...mostRecentArticle,
+          isRecent: true, // Mark as recent for different styling/badge
+        })
+        console.log(`📅 Added most recent article "${mostRecentArticle.title}" to slot 3`)
+      } else {
+        // Most recent was already in similar articles, find next similar article
+        const nextSimilar = similarArticles.find(article => !result.some(resultArticle => resultArticle.slug === article.slug))
+        if (nextSimilar) {
+          result.push(nextSimilar)
+          console.log(`🔄 Most recent already included, added next similar article "${nextSimilar.title}" to slot 3`)
+        }
+      }
+    }
+
+    // Fill remaining spots with similar articles if needed
+    while (result.length < maxArticles) {
+      const nextSimilar = similarArticles.find(article => !result.some(resultArticle => resultArticle.slug === article.slug))
+
+      if (nextSimilar) {
+        result.push(nextSimilar)
+        console.log(`🔍 Added additional similar article "${nextSimilar.title}" to slot ${result.length}`)
+      } else {
+        // No more similar articles available
+        break
+      }
+    }
+
+    console.log(`✅ Final related articles (${result.length}/${maxArticles}):`)
+    result.forEach((article, index) => {
+      const badge = article.isRecent ? "RECENT" : `${article.similarityScore}% SIMILAR`
+      console.log(`  ${index + 1}. ${article.title} (${badge})`)
+    })
+
+    return result
+  }
+
+  const relatedArticles = buildRelatedArticles()
 
   return (
     <div
@@ -115,17 +149,41 @@ const RelatedArticles = ({ currentArticleSlug, className, style }) => {
                 style={{
                   fontSize: "0.75rem",
                   color: "var(--color-text-secondary, #666)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                {article.date} • {article.author}
+                <span>
+                  {new Date(article.date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}{" "}
+                  • {article.author}
+                </span>
+                {(article.similarityScore || article.isRecent) && (
+                  <span
+                    style={{
+                      fontSize: "0.7rem",
+                      backgroundColor: article.isRecent ? "var(--color-primary, #007acc)" : "var(--color-background-alt, #f9f9f9)",
+                      color: article.isRecent ? "white" : "var(--color-text-secondary, #666)",
+                      padding: "2px 6px",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    {article.isRecent ? "Latest" : `${article.similarityScore}% match`}
+                  </span>
+                )}
               </div>
             </div>
           </a>
         ))}
 
-        {/* Show placeholder if we need more articles to fill the grid */}
-        {relatedArticles.length < 3 && (
+        {/* Show placeholders for remaining slots */}
+        {Array.from({ length: maxArticles - relatedArticles.length }, (_, index) => (
           <div
+            key={`placeholder-${index}`}
             style={{
               border: "2px dashed var(--border-color, #eee)",
               borderRadius: "8px",
@@ -163,7 +221,7 @@ const RelatedArticles = ({ currentArticleSlug, className, style }) => {
               More insightful articles about communication technology and digital privacy coming soon.
             </p>
           </div>
-        )}
+        ))}
       </div>
     </div>
   )
