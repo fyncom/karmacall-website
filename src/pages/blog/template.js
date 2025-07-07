@@ -9,6 +9,7 @@ export default function Template() {
   const [linkCopied, setLinkCopied] = React.useState(false)
   const [shareCount, setShareCount] = React.useState(0)
   const [tocCollapsed, setTocCollapsed] = React.useState(false)
+  const [showScrollToTop, setShowScrollToTop] = React.useState(false)
 
   const handleShare = () => {
     setShowShareDialog(!showShareDialog)
@@ -32,6 +33,13 @@ export default function Template() {
         block: "start",
       })
     }
+  }
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    })
   }
 
   const handleShareAction = platform => {
@@ -96,6 +104,19 @@ export default function Template() {
       console.log("🧪 Test functions available:")
       console.log("- setShareCount(150) - Set share count to 150")
       console.log("- testShareCounts() - View all formatting examples")
+
+      // Add scroll listener for scroll-to-top button
+      const handleScroll = () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+        setShowScrollToTop(scrollTop > 300) // Show button after scrolling 300px
+      }
+
+      window.addEventListener("scroll", handleScroll)
+
+      // Cleanup scroll listener
+      return () => {
+        window.removeEventListener("scroll", handleScroll)
+      }
     }
   }, [])
 
@@ -865,6 +886,34 @@ export default function Template() {
               </div>
             </div>
           </>
+        )}
+
+        {/* Scroll-to-top button */}
+        {showScrollToTop && (
+          <button
+            onClick={scrollToTop}
+            style={{
+              position: "fixed",
+              top: "2rem",
+              left: "calc(50% - 600px - 6rem)",
+              backgroundColor: "transparent",
+              border: "1.5px solid var(--border-color, #eee)",
+              borderRadius: "6px",
+              padding: "6px 8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+              zIndex: 100,
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              fontSize: "0.9rem",
+              color: "var(--color-text, #333)",
+            }}
+            title="Scroll to top"
+          >
+            ⬆
+          </button>
         )}
       </div>
     </Wrapper>
