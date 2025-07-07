@@ -1,9 +1,11 @@
 import React from "react"
 import { Wrapper } from "../../components/Markdown-Wrapper"
 import "../../components/blog.css"
+import { createShortUrl, preloadUrls } from "../../utils/urlShortener"
 
 export default function Template() {
   const [showShareDialog, setShowShareDialog] = React.useState(false)
+  const [linkCopied, setLinkCopied] = React.useState(false)
 
   const handleShare = () => {
     setShowShareDialog(!showShareDialog)
@@ -11,27 +13,56 @@ export default function Template() {
 
   const handleCloseShare = () => {
     setShowShareDialog(false)
+    setLinkCopied(false) // Reset copied state when dialog closes
   }
+
+  // Preload URLs when component mounts
+  React.useEffect(() => {
+    preloadUrls()
+  }, [])
 
   const copyToClipboard = () => {
     if (typeof window !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href)
-      alert("Link copied to clipboard!")
+      const currentUrl = window.location.href.split("?")[0] // Remove existing params
+      const shortUrl = createShortUrl(currentUrl, "copy_link")
+      navigator.clipboard.writeText(shortUrl)
+      setLinkCopied(true)
+
+      // Track with Google Analytics
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("event", "share", {
+          method: "copy_link",
+          content_type: "blog_post",
+          item_id: window.location.pathname,
+        })
+      }
     }
   }
 
   const shareOptions = [
     {
-      name: "Copy Link",
+      name: linkCopied ? "Link Copied" : "Copy Link",
       icon: "🔗",
       action: copyToClipboard,
+      isSuccess: linkCopied,
     },
     {
       name: "Email",
       icon: "📧",
       action: () => {
         if (typeof window !== "undefined") {
-          window.open(`mailto:?subject=Check out this article&body=${window.location.href}`)
+          const currentUrl = window.location.href.split("?")[0]
+          const shortUrl = createShortUrl(currentUrl, "email")
+          window.open(`mailto:?subject=Check out this article&body=${shortUrl}`)
+
+          // Track with Google Analytics
+          if (window.gtag) {
+            window.gtag("event", "share", {
+              method: "email",
+              content_type: "blog_post",
+              item_id: window.location.pathname,
+            })
+          }
         }
       },
     },
@@ -40,7 +71,18 @@ export default function Template() {
       icon: "📘",
       action: () => {
         if (typeof window !== "undefined") {
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`)
+          const currentUrl = window.location.href.split("?")[0]
+          const shortUrl = createShortUrl(currentUrl, "facebook")
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shortUrl)}`)
+
+          // Track with Google Analytics
+          if (window.gtag) {
+            window.gtag("event", "share", {
+              method: "facebook",
+              content_type: "blog_post",
+              item_id: window.location.pathname,
+            })
+          }
         }
       },
     },
@@ -49,7 +91,18 @@ export default function Template() {
       icon: "🐦",
       action: () => {
         if (typeof window !== "undefined") {
-          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=Check out this article`)
+          const currentUrl = window.location.href.split("?")[0]
+          const shortUrl = createShortUrl(currentUrl, "twitter")
+          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shortUrl)}&text=Check out this article`)
+
+          // Track with Google Analytics
+          if (window.gtag) {
+            window.gtag("event", "share", {
+              method: "twitter",
+              content_type: "blog_post",
+              item_id: window.location.pathname,
+            })
+          }
         }
       },
     },
@@ -58,7 +111,18 @@ export default function Template() {
       icon: "💼",
       action: () => {
         if (typeof window !== "undefined") {
-          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`)
+          const currentUrl = window.location.href.split("?")[0]
+          const shortUrl = createShortUrl(currentUrl, "linkedin")
+          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shortUrl)}`)
+
+          // Track with Google Analytics
+          if (window.gtag) {
+            window.gtag("event", "share", {
+              method: "linkedin",
+              content_type: "blog_post",
+              item_id: window.location.pathname,
+            })
+          }
         }
       },
     },
@@ -67,7 +131,18 @@ export default function Template() {
       icon: "🤖",
       action: () => {
         if (typeof window !== "undefined") {
-          window.open(`https://reddit.com/submit?url=${encodeURIComponent(window.location.href)}&title=Check out this article`)
+          const currentUrl = window.location.href.split("?")[0]
+          const shortUrl = createShortUrl(currentUrl, "reddit")
+          window.open(`https://reddit.com/submit?url=${encodeURIComponent(shortUrl)}&title=Check out this article`)
+
+          // Track with Google Analytics
+          if (window.gtag) {
+            window.gtag("event", "share", {
+              method: "reddit",
+              content_type: "blog_post",
+              item_id: window.location.pathname,
+            })
+          }
         }
       },
     },
@@ -76,7 +151,18 @@ export default function Template() {
       icon: "🦋",
       action: () => {
         if (typeof window !== "undefined") {
-          window.open(`https://bsky.app/intent/compose?text=Check out this article: ${encodeURIComponent(window.location.href)}`)
+          const currentUrl = window.location.href.split("?")[0]
+          const shortUrl = createShortUrl(currentUrl, "bluesky")
+          window.open(`https://bsky.app/intent/compose?text=Check out this article: ${encodeURIComponent(shortUrl)}`)
+
+          // Track with Google Analytics
+          if (window.gtag) {
+            window.gtag("event", "share", {
+              method: "bluesky",
+              content_type: "blog_post",
+              item_id: window.location.pathname,
+            })
+          }
         }
       },
     },
@@ -649,7 +735,7 @@ export default function Template() {
                     <span
                       style={{
                         fontSize: "0.6rem",
-                        color: "var(--color-text, #333)",
+                        color: option.isSuccess ? "#28a745" : "var(--color-text, #333)",
                         textAlign: "center",
                         lineHeight: "1",
                       }}
