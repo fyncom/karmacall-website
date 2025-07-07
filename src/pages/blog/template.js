@@ -641,11 +641,11 @@ export default function Template() {
                     fontWeight: "600",
                     margin: "0",
                     color: "var(--color-text, #333)",
-                    whiteSpace: "nowrap",
                     pointerEvents: "none",
+                    lineHeight: "1.3",
                   }}
                 >
-                  Table of Contents
+                  Your Article Title Goes Here
                 </h3>
                 <div
                   style={{
