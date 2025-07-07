@@ -8,6 +8,7 @@ export default function Template() {
   const [showShareDialog, setShowShareDialog] = React.useState(false)
   const [linkCopied, setLinkCopied] = React.useState(false)
   const [shareCount, setShareCount] = React.useState(0)
+  const [tocCollapsed, setTocCollapsed] = React.useState(false)
 
   const handleShare = () => {
     setShowShareDialog(!showShareDialog)
@@ -16,6 +17,10 @@ export default function Template() {
   const handleCloseShare = () => {
     setShowShareDialog(false)
     setLinkCopied(false) // Reset copied state when dialog closes
+  }
+
+  const toggleToc = () => {
+    setTocCollapsed(!tocCollapsed)
   }
 
   const handleShareAction = platform => {
@@ -583,141 +588,173 @@ export default function Template() {
                 padding: "1.5rem",
               }}
             >
-              <h3
+              <div
+                onClick={toggleToc}
                 style={{
-                  fontSize: "1.1rem",
-                  fontWeight: "600",
-                  margin: "0 0 1rem 0",
-                  color: "var(--color-text, #333)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: tocCollapsed ? "0" : "1rem",
+                  position: "relative",
+                  cursor: "pointer",
+                  marginLeft: "-1.5rem",
+                  marginRight: "-1.5rem",
+                  paddingLeft: "1.5rem",
+                  paddingRight: "1.5rem",
                 }}
               >
-                Table of Contents
-              </h3>
-
-              <nav>
-                <ul
+                <h3
                   style={{
-                    listStyle: "none",
-                    padding: 0,
-                    margin: 0,
+                    fontSize: "1.1rem",
+                    fontWeight: "600",
+                    margin: "0",
+                    color: "var(--color-text, #333)",
+                    whiteSpace: "nowrap",
+                    pointerEvents: "none",
                   }}
                 >
-                  <li style={{ marginBottom: "0.5rem" }}>
-                    <a
-                      href="#introduction"
-                      style={{
-                        color: "var(--karmacall-green, #2d5a27)",
-                        textDecoration: "none",
-                        fontSize: "0.95rem",
-                        lineHeight: "1.4",
-                        display: "block",
-                        padding: "0.25rem 0",
-                        borderLeft: "3px solid transparent",
-                        paddingLeft: "0.75rem",
-                        transition: "all 0.2s ease",
-                      }}
-                    >
-                      Introduction
-                    </a>
-                  </li>
-                  <li style={{ marginBottom: "0.5rem" }}>
-                    <a
-                      href="#main-concepts"
-                      style={{
-                        color: "var(--karmacall-green, #2d5a27)",
-                        textDecoration: "none",
-                        fontSize: "0.95rem",
-                        lineHeight: "1.4",
-                        display: "block",
-                        padding: "0.25rem 0",
-                        borderLeft: "3px solid transparent",
-                        paddingLeft: "0.75rem",
-                        transition: "all 0.2s ease",
-                      }}
-                    >
-                      Main Concepts and Ideas
-                    </a>
-                    <ul
-                      style={{
-                        listStyle: "none",
-                        padding: 0,
-                        margin: "0.5rem 0 0 1rem",
-                      }}
-                    >
-                      <li style={{ marginBottom: "0.25rem" }}>
-                        <a
-                          href="#concept-one"
-                          style={{
-                            color: "var(--color-text-secondary, #666)",
-                            textDecoration: "none",
-                            fontSize: "0.85rem",
-                            lineHeight: "1.4",
-                            display: "block",
-                            padding: "0.25rem 0",
-                            paddingLeft: "0.75rem",
-                            transition: "all 0.2s ease",
-                          }}
-                        >
-                          First Key Concept
-                        </a>
-                      </li>
-                      <li style={{ marginBottom: "0.25rem" }}>
-                        <a
-                          href="#concept-two"
-                          style={{
-                            color: "var(--color-text-secondary, #666)",
-                            textDecoration: "none",
-                            fontSize: "0.85rem",
-                            lineHeight: "1.4",
-                            display: "block",
-                            padding: "0.25rem 0",
-                            paddingLeft: "0.75rem",
-                            transition: "all 0.2s ease",
-                          }}
-                        >
-                          Second Key Concept
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li style={{ marginBottom: "0.5rem" }}>
-                    <a
-                      href="#practical-applications"
-                      style={{
-                        color: "var(--karmacall-green, #2d5a27)",
-                        textDecoration: "none",
-                        fontSize: "0.95rem",
-                        lineHeight: "1.4",
-                        display: "block",
-                        padding: "0.25rem 0",
-                        borderLeft: "3px solid transparent",
-                        paddingLeft: "0.75rem",
-                        transition: "all 0.2s ease",
-                      }}
-                    >
-                      Practical Applications
-                    </a>
-                  </li>
-                  <li style={{ marginBottom: "0.5rem" }}>
-                    <a
-                      href="#conclusion"
-                      style={{
-                        color: "var(--karmacall-green, #2d5a27)",
-                        textDecoration: "none",
-                        fontSize: "0.95rem",
-                        lineHeight: "1.4",
-                        display: "block",
-                        padding: "0.25rem 0",
-                        borderLeft: "3px solid transparent",
-                        paddingLeft: "0.75rem",
-                        transition: "all 0.2s ease",
-                      }}
-                    >
-                      Conclusion
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+                  Table of Contents
+                </h3>
+                <div
+                  style={{
+                    fontSize: "0.6rem",
+                    color: "var(--color-text, #333)",
+                    transition: "transform 0.2s ease",
+                    transform: tocCollapsed ? "rotate(90deg)" : "rotate(0deg)",
+                    pointerEvents: "none",
+                    lineHeight: "1",
+                  }}
+                >
+                  ▼
+                </div>
+              </div>
+
+              {!tocCollapsed && (
+                <nav>
+                  <ul
+                    style={{
+                      listStyle: "none",
+                      padding: 0,
+                      margin: 0,
+                    }}
+                  >
+                    <li style={{ marginBottom: "0.5rem" }}>
+                      <a
+                        href="#introduction"
+                        style={{
+                          color: "var(--karmacall-green, #2d5a27)",
+                          textDecoration: "none",
+                          fontSize: "0.95rem",
+                          lineHeight: "1.4",
+                          display: "block",
+                          padding: "0.25rem 0",
+                          borderLeft: "3px solid transparent",
+                          paddingLeft: "0.75rem",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Introduction
+                      </a>
+                    </li>
+                    <li style={{ marginBottom: "0.5rem" }}>
+                      <a
+                        href="#main-concepts"
+                        style={{
+                          color: "var(--karmacall-green, #2d5a27)",
+                          textDecoration: "none",
+                          fontSize: "0.95rem",
+                          lineHeight: "1.4",
+                          display: "block",
+                          padding: "0.25rem 0",
+                          borderLeft: "3px solid transparent",
+                          paddingLeft: "0.75rem",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Main Concepts and Ideas
+                      </a>
+                      <ul
+                        style={{
+                          listStyle: "none",
+                          padding: 0,
+                          margin: "0.5rem 0 0 1rem",
+                        }}
+                      >
+                        <li style={{ marginBottom: "0.25rem" }}>
+                          <a
+                            href="#concept-one"
+                            style={{
+                              color: "var(--color-text-secondary, #666)",
+                              textDecoration: "none",
+                              fontSize: "0.85rem",
+                              lineHeight: "1.4",
+                              display: "block",
+                              padding: "0.25rem 0",
+                              paddingLeft: "0.75rem",
+                              transition: "all 0.2s ease",
+                            }}
+                          >
+                            First Key Concept
+                          </a>
+                        </li>
+                        <li style={{ marginBottom: "0.25rem" }}>
+                          <a
+                            href="#concept-two"
+                            style={{
+                              color: "var(--color-text-secondary, #666)",
+                              textDecoration: "none",
+                              fontSize: "0.85rem",
+                              lineHeight: "1.4",
+                              display: "block",
+                              padding: "0.25rem 0",
+                              paddingLeft: "0.75rem",
+                              transition: "all 0.2s ease",
+                            }}
+                          >
+                            Second Key Concept
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li style={{ marginBottom: "0.5rem" }}>
+                      <a
+                        href="#practical-applications"
+                        style={{
+                          color: "var(--karmacall-green, #2d5a27)",
+                          textDecoration: "none",
+                          fontSize: "0.95rem",
+                          lineHeight: "1.4",
+                          display: "block",
+                          padding: "0.25rem 0",
+                          borderLeft: "3px solid transparent",
+                          paddingLeft: "0.75rem",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Practical Applications
+                      </a>
+                    </li>
+                    <li style={{ marginBottom: "0.5rem" }}>
+                      <a
+                        href="#conclusion"
+                        style={{
+                          color: "var(--karmacall-green, #2d5a27)",
+                          textDecoration: "none",
+                          fontSize: "0.95rem",
+                          lineHeight: "1.4",
+                          display: "block",
+                          padding: "0.25rem 0",
+                          borderLeft: "3px solid transparent",
+                          paddingLeft: "0.75rem",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Conclusion
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              )}
             </div>
           </div>
         </div>
