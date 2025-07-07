@@ -3,6 +3,85 @@ import { Wrapper } from "../../components/Markdown-Wrapper"
 import "../../components/blog.css"
 
 export default function Template() {
+  const [showShareDialog, setShowShareDialog] = React.useState(false)
+
+  const handleShare = () => {
+    setShowShareDialog(!showShareDialog)
+  }
+
+  const handleCloseShare = () => {
+    setShowShareDialog(false)
+  }
+
+  const copyToClipboard = () => {
+    if (typeof window !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href)
+      alert("Link copied to clipboard!")
+    }
+  }
+
+  const shareOptions = [
+    {
+      name: "Copy Link",
+      icon: "🔗",
+      action: copyToClipboard,
+    },
+    {
+      name: "Email",
+      icon: "📧",
+      action: () => {
+        if (typeof window !== "undefined") {
+          window.open(`mailto:?subject=Check out this article&body=${window.location.href}`)
+        }
+      },
+    },
+    {
+      name: "Facebook",
+      icon: "📘",
+      action: () => {
+        if (typeof window !== "undefined") {
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`)
+        }
+      },
+    },
+    {
+      name: "X (Twitter)",
+      icon: "🐦",
+      action: () => {
+        if (typeof window !== "undefined") {
+          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=Check out this article`)
+        }
+      },
+    },
+    {
+      name: "LinkedIn",
+      icon: "💼",
+      action: () => {
+        if (typeof window !== "undefined") {
+          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`)
+        }
+      },
+    },
+    {
+      name: "Reddit",
+      icon: "🤖",
+      action: () => {
+        if (typeof window !== "undefined") {
+          window.open(`https://reddit.com/submit?url=${encodeURIComponent(window.location.href)}&title=Check out this article`)
+        }
+      },
+    },
+    {
+      name: "Bluesky",
+      icon: "🦋",
+      action: () => {
+        if (typeof window !== "undefined") {
+          window.open(`https://bsky.app/intent/compose?text=Check out this article: ${encodeURIComponent(window.location.href)}`)
+        }
+      },
+    },
+  ]
+
   // This page is completely removed in production builds via gatsby-node.js
   // This is just an extra safety check
   if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
@@ -81,9 +160,60 @@ export default function Template() {
         </div>
 
         {/* Main content container with sidebar layout - starts at featured image level */}
-        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
+        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginTop: "1rem", position: "relative" }}>
           {/* Main article content */}
           <div style={{ flex: "1", minWidth: "0" }}>
+            {/* Action bar above featured image */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginBottom: "0.75rem",
+                position: "relative",
+              }}
+            >
+              <button
+                onClick={handleShare}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "32px",
+                  height: "32px",
+                  backgroundColor: showShareDialog ? "lightblue" : "transparent",
+                  border: "2px solid var(--border-color, #ddd)",
+                  borderRadius: "50%",
+                  color: "var(--color-text, #333)",
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                📤
+              </button>
+
+              <button
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "32px",
+                  height: "32px",
+                  backgroundColor: "transparent",
+                  border: "2px solid var(--border-color, #ddd)",
+                  borderRadius: "50%",
+                  color: "var(--color-text, #333)",
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                💬
+              </button>
+            </div>
+
             {/* Featured image */}
             <div
               className="blog-image-container"
@@ -441,6 +571,97 @@ export default function Template() {
             article content. The table of contents will automatically work with any headings that have id attributes.
           </p>
         </div>
+
+        {/* Share Dialog - positioned to the left of share button, overlaying content */}
+        {showShareDialog && (
+          <>
+            {/* Invisible overlay to catch clicks outside the dialog */}
+            <div
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 999,
+              }}
+              onClick={handleCloseShare}
+            />
+            {/* The actual dialog */}
+            <div
+              style={{
+                position: "fixed",
+                top: "350px", // Moved even further down
+                right: "calc(50% - 130px)", // Moved slightly to the left of the share button
+                backgroundColor: "var(--color-background, white)",
+                borderRadius: "8px",
+                padding: "0.75rem",
+                border: "1px solid var(--border-color, #eee)",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                zIndex: 1000,
+                whiteSpace: "nowrap",
+              }}
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Share options in single row */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "0",
+                }}
+              >
+                {shareOptions.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={option.action}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "0.15rem",
+                      padding: "0",
+                      margin: "0",
+                      backgroundColor: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      minWidth: "50px",
+                      width: "50px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "50%",
+                        backgroundColor: "var(--color-background-alt, #f9f9f9)",
+                        border: "1px solid var(--border-color, #eee)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "1rem",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      {option.icon}
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "0.6rem",
+                        color: "var(--color-text, #333)",
+                        textAlign: "center",
+                        lineHeight: "1",
+                      }}
+                    >
+                      {option.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </Wrapper>
   )
