@@ -7,6 +7,7 @@ import ArticleHeader from "../../components/ArticleHeader"
 import ActionBar from "../../components/ActionBar"
 import TableOfContents from "../../components/TableOfContents"
 import RelatedArticles from "../../components/RelatedArticles"
+import FeaturedImage from "../../components/FeaturedImage"
 
 // ============================================================
 // ARTICLE METADATA - EDIT THIS SECTION FOR EACH NEW ARTICLE
@@ -102,21 +103,17 @@ export default function FutureOfSpamBlocking() {
             <ActionBar articleData={articleMetadata} shareCount={shareCount} onShareCountUpdate={setShareCount} />
 
             {/* Featured image */}
-            {articleMetadata.featuredImage && (
-              <div style={{ marginBottom: "2rem" }}>
-                <img
-                  src={articleMetadata.featuredImage}
-                  alt={articleMetadata.title}
-                  style={{
-                    width: "100%",
-                    height: "400px",
-                    objectFit: "cover",
-                    borderRadius: "12px",
-                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-                  }}
-                />
-              </div>
-            )}
+            <FeaturedImage
+              src={articleMetadata.featuredImage}
+              alt={articleMetadata.title}
+              style={{
+                width: "100%",
+                height: "400px",
+                objectFit: "cover",
+                borderRadius: "12px",
+                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+              }}
+            />
 
             {/* Article content */}
             <div

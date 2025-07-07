@@ -8,6 +8,7 @@ import TableOfContents from "../../components/TableOfContents"
 import ArticleHeader from "../../components/ArticleHeader"
 import ActionBar from "../../components/ActionBar"
 import RelatedArticles from "../../components/RelatedArticles"
+import FeaturedImage from "../../components/FeaturedImage"
 
 // ============================================================
 // ARTICLE METADATA - EDIT THIS SECTION FOR EACH NEW ARTICLE
@@ -220,16 +221,15 @@ export default function Template() {
             <ActionBar articleData={articleMetadata} shareCount={shareCount} onShareCountUpdate={setShareCount} />
 
             {/* Featured image */}
-            <div
-              className="blog-image-container"
+            <FeaturedImage
+              src={articleMetadata.featuredImage}
+              alt={articleMetadata.title}
               style={{
                 marginBottom: "1rem",
                 borderRadius: "8px",
                 boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
               }}
-            >
-              {/* This will show the same loading animation and placeholder as blog cards */}
-            </div>
+            />
 
             {/* Image credits and description */}
             <div
