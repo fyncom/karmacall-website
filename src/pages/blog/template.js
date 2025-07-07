@@ -422,6 +422,97 @@ export default function Template() {
               >
                 💬
               </button>
+
+              {/* Share Dialog - positioned directly under share button with right sides aligned */}
+              {showShareDialog && (
+                <>
+                  {/* Invisible overlay to catch clicks outside the dialog */}
+                  <div
+                    style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: 999,
+                    }}
+                    onClick={handleCloseShare}
+                  />
+                  {/* The actual dialog */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "calc(100% + 0.5rem)",
+                      right: "32px",
+                      backgroundColor: "var(--color-background, white)",
+                      borderRadius: "8px",
+                      padding: "0.75rem",
+                      border: "1px solid var(--border-color, #eee)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                      zIndex: 1000,
+                      whiteSpace: "nowrap",
+                    }}
+                    onClick={e => e.stopPropagation()}
+                  >
+                    {/* Share options in single row */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: "0",
+                      }}
+                    >
+                      {shareOptions.map((option, index) => (
+                        <button
+                          key={index}
+                          onClick={option.action}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "0.15rem",
+                            padding: "0",
+                            margin: "0",
+                            backgroundColor: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                            transition: "all 0.2s ease",
+                            minWidth: "50px",
+                            width: "50px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "32px",
+                              height: "32px",
+                              borderRadius: "50%",
+                              backgroundColor: "var(--color-background-alt, #f9f9f9)",
+                              border: "1px solid var(--border-color, #eee)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "1rem",
+                              transition: "all 0.2s ease",
+                            }}
+                          >
+                            {option.icon}
+                          </div>
+                          <span
+                            style={{
+                              fontSize: "0.6rem",
+                              color: option.isSuccess ? "#28a745" : "var(--color-text, #333)",
+                              textAlign: "center",
+                              lineHeight: "1",
+                            }}
+                          >
+                            {option.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Featured image */}
@@ -796,97 +887,6 @@ export default function Template() {
             </div>
           </div>
         </div>
-
-        {/* Share Dialog - positioned to the left of share button, overlaying content */}
-        {showShareDialog && (
-          <>
-            {/* Invisible overlay to catch clicks outside the dialog */}
-            <div
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                zIndex: 999,
-              }}
-              onClick={handleCloseShare}
-            />
-            {/* The actual dialog */}
-            <div
-              style={{
-                position: "fixed",
-                top: "350px", // Moved even further down
-                right: "calc(50% - 130px)", // Moved slightly to the left of the share button
-                backgroundColor: "var(--color-background, white)",
-                borderRadius: "8px",
-                padding: "0.75rem",
-                border: "1px solid var(--border-color, #eee)",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                zIndex: 1000,
-                whiteSpace: "nowrap",
-              }}
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Share options in single row */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: "0",
-                }}
-              >
-                {shareOptions.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={option.action}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: "0.15rem",
-                      padding: "0",
-                      margin: "0",
-                      backgroundColor: "transparent",
-                      border: "none",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      minWidth: "50px",
-                      width: "50px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "32px",
-                        height: "32px",
-                        borderRadius: "50%",
-                        backgroundColor: "var(--color-background-alt, #f9f9f9)",
-                        border: "1px solid var(--border-color, #eee)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "1rem",
-                        transition: "all 0.2s ease",
-                      }}
-                    >
-                      {option.icon}
-                    </div>
-                    <span
-                      style={{
-                        fontSize: "0.6rem",
-                        color: option.isSuccess ? "#28a745" : "var(--color-text, #333)",
-                        textAlign: "center",
-                        lineHeight: "1",
-                      }}
-                    >
-                      {option.name}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
 
         {/* Scroll-to-top button */}
         {showScrollToTop && (
