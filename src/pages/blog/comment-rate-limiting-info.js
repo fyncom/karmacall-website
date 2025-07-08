@@ -31,6 +31,7 @@ const articleMetadata = {
 export default function CommentRateLimitingInfo() {
   const [shareCount, setShareCount] = React.useState(0)
   const [textSize, setTextSize] = React.useState("medium")
+  const [showKeyboardHint, setShowKeyboardHint] = React.useState(false)
 
   // Generate text size styles from centralized system
   const textSizeStyles = generateTextSizeStyles()
@@ -38,6 +39,81 @@ export default function CommentRateLimitingInfo() {
   const handleTextSizeChange = newSize => {
     setTextSize(newSize)
   }
+
+  // Detect keyboard navigation and show helpful hints
+  React.useEffect(() => {
+    let keyboardDetected = false
+    let hintShown = false
+
+    const handleKeyDown = e => {
+      // Detect Tab key usage (keyboard navigation)
+      if (e.key === "Tab" && !keyboardDetected) {
+        keyboardDetected = true
+
+        // Show hint after a short delay, but only once
+        if (!hintShown) {
+          setTimeout(() => {
+            setShowKeyboardHint(true)
+            hintShown = true
+
+            // Hide hint after 4 seconds
+            setTimeout(() => {
+              setShowKeyboardHint(false)
+            }, 4000)
+          }, 1500)
+        }
+      }
+
+      // Alt+T to jump to table of contents
+      if (e.altKey && e.key.toLowerCase() === "t") {
+        e.preventDefault()
+        const toc = document.getElementById("table-of-contents")
+        if (toc) {
+          toc.focus()
+          toc.scrollIntoView({ behavior: "smooth", block: "start" })
+
+          // Show a subtle notification
+          const notification = document.createElement("div")
+          notification.textContent = "Jumped to table of contents"
+          notification.className = "sr-only"
+          notification.setAttribute("aria-live", "polite")
+          document.body.appendChild(notification)
+          setTimeout(() => document.body.removeChild(notification), 1000)
+        }
+      }
+
+      // Alt+C to jump to main content
+      if (e.altKey && e.key.toLowerCase() === "c") {
+        e.preventDefault()
+        const content = document.getElementById("main-content")
+        if (content) {
+          content.focus()
+          content.scrollIntoView({ behavior: "smooth", block: "start" })
+
+          // Show a subtle notification
+          const notification = document.createElement("div")
+          notification.textContent = "Jumped to main content"
+          notification.className = "sr-only"
+          notification.setAttribute("aria-live", "polite")
+          document.body.appendChild(notification)
+          setTimeout(() => document.body.removeChild(notification), 1000)
+        }
+      }
+    }
+
+    const handleMouseDown = () => {
+      // Hide hint if user switches to mouse
+      setShowKeyboardHint(false)
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    document.addEventListener("mousedown", handleMouseDown)
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown)
+      document.removeEventListener("mousedown", handleMouseDown)
+    }
+  }, [])
 
   // Share count handling and text size initialization
   React.useEffect(() => {
@@ -74,13 +150,49 @@ export default function CommentRateLimitingInfo() {
   return (
     <Wrapper seo={seo}>
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
+        {/* Keyboard Navigation Hint - only shows for keyboard users */}
+        {showKeyboardHint && (
+          <div
+            style={{
+              position: "fixed",
+              top: "20px",
+              right: "20px",
+              background: "var(--color-background, #fff)",
+              color: "var(--color-text, #333)",
+              padding: "12px 16px",
+              border: "2px solid var(--color-primary, #007acc)",
+              borderRadius: "8px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+              zIndex: 1000,
+              fontSize: "0.85rem",
+              maxWidth: "280px",
+              animation: "slideIn 0.3s ease-out",
+            }}
+            role="status"
+            aria-live="polite"
+          >
+            <strong>Keyboard Navigation:</strong>
+            <br />
+            <code>Alt+T</code> - Jump to table of contents
+            <br />
+            <code>Alt+C</code> - Jump to main content
+          </div>
+        )}
+
         {/* Article Header */}
         <ArticleHeader articleData={articleMetadata} />
 
         {/* Main content container with sidebar layout */}
         <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginTop: "0.5rem", position: "relative" }}>
           {/* Main article content */}
-          <div style={{ flex: "1", minWidth: "0" }}>
+          <div
+            id="main-content"
+            style={{
+              flex: "1",
+              minWidth: "0",
+            }}
+            tabIndex="-1"
+          >
             {/* Action bar with share and comment buttons */}
             <ActionBar articleData={articleMetadata} shareCount={shareCount} onShareCountUpdate={setShareCount} />
 
@@ -346,7 +458,15 @@ export default function CommentRateLimitingInfo() {
           </div>
 
           {/* Sidebar with Table of Contents */}
-          <TableOfContents title="Contents" />
+          <div
+            id="table-of-contents"
+            tabIndex="-1"
+            style={{
+              flexShrink: 0,
+            }}
+          >
+            <TableOfContents title="Contents" />
+          </div>
         </div>
 
         {/* Related Articles - skip for this help page */}

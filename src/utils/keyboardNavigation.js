@@ -3,6 +3,8 @@
  * Provides reusable functions for accessible keyboard navigation
  */
 
+import React from "react"
+
 /**
  * Handle keyboard events for clickable elements
  * @param {KeyboardEvent} event - The keyboard event
@@ -310,4 +312,156 @@ export const useKeyboardNavigation = (options = {}) => {
     onKeyDown: handleKeyDown,
     tabIndex: 0,
   }
+}
+
+/**
+ * Keyboard navigation detection and contextual help
+ */
+export const useKeyboardNavigationDetection = () => {
+  const [isKeyboardUser, setIsKeyboardUser] = React.useState(false);
+  const [showContextualHelp, setShowContextualHelp] = React.useState(false);
+
+  React.useEffect(() => {
+    let keyboardDetected = false;
+    let mouseDetected = false;
+
+    const handleKeyDown = (e) => {
+      // Detect meaningful keyboard navigation
+      if (e.key === 'Tab' || e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+        keyboardDetected = true;
+        if (!mouseDetected) {
+          setIsKeyboardUser(true);
+        }
+      }
+    };
+
+    const handleMouseDown = () => {
+      mouseDetected = true;
+      setIsKeyboardUser(false);
+      setShowContextualHelp(false);
+    };
+
+    const handleFocus = (e) => {
+      // If keyboard user focuses on certain elements, show contextual help
+      if (keyboardDetected && !mouseDetected) {
+        const element = e.target;
+        const isInteractive = element.matches('button, a, [tabindex], input, select, textarea');
+        
+        if (isInteractive) {
+          setShowContextualHelp(true);
+          // Hide help after a delay
+          setTimeout(() => setShowContextualHelp(false), 3000);
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('focusin', handleFocus);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('focusin', handleFocus);
+    };
+  }, []);
+
+  return { isKeyboardUser, showContextualHelp };
+};
+
+/**
+ * Smart skip link component that only shows for keyboard users
+ */
+export const SmartSkipLink = ({ href, children, ...props }) => {
+  const { isKeyboardUser } = useKeyboardNavigationDetection();
+
+  if (!isKeyboardUser) {
+    return null;
+  }
+
+  return (
+    <a
+      href={href}
+      className="smart-skip-link"
+      style={{
+        position: 'absolute',
+        top: '-40px',
+        left: '0',
+        background: 'var(--color-background, #fff)',
+        color: 'var(--color-text, #333)',
+        padding: '8px 12px',
+        textDecoration: 'none',
+        border: '2px solid var(--color-primary, #007acc)',
+        borderRadius: '4px',
+        zIndex: 1000,
+        fontSize: '0.9rem',
+        fontWeight: '500',
+        transition: 'top 0.3s ease',
+        ...props.style
+      }}
+      onFocus={(e) => {
+        e.target.style.top = '0px';
+      }}
+      onBlur={(e) => {
+        e.target.style.top = '-40px';
+      }}
+      {...props}
+    >
+      {children}
+    </a>
+  );
+};
+
+/**
+ * Contextual navigation help component
+ */
+export const ContextualNavigationHelp = ({ children }) => {
+  const { isKeyboardUser, showContextualHelp } = useKeyboardNavigationDetection();
+
+  if (!isKeyboardUser || !showContextualHelp) {
+    return null;
+  }
+
+  return (
+    <div
+      className="contextual-nav-help"
+      style={{
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        background: 'var(--color-background, #fff)',
+        color: 'var(--color-text, #333)',
+        padding: '12px 16px',
+        border: '2px solid var(--color-primary, #007acc)',
+        borderRadius: '8px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+        zIndex: 1000,
+        fontSize: '0.85rem',
+        maxWidth: '250px',
+        animation: 'slideIn 0.3s ease-out'
+      }}
+      role="status"
+      aria-live="polite"
+    >
+      {children}
+    </div>
+  );
+};
+
+// Add CSS for the animation
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  `;
+  document.head.appendChild(style);
 }

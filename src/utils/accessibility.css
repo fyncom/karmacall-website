@@ -93,4 +93,16 @@ a:focus:not(:focus-visible) {
     --color-focus: #4da6ff;
     --color-focus-bg: rgba(77, 166, 255, 0.1);
   }
+}
+
+/* Keyboard navigation hint animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 } 
