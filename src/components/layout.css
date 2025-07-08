@@ -165,6 +165,38 @@
   }
 }
 
+/* Manually switch to light mode via data attribute */
+:root[data-theme="light"] {
+  --karmacall-green-variable: var(--karmacall-green);
+  --mobile-menu-text-color: white;
+  --mobile-menu-bg-color: var(--fyncom-blue);
+  --color-text: #333;
+  --color-text-secondary: #666;
+  --color-background: #fff;
+  --color-background-alt: #f9f9f9;
+  --border-color: #eee;
+  --color-primary: #7026b9;
+  --sub-color: var(--fyncom-cyan);
+  --color-bar: #000;
+  --help-box: #fff;
+  --dropdown-container-color: var(--fyncom-lightest-blue);
+  --dropdown-text-color: #000;
+  --dropdown-hover-color: white;
+  --button-learn-more: var(--fyncom-yellow);
+  --button-learn-more-hover: var(--karmacall-gold);
+  --container-color: var(--fyncom-cyan);
+  --img-brightness: brightness(1);
+  --navigation: rgba(0, 0, 0, 0.1);
+  --navigation-hover: rgba(0, 0, 0, 0.2);
+  --help-item-hover: #f0f8ff;
+  .fyncom-logo {
+    content: var(--logo-light-mode);
+    display: block;
+    margin: 40px auto;
+    max-width: 300px;
+  }
+}
+
 /****** *Setting mobile device css ******/
 /* Styles for tablets and above */
 @media (min-width: 769px) {

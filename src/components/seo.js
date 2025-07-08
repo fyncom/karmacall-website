@@ -46,6 +46,9 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="keywords" content={metaKeywords.join(", ")} />
       <meta name="author" content={site.siteMetadata?.author || ``} />
+      <meta name="color-scheme" content="light dark" />
+      <meta name="theme-color" content="#008080" media="(prefers-color-scheme: light)" />
+      <meta name="theme-color" content="#003554" media="(prefers-color-scheme: dark)" />
 
       {/* OpenGraph tags */}
       <meta property="og:title" content={title} />
