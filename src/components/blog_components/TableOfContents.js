@@ -1,4 +1,5 @@
 import React from "react"
+import { createKeyboardClickHandlers } from "../../utils/keyboardNavigation"
 
 const TableOfContents = ({ title, className, style }) => {
   const [tocCollapsed, setTocCollapsed] = React.useState(false)
@@ -60,6 +61,10 @@ const TableOfContents = ({ title, className, style }) => {
     return () => clearTimeout(timer)
   }, [])
 
+  const toggleHandlers = createKeyboardClickHandlers(toggleToc, {
+    role: "button",
+  })
+
   return (
     <div
       className={className}
@@ -81,7 +86,9 @@ const TableOfContents = ({ title, className, style }) => {
         }}
       >
         <div
-          onClick={toggleToc}
+          {...toggleHandlers}
+          aria-expanded={!tocCollapsed}
+          aria-controls="toc-content"
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -122,7 +129,7 @@ const TableOfContents = ({ title, className, style }) => {
         </div>
 
         {!tocCollapsed && (
-          <nav>
+          <nav id="toc-content" aria-label="Table of contents">
             <ul
               style={{
                 listStyle: "none",

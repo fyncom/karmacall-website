@@ -8,6 +8,7 @@
 import React from "react"
 import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
+import "../utils/accessibility.css"
 
 function Seo({ description, title, lang = "en", keywords = [], children, pathname = "" }) {
   const { site } = useStaticQuery(

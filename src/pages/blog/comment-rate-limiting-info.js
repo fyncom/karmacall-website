@@ -331,6 +331,12 @@ export default function CommentRateLimitingInfo() {
                     onMouseOut={e => {
                       e.target.style.backgroundColor = "var(--color-primary, #007acc)"
                     }}
+                    onFocus={e => {
+                      e.target.style.backgroundColor = "var(--color-primary-dark, #005a9e)"
+                    }}
+                    onBlur={e => {
+                      e.target.style.backgroundColor = "var(--color-primary, #007acc)"
+                    }}
                   >
                     Close Window
                   </button>
