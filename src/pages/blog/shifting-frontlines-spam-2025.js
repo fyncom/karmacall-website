@@ -3,12 +3,13 @@ import { Wrapper } from "../../components/Markdown-Wrapper"
 import "../../components/blog.css"
 import { getShareCount, setMockShareCount } from "../../utils/shareCounter"
 import { preloadUrls } from "../../utils/urlShortener"
-import ArticleHeader from "../../components/ArticleHeader"
-import ActionBar from "../../components/ActionBar"
-import TableOfContents from "../../components/TableOfContents"
-import RelatedArticles from "../../components/RelatedArticles"
-import FeaturedImage from "../../components/FeaturedImage"
-import ScrollToTop from "../../components/ScrollToTop"
+import ArticleHeader from "../../components/blog_components/ArticleHeader"
+import ActionBar from "../../components/blog_components/ActionBar"
+import TableOfContents from "../../components/blog_components/TableOfContents"
+import RelatedArticles from "../../components/blog_components/RelatedArticles"
+import FeaturedImage from "../../components/blog_components/FeaturedImage"
+import ScrollToTop from "../../components/blog_components/ScrollToTop"
+
 const articleMetadata = {
   title: "The Shifting Frontlines of Spam: Interactive Report Reveals Global Crisis",
   description:
