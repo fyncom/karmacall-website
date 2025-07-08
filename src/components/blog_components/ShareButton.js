@@ -1,6 +1,6 @@
 import React from "react"
-import { createShortUrl } from "../utils/urlShortener"
-import { incrementShareCount, getShareCount, formatShareCount } from "../utils/shareCounter"
+import { createShortUrl } from "../../utils/urlShortener"
+import { incrementShareCount, getShareCount, formatShareCount } from "../../utils/shareCounter"
 
 export default function ShareButton({ articleData, shareCount, onShareCountUpdate }) {
   const [showShareDialog, setShowShareDialog] = React.useState(false)
