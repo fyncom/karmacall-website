@@ -2,9 +2,9 @@ import React from "react"
 
 const TextSizeControl = ({ onSizeChange, currentSize = "medium" }) => {
   const sizes = [
-    { id: "small", label: "A", fontSize: "0.7rem", description: "Small text" },
-    { id: "medium", label: "A", fontSize: "1rem", description: "Normal text" },
-    { id: "large", label: "A", fontSize: "1.4rem", description: "Large text" },
+    { id: "small", label: "A", fontSize: "0.7rem" },
+    { id: "medium", label: "A", fontSize: "1rem" },
+    { id: "large", label: "A", fontSize: "1.4rem" },
   ]
 
   const handleSizeChange = sizeId => {
@@ -21,34 +21,18 @@ const TextSizeControl = ({ onSizeChange, currentSize = "medium" }) => {
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "0.75rem",
-        padding: "0.75rem 1rem",
-        backgroundColor: "var(--color-background-alt, #f9f9f9)",
-        border: "1px solid var(--border-color, #eee)",
-        borderRadius: "8px",
-        marginBottom: "1.5rem",
+        gap: "0.5rem",
+        marginBottom: "0.75rem",
       }}
     >
-      <span
-        style={{
-          fontSize: "0.9rem",
-          fontWeight: "600",
-          color: "var(--color-text, #333)",
-          marginRight: "0.25rem",
-        }}
-      >
-        Text Size:
-      </span>
-
       {sizes.map(size => (
         <button
           key={size.id}
           onClick={() => handleSizeChange(size.id)}
-          title={size.description}
           style={{
             width: "32px",
             height: "32px",
-            backgroundColor: currentSize === size.id ? "var(--color-primary, #007acc)" : "var(--color-background-alt, #f9f9f9)",
+            backgroundColor: currentSize === size.id ? "var(--color-primary, #007acc)" : "var(--color-background, white)",
             color: currentSize === size.id ? "white" : "var(--color-text, #333)",
             border: "2px solid var(--border-color, #ddd)",
             borderColor: currentSize === size.id ? "var(--color-primary, #007acc)" : "var(--border-color, #ddd)",
@@ -64,13 +48,13 @@ const TextSizeControl = ({ onSizeChange, currentSize = "medium" }) => {
           }}
           onMouseEnter={e => {
             if (currentSize !== size.id) {
-              e.target.style.backgroundColor = "var(--color-background, white)"
+              e.target.style.backgroundColor = "var(--color-background-alt, #f9f9f9)"
               e.target.style.borderColor = "var(--color-primary, #007acc)"
             }
           }}
           onMouseLeave={e => {
             if (currentSize !== size.id) {
-              e.target.style.backgroundColor = "var(--color-background-alt, #f9f9f9)"
+              e.target.style.backgroundColor = "var(--color-background, white)"
               e.target.style.borderColor = "var(--border-color, #ddd)"
             }
           }}
@@ -78,17 +62,6 @@ const TextSizeControl = ({ onSizeChange, currentSize = "medium" }) => {
           {size.label}
         </button>
       ))}
-
-      <span
-        style={{
-          fontSize: "0.8rem",
-          color: "var(--color-text-secondary, #666)",
-          marginLeft: "0.5rem",
-          fontStyle: "italic",
-        }}
-      >
-        Choose your preferred reading size
-      </span>
     </div>
   )
 }

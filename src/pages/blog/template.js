@@ -3,7 +3,7 @@ import { Wrapper } from "../../components/Markdown-Wrapper"
 import "../../components/blog.css"
 import { getShareCount, setMockShareCount } from "../../utils/shareCounter"
 import { preloadUrls } from "../../utils/urlShortener"
-import { generateTextSizeStyles, generateCSSVariables, getFontSize } from "../../components/blog_components/FontSizeSystem"
+import { generateTextSizeStyles, getFontSize } from "../../components/blog_components/FontSizeSystem"
 import ArticleHeader from "../../components/blog_components/ArticleHeader"
 import ActionBar from "../../components/blog_components/ActionBar"
 import TableOfContents from "../../components/blog_components/TableOfContents"
@@ -102,7 +102,7 @@ export default function BlogTemplate() {
               imageCredit="Image source, photographer, or attribution information goes here."
             />
 
-            {/* Text Size Control */}
+            {/* Text Size Control - positioned outside content box */}
             <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
 
             {/* Article content */}

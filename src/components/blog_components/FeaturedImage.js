@@ -9,7 +9,7 @@ const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit }) => {
 
   // Always render the container, even without an image
   return (
-    <div style={{ marginBottom: "2rem" }}>
+    <div style={{ marginBottom: "1rem" }}>
       <div
         style={{
           position: "relative",
