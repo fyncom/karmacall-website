@@ -222,10 +222,10 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
           width: formatShareCount(shareCount) ? "auto" : "32px",
           height: "32px",
           padding: formatShareCount(shareCount) ? "0 0.6rem" : "0",
-          backgroundColor: showShareDialog ? "lightblue" : "transparent",
+          backgroundColor: showShareDialog ? "var(--color-primary, #007acc)" : "transparent",
           border: "2px solid var(--border-color, #ddd)",
           borderRadius: formatShareCount(shareCount) ? "16px" : "50%",
-          color: "var(--color-text, #333)",
+          color: showShareDialog ? "white" : "var(--color-text, #333)",
           fontSize: "0.9rem",
           cursor: "pointer",
           transition: "all 0.2s ease",
@@ -313,7 +313,7 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
                   <span
                     style={{
                       fontSize: "0.6rem",
-                      color: option.isSuccess ? "#28a745" : "var(--color-text, #333)",
+                      color: option.isSuccess ? "var(--robocash-green, #3fa060)" : "var(--color-text, #333)",
                       textAlign: "center",
                       lineHeight: "1",
                     }}

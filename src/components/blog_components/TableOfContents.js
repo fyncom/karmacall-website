@@ -100,7 +100,7 @@ const TableOfContents = ({ title, className, style }) => {
               fontSize: "1.1rem",
               fontWeight: "700",
               margin: "0",
-              color: "white",
+              color: "var(--color-text, #333)",
               pointerEvents: "none",
               lineHeight: "1.3",
             }}
@@ -136,7 +136,7 @@ const TableOfContents = ({ title, className, style }) => {
                     href={`#${heading.id}`}
                     onClick={e => handleSmoothScroll(e, heading.id)}
                     style={{
-                      color: "white",
+                      color: "var(--color-text, #333)",
                       textDecoration: "none",
                       fontSize: "0.95rem",
                       fontWeight: "600",
@@ -164,7 +164,7 @@ const TableOfContents = ({ title, className, style }) => {
                             href={`#${child.id}`}
                             onClick={e => handleSmoothScroll(e, child.id)}
                             style={{
-                              color: "#e0e0e0",
+                              color: "var(--color-text-secondary, #666)",
                               textDecoration: "none",
                               fontSize: "0.85rem",
                               fontWeight: "500",

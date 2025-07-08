@@ -242,31 +242,6 @@ const CommentSection = ({ articleSlug }) => {
             Leave a Comment
           </h3>
 
-          {/* Rate Limit Status */}
-          {rateLimitStatus && (
-            <div
-              style={{
-                marginBottom: "1rem",
-                padding: "0.75rem 1rem",
-                backgroundColor: rateLimitStatus.isBlocked ? "#fff3cd" : "#d1ecf1",
-                color: rateLimitStatus.isBlocked ? "#856404" : "#0c5460",
-                border: `1px solid ${rateLimitStatus.isBlocked ? "#ffeaa7" : "#bee5eb"}`,
-                borderRadius: "4px",
-                fontSize: "0.9rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              <span>{rateLimitStatus.isBlocked ? "⚠️" : "ℹ️"}</span>
-              <span>
-                {rateLimitStatus.isBlocked
-                  ? `Rate limit exceeded. Please wait ${rateLimitStatus.waitTimeSeconds} seconds before posting again.`
-                  : `${rateLimitStatus.remainingAttempts} comment${rateLimitStatus.remainingAttempts !== 1 ? "s" : ""} remaining in this time window.`}
-              </span>
-            </div>
-          )}
-
           <div style={{ marginBottom: "1rem" }}>
             <label
               htmlFor="comment-name"
@@ -333,25 +308,112 @@ const CommentSection = ({ articleSlug }) => {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting || (rateLimitStatus && rateLimitStatus.isBlocked)}
-            style={{
-              padding: "0.75rem 2rem",
-              backgroundColor:
-                isSubmitting || (rateLimitStatus && rateLimitStatus.isBlocked) ? "var(--color-text-secondary, #666)" : "var(--color-primary, #007acc)",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              fontSize: "1rem",
-              fontWeight: "500",
-              cursor: isSubmitting || (rateLimitStatus && rateLimitStatus.isBlocked) ? "not-allowed" : "pointer",
-              transition: "background-color 0.2s ease",
-              minWidth: "140px",
-            }}
-          >
-            {isSubmitting ? "Posting..." : rateLimitStatus && rateLimitStatus.isBlocked ? "Rate Limited" : "Post Comment"}
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <button
+              type="submit"
+              disabled={isSubmitting || (rateLimitStatus && rateLimitStatus.isBlocked)}
+              style={{
+                padding: "0.75rem 2rem",
+                backgroundColor:
+                  isSubmitting || (rateLimitStatus && rateLimitStatus.isBlocked) ? "var(--color-text-secondary, #666)" : "var(--color-primary, #007acc)",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                fontSize: "1rem",
+                fontWeight: "500",
+                cursor: isSubmitting || (rateLimitStatus && rateLimitStatus.isBlocked) ? "not-allowed" : "pointer",
+                transition: "background-color 0.2s ease",
+                minWidth: "140px",
+              }}
+            >
+              {isSubmitting ? "Posting..." : rateLimitStatus && rateLimitStatus.isBlocked ? "Rate Limited" : "Post Comment"}
+            </button>
+
+            {/* Info button when rate limited */}
+            {rateLimitStatus && rateLimitStatus.isBlocked && (
+              <div style={{ position: "relative", display: "inline-block" }}>
+                <button
+                  type="button"
+                  onClick={() => window.open("/blog/comment-rate-limiting-info", "_blank")}
+                  onMouseEnter={e => {
+                    const tooltip = e.target.parentElement.querySelector(".rate-limit-tooltip")
+                    if (tooltip) {
+                      tooltip.style.visibility = "visible"
+                      tooltip.style.opacity = "1"
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    const tooltip = e.target.parentElement.querySelector(".rate-limit-tooltip")
+                    if (tooltip) {
+                      tooltip.style.visibility = "hidden"
+                      tooltip.style.opacity = "0"
+                    }
+                  }}
+                  style={{
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "50%",
+                    border: "1px solid var(--color-text-secondary, #666)",
+                    backgroundColor: "var(--color-background, white)",
+                    color: "var(--color-text-secondary, #666)",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseOver={e => {
+                    e.target.style.backgroundColor = "var(--color-text-secondary, #666)"
+                    e.target.style.color = "var(--color-background, white)"
+                  }}
+                  onMouseOut={e => {
+                    e.target.style.backgroundColor = "var(--color-background, white)"
+                    e.target.style.color = "var(--color-text-secondary, #666)"
+                  }}
+                >
+                  ?
+                </button>
+                <div
+                  className="rate-limit-tooltip"
+                  style={{
+                    position: "absolute",
+                    bottom: "30px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    backgroundColor: "var(--color-text, #333)",
+                    color: "var(--color-background, white)",
+                    padding: "0.5rem 0.75rem",
+                    borderRadius: "4px",
+                    fontSize: "0.8rem",
+                    whiteSpace: "nowrap",
+                    visibility: "hidden",
+                    opacity: "0",
+                    transition: "opacity 0.2s ease, visibility 0.2s ease",
+                    zIndex: 1000,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                    pointerEvents: "none",
+                  }}
+                >
+                  Why is commenting limited? Click to learn more
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: 0,
+                      height: 0,
+                      borderLeft: "5px solid transparent",
+                      borderRight: "5px solid transparent",
+                      borderTop: "5px solid var(--color-text, #333)",
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </form>
       ) : (
         <div
