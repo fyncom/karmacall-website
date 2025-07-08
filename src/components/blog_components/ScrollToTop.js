@@ -36,7 +36,7 @@ const ScrollToTop = ({ showThreshold = 300 }) => {
         position: "fixed",
         top: "2rem",
         left: "calc(50% - 600px - 6rem)",
-        backgroundColor: "transparent",
+        backgroundColor: "var(--color-background, white)",
         border: "1.5px solid var(--border-color, #eee)",
         borderRadius: "6px",
         padding: "6px 8px",

@@ -5,6 +5,7 @@ import { FaBars } from "react-icons/fa"
 import Img from "gatsby-image"
 import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "./useCombinedQuery"
+import { createKeyboardClickHandlers } from "../utils/keyboardNavigation"
 
 const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false)
@@ -50,6 +51,10 @@ const Header = () => {
     }
   }, [isMenuOpen])
 
+  const menuToggleHandlers = createKeyboardClickHandlers(toggleMenu, {
+    role: "button",
+  })
+
   return (
     <header className="header-top">
       <div className="header-container">
@@ -62,11 +67,18 @@ const Header = () => {
             <Img className="right-header-logo" fixed={logoData} alt="FynCom Logo, which indicates that KarmaCall is built with FynCom tech" />
           </a>
         </div>
-        <div ref={hamburgerRef} className="mobile-menu-icon" onClick={toggleMenu}>
+        <div
+          ref={hamburgerRef}
+          className="mobile-menu-icon"
+          {...menuToggleHandlers}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+          aria-label="Toggle navigation menu"
+        >
           <FaBars />
         </div>
         {/* Mobile Menu Panel */}
-        <nav ref={menuRef} className={isMenuOpen ? "mobile-menu open" : "mobile-menu"}>
+        <nav ref={menuRef} id="mobile-menu" className={isMenuOpen ? "mobile-menu open" : "mobile-menu"}>
           <ul>
             <li className="mobile-menu-item">
               <Link to="/about">About</Link>

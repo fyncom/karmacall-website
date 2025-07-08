@@ -1,5 +1,5 @@
 import React from "react"
-import { findRelatedArticles, articlesDatabase } from "../utils/articleSimilarity"
+import { findRelatedArticles, articlesDatabase } from "../../utils/articleSimilarity"
 
 const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style }) => {
   // Get similar articles and most recent article

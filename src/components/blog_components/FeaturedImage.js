@@ -1,6 +1,6 @@
 import React from "react"
 
-const FeaturedImage = ({ src, alt, title }) => {
+const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit }) => {
   const [imageError, setImageError] = React.useState(false)
   const [imageLoaded, setImageLoaded] = React.useState(false)
 
@@ -9,7 +9,7 @@ const FeaturedImage = ({ src, alt, title }) => {
 
   // Always render the container, even without an image
   return (
-    <div style={{ marginBottom: "2rem" }}>
+    <div style={{ marginBottom: "1rem" }}>
       <div
         style={{
           position: "relative",
@@ -170,6 +170,45 @@ const FeaturedImage = ({ src, alt, title }) => {
           }}
         />
       </div>
+
+      {/* Image description and credits - only show if provided */}
+      {(imageDescription || imageCredit) && (
+        <div
+          style={{
+            marginTop: "1rem",
+            marginBottom: "1.5rem",
+            padding: "0.75rem",
+            backgroundColor: "var(--color-background-alt, #f9f9f9)",
+            borderRadius: "4px",
+            border: "1px solid var(--border-color, #eee)",
+          }}
+        >
+          {imageDescription && (
+            <p
+              style={{
+                margin: imageCredit ? "0 0 0.5rem 0" : "0",
+                fontSize: "0.9rem",
+                lineHeight: "1.4",
+                color: "var(--color-text, #333)",
+              }}
+            >
+              <strong>Image description:</strong> {imageDescription}
+            </p>
+          )}
+          {imageCredit && (
+            <p
+              style={{
+                margin: 0,
+                fontSize: "0.8rem",
+                color: "var(--color-text-secondary, #666)",
+                fontStyle: "italic",
+              }}
+            >
+              <strong>Credits:</strong> {imageCredit}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   )
 }
