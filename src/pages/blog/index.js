@@ -7,6 +7,16 @@ import "../../components/blog.css"
 // Static articles database - update this when adding new articles
 const blogArticles = [
   {
+    id: "shifting-frontlines-spam-2025",
+    title: "The Shifting Frontlines of Spam: Interactive Report Reveals Global Crisis",
+    description:
+      "Our comprehensive interactive analysis reveals the staggering scale of global spam escalation. With over 137 million unwanted calls daily and $1.03 trillion in losses, discover the regional hotspots, AI-driven tactics, and strategic solutions in this data-rich report.",
+    author: "KarmaCall Team",
+    date: "2025-01-17",
+    slug: "/blog/shifting-frontlines-spam-2025",
+    featuredImage: "../../images/blog/attention-economy-multi-screens.jpg",
+  },
+  {
     id: "future-of-spam-blocking",
     title: "Get Cash Back for Blocking Spam, with KarmaCall Version 4.0",
     description:
