@@ -1,5 +1,7 @@
 import React from "react"
 import { Link } from "gatsby"
+import { sanitizeFormData, sanitizeComment, sanitizeName } from "../../utils/sanitizer"
+import { checkRateLimit, recordAttempt, getRateLimitStatus } from "../../utils/rateLimiter"
 
 const CommentSection = ({ articleSlug }) => {
   const [comments, setComments] = React.useState([])
@@ -11,6 +13,7 @@ const CommentSection = ({ articleSlug }) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [isLoggedIn, setIsLoggedIn] = React.useState(false)
   const [userInfo, setUserInfo] = React.useState(null)
+  const [rateLimitStatus, setRateLimitStatus] = React.useState(null)
 
   // Check login status and get user info
   React.useEffect(() => {
@@ -22,22 +25,30 @@ const CommentSection = ({ articleSlug }) => {
 
       if (userId && phoneNumber && sessionId) {
         setIsLoggedIn(true)
-        // Format phone number for display (e.g., "+1 555-123-4567")
-        const formattedPhone = phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
-        const displayName = `+${countryCode} ${formattedPhone}`
+        // Use "KarmaCall User" as default name instead of phone number
+        const displayName = "KarmaCall User"
 
         setUserInfo({
           userId,
           phoneNumber,
           countryCode,
+          sessionId,
           displayName,
         })
 
-        // Pre-fill the name field with the user's phone number
+        // Pre-fill the name field with the display name
         setNewComment(prev => ({
           ...prev,
           name: displayName,
         }))
+
+        // Check rate limit status for this user
+        const status = getRateLimitStatus("comments", userId)
+        setRateLimitStatus(status)
+      } else {
+        setIsLoggedIn(false)
+        setUserInfo(null)
+        setRateLimitStatus(null)
       }
 
       // Check if user returned from login and should scroll to comments
@@ -74,6 +85,32 @@ const CommentSection = ({ articleSlug }) => {
     }
   }, [comments, articleSlug])
 
+  // Update rate limit status periodically
+  React.useEffect(() => {
+    if (!isLoggedIn || !userInfo?.userId) return
+
+    const updateRateLimit = () => {
+      const status = getRateLimitStatus("comments", userInfo.userId)
+      setRateLimitStatus(status)
+    }
+
+    // Update immediately
+    updateRateLimit()
+
+    // Set up interval to update every second when blocked
+    const interval = setInterval(() => {
+      const status = getRateLimitStatus("comments", userInfo.userId)
+      setRateLimitStatus(status)
+
+      // Stop updating if no longer blocked
+      if (!status.isBlocked) {
+        clearInterval(interval)
+      }
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [isLoggedIn, userInfo?.userId])
+
   const handleInputChange = e => {
     const { name, value } = e.target
     setNewComment(prev => ({
@@ -84,33 +121,69 @@ const CommentSection = ({ articleSlug }) => {
 
   const handleSubmit = async e => {
     e.preventDefault()
+    if (!newComment.name.trim() || !newComment.message.trim()) return
 
-    if (!isLoggedIn) {
-      alert("please log in to post a comment")
+    // Check rate limit before processing
+    if (!userInfo?.userId) {
+      alert("Please log in to post comments")
       return
     }
 
-    if (!newComment.message.trim()) {
-      alert("please enter a message")
+    const rateLimitCheck = checkRateLimit("comments", userInfo.userId)
+    if (!rateLimitCheck.allowed) {
+      alert(rateLimitCheck.message || "Rate limit exceeded. Please wait before posting again.")
       return
     }
 
     setIsSubmitting(true)
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Sanitize all form inputs
+    const sanitizedData = sanitizeFormData(newComment)
 
-    const comment = {
-      id: Date.now(),
-      name: userInfo.displayName,
-      userId: userInfo.userId,
-      message: newComment.message.trim(),
-      timestamp: new Date().toISOString(),
+    // Additional validation after sanitization
+    if (!sanitizedData.name.trim() || !sanitizedData.message.trim()) {
+      alert("Please enter valid name and message")
+      setIsSubmitting(false)
+      return
     }
 
-    setComments(prev => [comment, ...prev])
-    setNewComment(prev => ({ ...prev, message: "" })) // Only clear message, keep name
+    const comment = {
+      id: Date.now().toString(),
+      name: sanitizedData.name.trim(),
+      email: sanitizedData.email.trim(),
+      message: sanitizedData.message.trim(),
+      timestamp: new Date().toISOString(),
+      userId: userInfo?.userId || null, // Store userId to identify comment owner
+    }
+
+    // Record the attempt for rate limiting
+    recordAttempt("comments", userInfo.userId)
+
+    const updatedComments = [...comments, comment]
+    setComments(updatedComments)
+
+    // Save to localStorage
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`comments_${articleSlug}`, JSON.stringify(updatedComments))
+    }
+
+    // Update rate limit status
+    const newStatus = getRateLimitStatus("comments", userInfo.userId)
+    setRateLimitStatus(newStatus)
+
+    // Reset form
+    setNewComment({ name: userInfo?.displayName || "", email: "", message: "" })
     setIsSubmitting(false)
+  }
+
+  const handleDeleteComment = commentId => {
+    const updatedComments = comments.filter(comment => comment.id !== commentId)
+    setComments(updatedComments)
+
+    // Update localStorage
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`comments_${articleSlug}`, JSON.stringify(updatedComments))
+    }
   }
 
   const formatDate = timestamp => {
@@ -168,6 +241,31 @@ const CommentSection = ({ articleSlug }) => {
           >
             Leave a Comment
           </h3>
+
+          {/* Rate Limit Status */}
+          {rateLimitStatus && (
+            <div
+              style={{
+                marginBottom: "1rem",
+                padding: "0.75rem 1rem",
+                backgroundColor: rateLimitStatus.isBlocked ? "#fff3cd" : "#d1ecf1",
+                color: rateLimitStatus.isBlocked ? "#856404" : "#0c5460",
+                border: `1px solid ${rateLimitStatus.isBlocked ? "#ffeaa7" : "#bee5eb"}`,
+                borderRadius: "4px",
+                fontSize: "0.9rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              }}
+            >
+              <span>{rateLimitStatus.isBlocked ? "⚠️" : "ℹ️"}</span>
+              <span>
+                {rateLimitStatus.isBlocked
+                  ? `Rate limit exceeded. Please wait ${rateLimitStatus.waitTimeSeconds} seconds before posting again.`
+                  : `${rateLimitStatus.remainingAttempts} comment${rateLimitStatus.remainingAttempts !== 1 ? "s" : ""} remaining in this time window.`}
+              </span>
+            </div>
+          )}
 
           <div style={{ marginBottom: "1rem" }}>
             <label
@@ -237,21 +335,22 @@ const CommentSection = ({ articleSlug }) => {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || (rateLimitStatus && rateLimitStatus.isBlocked)}
             style={{
               padding: "0.75rem 2rem",
-              backgroundColor: isSubmitting ? "var(--color-text-secondary, #666)" : "var(--color-primary, #007acc)",
+              backgroundColor:
+                isSubmitting || (rateLimitStatus && rateLimitStatus.isBlocked) ? "var(--color-text-secondary, #666)" : "var(--color-primary, #007acc)",
               color: "white",
               border: "none",
               borderRadius: "4px",
               fontSize: "1rem",
               fontWeight: "500",
-              cursor: isSubmitting ? "not-allowed" : "pointer",
+              cursor: isSubmitting || (rateLimitStatus && rateLimitStatus.isBlocked) ? "not-allowed" : "pointer",
               transition: "background-color 0.2s ease",
               minWidth: "140px",
             }}
           >
-            {isSubmitting ? "Posting..." : "Post Comment"}
+            {isSubmitting ? "Posting..." : rateLimitStatus && rateLimitStatus.isBlocked ? "Rate Limited" : "Post Comment"}
           </button>
         </form>
       ) : (
@@ -345,15 +444,45 @@ const CommentSection = ({ articleSlug }) => {
                       color: "var(--color-text, #333)",
                     }}
                   >
-                    {comment.name}
+                    {sanitizeName(comment.name || "Anonymous")}
                   </div>
-                  <div
-                    style={{
-                      fontSize: "0.85rem",
-                      color: "var(--color-text-secondary, #666)",
-                    }}
-                  >
-                    {formatDate(comment.timestamp)}
+                  <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                    <div
+                      style={{
+                        fontSize: "0.85rem",
+                        color: "var(--color-text-secondary, #666)",
+                      }}
+                    >
+                      {formatDate(comment.timestamp)}
+                    </div>
+                    {/* Show delete button only for comments by current user */}
+                    {isLoggedIn && userInfo && comment.userId === userInfo.userId && (
+                      <button
+                        onClick={() => handleDeleteComment(comment.id)}
+                        style={{
+                          padding: "0.25rem 0.5rem",
+                          backgroundColor: "transparent",
+                          color: "var(--color-text-secondary, #666)",
+                          border: "1px solid var(--border-color, #ddd)",
+                          borderRadius: "4px",
+                          fontSize: "0.8rem",
+                          cursor: "pointer",
+                          transition: "all 0.2s ease",
+                        }}
+                        onMouseOver={e => {
+                          e.target.style.backgroundColor = "var(--color-danger, #dc3545)"
+                          e.target.style.color = "white"
+                          e.target.style.borderColor = "var(--color-danger, #dc3545)"
+                        }}
+                        onMouseOut={e => {
+                          e.target.style.backgroundColor = "transparent"
+                          e.target.style.color = "var(--color-text-secondary, #666)"
+                          e.target.style.borderColor = "var(--border-color, #ddd)"
+                        }}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -364,9 +493,10 @@ const CommentSection = ({ articleSlug }) => {
                     color: "var(--color-text, #333)",
                     whiteSpace: "pre-wrap",
                   }}
-                >
-                  {comment.message}
-                </div>
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeComment(comment.message || ""),
+                  }}
+                />
               </div>
             ))}
           </div>

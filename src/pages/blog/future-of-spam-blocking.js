@@ -11,7 +11,6 @@ import RelatedArticles from "../../components/blog_components/RelatedArticles"
 import FeaturedImage from "../../components/blog_components/FeaturedImage"
 import ScrollToTop from "../../components/blog_components/ScrollToTop"
 import TextSizeControl from "../../components/blog_components/TextSizeControl"
-import CommentSection from "../../components/blog_components/CommentSection"
 
 // ============================================================
 // ARTICLE METADATA - EDIT THIS SECTION FOR EACH NEW ARTICLE
@@ -357,9 +356,6 @@ export default function FutureOfSpamBlocking() {
 
             {/* Related Articles Section */}
             <RelatedArticles currentArticleSlug={articleMetadata.slug} />
-
-            {/* Comment Section */}
-            <CommentSection articleSlug={articleMetadata.slug} />
           </div>
 
           {/* Table of Contents Sidebar */}

@@ -11,6 +11,7 @@ import { getBrowserEnvironment } from "../utils/browserUtils"
 import "../components/login.css" // Import the login-specific CSS
 import CookieConsentEEA from "../components/CookieConsentEEA"
 import ClientOnly from "../components/ClientOnly"
+import { checkRateLimit, recordAttempt, getRateLimitStatus } from "../utils/rateLimiter"
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("")
@@ -25,6 +26,7 @@ const Login = () => {
   const [isBannedModalOpen, setIsBannedModalOpen] = useState(false)
   const [referralCode, setReferralCode] = useState("")
   const [returnTo, setReturnTo] = useState("")
+  const [rateLimitStatus, setRateLimitStatus] = useState(null)
   const location = useLocation()
   const environment = getBrowserEnvironment()
 
@@ -90,9 +92,53 @@ const Login = () => {
     }
   }, [sessionId, phoneNumber, countryCode, otp, nanoAccount, userId])
 
+  // Update rate limit status periodically
+  useEffect(() => {
+    if (!phoneNumber || !countryCode) return
+
+    const identifier = `${countryCode}${phoneNumber}`
+
+    const updateRateLimit = () => {
+      const status = getRateLimitStatus("login", identifier)
+      setRateLimitStatus(status)
+    }
+
+    // Update immediately
+    updateRateLimit()
+
+    // Set up interval to update every second when blocked
+    const interval = setInterval(() => {
+      const status = getRateLimitStatus("login", identifier)
+      setRateLimitStatus(status)
+
+      // Stop updating if no longer blocked
+      if (!status.isBlocked) {
+        clearInterval(interval)
+      }
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [phoneNumber, countryCode])
+
   const handlePhoneSubmit = async event => {
     event.preventDefault()
+
+    // Check rate limit before processing (use phone number as identifier)
+    const identifier = `${countryCode}${phoneNumber}`
+    const rateLimitCheck = checkRateLimit("login", identifier)
+
+    if (!rateLimitCheck.allowed) {
+      alert(rateLimitCheck.message || "Too many login attempts. Please wait before trying again.")
+      // Update rate limit status for UI
+      const status = getRateLimitStatus("login", identifier)
+      setRateLimitStatus(status)
+      return
+    }
+
     try {
+      // Record the attempt
+      recordAttempt("login", identifier)
+
       const result = await triggerVerification()
       if (result.status === 200) {
         setSessionId(result.data.sessionId)
@@ -104,8 +150,15 @@ const Login = () => {
       } else {
         openErrorModal()
       }
+
+      // Update rate limit status after attempt
+      const status = getRateLimitStatus("login", identifier)
+      setRateLimitStatus(status)
     } catch (error) {
       console.log(error)
+      // Update rate limit status on error too
+      const status = getRateLimitStatus("login", identifier)
+      setRateLimitStatus(status)
     }
   }
 
@@ -391,13 +444,13 @@ const Login = () => {
     setCountryCodesOption(e.target.value)
   }
 
-    // NOTE: Things like FastForward will block this.
+  // NOTE: Things like FastForward will block this.
   // Get the user's country code on load using a geolocation API
   const getCallingCode = () => {
     // Fetch the country code based on the user's IP
     // Using a free IP geolocation API
     const url = "https://ipapi.co/json/"
-    
+
     fetch(url)
       .then(response => {
         if (!response.ok) {
@@ -421,36 +474,36 @@ const Login = () => {
   }
 
   // Set the detected country code in the dropdown
-  const setCallingCode = (detectedCountryCode) => {
+  const setCallingCode = detectedCountryCode => {
     // Only run on client-side
-    if (typeof document === 'undefined') return
-    
+    if (typeof document === "undefined") return
+
     // First find the matching country in our list
     const countryCodes = document.getElementById("countryCodes")
     if (!countryCodes) return
-    
+
     let found = false
-    
+
     // Loop through all options to find the matching country code
     for (let i = 0; i < countryCodes.options.length; i++) {
       const option = countryCodes.options[i]
       const countryCode = option.dataset.countryCode
-      
+
       if (countryCode === detectedCountryCode) {
         // Found the matching country
         const value = option.value
         setCountryCodesOption(value)
-        
+
         // Extract the dial code for our state
         const [code, dialCode] = value.split("-")
         setCountryCode(code)
-        
+
         console.log(`Auto-detected country: ${detectedCountryCode} with dial code ${dialCode}`)
         found = true
         break
       }
     }
-    
+
     if (!found) {
       // Default to US if country not found in our list
       for (let i = 0; i < countryCodes.options.length; i++) {
@@ -458,10 +511,10 @@ const Login = () => {
         if (option.dataset.countryCode === "US") {
           const value = option.value
           setCountryCodesOption(value)
-          
+
           const [code, dialCode] = value.split("-")
           setCountryCode(code)
-          
+
           console.log(`Defaulting to US with dial code +1`)
           break
         }
@@ -485,6 +538,24 @@ const Login = () => {
             <div className="container">
               <ClientOnly>
                 <form method="get" id="phoneNumberInput" onSubmit={handlePhoneSubmit}>
+                  {/* Rate Limit Status */}
+                  {rateLimitStatus && rateLimitStatus.isBlocked && (
+                    <div
+                      style={{
+                        marginBottom: "1rem",
+                        padding: "0.75rem 1rem",
+                        backgroundColor: "#fff3cd",
+                        color: "#856404",
+                        border: "1px solid #ffeaa7",
+                        borderRadius: "4px",
+                        fontSize: "0.9rem",
+                        textAlign: "center",
+                      }}
+                    >
+                      ⚠️ Too many login attempts. Please wait {rateLimitStatus.waitTimeSeconds} seconds before trying again.
+                    </div>
+                  )}
+
                   <div>
                     <p>
                       <CountryCodeSelector value={countryCodesOption} onChange={handleCountryChange} />
@@ -507,8 +578,16 @@ const Login = () => {
                   <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
                     <p>
                       <span className="input-group-btn">
-                        <button type="submit" className="user">
-                          Confirm Phone Number
+                        <button
+                          type="submit"
+                          className="user"
+                          disabled={rateLimitStatus && rateLimitStatus.isBlocked}
+                          style={{
+                            opacity: rateLimitStatus && rateLimitStatus.isBlocked ? 0.6 : 1,
+                            cursor: rateLimitStatus && rateLimitStatus.isBlocked ? "not-allowed" : "pointer",
+                          }}
+                        >
+                          {rateLimitStatus && rateLimitStatus.isBlocked ? "Rate Limited" : "Confirm Phone Number"}
                         </button>
                       </span>
                     </p>
