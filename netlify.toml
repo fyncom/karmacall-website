@@ -3,24 +3,61 @@
     [headers.values]
         X-Robots-Tag = "index, follow"
 
+# Add cache headers for static assets
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    
+[[headers]]
+  for = "/*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
 ## Performance optimization plugins
-#[[plugins]]
-# ADDED GRIDSOME cache
-#
 
-# THIS WAS ALREADY HERE
-#[[plugins]]
-#package = "@netlify/plugin-lighthouse"
-#  [plugins.inputs]
-#  audit_url = "https://karmacall.com"
+# Enable Lighthouse performance monitoring
+[[plugins]]
+package = "@netlify/plugin-lighthouse"
+  [plugins.inputs]
+  audit_url = "https://karmacall.com"
 
-# ADDED THIS
-#[[plugins]]
-#package = "netlify-plugin-inline-critical-css"
-#
-# DID NOT ADD THIS SINCE GOOGLE HANDLES IT
-#[[plugins]]
-#package = "netlify-plugin-submit-sitemap"
+# Inline critical CSS for faster rendering
+[[plugins]]
+package = "netlify-plugin-inline-critical-css"
+
+# Optimize and compress images
+[[plugins]]
+package = "netlify-plugin-image-optim"
+
+# Enable HTTP/2 server push for critical assets
+[[plugins]]
+package = "netlify-plugin-gatsby-cache"
 
 # CORS headers for API requests
 [[headers]]

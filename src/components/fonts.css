@@ -1,12 +1,14 @@
 /* 
- * Proper font-display implementation for Barlow fonts
- * This ensures text remains visible during font loading
+ * Optimized font loading for Barlow fonts
+ * Using WOFF2 format for better performance and smaller file size
+ * font-display: swap ensures text remains visible during font loading
  */
 
 /* Barlow SemiCondensed Regular */
 @font-face {
   font-family: 'BarlowSemiCondensed';
-  src: url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-Regular.ttf') format('truetype');
+  src: url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-Regular.woff2') format('woff2'),
+       url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -15,7 +17,8 @@
 /* Barlow SemiCondensed Light */
 @font-face {
   font-family: 'BarlowSemiCondensed';
-  src: url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-Light.ttf') format('truetype');
+  src: url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-Light.woff2') format('woff2'),
+       url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-Light.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -24,7 +27,8 @@
 /* Barlow SemiCondensed SemiBold */
 @font-face {
   font-family: 'BarlowSemiCondensed';
-  src: url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-SemiBold.ttf') format('truetype');
+  src: url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-SemiBold.woff2') format('woff2'),
+       url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -33,7 +37,8 @@
 /* Barlow SemiCondensed ExtraBold */
 @font-face {
   font-family: 'BarlowSemiCondensed';
-  src: url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-ExtraBold.ttf') format('truetype');
+  src: url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-ExtraBold.woff2') format('woff2'),
+       url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-ExtraBold.ttf') format('truetype');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
@@ -42,7 +47,8 @@
 /* Barlow SemiCondensed Bold */
 @font-face {
   font-family: 'BarlowSemiCondensed';
-  src: url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-Bold.ttf') format('truetype');
+  src: url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-Bold.woff2') format('woff2'),
+       url('/Barlow-AllFonts_Includes_SemiCondensed/BarlowSemiCondensed-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -51,7 +57,8 @@
 /* Barlow Regular */
 @font-face {
   font-family: 'Barlow';
-  src: url('/Barlow-AllFonts_Includes_SemiCondensed/Barlow-Regular.ttf') format('truetype');
+  src: url('/Barlow-AllFonts_Includes_SemiCondensed/Barlow-Regular.woff2') format('woff2'),
+       url('/Barlow-AllFonts_Includes_SemiCondensed/Barlow-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
