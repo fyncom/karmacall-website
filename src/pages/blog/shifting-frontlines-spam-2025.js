@@ -11,6 +11,7 @@ import RelatedArticles from "../../components/blog_components/RelatedArticles"
 import FeaturedImage from "../../components/blog_components/FeaturedImage"
 import ScrollToTop from "../../components/blog_components/ScrollToTop"
 import TextSizeControl from "../../components/blog_components/TextSizeControl"
+import CommentSection from "../../components/blog_components/CommentSection"
 
 const articleMetadata = {
   title: "The Shifting Frontlines of Spam: Interactive Report Reveals Global Crisis",
@@ -349,8 +350,8 @@ export default function ShiftingFrontlinesSpam2025() {
               </div>
             </div>
             <RelatedArticles currentArticleSlug={articleMetadata.slug} />
+            <CommentSection articleSlug={articleMetadata.slug} articleTitle={articleMetadata.title} />
           </div>
-          {/* Table of Contents Sidebar */}
           <TableOfContents title={articleMetadata.title} />
         </div>
         <ScrollToTop />

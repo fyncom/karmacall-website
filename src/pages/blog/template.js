@@ -549,7 +549,7 @@ export default function BlogTemplate() {
             <RelatedArticles currentArticleSlug={articleMetadata.slug} />
 
             {/* Comment Section */}
-            <CommentSection articleSlug={articleMetadata.slug} />
+            <CommentSection articleSlug={articleMetadata.slug} articleTitle={articleMetadata.title} />
           </div>
 
           {/* Table of Contents Sidebar */}
