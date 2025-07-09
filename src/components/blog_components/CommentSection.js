@@ -202,7 +202,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
               onMouseOver={e => (e.target.style.backgroundColor = "#0056b3")}
               onMouseOut={e => (e.target.style.backgroundColor = "#007bff")}
             >
-              Post Comment
+              Comment
             </button>
           </div>
         </form>
