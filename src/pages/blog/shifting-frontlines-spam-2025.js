@@ -3,7 +3,7 @@ import { Wrapper } from "../../components/Markdown-Wrapper"
 import "../../components/blog.css"
 import { getShareCount, setMockShareCount } from "../../utils/shareCounter"
 import { preloadUrls } from "../../utils/urlShortener"
-import { generateTextSizeStyles, getFontSize } from "../../components/blog_components/FontSizeSystem"
+import { generateTextSizeStyles } from "../../components/blog_components/FontSizeSystem"
 import ArticleHeader from "../../components/blog_components/ArticleHeader"
 import ActionBar from "../../components/blog_components/ActionBar"
 import TableOfContents from "../../components/blog_components/TableOfContents"
@@ -340,6 +340,8 @@ export default function ShiftingFrontlinesSpam2025() {
                     }}
                     onMouseOver={e => (e.target.style.backgroundColor = "#4338ca")}
                     onMouseOut={e => (e.target.style.backgroundColor = "#4f46e5")}
+                    onFocus={e => (e.target.style.backgroundColor = "#4338ca")}
+                    onBlur={e => (e.target.style.backgroundColor = "#4f46e5")}
                   >
                     View Interactive Data →
                   </a>
