@@ -1,75 +1,111 @@
 import React from "react"
 import "../../components/help-center.css"
-import { graphql, Link } from "gatsby"
+import { Link } from "gatsby"
 import { Wrapper } from "../../components/Markdown-Wrapper"
-import Img from "gatsby-image"
-import truncate from "lodash/truncate" // You may need to install lodash if not already installed
 import "../../components/blog.css"
 
-export default function BlogIndex({ data }) {
+// Static articles database - update this when adding new articles
+const blogArticles = [
+  {
+    id: "shifting-frontlines-spam-2025",
+    title: "The Shifting Frontlines of Spam: Interactive Report Reveals Global Crisis",
+    description:
+      "Our comprehensive interactive analysis reveals the staggering scale of global spam escalation. With over 137 million unwanted calls daily and $1.03 trillion in losses, discover the regional hotspots, AI-driven tactics, and strategic solutions in this data-rich report.",
+    author: "KarmaCall Team",
+    date: "2025-01-17",
+    slug: "/blog/shifting-frontlines-spam-2025",
+    featuredImage: "../../images/blog/attention-economy-multi-screens.jpg",
+  },
+  {
+    id: "future-of-spam-blocking",
+    title: "Get Cash Back for Blocking Spam, with KarmaCall Version 4.0",
+    description:
+      "KarmaCall 4.0 is a revolutionary new app that pays you to block spam calls. With its fresh new UI and infinitely long call blocking capability.",
+    author: "KarmaCall Team",
+    date: "2024-03-11",
+    slug: "/blog/future-of-spam-blocking",
+    featuredImage: "../../images/blog/interactive-rewards-blog-social-graphic.jpg",
+  },
+  {
+    id: "job-scam-texts-surge-2024",
+    title: "Job Scam Texts Cost Americans $470M in 2024 - Here's the Economic Solution",
+    description:
+      "Job scam texts were the #2 most common hoax in 2024, costing Americans nearly half a billion dollars. Discover how FynCom's refundable deposit technology makes mass scamming economically impossible.",
+    author: "KarmaCall Team",
+    date: "2024-06-07",
+    slug: "/blog/job-scam-texts-surge-2024",
+    featuredImage: "../../images/illustrations/inbox-money.png",
+  },
+]
+
+export default function BlogIndex() {
   const seo = {
     title: "KarmaCall Blog",
     description: "Stay updated on the latest in KarmaCall technology.",
   }
-  // A function to truncate text to a specific length
-  const shortenText = (text, length) => {
-    return truncate(text, {
-      length: length, // maximum length of the text
-      separator: /,? +/, // truncates at the nearest space or comma
+
+  const formatDate = dateString => {
+    if (!dateString) return "Date not available"
+
+    const date = new Date(dateString)
+
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return dateString // Return original string if parsing fails
+    }
+
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     })
   }
+
+  // Sort articles by date (newest first)
+  const sortedArticles = [...blogArticles].sort((a, b) => new Date(b.date) - new Date(a.date))
+
+  const remainder = sortedArticles.length % 4
+  const placeholdersNeeded = remainder === 0 ? 0 : 4 - remainder
+
   return (
     <Wrapper seo={seo}>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-          gap: "20px",
-        }}
-      >
-        {data.allMdx.nodes.map(({ id, excerpt, frontmatter, fields }) => (
-          <div className="blog-item" key={id}>
-            <Link className={"blog-link"} to={`${fields.slug}`}>
-              <h2>
-                <Link to={`${fields.slug}`}>{frontmatter.title}</Link>
-              </h2>
-              <small>{frontmatter.date}</small>
-              <p>{shortenText(frontmatter.description, 100)}</p> {/* Truncate to 100 characters */}
-              {frontmatter.featuredImage?.childImageSharp ? (
-                <Img fluid={frontmatter.featuredImage.childImageSharp.fluid} />
-              ) : (
-                <img className={"gif-image"} src={frontmatter.featuredImage?.publicURL} alt={frontmatter.title} />
-              )}
+      <div className="blog-grid">
+        {sortedArticles.map(article => (
+          <div className="blog-card" key={article.id}>
+            <Link to={`${article.slug}`} className="blog-link">
+              <div className="blog-image-container">
+                {article.featuredImage && (
+                  <img
+                    className="blog-image"
+                    src={article.featuredImage}
+                    alt={article.title}
+                    loading="lazy"
+                    onLoad={e => {
+                      e.target.style.opacity = "1"
+                      e.target.style.transform = "scale(1)"
+                    }}
+                    style={{
+                      opacity: "0",
+                      transform: "scale(1.05)",
+                      transition: "opacity 0.3s ease, transform 0.3s ease",
+                    }}
+                  />
+                )}
+              </div>
+              <div className="blog-content">
+                <h3 className="blog-title">{article.title}</h3>
+                <div className="blog-meta">
+                  <span className="blog-author">{article.author || "KarmaCall Team"}</span>
+                  <span className="blog-date">{formatDate(article.date)}</span>
+                </div>
+              </div>
             </Link>
           </div>
+        ))}
+        {Array.from({ length: placeholdersNeeded }, (_, index) => (
+          <div className="blog-placeholder" key={`placeholder-${index}`}></div>
         ))}
       </div>
     </Wrapper>
   )
 }
-export const pageQuery = graphql`
-  query {
-    allMdx(sort: { frontmatter: { date: DESC } }) {
-      nodes {
-        id
-        excerpt(pruneLength: 250)
-        frontmatter {
-          title
-          date(formatString: "MMMM DD, YYYY")
-          description
-          featuredImage {
-            publicURL
-            childImageSharp {
-              fluid(maxWidth: 800) {
-                ...GatsbyImageSharpFluid
-              }
-            }
-          }
-        }
-        fields {
-          slug
-        }
-      }
-    }
-  }
-`

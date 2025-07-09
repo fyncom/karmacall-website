@@ -1,15 +1,13 @@
-import React, { useState, useEffect, lazy, Suspense } from "react"
-import Header from "../components/header"
-import { Link } from "gatsby"
-import { FaRobot, FaDollarSign, FaUserShield } from "react-icons/fa"
-import "../components/index.css"
-import Seo from "../components/seo"
+import React, { useState, useEffect, Suspense } from "react"
+import { FaUserShield, FaRobot, FaDollarSign } from "react-icons/fa"
 import { GatsbyImage } from "gatsby-plugin-image"
-import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "../components/useCombinedQuery"
-
-// Lazy load components that are below the fold for better performance
-const Footer = lazy(() => import("../components/footer"))
+import Header from "../components/header"
+import Footer from "../components/footer"
+import Seo from "../components/seo"
+import { KarmacallAppStoreModal } from "../components/Modal"
+import { createKeyboardClickHandlers } from "../utils/keyboardNavigation"
+import "../components/index.css"
 
 // Detect platform - safely check for browser environment
 const isBrowser = typeof window !== "undefined" && typeof navigator !== "undefined"
@@ -54,6 +52,10 @@ const BlockSpamEarnCash = () => {
   const handleThumbnailClick = () => {
     setIsVideoLoaded(true)
   }
+
+  const thumbnailClickHandlers = createKeyboardClickHandlers(handleThumbnailClick, {
+    role: "button",
+  })
   let baseUrl = `${process.env.GATSBY_API_URL_BASE}`
   let headers = {
     "Content-Type": "application/json",
@@ -224,10 +226,10 @@ const BlockSpamEarnCash = () => {
         </div>
         <div className="use-cases-sales-marketing-container">
           <div className="use-case">
-            <GatsbyImage 
-              image={smugLady} 
-              loading="lazy" 
-              alt="The most common kind of KarmaCall interaction. Unknown calls get blocked and you get instant cash-back!" 
+            <GatsbyImage
+              image={smugLady}
+              loading="lazy"
+              alt="The most common kind of KarmaCall interaction. Unknown calls get blocked and you get instant cash-back!"
             />
             <h2>Blocked</h2>
             <sub className="sub-features">Instant CashBack!</sub>
@@ -265,7 +267,7 @@ const BlockSpamEarnCash = () => {
               <img
                 className="video-thumbnail"
                 src={`https://img.youtube.com/vi/VKuLB0CXzOM/hqdefault.jpg`}
-                onClick={handleThumbnailClick}
+                {...thumbnailClickHandlers}
                 alt="Play Video"
                 style={{ cursor: "pointer" }}
               />

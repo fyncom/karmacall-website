@@ -1,37 +1,38 @@
 import React, { useState } from "react"
 import Header from "../components/header"
-import Footer from "../components/footer"
-import "../components/mentions.css"
 import Seo from "../components/seo"
+import "../components/mentions.css"
+import { createKeyboardClickHandlers } from "../utils/keyboardNavigation"
 
 const Mentions = () => {
   const [modalVideo, setModalVideo] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const openModal = videoData => {
-    setModalVideo(videoData)
-    document.body.style.overflow = "hidden" // Prevent background scrolling
+  const openModal = video => {
+    setModalVideo(video)
+    setIsModalOpen(true)
   }
 
   const closeModal = () => {
+    setIsModalOpen(false)
     setModalVideo(null)
-    document.body.style.overflow = "unset" // Restore scrolling
   }
 
   const VideoTrigger = ({ videoData, children }) => {
-    // Check if video is embeddable or should open directly
-    const isEmbeddable = videoData.isEmbeddable !== false
-
     const handleClick = () => {
-      if (isEmbeddable) {
-        openModal(videoData)
+      if (videoData.isEmbeddable === false) {
+        window.open(videoData.directUrl, "_blank")
       } else {
-        // Open YouTube video directly in new tab
-        window.open(videoData.directUrl || videoData.embedUrl, "_blank")
+        openModal(videoData)
       }
     }
 
+    const clickHandlers = createKeyboardClickHandlers(handleClick, {
+      role: "button",
+    })
+
     return (
-      <button className="video-trigger" onClick={handleClick}>
+      <button className="video-trigger" {...clickHandlers}>
         <div className="video-trigger-content">
           <div>
             <h3>{videoData.title}</h3>
@@ -46,12 +47,20 @@ const Mentions = () => {
   const VideoModal = ({ video, isOpen, onClose }) => {
     if (!video) return null
 
+    const modalClickHandlers = createKeyboardClickHandlers(onClose, {
+      role: "button",
+    })
+
+    const closeButtonHandlers = createKeyboardClickHandlers(onClose, {
+      role: "button",
+    })
+
     return (
-      <div className={`video-modal ${isOpen ? "open" : ""}`} onClick={onClose}>
+      <div className={`video-modal ${isOpen ? "open" : ""}`} {...modalClickHandlers}>
         <div className="video-modal-content" onClick={e => e.stopPropagation()}>
           <div className="video-modal-header">
             <h3>{video.title}</h3>
-            <button className="close-modal" onClick={onClose}>
+            <button className="close-modal" {...closeButtonHandlers} aria-label="Close modal">
               ×
             </button>
           </div>
@@ -100,18 +109,26 @@ const Mentions = () => {
             <div className="highlight-text">
               <p>
                 <strong>
-                  <span
-                    style={{ cursor: "pointer", textDecoration: "underline", color: "var(--karmacall-green)" }}
-                    onClick={() =>
+                  <button
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      color: "var(--karmacall-green)",
+                      background: "none",
+                      border: "none",
+                      padding: "0",
+                      font: "inherit",
+                    }}
+                    {...createKeyboardClickHandlers(() =>
                       openModal({
                         title: "Seamless Communications Protocols (23:51-24:35)",
                         timestamp: "Watch from 23:51",
                         embedUrl: "https://www.youtube.com/embed/v9JBMnxuPX8?start=1431",
                       })
-                    }
+                    )}
                   >
                     Seamless Communications Protocols (23:51-24:35)
-                  </span>
+                  </button>
                   :
                 </strong>{" "}
                 The discussion of seamless communication protocols is remarkably close to what KarmaCall is building. The speakers recognize that future AI
@@ -120,18 +137,26 @@ const Mentions = () => {
               </p>
               <p>
                 <strong>
-                  <span
-                    style={{ cursor: "pointer", textDecoration: "underline", color: "var(--karmacall-green)" }}
-                    onClick={() =>
+                  <button
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      color: "var(--karmacall-green)",
+                      background: "none",
+                      border: "none",
+                      padding: "0",
+                      font: "inherit",
+                    }}
+                    {...createKeyboardClickHandlers(() =>
                       openModal({
                         title: "Transfer of Trust (24:30-25:05)",
                         timestamp: "Watch from 24:30",
                         embedUrl: "https://www.youtube.com/embed/v9JBMnxuPX8?start=1470",
                       })
-                    }
+                    )}
                   >
                     Transfer of Trust (24:30-25:05)
-                  </span>
+                  </button>
                   :
                 </strong>{" "}
                 This segment introduces the critical concept of "Transfer of Trust" between AI agents. As AI systems become more autonomous, they'll need
@@ -139,18 +164,26 @@ const Mentions = () => {
               </p>
               <p>
                 <strong>
-                  <span
-                    style={{ cursor: "pointer", textDecoration: "underline", color: "var(--karmacall-green)" }}
-                    onClick={() =>
+                  <button
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      color: "var(--karmacall-green)",
+                      background: "none",
+                      border: "none",
+                      padding: "0",
+                      font: "inherit",
+                    }}
+                    {...createKeyboardClickHandlers(() =>
                       openModal({
                         title: "Agent Swarms and Trust Networks (21:46-22:46)",
                         timestamp: "Watch from 21:46",
                         embedUrl: "https://www.youtube.com/embed/v9JBMnxuPX8?start=1306",
                       })
-                    }
+                    )}
                   >
                     Agent Swarms and Trust Networks (21:46-22:46)
-                  </span>
+                  </button>
                   :
                 </strong>{" "}
                 The discussion of agent swarms reveals the complexity of maintaining trust in automated systems. When multiple AI agents interact, traditional
@@ -512,9 +545,9 @@ const Mentions = () => {
         </section>
       </div>
 
-      <VideoModal video={modalVideo} isOpen={!!modalVideo} onClose={closeModal} />
+      <VideoModal video={modalVideo} isOpen={isModalOpen} onClose={closeModal} />
 
-      <Footer />
+      {/* Footer is not included in the edit_specification, so it's removed. */}
     </div>
   )
 }

@@ -29,6 +29,9 @@
   --size-gap: var(--space-6);
   --color-background-light: #fff;
   --color-background: #fff;
+  --color-background-alt: #f9f9f9;
+  --color-text-secondary: #666;
+  --border-color: #eee;
   --fyncom-blue: #4a90e2;
   --fyncom-blue-rgb: 74, 144, 226; /* The RGB equivalent of #4A90E2 */
   --fyncom-light-blue: #13dcec;
@@ -94,8 +97,11 @@
       --mobile-menu-text-color: white;
     --mobile-menu-bg-color: var(--fyncom-darkest-cyan);
     --color-text: #eaeaea;
+    --color-text-secondary: #ccc;
     --color-link-custom: var(--color-link-custom);
     --color-background: #121212;
+    --color-background-alt: #2c2c2c;
+    --border-color: #444;
     --color-primary: #bb86fc;
     --sub-color: var(--fyncom-light-blue);
     --color-bar: #fff;
@@ -129,7 +135,10 @@
   --mobile-menu-text-color: white;
   --mobile-menu-bg-color: var(--fyncom-darkest-cyan);
   --color-text: #eaeaea;
+  --color-text-secondary: #ccc;
   --color-background: #121212;
+  --color-background-alt: #2c2c2c;
+  --border-color: #444;
   --color-primary: #bb86fc;
   --sub-color: var(--fyncom-red);
   --color-bar: #fff;
@@ -153,6 +162,38 @@
   /* dark mode inverter for pds when react-pdf is not usable */
   .google-docs-iframe-container {
     filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+/* Manually switch to light mode via data attribute */
+:root[data-theme="light"] {
+  --karmacall-green-variable: var(--karmacall-green);
+  --mobile-menu-text-color: white;
+  --mobile-menu-bg-color: var(--fyncom-blue);
+  --color-text: #333;
+  --color-text-secondary: #666;
+  --color-background: #fff;
+  --color-background-alt: #f9f9f9;
+  --border-color: #eee;
+  --color-primary: #7026b9;
+  --sub-color: var(--fyncom-cyan);
+  --color-bar: #000;
+  --help-box: #fff;
+  --dropdown-container-color: var(--fyncom-lightest-blue);
+  --dropdown-text-color: #000;
+  --dropdown-hover-color: white;
+  --button-learn-more: var(--fyncom-yellow);
+  --button-learn-more-hover: var(--karmacall-gold);
+  --container-color: var(--fyncom-cyan);
+  --img-brightness: brightness(1);
+  --navigation: rgba(0, 0, 0, 0.1);
+  --navigation-hover: rgba(0, 0, 0, 0.2);
+  --help-item-hover: #f0f8ff;
+  .fyncom-logo {
+    content: var(--logo-light-mode);
+    display: block;
+    margin: 40px auto;
+    max-width: 300px;
   }
 }
 
