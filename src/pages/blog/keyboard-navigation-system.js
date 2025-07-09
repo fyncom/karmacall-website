@@ -709,6 +709,81 @@ export default function KeyboardNavigationSystemDoc() {
                 </ul>
 
                 <h2
+                  id="utm-parameter-cleaning"
+                  style={{
+                    fontSize: getFontSize("h2", textSize),
+                    fontWeight: "600",
+                    marginTop: "2.5rem",
+                    marginBottom: "1rem",
+                    color: "var(--color-text, #333)",
+                  }}
+                >
+                  UTM Parameter Cleaning
+                </h2>
+
+                <p style={{ marginBottom: "1.5rem" }}>
+                  The website includes automatic UTM parameter cleaning to provide a cleaner user experience while preserving analytics tracking data.
+                </p>
+
+                <h3
+                  id="utm-cleaning-features"
+                  style={{
+                    fontSize: getFontSize("h3", textSize),
+                    fontWeight: "600",
+                    marginTop: "2rem",
+                    marginBottom: "1rem",
+                    color: "var(--color-text, #333)",
+                  }}
+                >
+                  UTM Cleaning Features
+                </h3>
+
+                <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
+                  <li style={{ marginBottom: "0.5rem" }}>
+                    <strong>Automatic cleaning:</strong> UTM parameters are automatically removed from URLs after analytics tracking
+                  </li>
+                  <li style={{ marginBottom: "0.5rem" }}>
+                    <strong>Preserves tracking:</strong> Analytics data is captured before URL cleaning occurs
+                  </li>
+                  <li style={{ marginBottom: "0.5rem" }}>
+                    <strong>Comprehensive coverage:</strong> Removes UTM parameters plus Facebook, Google, and other tracking parameters
+                  </li>
+                  <li style={{ marginBottom: "0.5rem" }}>
+                    <strong>Preserves other parameters:</strong> Non-tracking query parameters are maintained
+                  </li>
+                  <li style={{ marginBottom: "0.5rem" }}>
+                    <strong>History management:</strong> Uses replaceState to avoid creating additional browser history entries
+                  </li>
+                </ul>
+
+                <div
+                  style={{
+                    backgroundColor: "var(--color-background-alt, #f9f9f9)",
+                    padding: "1.5rem",
+                    borderRadius: "8px",
+                    marginBottom: "1.5rem",
+                    border: "1px solid var(--border-color, #eee)",
+                  }}
+                >
+                  <h4 style={{ marginBottom: "1rem", fontSize: "1rem", fontWeight: "600" }}>Cleaned Parameters</h4>
+                  <p style={{ marginBottom: "1rem", fontSize: "0.9rem" }}>The system automatically removes these tracking parameters:</p>
+                  <ul style={{ paddingLeft: "1.5rem", margin: 0, fontSize: "0.85rem" }}>
+                    <li style={{ marginBottom: "0.3rem" }}>
+                      <strong>UTM:</strong> utm_source, utm_medium, utm_campaign, utm_term, utm_content
+                    </li>
+                    <li style={{ marginBottom: "0.3rem" }}>
+                      <strong>Facebook:</strong> fbclid (Facebook Click ID)
+                    </li>
+                    <li style={{ marginBottom: "0.3rem" }}>
+                      <strong>Google:</strong> gclid (Google Click ID)
+                    </li>
+                    <li style={{ marginBottom: "0.3rem" }}>
+                      <strong>Other platforms:</strong> msclkid, twclid, ttclid, rdt_cid, and more
+                    </li>
+                  </ul>
+                </div>
+
+                <h2
                   id="future-enhancements"
                   style={{
                     fontSize: getFontSize("h2", textSize),
