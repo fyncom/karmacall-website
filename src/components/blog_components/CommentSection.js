@@ -73,7 +73,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
 
   const handleReply = (commentId, replyText) => {
     // This would normally submit reply to Cusdis
-    alert(`Reply to comment ${commentId}: "${replyText}"`)
+    alert(`Reply to comment ${commentId} by ${nickname} (${email}): "${replyText}"`)
     setReplyingTo(null)
     setReplyText("")
   }
@@ -288,6 +288,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     const hasReplies = comment.replies && comment.replies.length > 0
     const isExpanded = expandedComments.has(comment.id)
     const isReplying = replyingTo === comment.id
+    const canReply = nickname.trim() && email.trim()
 
     return (
       <div key={comment.id} style={depth > 0 ? nestedCommentStyle : {}}>
@@ -298,15 +299,27 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
 
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <button
-              style={replyButtonStyle}
-              onClick={() => startReply(comment.id)}
+              style={{
+                ...replyButtonStyle,
+                opacity: canReply ? 1 : 0.5,
+                cursor: canReply ? "pointer" : "not-allowed",
+                color: canReply ? (isDarkMode ? "#66b3ff" : "#007bff") : isDarkMode ? "#555" : "#999",
+                borderColor: canReply ? (isDarkMode ? "#66b3ff" : "#007bff") : isDarkMode ? "#555" : "#999",
+              }}
+              onClick={() => canReply && startReply(comment.id)}
+              disabled={!canReply}
+              title={!canReply ? "Please fill in your nickname and email above to reply" : ""}
               onMouseOver={e => {
-                e.target.style.backgroundColor = isDarkMode ? "#66b3ff" : "#007bff"
-                e.target.style.color = "white"
+                if (canReply) {
+                  e.target.style.backgroundColor = isDarkMode ? "#66b3ff" : "#007bff"
+                  e.target.style.color = "white"
+                }
               }}
               onMouseOut={e => {
-                e.target.style.backgroundColor = "transparent"
-                e.target.style.color = isDarkMode ? "#66b3ff" : "#007bff"
+                if (canReply) {
+                  e.target.style.backgroundColor = "transparent"
+                  e.target.style.color = isDarkMode ? "#66b3ff" : "#007bff"
+                }
               }}
             >
               Reply
@@ -326,6 +339,16 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
 
           {isReplying && (
             <div style={replyFormStyle}>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: isDarkMode ? "#999" : "#666",
+                  marginBottom: "0.75rem",
+                  fontStyle: "italic",
+                }}
+              >
+                Replying as: {nickname} ({email})
+              </div>
               <textarea
                 placeholder={`Reply to ${comment.author}...`}
                 value={replyText}
@@ -334,10 +357,24 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
               />
               <div style={{ marginTop: "0.75rem" }}>
                 <button
-                  style={{ ...buttonStyle, ...smallButtonStyle }}
-                  onClick={() => handleReply(comment.id, replyText)}
-                  onMouseOver={e => (e.target.style.backgroundColor = "#0056b3")}
-                  onMouseOut={e => (e.target.style.backgroundColor = "#007bff")}
+                  style={{
+                    ...buttonStyle,
+                    ...smallButtonStyle,
+                    opacity: replyText.trim() ? 1 : 0.5,
+                    cursor: replyText.trim() ? "pointer" : "not-allowed",
+                  }}
+                  onClick={() => replyText.trim() && handleReply(comment.id, replyText)}
+                  disabled={!replyText.trim()}
+                  onMouseOver={e => {
+                    if (replyText.trim()) {
+                      e.target.style.backgroundColor = "#0056b3"
+                    }
+                  }}
+                  onMouseOut={e => {
+                    if (replyText.trim()) {
+                      e.target.style.backgroundColor = "#007bff"
+                    }
+                  }}
                 >
                   Reply
                 </button>
