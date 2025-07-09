@@ -1,6 +1,7 @@
 import React from "react"
 import { Wrapper } from "../../components/Markdown-Wrapper"
 import "../../components/blog.css"
+import "../../components/blog-mobile.css"
 import { getShareCount, setMockShareCount } from "../../utils/shareCounter"
 import { preloadUrls } from "../../utils/urlShortener"
 import { generateTextSizeStyles, getFontSize } from "../../components/blog_components/FontSizeSystem"
@@ -89,16 +90,16 @@ export default function FutureOfSpamBlocking() {
 
   return (
     <Wrapper seo={seo}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
+      <div className="blog-article-container" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
         {/* Article Header */}
-        <ArticleHeader articleData={articleMetadata} />
+        <ArticleHeader articleData={articleMetadata} className="blog-article-header" />
 
         {/* Main content container with sidebar layout */}
-        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginTop: "0.5rem", position: "relative" }}>
+        <div className="blog-article-layout" style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginTop: "0.5rem", position: "relative" }}>
           {/* Main article content */}
-          <div style={{ flex: "1", minWidth: "0" }}>
+          <div className="blog-article-content" style={{ flex: "1", minWidth: "0" }}>
             {/* Action bar with share and comment buttons */}
-            <ActionBar articleData={articleMetadata} shareCount={shareCount} onShareCountUpdate={setShareCount} />
+            <ActionBar articleData={articleMetadata} shareCount={shareCount} onShareCountUpdate={setShareCount} className="blog-article-action-bar" />
 
             {/* Featured image */}
             <FeaturedImage
@@ -109,7 +110,7 @@ export default function FutureOfSpamBlocking() {
             />
 
             {/* Text Size Control */}
-            <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
+            <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} className="blog-article-text-control" />
 
             {/* Article content */}
             <div
@@ -355,15 +356,15 @@ export default function FutureOfSpamBlocking() {
             </div>
 
             {/* Related Articles Section */}
-            <RelatedArticles currentArticleSlug={articleMetadata.slug} />
+            <RelatedArticles currentArticleSlug={articleMetadata.slug} className="blog-related-articles" />
           </div>
 
           {/* Table of Contents Sidebar */}
-          <TableOfContents title={articleMetadata.title} />
+          <TableOfContents title={articleMetadata.title} className="blog-article-toc" />
         </div>
 
         {/* Scroll-to-top button */}
-        <ScrollToTop />
+        <ScrollToTop className="blog-article-scroll-top" />
       </div>
     </Wrapper>
   )

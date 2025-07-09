@@ -1,6 +1,7 @@
 import React from "react"
 import { Wrapper } from "../../components/Markdown-Wrapper"
 import "../../components/blog.css"
+import "../../components/blog-mobile.css"
 import { getShareCount, setMockShareCount } from "../../utils/shareCounter"
 import { preloadUrls } from "../../utils/urlShortener"
 import { generateTextSizeStyles, getFontSize } from "../../components/blog_components/FontSizeSystem"

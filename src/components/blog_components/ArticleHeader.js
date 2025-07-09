@@ -4,11 +4,12 @@ const ArticleHeader = ({ articleData, className, style }) => {
   return (
     <div className={className} style={style}>
       {/* Header section with same width as main content */}
-      <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginBottom: "1.5rem" }}>
+      <div className="blog-article-header-layout" style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginBottom: "1.5rem" }}>
         {/* Header content - same width as main content column */}
-        <div style={{ flex: "1", minWidth: "0" }}>
+        <div className="blog-article-header-content" style={{ flex: "1", minWidth: "0" }}>
           {/* Title */}
           <h1
+            className="blog-article-title"
             style={{
               fontSize: "2.5rem",
               fontWeight: "700",
@@ -22,7 +23,7 @@ const ArticleHeader = ({ articleData, className, style }) => {
 
           {/* Meta information */}
           <div
-            className="blog-meta"
+            className="blog-meta blog-article-meta"
             style={{
               marginBottom: "2rem",
               fontSize: "1rem",
@@ -47,6 +48,7 @@ const ArticleHeader = ({ articleData, className, style }) => {
             }}
           >
             <p
+              className="blog-article-description"
               style={{
                 fontSize: "1.2rem",
                 lineHeight: "1.6",
@@ -62,6 +64,7 @@ const ArticleHeader = ({ articleData, className, style }) => {
 
         {/* Empty space to match sidebar width */}
         <div
+          className="blog-article-header-spacer"
           style={{
             width: "280px",
             flexShrink: 0,
