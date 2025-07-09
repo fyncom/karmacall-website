@@ -1,7 +1,47 @@
 import React from "react"
+import { useStaticQuery, graphql } from "gatsby"
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import { findRelatedArticles, articlesDatabase } from "../../utils/articleSimilarity"
 
 const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style }) => {
+  // Query all blog images
+  const data = useStaticQuery(graphql`
+    query RelatedArticlesImages {
+      allFile(filter: { sourceInstanceName: { eq: "images" }, relativeDirectory: { regex: "/^(blog|illustrations)$/" } }) {
+        nodes {
+          relativePath
+          childImageSharp {
+            gatsbyImageData(width: 300, layout: CONSTRAINED, placeholder: BLURRED, formats: [AUTO, WEBP])
+          }
+        }
+      }
+    }
+  `)
+
+  // Extract filename from the src path and get Gatsby image
+  const getImageFromSrc = srcPath => {
+    if (!srcPath) return null
+
+    // Extract the relative path from various possible formats
+    let relativePath = srcPath
+    if (srcPath.includes("../../images/")) {
+      relativePath = srcPath.replace("../../images/", "")
+    } else if (srcPath.includes("../images/")) {
+      relativePath = srcPath.replace("../images/", "")
+    } else if (srcPath.includes("images/")) {
+      relativePath = srcPath.replace(/.*images\//, "")
+    }
+
+    // Find the matching image in our query results
+    const imageNode = data.allFile.nodes.find(node => node.relativePath === relativePath)
+
+    if (imageNode?.childImageSharp) {
+      return getImage(imageNode.childImageSharp.gatsbyImageData)
+    }
+
+    return null
+  }
+
   // Get similar articles and most recent article
   const similarArticles = findRelatedArticles(currentArticleSlug, maxArticles + 1, 10) // Get extra in case recent is in similar
   const mostRecentArticle = articlesDatabase.filter(article => article.slug !== currentArticleSlug).sort((a, b) => new Date(b.date) - new Date(a.date))[0]
@@ -36,7 +76,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
       }
     }
 
-    // Fill remaining spots with similar articles if needed
+    // Fill remaining slots with next most similar articles
     while (result.length < maxArticles) {
       const nextSimilar = similarArticles.find(article => !result.some(resultArticle => resultArticle.slug === article.slug))
 
@@ -91,100 +131,127 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
         }}
       >
         {/* Render related articles */}
-        {relatedArticles.map((article, index) => (
-          <a
-            key={index}
-            href={`${article.slug}?utm_source=blog_article&utm_medium=related_articles&utm_campaign=internal_linking`}
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-              display: "block",
-              border: "1px solid var(--border-color, #eee)",
-              borderRadius: "8px",
-              overflow: "hidden",
-              transition: "all 0.2s ease",
-              backgroundColor: "var(--color-background, white)",
-            }}
-            onMouseEnter={e => {
-              e.target.style.transform = "translateY(-4px)"
-              e.target.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.12)"
-            }}
-            onMouseLeave={e => {
-              e.target.style.transform = "translateY(0)"
-              e.target.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)"
-            }}
-          >
-            <div
+        {relatedArticles.map((article, index) => {
+          const gatsbyImage = getImageFromSrc(article.image)
+
+          return (
+            <a
+              key={index}
+              href={`${article.slug}?utm_source=blog_article&utm_medium=related_articles&utm_campaign=internal_linking`}
               style={{
-                position: "relative",
-                width: "100%",
-                aspectRatio: "4 / 3", // Force 4:3 aspect ratio to match main featured images
-                backgroundColor: "var(--color-background-alt, #f9f9f9)",
-                backgroundImage: `url('${article.image}')`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                borderRadius: "8px 8px 0 0", // Only round top corners
+                textDecoration: "none",
+                color: "inherit",
+                display: "block",
+                border: "1px solid var(--border-color, #eee)",
+                borderRadius: "8px",
+                overflow: "hidden",
+                transition: "all 0.2s ease",
+                backgroundColor: "var(--color-background, white)",
               }}
-            />
-            <div style={{ padding: "1rem", display: "flex", flexDirection: "column", height: "200px" }}>
-              <h3
+              onMouseEnter={e => {
+                e.target.style.transform = "translateY(-4px)"
+                e.target.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.12)"
+              }}
+              onMouseLeave={e => {
+                e.target.style.transform = "translateY(0)"
+                e.target.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)"
+              }}
+            >
+              <div
                 style={{
-                  fontSize: "1.1rem",
-                  fontWeight: "600",
-                  marginBottom: "0.5rem",
-                  color: "var(--color-text, #333)",
-                  lineHeight: "1.3",
-                }}
-              >
-                {article.title}
-              </h3>
-              <p
-                style={{
-                  fontSize: "0.85rem",
-                  color: "var(--color-text-secondary, #666)",
-                  lineHeight: "1.4",
-                  margin: "0 0 auto 0", // Push the date/author to bottom
-                  flex: "1", // Take available space
+                  position: "relative",
+                  width: "100%",
+                  aspectRatio: "4 / 3", // Force 4:3 aspect ratio to match main featured images
+                  backgroundColor: "var(--color-background-alt, #f9f9f9)",
+                  borderRadius: "8px 8px 0 0", // Only round top corners
                   overflow: "hidden",
                 }}
               >
-                {article.description.length > 140 ? `${article.description.substring(0, 140)}...` : article.description}
-              </p>
-              <div
-                style={{
-                  fontSize: "0.75rem",
-                  color: "var(--color-text-secondary, #666)",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginTop: "0.75rem", // Fixed spacing from description
-                }}
-              >
-                <span>
-                  {new Date(article.date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}{" "}
-                  • {article.author}
-                </span>
-                {(article.similarityScore || article.isRecent) && (
-                  <span
+                {gatsbyImage ? (
+                  <GatsbyImage
+                    image={gatsbyImage}
+                    alt={article.title}
                     style={{
-                      fontSize: "0.7rem",
-                      backgroundColor: article.isRecent ? "var(--color-primary, #007acc)" : "var(--color-background-alt, #f9f9f9)",
-                      color: article.isRecent ? "white" : "var(--color-text-secondary, #666)",
-                      padding: "2px 6px",
-                      borderRadius: "10px",
+                      width: "100%",
+                      height: "100%",
                     }}
-                  >
-                    {article.isRecent ? "Latest" : `${article.similarityScore}% match`}
-                  </span>
+                    imgStyle={{
+                      objectFit: "cover",
+                      objectPosition: "center",
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundImage: `url('${article.image}')`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  />
                 )}
               </div>
-            </div>
-          </a>
-        ))}
+              <div style={{ padding: "1rem", display: "flex", flexDirection: "column", height: "200px" }}>
+                <h3
+                  style={{
+                    fontSize: "1.1rem",
+                    fontWeight: "600",
+                    marginBottom: "0.5rem",
+                    color: "var(--color-text, #333)",
+                    lineHeight: "1.3",
+                  }}
+                >
+                  {article.title}
+                </h3>
+                <p
+                  style={{
+                    fontSize: "0.85rem",
+                    color: "var(--color-text-secondary, #666)",
+                    lineHeight: "1.4",
+                    margin: "0 0 auto 0", // Push the date/author to bottom
+                    flex: "1", // Take available space
+                    overflow: "hidden",
+                  }}
+                >
+                  {article.description.length > 140 ? `${article.description.substring(0, 140)}...` : article.description}
+                </p>
+                <div
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "var(--color-text-secondary, #666)",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: "0.75rem", // Fixed spacing from description
+                  }}
+                >
+                  <span>
+                    {new Date(article.date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}{" "}
+                    • {article.author}
+                  </span>
+                  {(article.similarityScore || article.isRecent) && (
+                    <span
+                      style={{
+                        fontSize: "0.7rem",
+                        backgroundColor: article.isRecent ? "var(--color-primary, #007acc)" : "var(--color-background-alt, #f9f9f9)",
+                        color: article.isRecent ? "white" : "var(--color-text-secondary, #666)",
+                        padding: "2px 6px",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      {article.isRecent ? "Latest" : `${article.similarityScore}% match`}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </a>
+          )
+        })}
 
         {/* Show placeholders for remaining slots */}
         {Array.from({ length: maxArticles - relatedArticles.length }, (_, index) => (
