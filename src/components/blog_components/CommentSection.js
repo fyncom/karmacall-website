@@ -10,7 +10,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     }
 
     const script = document.createElement("script")
-    script.src = process.env.GATSBY_CUSDIS
+    script.src = "https://cusdis.com/js/cusdis.es.js"
     script.async = true
     script.defer = true
 
