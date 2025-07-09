@@ -224,7 +224,7 @@ export default function KeyboardNavigationSystemDoc() {
                     background: var(--color-background-alt, #f5f5f5);
                     padding: 0.2em 0.4em;
                     border-radius: 3px;
-                    font-family: 'Courier New', monospace;
+                    font-family: var(--font-courier);
                     font-size: 0.9em;
                   }
                   .article-content-${textSize} pre {
