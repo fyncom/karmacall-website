@@ -91,16 +91,19 @@ export default function FutureOfSpamBlocking() {
   return (
     <Wrapper seo={seo}>
       <div className="blog-article-container" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
-        {/* Article Header */}
-        <ArticleHeader articleData={articleMetadata} className="blog-article-header" />
+        {/* Header container with action bar */}
+        <div className="blog-article-header-container" style={{ position: "relative" }}>
+          {/* Article Header */}
+          <ArticleHeader articleData={articleMetadata} className="blog-article-header" />
+
+          {/* Action bar with share and comment buttons - positioned after header */}
+          <ActionBar articleData={articleMetadata} shareCount={shareCount} onShareCountUpdate={setShareCount} className="blog-article-action-bar" />
+        </div>
 
         {/* Main content container with sidebar layout */}
         <div className="blog-article-layout" style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginTop: "0.5rem", position: "relative" }}>
           {/* Main article content */}
           <div className="blog-article-content" style={{ flex: "1", minWidth: "0" }}>
-            {/* Action bar with share and comment buttons */}
-            <ActionBar articleData={articleMetadata} shareCount={shareCount} onShareCountUpdate={setShareCount} className="blog-article-action-bar" />
-
             {/* Featured image */}
             <FeaturedImage
               src={articleMetadata.featuredImage}

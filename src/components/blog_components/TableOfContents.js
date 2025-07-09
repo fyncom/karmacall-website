@@ -5,6 +5,7 @@ const TableOfContents = ({ title, className, style }) => {
   const [tocCollapsed, setTocCollapsed] = React.useState(false)
   const [headings, setHeadings] = React.useState([])
   const [focusedIndex, setFocusedIndex] = React.useState(-1)
+  const [isMobile, setIsMobile] = React.useState(false)
   const tocRef = React.useRef(null)
   const linksRef = React.useRef([])
 
@@ -50,6 +51,24 @@ const TableOfContents = ({ title, className, style }) => {
       }
     }
   }
+
+  // Check if mobile on mount and window resize
+  React.useEffect(() => {
+    const checkIsMobile = () => {
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth <= 968)
+      }
+    }
+
+    // Check on mount
+    checkIsMobile()
+
+    // Add resize listener
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", checkIsMobile)
+      return () => window.removeEventListener("resize", checkIsMobile)
+    }
+  }, [])
 
   // Generate table of contents from headings
   React.useEffect(() => {
@@ -149,6 +168,11 @@ const TableOfContents = ({ title, className, style }) => {
   const toggleHandlers = createKeyboardClickHandlers(toggleToc, {
     role: "button",
   })
+
+  // Don't render on mobile
+  if (isMobile) {
+    return null
+  }
 
   return (
     <div
