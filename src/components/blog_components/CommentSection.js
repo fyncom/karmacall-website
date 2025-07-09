@@ -10,6 +10,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   const [expandedComments, setExpandedComments] = useState(new Set())
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyText, setReplyText] = useState("")
+  const [likedComments, setLikedComments] = useState(new Set())
 
   // Detect dark mode preference
   useEffect(() => {
@@ -98,6 +99,16 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     setReplyText("")
   }
 
+  const toggleLike = commentId => {
+    const newLiked = new Set(likedComments)
+    if (newLiked.has(commentId)) {
+      newLiked.delete(commentId)
+    } else {
+      newLiked.add(commentId)
+    }
+    setLikedComments(newLiked)
+  }
+
   const containerStyle = {
     marginTop: "3rem",
     backgroundColor: isDarkMode ? "#1a1a1a" : "#ffffff",
@@ -183,6 +194,19 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     transition: "color 0.2s",
   }
 
+  const likeButtonStyle = {
+    padding: "0.4rem 0.8rem",
+    backgroundColor: "transparent",
+    border: "none",
+    borderRadius: "4px",
+    fontSize: "0.8rem",
+    cursor: "pointer",
+    transition: "all 0.2s",
+    display: "flex",
+    alignItems: "center",
+    gap: "0.25rem",
+  }
+
   const recentCommentsStyle = {
     padding: "1.5rem",
   }
@@ -250,18 +274,21 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
       author: "Sarah M.",
       text: "Great article! This really helped me understand the topic better.",
       date: "2 hours ago",
+      likes: 12,
       replies: [
         {
           id: 2,
           author: "John D.",
           text: "I agree! The examples were particularly helpful.",
           date: "1 hour ago",
+          likes: 5,
           replies: [
             {
               id: 5,
               author: "Alex K.",
               text: "Yes, especially the third example. That cleared up my confusion.",
               date: "45 minutes ago",
+              likes: 2,
               replies: [],
             },
           ],
@@ -271,6 +298,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
           author: "Mike R.",
           text: "Same here. I've bookmarked this for future reference.",
           date: "30 minutes ago",
+          likes: 8,
           replies: [],
         },
       ],
@@ -280,6 +308,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
       author: "Lisa P.",
       text: "Thanks for sharing this insight. I've been looking for information like this for weeks!",
       date: "1 day ago",
+      likes: 15,
       replies: [],
     },
   ]
@@ -289,6 +318,8 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     const isExpanded = expandedComments.has(comment.id)
     const isReplying = replyingTo === comment.id
     const canReply = nickname.trim() && email.trim()
+    const isLiked = likedComments.has(comment.id)
+    const currentLikes = comment.likes + (isLiked ? 1 : 0)
 
     return (
       <div key={comment.id} style={depth > 0 ? nestedCommentStyle : {}}>
@@ -297,7 +328,25 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
           <div style={commentTextStyle}>{comment.text}</div>
           <div style={commentDateStyle}>{comment.date}</div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+            <button
+              style={{
+                ...likeButtonStyle,
+                color: isLiked ? "#e74c3c" : isDarkMode ? "#999" : "#666",
+              }}
+              onClick={() => toggleLike(comment.id)}
+              onMouseOver={e => {
+                e.target.style.color = "#e74c3c"
+              }}
+              onMouseOut={e => {
+                e.target.style.color = isLiked ? "#e74c3c" : isDarkMode ? "#999" : "#666"
+              }}
+              title={isLiked ? "Unlike this comment" : "Like this comment"}
+            >
+              <span>{isLiked ? "❤️" : "🤍"}</span>
+              <span>{currentLikes}</span>
+            </button>
+
             <button
               style={{
                 ...replyButtonStyle,
