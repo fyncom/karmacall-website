@@ -218,22 +218,18 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: formatShareCount(shareCount) ? "0.3rem" : "0",
-          width: formatShareCount(shareCount) ? "auto" : "32px",
+          width: "32px",
           height: "32px",
-          padding: formatShareCount(shareCount) ? "0 0.6rem" : "0",
           backgroundColor: showShareDialog ? "var(--color-primary, #007acc)" : "transparent",
           border: "2px solid var(--border-color, #ddd)",
-          borderRadius: formatShareCount(shareCount) ? "16px" : "50%",
+          borderRadius: "50%",
           color: showShareDialog ? "white" : "var(--color-text, #333)",
           fontSize: "0.9rem",
           cursor: "pointer",
           transition: "all 0.2s ease",
-          whiteSpace: "nowrap",
         }}
       >
-        <span>📤</span>
-        {formatShareCount(shareCount) && <span style={{ fontSize: "0.8rem", fontWeight: "600" }}>{formatShareCount(shareCount)}</span>}
+        📤
       </button>
 
       {/* Share Dialog - positioned directly under share button with right sides aligned */}
