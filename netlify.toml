@@ -31,19 +31,20 @@
     Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept"
 
 # Configure link checking plugin to ignore Google Tag Manager certificate errors
-[[plugins]]
-package = "netlify-plugin-checklinks"
-  [plugins.inputs]
-  # Skip external links from failing the build
-  skipPatterns = [
-    "www.googletagmanager.com", 
-    "googletagmanager.com",
-    "https://www.googletagmanager.com",
-    "https://googletagmanager.com"
-  ]
-  # Don't throw error on missing service worker
-  todoPatterns = [
-    "sw.js"
-  ]
-  # Disable checking external URLs to avoid certificate issues
-  checkExternal = false
+# TEMPORARILY COMMENTED OUT DUE TO BUG: Cannot destructure property 'operator' of 'fail.diag'
+#[[plugins]]
+#package = "netlify-plugin-checklinks"
+#  [plugins.inputs]
+#  # Skip external links from failing the build
+#  skipPatterns = [
+#    "www.googletagmanager.com", 
+#    "googletagmanager.com",
+#    "https://www.googletagmanager.com",
+#    "https://googletagmanager.com"
+#  ]
+#  # Don't throw error on missing service worker
+#  todoPatterns = [
+#    "sw.js"
+#  ]
+#  # Disable checking external URLs to avoid certificate issues
+#  checkExternal = false
