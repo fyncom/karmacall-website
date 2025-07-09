@@ -11,6 +11,34 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyText, setReplyText] = useState("")
   const [likedComments, setLikedComments] = useState(new Set())
+  const [comments, setComments] = useState([])
+  const [loadingComments, setLoadingComments] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState("")
+
+  // Load saved user info from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedNickname = localStorage.getItem("cusdis_nickname")
+      const savedEmail = localStorage.getItem("cusdis_email")
+      if (savedNickname) setNickname(savedNickname)
+      if (savedEmail) setEmail(savedEmail)
+    }
+  }, [])
+
+  // Save nickname to localStorage when it changes
+  useEffect(() => {
+    if (typeof window !== "undefined" && nickname) {
+      localStorage.setItem("cusdis_nickname", nickname)
+    }
+  }, [nickname])
+
+  // Save email to localStorage when it changes
+  useEffect(() => {
+    if (typeof window !== "undefined" && email) {
+      localStorage.setItem("cusdis_email", email)
+    }
+  }, [email])
 
   // Detect dark mode preference
   useEffect(() => {
@@ -33,24 +61,50 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   }, [])
 
   useEffect(() => {
-    if (!cusdisAppId || cusdisAppId === "YOUR_CUSDIS_APP_ID" || !commentRef.current) {
+    if (!cusdisAppId || cusdisAppId === "YOUR_CUSDIS_APP_ID") {
+      setLoadingComments(false)
       return
     }
 
-    const script = document.createElement("script")
-    script.src = "https://cusdis.com/js/cusdis.es.js"
-    script.async = true
-    script.defer = true
+    // Fetch comments from Cusdis API
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(`https://cusdis.com/api/open/comments?appId=${cusdisAppId}&pageId=${articleSlug}`)
+        if (response.ok) {
+          const data = await response.json()
+          const transformedComments = (data.data || []).map(transformCusdisComment)
+          setComments(transformedComments)
+        } else {
+          console.error("Failed to fetch comments")
+          setComments([])
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error)
+        setComments([])
+      } finally {
+        setLoadingComments(false)
+      }
+    }
 
-    // Hide the default Cusdis interface and let our custom UI handle it
-    const style = document.createElement("style")
-    style.textContent = `
-      #cusdis_thread { display: none !important; }
-    `
-    document.head.appendChild(style)
+    fetchComments()
 
-    commentRef.current.appendChild(script)
-  }, [cusdisAppId])
+    // Also load the Cusdis script for potential future use
+    if (commentRef.current) {
+      const script = document.createElement("script")
+      script.src = "https://cusdis.com/js/cusdis.es.js"
+      script.async = true
+      script.defer = true
+
+      // Hide the default Cusdis interface and let our custom UI handle it
+      const style = document.createElement("style")
+      style.textContent = `
+        #cusdis_thread { display: none !important; }
+      `
+      document.head.appendChild(style)
+
+      commentRef.current.appendChild(script)
+    }
+  }, [cusdisAppId, articleSlug])
 
   if (!cusdisAppId || cusdisAppId === "YOUR_CUSDIS_APP_ID") {
     return (
@@ -63,20 +117,99 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     )
   }
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault()
-    // This would normally submit to Cusdis, but for now we'll just show a message
-    alert("Comment functionality coming soon! This will integrate with Cusdis.")
-    setNickname("")
-    setEmail("")
-    setComment("")
+    setSubmitting(true)
+    setSubmitMessage("")
+
+    try {
+      // Submit to Cusdis API
+      const response = await fetch("https://cusdis.com/api/open/comments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          appId: cusdisAppId,
+          pageId: articleSlug,
+          pageTitle: articleTitle,
+          pageUrl: typeof window !== "undefined" ? window.location.href : "",
+          nickname: nickname,
+          email: email,
+          content: comment,
+        }),
+      })
+
+      if (response.ok) {
+        setSubmitMessage("Comment posted successfully!")
+        setComment("")
+        // Refresh comments
+        const fetchResponse = await fetch(`https://cusdis.com/api/open/comments?appId=${cusdisAppId}&pageId=${articleSlug}`)
+        if (fetchResponse.ok) {
+          const data = await fetchResponse.json()
+          const transformedComments = (data.data || []).map(transformCusdisComment)
+          setComments(transformedComments)
+        }
+        // Clear success message after 3 seconds
+        setTimeout(() => setSubmitMessage(""), 3000)
+      } else {
+        throw new Error("Failed to post comment")
+      }
+    } catch (error) {
+      console.error("Error posting comment:", error)
+      setSubmitMessage("Error posting comment. Please try again.")
+      setTimeout(() => setSubmitMessage(""), 5000)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
-  const handleReply = (commentId, replyText) => {
-    // This would normally submit reply to Cusdis
-    alert(`Reply to comment ${commentId} by ${nickname} (${email}): "${replyText}"`)
-    setReplyingTo(null)
-    setReplyText("")
+  const handleReply = async (commentId, replyText) => {
+    setSubmitting(true)
+    setSubmitMessage("")
+
+    try {
+      // Submit reply to Cusdis API
+      const response = await fetch("https://cusdis.com/api/open/comments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          appId: cusdisAppId,
+          pageId: articleSlug,
+          pageTitle: articleTitle,
+          pageUrl: typeof window !== "undefined" ? window.location.href : "",
+          nickname: nickname,
+          email: email,
+          content: replyText,
+          replyTo: commentId,
+        }),
+      })
+
+      if (response.ok) {
+        setSubmitMessage("Reply posted successfully!")
+        setReplyingTo(null)
+        setReplyText("")
+        // Refresh comments
+        const fetchResponse = await fetch(`https://cusdis.com/api/open/comments?appId=${cusdisAppId}&pageId=${articleSlug}`)
+        if (fetchResponse.ok) {
+          const data = await fetchResponse.json()
+          const transformedComments = (data.data || []).map(transformCusdisComment)
+          setComments(transformedComments)
+        }
+        // Clear success message after 3 seconds
+        setTimeout(() => setSubmitMessage(""), 3000)
+      } else {
+        throw new Error("Failed to post reply")
+      }
+    } catch (error) {
+      console.error("Error posting reply:", error)
+      setSubmitMessage("Error posting reply. Please try again.")
+      setTimeout(() => setSubmitMessage(""), 5000)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const toggleReplies = commentId => {
@@ -107,6 +240,24 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
       newLiked.add(commentId)
     }
     setLikedComments(newLiked)
+  }
+
+  // Transform Cusdis comment format to our expected format
+  const transformCusdisComment = cusdisComment => {
+    return {
+      id: cusdisComment.id,
+      author: cusdisComment.by_nickname || "Anonymous",
+      text: cusdisComment.content || "",
+      date: new Date(cusdisComment.createdAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      likes: 0, // Cusdis doesn't have built-in likes, so we start with 0
+      replies: cusdisComment.replies ? cusdisComment.replies.map(transformCusdisComment) : [],
+    }
   }
 
   const containerStyle = {
@@ -267,52 +418,6 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     marginRight: "0.5rem",
   }
 
-  // Sample nested comments data
-  const placeholderComments = [
-    {
-      id: 1,
-      author: "Sarah M.",
-      text: "Great article! This really helped me understand the topic better.",
-      date: "2 hours ago",
-      likes: 12,
-      replies: [
-        {
-          id: 2,
-          author: "John D.",
-          text: "I agree! The examples were particularly helpful.",
-          date: "1 hour ago",
-          likes: 5,
-          replies: [
-            {
-              id: 5,
-              author: "Alex K.",
-              text: "Yes, especially the third example. That cleared up my confusion.",
-              date: "45 minutes ago",
-              likes: 2,
-              replies: [],
-            },
-          ],
-        },
-        {
-          id: 3,
-          author: "Mike R.",
-          text: "Same here. I've bookmarked this for future reference.",
-          date: "30 minutes ago",
-          likes: 8,
-          replies: [],
-        },
-      ],
-    },
-    {
-      id: 4,
-      author: "Lisa P.",
-      text: "Thanks for sharing this insight. I've been looking for information like this for weeks!",
-      date: "1 day ago",
-      likes: 15,
-      replies: [],
-    },
-  ]
-
   const renderComment = (comment, depth = 0) => {
     const hasReplies = comment.replies && comment.replies.length > 0
     const isExpanded = expandedComments.has(comment.id)
@@ -409,23 +514,23 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
                   style={{
                     ...buttonStyle,
                     ...smallButtonStyle,
-                    opacity: replyText.trim() ? 1 : 0.5,
-                    cursor: replyText.trim() ? "pointer" : "not-allowed",
+                    opacity: replyText.trim() && !submitting ? 1 : 0.5,
+                    cursor: replyText.trim() && !submitting ? "pointer" : "not-allowed",
                   }}
-                  onClick={() => replyText.trim() && handleReply(comment.id, replyText)}
-                  disabled={!replyText.trim()}
+                  onClick={() => replyText.trim() && !submitting && handleReply(comment.id, replyText)}
+                  disabled={!replyText.trim() || submitting}
                   onMouseOver={e => {
-                    if (replyText.trim()) {
+                    if (replyText.trim() && !submitting) {
                       e.target.style.backgroundColor = "#0056b3"
                     }
                   }}
                   onMouseOut={e => {
-                    if (replyText.trim()) {
+                    if (replyText.trim() && !submitting) {
                       e.target.style.backgroundColor = "#007bff"
                     }
                   }}
                 >
-                  Reply
+                  {submitting ? "Posting..." : "Reply"}
                 </button>
                 <button
                   style={{
@@ -471,12 +576,32 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
           <div style={{ marginTop: "1rem" }}>
             <button
               type="submit"
-              style={buttonStyle}
-              onMouseOver={e => (e.target.style.backgroundColor = "#0056b3")}
-              onMouseOut={e => (e.target.style.backgroundColor = "#007bff")}
+              style={{
+                ...buttonStyle,
+                opacity: submitting ? 0.7 : 1,
+                cursor: submitting ? "not-allowed" : "pointer",
+              }}
+              disabled={submitting}
+              onMouseOver={e => !submitting && (e.target.style.backgroundColor = "#0056b3")}
+              onMouseOut={e => !submitting && (e.target.style.backgroundColor = "#007bff")}
             >
-              Comment
+              {submitting ? "Posting..." : "Comment"}
             </button>
+            {submitMessage && (
+              <div
+                style={{
+                  marginTop: "0.75rem",
+                  padding: "0.5rem",
+                  borderRadius: "4px",
+                  backgroundColor: submitMessage.includes("Error") ? (isDarkMode ? "#4a1e1e" : "#f8d7da") : isDarkMode ? "#1e4a1e" : "#d4edda",
+                  color: submitMessage.includes("Error") ? (isDarkMode ? "#ff6b6b" : "#721c24") : isDarkMode ? "#5cb85c" : "#155724",
+                  fontSize: "0.9rem",
+                  border: `1px solid ${submitMessage.includes("Error") ? (isDarkMode ? "#6b2929" : "#f5c6cb") : isDarkMode ? "#2d5a2d" : "#c3e6cb"}`,
+                }}
+              >
+                {submitMessage}
+              </div>
+            )}
           </div>
         </form>
       </div>
@@ -484,7 +609,13 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
       {/* Recent Comments */}
       <div style={recentCommentsStyle}>
         <div style={sectionTitleStyle}>Recent Comments</div>
-        {placeholderComments.map(comment => renderComment(comment))}
+        {loadingComments ? (
+          <div style={{ textAlign: "center", padding: "2rem", color: isDarkMode ? "#999" : "#666" }}>Loading comments...</div>
+        ) : comments.length > 0 ? (
+          comments.map(comment => renderComment(comment))
+        ) : (
+          <div style={{ textAlign: "center", padding: "2rem", color: isDarkMode ? "#999" : "#666" }}>No comments yet. Be the first to comment!</div>
+        )}
       </div>
 
       {/* Hidden Cusdis integration */}
