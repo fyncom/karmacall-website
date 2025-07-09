@@ -60,15 +60,29 @@
     font-size: 1.75rem !important;
     line-height: 1.2 !important;
     margin-bottom: 0.75rem !important;
+    text-align: left !important;
   }
   
   /* Meta information */
   .blog-article-meta {
     margin-bottom: 1.5rem !important;
     font-size: 0.9rem !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.25rem !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 1rem !important;
+  }
+  
+  /* Author left aligned */
+  .blog-article-meta .blog-author {
+    text-align: left !important;
+    flex: 1 !important;
+  }
+  
+  /* Date right aligned */
+  .blog-article-meta .blog-date {
+    text-align: right !important;
+    flex-shrink: 0 !important;
   }
   
   /* Article description */
@@ -76,6 +90,7 @@
     font-size: 1rem !important;
     line-height: 1.5 !important;
     margin-bottom: 0 !important;
+    text-align: left !important;
   }
 }
 
@@ -114,6 +129,16 @@
   
   .blog-article-meta {
     font-size: 0.85rem !important;
+    gap: 0.5rem !important;
+  }
+  
+  /* Ensure author and date still work on very small screens */
+  .blog-article-meta .blog-author {
+    font-size: 0.85rem !important;
+  }
+  
+  .blog-article-meta .blog-date {
+    font-size: 0.8rem !important;
   }
 }
 
@@ -239,5 +264,30 @@
   
   .blog-article-toc ul ul a {
     font-size: 0.75rem !important;
+  }
+}
+
+/* Extra small mobile screens - stack author/date if really cramped */
+@media (max-width: 360px) {
+  .blog-article-meta {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 2px !important;
+  }
+  
+  .blog-article-meta .blog-author {
+    text-align: left !important;
+    flex: none !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .blog-article-meta .blog-date {
+    text-align: left !important;
+    flex: none !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .blog-article-title {
+    font-size: 1.3rem !important;
   }
 } 

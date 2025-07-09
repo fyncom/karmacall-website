@@ -253,12 +253,14 @@
     font-size: 1rem;
     line-height: 1.3;
     margin-bottom: 8px;
+    text-align: left;
   }
   
   .blog-meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.8rem;
   }
   
@@ -299,6 +301,23 @@
   
   .blog-title {
     font-size: 0.95rem;
+  }
+}
+
+/* Extra small screens - stack author/date if needed */
+@media (max-width: 360px) {
+  .blog-meta {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 2px !important;
+  }
+  
+  .blog-author {
+    font-size: 0.75rem !important;
+  }
+  
+  .blog-date {
+    font-size: 0.7rem !important;
   }
 }
 
