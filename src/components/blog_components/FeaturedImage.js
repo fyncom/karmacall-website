@@ -9,7 +9,7 @@ const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit }) => {
 
   // Always render the container, even without an image
   return (
-    <div style={{ marginBottom: "1rem" }}>
+    <div style={{ marginBottom: "1rem", width: "100%" }}>
       <div
         style={{
           position: "relative",
@@ -19,6 +19,7 @@ const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit }) => {
           overflow: "hidden",
           boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
           backgroundColor: "var(--color-background-alt, #f9f9f9)", // Fallback background
+          display: "block", // Ensure block display
         }}
       >
         {isValidImageSrc ? (
@@ -31,12 +32,15 @@ const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit }) => {
                 position: "absolute",
                 top: "0",
                 left: "0",
+                right: "0",
                 width: "100%",
                 height: "100%",
                 objectFit: "cover", // Crop to fill the 4:3 container
                 objectPosition: "center", // Center the crop
                 transition: "transform 0.3s ease",
                 opacity: imageLoaded ? 1 : 0, // Fade in when loaded
+                margin: "0",
+                padding: "0",
               }}
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageError(true)}
