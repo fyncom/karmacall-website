@@ -164,7 +164,7 @@ export function findRelatedArticles(currentArticleSlug, maxResults = 3, minSimil
 
   // Calculate similarity scores for all other articles
   const candidateArticles = articlesDatabase
-    .filter(article => article.slug !== currentArticleSlug)
+    .filter(article => article.slug !== currentArticleSlug && article.slug !== "/blog/template")
     .map(article => ({
       ...article,
       similarityScore: calculateSimilarity(currentArticle, article),
