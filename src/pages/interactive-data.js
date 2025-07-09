@@ -26,6 +26,15 @@ export default function InteractiveData() {
   }, [])
 
   const initializeCharts = () => {
+    // Ensure Chart.js is available
+    if (typeof window.Chart === "undefined") {
+      console.warn("Chart.js not loaded yet, retrying...")
+      setTimeout(initializeCharts, 100)
+      return
+    }
+
+    const Chart = window.Chart
+
     const spamCallGrowthData = {
       labels: ["Colombia", "Uruguay", "Argentina", "Philippines", "Mexico", "Japan", "France", "Thailand", "United States", "Canada"],
       datasets: [

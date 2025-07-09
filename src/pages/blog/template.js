@@ -69,12 +69,6 @@ export default function BlogTemplate() {
     }
   }, [])
 
-  // This page is completely removed in production builds via gatsby-node.js
-  // This is just an extra safety check
-  if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
-    return <div>Page not found</div>
-  }
-
   // SEO metadata using articleMetadata
   const seo = {
     title: articleMetadata.title,

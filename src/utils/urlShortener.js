@@ -22,15 +22,7 @@ const DYNAMIC_SLUGS = {}
 
 // Predefined slugs for existing articles (for consistency)
 const PREDEFINED_SLUGS = {
-  "/blog/template/": {
-    copy_link: "KX9PCX23",
-    email: "M7NQFM45",
-    facebook: "R3VKQZ67",
-    twitter: "B8JTWR89",
-    linkedin: "C9KXBT12",
-    reddit: "D4MYJK34",
-    bluesky: "F6PZNP56",
-  },
+
   "/blog/future-of-spam-blocking/": {
     copy_link: "G7QACX78",
     email: "H8RBFM90",
