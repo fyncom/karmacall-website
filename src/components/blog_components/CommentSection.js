@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react"
+import { formatVoteScore } from "../../utils/numberFormatter"
 
 // Transform Cusdis comment format to our expected format
 const transformCusdisComment = cusdisComment => {
@@ -31,7 +32,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   const [expandedComments, setExpandedComments] = useState(new Set())
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyText, setReplyText] = useState("")
-  const [likedComments, setLikedComments] = useState(new Set())
+  const [commentVotes, setCommentVotes] = useState({}) // Store votes: { commentId: { likes: 5, dislikes: 2, userVote: 'like'|'dislike'|null } }
   const [comments, setComments] = useState([])
   const [loadingComments, setLoadingComments] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -44,15 +45,24 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     console.log("CommentSection - Article Title:", articleTitle)
   }, [cusdisAppId, articleSlug, articleTitle])
 
-  // Load saved user info from localStorage
+  // Load saved user info and votes from localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedNickname = localStorage.getItem("cusdis_nickname")
       const savedEmail = localStorage.getItem("cusdis_email")
+      const savedVotes = localStorage.getItem(`comment_votes_${articleSlug}`)
+
       if (savedNickname) setNickname(savedNickname)
       if (savedEmail) setEmail(savedEmail)
+      if (savedVotes) {
+        try {
+          setCommentVotes(JSON.parse(savedVotes))
+        } catch (e) {
+          console.warn("Failed to parse saved votes:", e)
+        }
+      }
     }
-  }, [])
+  }, [articleSlug])
 
   // Save nickname to localStorage when it changes
   useEffect(() => {
@@ -67,6 +77,13 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
       localStorage.setItem("cusdis_email", email)
     }
   }, [email])
+
+  // Save votes to localStorage when they change
+  useEffect(() => {
+    if (typeof window !== "undefined" && Object.keys(commentVotes).length > 0) {
+      localStorage.setItem(`comment_votes_${articleSlug}`, JSON.stringify(commentVotes))
+    }
+  }, [commentVotes, articleSlug])
 
   // Detect dark mode preference
   useEffect(() => {
@@ -348,14 +365,47 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     setReplyText("")
   }
 
-  const toggleLike = commentId => {
-    const newLiked = new Set(likedComments)
-    if (newLiked.has(commentId)) {
-      newLiked.delete(commentId)
-    } else {
-      newLiked.add(commentId)
-    }
-    setLikedComments(newLiked)
+  // Vote handling functions
+  const handleVote = (commentId, voteType) => {
+    setCommentVotes(prevVotes => {
+      const currentVote = prevVotes[commentId] || { likes: 0, dislikes: 0, userVote: null }
+      const newVotes = { ...prevVotes }
+
+      // If user is voting the same way, remove their vote (toggle off)
+      if (currentVote.userVote === voteType) {
+        newVotes[commentId] = {
+          ...currentVote,
+          [voteType === "like" ? "likes" : "dislikes"]: Math.max(0, currentVote[voteType === "like" ? "likes" : "dislikes"] - 1),
+          userVote: null,
+        }
+      }
+      // If user is switching votes, adjust both counts
+      else if (currentVote.userVote && currentVote.userVote !== voteType) {
+        const oldVoteType = currentVote.userVote
+        newVotes[commentId] = {
+          ...currentVote,
+          [oldVoteType === "like" ? "likes" : "dislikes"]: Math.max(0, currentVote[oldVoteType === "like" ? "likes" : "dislikes"] - 1),
+          [voteType === "like" ? "likes" : "dislikes"]: currentVote[voteType === "like" ? "likes" : "dislikes"] + 1,
+          userVote: voteType,
+        }
+      }
+      // If user is voting for the first time
+      else {
+        newVotes[commentId] = {
+          ...currentVote,
+          [voteType === "like" ? "likes" : "dislikes"]: currentVote[voteType === "like" ? "likes" : "dislikes"] + 1,
+          userVote: voteType,
+        }
+      }
+
+      return newVotes
+    })
+  }
+
+  const getVoteData = commentId => {
+    const voteData = commentVotes[commentId] || { likes: 0, dislikes: 0, userVote: null }
+    const score = voteData.likes - voteData.dislikes
+    return { ...voteData, score }
   }
 
   const containerStyle = {
@@ -521,92 +571,188 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     const isExpanded = expandedComments.has(comment.id)
     const isReplying = replyingTo === comment.id
     const canReply = nickname.trim() && email.trim()
-    const isLiked = likedComments.has(comment.id)
-    const currentLikes = comment.likes + (isLiked ? 1 : 0)
+    const voteData = getVoteData(comment.id)
+    const { likes, dislikes, score, userVote } = voteData
 
     return (
       <div key={comment.id} style={depth > 0 ? nestedCommentStyle : {}}>
         <div style={commentItemStyle}>
-          <div style={commentAuthorStyle}>{comment.author}</div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+            <div style={commentAuthorStyle}>{comment.author}</div>
+            <div style={commentDateStyle}>{comment.date}</div>
+          </div>
           <div style={commentTextStyle}>{comment.text}</div>
-          <div style={commentDateStyle}>{comment.date}</div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-            <button
-              style={{
-                ...likeButtonStyle,
-                color: isLiked ? "#e74c3c" : isDarkMode ? "#999" : "#666",
-              }}
-              onClick={() => toggleLike(comment.id)}
-              onMouseOver={e => {
-                e.target.style.color = "#e74c3c"
-              }}
-              onMouseOut={e => {
-                e.target.style.color = isLiked ? "#e74c3c" : isDarkMode ? "#999" : "#666"
-              }}
-              onFocus={e => {
-                e.target.style.color = "#e74c3c"
-              }}
-              onBlur={e => {
-                e.target.style.color = isLiked ? "#e74c3c" : isDarkMode ? "#999" : "#666"
-              }}
-              title={isLiked ? "Unlike this comment" : "Like this comment"}
-            >
-              <span>{isLiked ? "❤️" : "🤍"}</span>
-              <span>{currentLikes}</span>
-            </button>
-
-            <button
-              style={{
-                ...replyButtonStyle,
-                opacity: canReply ? 1 : 0.5,
-                cursor: canReply ? "pointer" : "not-allowed",
-                color: canReply ? (isDarkMode ? "#66b3ff" : "#007bff") : isDarkMode ? "#555" : "#999",
-                borderColor: canReply ? (isDarkMode ? "#66b3ff" : "#007bff") : isDarkMode ? "#555" : "#999",
-              }}
-              onClick={() => canReply && startReply(comment.id)}
-              disabled={!canReply}
-              title={!canReply ? "Please fill in your nickname and email above to reply" : ""}
-              onMouseOver={e => {
-                if (canReply) {
-                  e.target.style.backgroundColor = isDarkMode ? "#66b3ff" : "#007bff"
-                  e.target.style.color = "white"
-                }
-              }}
-              onMouseOut={e => {
-                if (canReply) {
-                  e.target.style.backgroundColor = "transparent"
-                  e.target.style.color = isDarkMode ? "#66b3ff" : "#007bff"
-                }
-              }}
-              onFocus={e => {
-                if (canReply) {
-                  e.target.style.backgroundColor = isDarkMode ? "#66b3ff" : "#007bff"
-                  e.target.style.color = "white"
-                }
-              }}
-              onBlur={e => {
-                if (canReply) {
-                  e.target.style.backgroundColor = "transparent"
-                  e.target.style.color = isDarkMode ? "#66b3ff" : "#007bff"
-                }
-              }}
-            >
-              Reply
-            </button>
-
-            {hasReplies && (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "0.75rem" }}>
+            {/* Left side: Voting buttons with score in between */}
+            <div style={{ display: "flex", alignItems: "center", gap: "0" }}>
+              {/* Like Button */}
               <button
-                style={expandButtonStyle}
-                onClick={() => toggleReplies(comment.id)}
-                onMouseOver={e => (e.target.style.color = isDarkMode ? "#ccc" : "#333")}
-                onMouseOut={e => (e.target.style.color = isDarkMode ? "#999" : "#666")}
-                onFocus={e => (e.target.style.color = isDarkMode ? "#ccc" : "#333")}
-                onBlur={e => (e.target.style.color = isDarkMode ? "#999" : "#666")}
+                style={{
+                  width: "28px",
+                  height: "28px",
+                  padding: "0",
+                  margin: "0 0.125rem 0 0",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor:
+                    userVote === "like" ? (isDarkMode ? "rgba(40, 167, 69, 0.2)" : "rgba(40, 167, 69, 0.1)") : isDarkMode ? "#2a2a2a" : "#f8f9fa",
+                  color: userVote === "like" ? "#28a745" : isDarkMode ? "#999" : "#666",
+                  border: `1px solid ${userVote === "like" ? "#28a745" : isDarkMode ? "#444" : "#ddd"}`,
+                  borderRadius: "4px",
+                  fontSize: "0.75rem",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onClick={() => handleVote(comment.id, "like")}
+                onMouseOver={e => {
+                  e.target.style.color = "#28a745"
+                  e.target.style.backgroundColor = isDarkMode ? "rgba(40, 167, 69, 0.2)" : "rgba(40, 167, 69, 0.1)"
+                  e.target.style.borderColor = "#28a745"
+                }}
+                onMouseOut={e => {
+                  e.target.style.color = userVote === "like" ? "#28a745" : isDarkMode ? "#999" : "#666"
+                  e.target.style.backgroundColor =
+                    userVote === "like" ? (isDarkMode ? "rgba(40, 167, 69, 0.2)" : "rgba(40, 167, 69, 0.1)") : isDarkMode ? "#2a2a2a" : "#f8f9fa"
+                  e.target.style.borderColor = userVote === "like" ? "#28a745" : isDarkMode ? "#444" : "#ddd"
+                }}
+                onFocus={e => {
+                  e.target.style.color = "#28a745"
+                  e.target.style.backgroundColor = isDarkMode ? "rgba(40, 167, 69, 0.2)" : "rgba(40, 167, 69, 0.1)"
+                  e.target.style.borderColor = "#28a745"
+                }}
+                onBlur={e => {
+                  e.target.style.color = userVote === "like" ? "#28a745" : isDarkMode ? "#999" : "#666"
+                  e.target.style.backgroundColor =
+                    userVote === "like" ? (isDarkMode ? "rgba(40, 167, 69, 0.2)" : "rgba(40, 167, 69, 0.1)") : isDarkMode ? "#2a2a2a" : "#f8f9fa"
+                  e.target.style.borderColor = userVote === "like" ? "#28a745" : isDarkMode ? "#444" : "#ddd"
+                }}
+                title={userVote === "like" ? "Remove like" : "Like this comment"}
               >
-                {isExpanded ? "▼" : "▶"} {comment.replies.length} {comment.replies.length === 1 ? "reply" : "replies"}
+                👍
               </button>
-            )}
+
+              {/* Score Display */}
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "0.8rem",
+                  fontWeight: "600",
+                  color: score > 0 ? "#28a745" : score < 0 ? "#dc3545" : isDarkMode ? "#999" : "#666",
+                  minWidth: "fit-content",
+                  padding: "0 0.5rem",
+                  margin: "0 0.125rem 0 0",
+                }}
+                title={`Net score: ${score > 0 ? "+" : ""}${score} (${likes} likes, ${dislikes} dislikes)`}
+              >
+                {formatVoteScore(score)}
+              </span>
+
+              {/* Dislike Button */}
+              <button
+                style={{
+                  width: "28px",
+                  height: "28px",
+                  padding: "0",
+                  margin: "0",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor:
+                    userVote === "dislike" ? (isDarkMode ? "rgba(220, 53, 69, 0.2)" : "rgba(220, 53, 69, 0.1)") : isDarkMode ? "#2a2a2a" : "#f8f9fa",
+                  color: userVote === "dislike" ? "#dc3545" : isDarkMode ? "#999" : "#666",
+                  border: `1px solid ${userVote === "dislike" ? "#dc3545" : isDarkMode ? "#444" : "#ddd"}`,
+                  borderRadius: "4px",
+                  fontSize: "0.75rem",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onClick={() => handleVote(comment.id, "dislike")}
+                onMouseOver={e => {
+                  e.target.style.color = "#dc3545"
+                  e.target.style.backgroundColor = isDarkMode ? "rgba(220, 53, 69, 0.2)" : "rgba(220, 53, 69, 0.1)"
+                  e.target.style.borderColor = "#dc3545"
+                }}
+                onMouseOut={e => {
+                  e.target.style.color = userVote === "dislike" ? "#dc3545" : isDarkMode ? "#999" : "#666"
+                  e.target.style.backgroundColor =
+                    userVote === "dislike" ? (isDarkMode ? "rgba(220, 53, 69, 0.2)" : "rgba(220, 53, 69, 0.1)") : isDarkMode ? "#2a2a2a" : "#f8f9fa"
+                  e.target.style.borderColor = userVote === "dislike" ? "#dc3545" : isDarkMode ? "#444" : "#ddd"
+                }}
+                onFocus={e => {
+                  e.target.style.color = "#dc3545"
+                  e.target.style.backgroundColor = isDarkMode ? "rgba(220, 53, 69, 0.2)" : "rgba(220, 53, 69, 0.1)"
+                  e.target.style.borderColor = "#dc3545"
+                }}
+                onBlur={e => {
+                  e.target.style.color = userVote === "dislike" ? "#dc3545" : isDarkMode ? "#999" : "#666"
+                  e.target.style.backgroundColor =
+                    userVote === "dislike" ? (isDarkMode ? "rgba(220, 53, 69, 0.2)" : "rgba(220, 53, 69, 0.1)") : isDarkMode ? "#2a2a2a" : "#f8f9fa"
+                  e.target.style.borderColor = userVote === "dislike" ? "#dc3545" : isDarkMode ? "#444" : "#ddd"
+                }}
+                title={userVote === "dislike" ? "Remove dislike" : "Dislike this comment"}
+              >
+                👎
+              </button>
+            </div>
+
+            {/* Right side: Reply button and show replies */}
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              {hasReplies && (
+                <button
+                  style={expandButtonStyle}
+                  onClick={() => toggleReplies(comment.id)}
+                  onMouseOver={e => (e.target.style.color = isDarkMode ? "#ccc" : "#333")}
+                  onMouseOut={e => (e.target.style.color = isDarkMode ? "#999" : "#666")}
+                  onFocus={e => (e.target.style.color = isDarkMode ? "#ccc" : "#333")}
+                  onBlur={e => (e.target.style.color = isDarkMode ? "#999" : "#666")}
+                >
+                  {isExpanded ? "▼" : "▶"} {comment.replies.length} {comment.replies.length === 1 ? "reply" : "replies"}
+                </button>
+              )}
+
+              <button
+                style={{
+                  ...replyButtonStyle,
+                  opacity: canReply ? 1 : 0.5,
+                  cursor: canReply ? "pointer" : "not-allowed",
+                  color: canReply ? (isDarkMode ? "#66b3ff" : "#007bff") : isDarkMode ? "#555" : "#999",
+                  borderColor: canReply ? (isDarkMode ? "#66b3ff" : "#007bff") : isDarkMode ? "#555" : "#999",
+                }}
+                onClick={() => canReply && startReply(comment.id)}
+                disabled={!canReply}
+                title={!canReply ? "Please fill in your nickname and email above to reply" : ""}
+                onMouseOver={e => {
+                  if (canReply) {
+                    e.target.style.backgroundColor = isDarkMode ? "#66b3ff" : "#007bff"
+                    e.target.style.color = "white"
+                  }
+                }}
+                onMouseOut={e => {
+                  if (canReply) {
+                    e.target.style.backgroundColor = "transparent"
+                    e.target.style.color = isDarkMode ? "#66b3ff" : "#007bff"
+                  }
+                }}
+                onFocus={e => {
+                  if (canReply) {
+                    e.target.style.backgroundColor = isDarkMode ? "#66b3ff" : "#007bff"
+                    e.target.style.color = "white"
+                  }
+                }}
+                onBlur={e => {
+                  if (canReply) {
+                    e.target.style.backgroundColor = "transparent"
+                    e.target.style.color = isDarkMode ? "#66b3ff" : "#007bff"
+                  }
+                }}
+              >
+                Reply
+              </button>
+            </div>
           </div>
 
           {isReplying && (
