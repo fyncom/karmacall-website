@@ -96,13 +96,8 @@ export default function ShiftingFrontlinesSpam2025() {
             <FeaturedImage
               src={articleMetadata.featuredImage}
               alt={articleMetadata.title}
-              style={{
-                width: "100%",
-                height: "400px",
-                objectFit: "cover",
-                borderRadius: "12px",
-                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-              }}
+              imageDescription="Visual representation of global spam crisis showing multiple screens with diverse communication threats, AI-powered attacks, and regional data overlays illustrating the scale of the trillion-dollar fraud epidemic."
+              imageCredit="Data visualization design highlighting the comprehensive scope of the interactive spam analysis report."
             />
             <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
             <div
