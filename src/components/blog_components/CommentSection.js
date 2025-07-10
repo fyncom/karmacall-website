@@ -430,11 +430,15 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
         }),
       })
 
-      console.log("Comment submission response:", response.status, response.statusText)
+      if (process.env.NODE_ENV === "development") {
+        console.log("Comment submission response:", response.status, response.statusText)
+      }
 
       if (response.ok) {
         const responseData = await response.json()
-        console.log("Comment submission successful:", responseData)
+        if (process.env.NODE_ENV === "development") {
+          console.log("Comment submission successful:", responseData)
+        }
 
         // Record successful attempt for rate limiting
         recordAttempt("comments", identifier)
