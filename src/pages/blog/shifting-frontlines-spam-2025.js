@@ -40,11 +40,22 @@ const articleMetadata = {
 
 export default function ShiftingFrontlinesSpam2025() {
   const [shareCount, setShareCount] = React.useState(0)
+  const [commentCount, setCommentCount] = React.useState(0)
   const [textSize, setTextSize] = React.useState("medium")
   const textSizeStyles = generateTextSizeStyles()
 
   const handleTextSizeChange = newSize => {
     setTextSize(newSize)
+  }
+
+  const handleCommentClick = () => {
+    const commentsSection = document.getElementById("comments")
+    if (commentsSection) {
+      commentsSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }
   }
 
   React.useEffect(() => {
@@ -75,7 +86,13 @@ export default function ShiftingFrontlinesSpam2025() {
         <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginTop: "0.5rem", position: "relative" }}>
           {/* Main article content */}
           <div style={{ flex: "1", minWidth: "0" }}>
-            <ActionBar articleData={articleMetadata} shareCount={shareCount} onShareCountUpdate={setShareCount} />
+            <ActionBar
+              articleData={articleMetadata}
+              shareCount={shareCount}
+              onShareCountUpdate={setShareCount}
+              commentCount={commentCount}
+              onCommentClick={handleCommentClick}
+            />
             <FeaturedImage
               src={articleMetadata.featuredImage}
               alt={articleMetadata.title}
@@ -350,7 +367,7 @@ export default function ShiftingFrontlinesSpam2025() {
               </div>
             </div>
             <RelatedArticles currentArticleSlug={articleMetadata.slug} />
-            <CommentSection articleSlug={articleMetadata.slug} articleTitle={articleMetadata.title} />
+            <CommentSection articleSlug={articleMetadata.slug} articleTitle={articleMetadata.title} onCommentCountChange={setCommentCount} />
           </div>
           <TableOfContents title={articleMetadata.title} />
         </div>

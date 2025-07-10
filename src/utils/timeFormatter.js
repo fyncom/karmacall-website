@@ -2,6 +2,22 @@
  * Utility functions for formatting time values
  */
 
+// Time constants for better readability and maintainability
+const TIME_CONSTANTS = {
+  SECONDS_PER_MINUTE: 60,
+  SECONDS_PER_HOUR: 3600, // 60 * 60
+  SECONDS_PER_DAY: 86400, // 60 * 60 * 24
+  SECONDS_PER_WEEK: 604800, // 60 * 60 * 24 * 7
+  
+  MINUTES_PER_HOUR: 60,
+  HOURS_PER_DAY: 24,
+  DAYS_PER_WEEK: 7,
+  DAYS_PER_MONTH: 30, // Approximate
+  DAYS_PER_YEAR: 365, // Approximate
+  WEEKS_PER_MONTH: 4, // Approximate
+  MONTHS_PER_YEAR: 12,
+}
+
 /**
  * Converts a timestamp to a relative time string (e.g., "2 hours ago", "3 days ago")
  * @param {string|Date} timestamp - The timestamp to convert
@@ -27,42 +43,42 @@ export const getRelativeTime = timestamp => {
     }
 
     // Less than a minute
-    if (diffInSeconds < 60) {
+    if (diffInSeconds < TIME_CONSTANTS.SECONDS_PER_MINUTE) {
       return "Just now"
     }
 
     // Minutes
-    const diffInMinutes = Math.floor(diffInSeconds / 60)
-    if (diffInMinutes < 60) {
+    const diffInMinutes = Math.floor(diffInSeconds / TIME_CONSTANTS.SECONDS_PER_MINUTE)
+    if (diffInMinutes < TIME_CONSTANTS.MINUTES_PER_HOUR) {
       return `${diffInMinutes} ${diffInMinutes === 1 ? "minute" : "minutes"} ago`
     }
 
     // Hours
-    const diffInHours = Math.floor(diffInMinutes / 60)
-    if (diffInHours < 24) {
+    const diffInHours = Math.floor(diffInMinutes / TIME_CONSTANTS.MINUTES_PER_HOUR)
+    if (diffInHours < TIME_CONSTANTS.HOURS_PER_DAY) {
       return `${diffInHours} ${diffInHours === 1 ? "hour" : "hours"} ago`
     }
 
     // Days
-    const diffInDays = Math.floor(diffInHours / 24)
-    if (diffInDays < 7) {
+    const diffInDays = Math.floor(diffInHours / TIME_CONSTANTS.HOURS_PER_DAY)
+    if (diffInDays < TIME_CONSTANTS.DAYS_PER_WEEK) {
       return `${diffInDays} ${diffInDays === 1 ? "day" : "days"} ago`
     }
 
     // Weeks
-    const diffInWeeks = Math.floor(diffInDays / 7)
-    if (diffInWeeks < 4) {
+    const diffInWeeks = Math.floor(diffInDays / TIME_CONSTANTS.DAYS_PER_WEEK)
+    if (diffInWeeks < TIME_CONSTANTS.WEEKS_PER_MONTH) {
       return `${diffInWeeks} ${diffInWeeks === 1 ? "week" : "weeks"} ago`
     }
 
     // Months
-    const diffInMonths = Math.floor(diffInDays / 30)
-    if (diffInMonths < 12) {
+    const diffInMonths = Math.floor(diffInDays / TIME_CONSTANTS.DAYS_PER_MONTH)
+    if (diffInMonths < TIME_CONSTANTS.MONTHS_PER_YEAR) {
       return `${diffInMonths} ${diffInMonths === 1 ? "month" : "months"} ago`
     }
 
     // Years
-    const diffInYears = Math.floor(diffInDays / 365)
+    const diffInYears = Math.floor(diffInDays / TIME_CONSTANTS.DAYS_PER_YEAR)
     return `${diffInYears} ${diffInYears === 1 ? "year" : "years"} ago`
   } catch (error) {
     console.warn("Error parsing timestamp:", timestamp, error)
@@ -90,42 +106,42 @@ export const getShortRelativeTime = timestamp => {
     const diffInSeconds = Math.floor((now - time) / 1000)
 
     // Future times or very recent
-    if (diffInSeconds < 60) {
+    if (diffInSeconds < TIME_CONSTANTS.SECONDS_PER_MINUTE) {
       return "now"
     }
 
     // Minutes
-    const diffInMinutes = Math.floor(diffInSeconds / 60)
-    if (diffInMinutes < 60) {
+    const diffInMinutes = Math.floor(diffInSeconds / TIME_CONSTANTS.SECONDS_PER_MINUTE)
+    if (diffInMinutes < TIME_CONSTANTS.MINUTES_PER_HOUR) {
       return `${diffInMinutes}m`
     }
 
     // Hours
-    const diffInHours = Math.floor(diffInMinutes / 60)
-    if (diffInHours < 24) {
+    const diffInHours = Math.floor(diffInMinutes / TIME_CONSTANTS.MINUTES_PER_HOUR)
+    if (diffInHours < TIME_CONSTANTS.HOURS_PER_DAY) {
       return `${diffInHours}h`
     }
 
     // Days
-    const diffInDays = Math.floor(diffInHours / 24)
-    if (diffInDays < 7) {
+    const diffInDays = Math.floor(diffInHours / TIME_CONSTANTS.HOURS_PER_DAY)
+    if (diffInDays < TIME_CONSTANTS.DAYS_PER_WEEK) {
       return `${diffInDays}d`
     }
 
     // Weeks
-    const diffInWeeks = Math.floor(diffInDays / 7)
-    if (diffInWeeks < 4) {
+    const diffInWeeks = Math.floor(diffInDays / TIME_CONSTANTS.DAYS_PER_WEEK)
+    if (diffInWeeks < TIME_CONSTANTS.WEEKS_PER_MONTH) {
       return `${diffInWeeks}w`
     }
 
     // Months
-    const diffInMonths = Math.floor(diffInDays / 30)
-    if (diffInMonths < 12) {
+    const diffInMonths = Math.floor(diffInDays / TIME_CONSTANTS.DAYS_PER_MONTH)
+    if (diffInMonths < TIME_CONSTANTS.MONTHS_PER_YEAR) {
       return `${diffInMonths}mo`
     }
 
     // Years
-    const diffInYears = Math.floor(diffInDays / 365)
+    const diffInYears = Math.floor(diffInDays / TIME_CONSTANTS.DAYS_PER_YEAR)
     return `${diffInYears}y`
   } catch (error) {
     console.warn("Error parsing timestamp:", timestamp, error)
