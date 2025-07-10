@@ -2,6 +2,30 @@
 // This should be kept in sync with the actual blog articles
 export const articlesDatabase = [
   {
+    slug: "/blog/shifting-frontlines-spam-2025",
+    title: "The Shifting Frontlines of Spam: Interactive Report Reveals Global Crisis",
+    description:
+      "Our comprehensive interactive analysis reveals the staggering scale of global spam escalation. With over 137 million unwanted calls daily and $1.03 trillion in losses, discover the regional hotspots, AI-driven tactics, and strategic solutions in this data-rich report.",
+    date: "2025-06-09",
+    author: "KarmaCall Team",
+    image: "../../images/blog/attention-economy-multi-screens.jpg",
+    keywords: [
+      "spam calls",
+      "text scams",
+      "smishing",
+      "global fraud",
+      "ai deepfakes",
+      "interactive report",
+      "data visualization",
+      "regional analysis",
+      "spam trends",
+      "karmacall",
+      "fyncom",
+      "cybersecurity",
+      "financial fraud",
+    ],
+  },
+  {
     slug: "/blog/future-of-spam-blocking",
     title: "Get Cash Back for Blocking Spam, with KarmaCall Version 4.0",
     description:
@@ -46,16 +70,6 @@ export const articlesDatabase = [
       "fyncom",
       "security",
     ],
-  },
-  {
-    slug: "/blog/template",
-    title: "JavaScript Blog Template Guide - How to Create Articles",
-    description:
-      "Complete guide for developers on how to use the JavaScript template system for creating KarmaCall blog articles. Includes metadata setup, content structure, and advanced features.",
-    date: "2025-06-07",
-    author: "Draven Grondona",
-    image: "../../images/blog/your-image-filename.jpg",
-    keywords: ["javascript", "blog", "template", "employee", "how to", "guide", "metadata", "command line interface", "cli", "karmacall", "fyncom"],
   },
 ]
 
@@ -164,7 +178,7 @@ export function findRelatedArticles(currentArticleSlug, maxResults = 3, minSimil
 
   // Calculate similarity scores for all other articles
   const candidateArticles = articlesDatabase
-    .filter(article => article.slug !== currentArticleSlug && article.slug !== "/blog/template")
+    .filter(article => article.slug !== currentArticleSlug)
     .map(article => ({
       ...article,
       similarityScore: calculateSimilarity(currentArticle, article),

@@ -11,6 +11,7 @@ import RelatedArticles from "../../components/blog_components/RelatedArticles"
 import FeaturedImage from "../../components/blog_components/FeaturedImage"
 import ScrollToTop from "../../components/blog_components/ScrollToTop"
 import TextSizeControl from "../../components/blog_components/TextSizeControl"
+import CommentSection from "../../components/blog_components/CommentSection"
 
 const articleMetadata = {
   title: "The Shifting Frontlines of Spam: Interactive Report Reveals Global Crisis",
@@ -39,11 +40,22 @@ const articleMetadata = {
 
 export default function ShiftingFrontlinesSpam2025() {
   const [shareCount, setShareCount] = React.useState(0)
+  const [commentCount, setCommentCount] = React.useState(0)
   const [textSize, setTextSize] = React.useState("medium")
   const textSizeStyles = generateTextSizeStyles()
 
   const handleTextSizeChange = newSize => {
     setTextSize(newSize)
+  }
+
+  const handleCommentClick = () => {
+    const commentsSection = document.getElementById("comments")
+    if (commentsSection) {
+      commentsSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }
   }
 
   React.useEffect(() => {
@@ -74,17 +86,18 @@ export default function ShiftingFrontlinesSpam2025() {
         <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginTop: "0.5rem", position: "relative" }}>
           {/* Main article content */}
           <div style={{ flex: "1", minWidth: "0" }}>
-            <ActionBar articleData={articleMetadata} shareCount={shareCount} onShareCountUpdate={setShareCount} />
+            <ActionBar
+              articleData={articleMetadata}
+              shareCount={shareCount}
+              onShareCountUpdate={setShareCount}
+              commentCount={commentCount}
+              onCommentClick={handleCommentClick}
+            />
             <FeaturedImage
               src={articleMetadata.featuredImage}
               alt={articleMetadata.title}
-              style={{
-                width: "100%",
-                height: "400px",
-                objectFit: "cover",
-                borderRadius: "12px",
-                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-              }}
+              imageDescription="Visual representation of global spam crisis showing multiple screens with diverse communication threats, AI-powered attacks, and regional data overlays illustrating the scale of the trillion-dollar fraud epidemic."
+              imageCredit="Data visualization design highlighting the comprehensive scope of the interactive spam analysis report."
             />
             <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
             <div
@@ -349,8 +362,8 @@ export default function ShiftingFrontlinesSpam2025() {
               </div>
             </div>
             <RelatedArticles currentArticleSlug={articleMetadata.slug} />
+            <CommentSection articleSlug={articleMetadata.slug} articleTitle={articleMetadata.title} onCommentCountChange={setCommentCount} />
           </div>
-          {/* Table of Contents Sidebar */}
           <TableOfContents title={articleMetadata.title} />
         </div>
         <ScrollToTop />

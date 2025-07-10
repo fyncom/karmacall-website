@@ -1,6 +1,7 @@
 import React from "react"
 import "../../components/help-center.css"
-import { Link } from "gatsby"
+import { Link, useStaticQuery, graphql } from "gatsby"
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import { Wrapper } from "../../components/Markdown-Wrapper"
 import "../../components/blog.css"
 
@@ -39,6 +40,44 @@ const blogArticles = [
 ]
 
 export default function BlogIndex() {
+  // Query all blog images
+  const data = useStaticQuery(graphql`
+    query BlogIndexImages {
+      allFile(filter: { sourceInstanceName: { eq: "images" }, relativeDirectory: { regex: "/^(blog|illustrations)$/" } }) {
+        nodes {
+          relativePath
+          childImageSharp {
+            gatsbyImageData(width: 400, layout: CONSTRAINED, placeholder: BLURRED, formats: [AUTO, WEBP])
+          }
+        }
+      }
+    }
+  `)
+
+  // Extract filename from the src path and get Gatsby image
+  const getImageFromSrc = srcPath => {
+    if (!srcPath) return null
+
+    // Extract the relative path from various possible formats
+    let relativePath = srcPath
+    if (srcPath.includes("../../images/")) {
+      relativePath = srcPath.replace("../../images/", "")
+    } else if (srcPath.includes("../images/")) {
+      relativePath = srcPath.replace("../images/", "")
+    } else if (srcPath.includes("images/")) {
+      relativePath = srcPath.replace(/.*images\//, "")
+    }
+
+    // Find the matching image in our query results
+    const imageNode = data.allFile.nodes.find(node => node.relativePath === relativePath)
+
+    if (imageNode?.childImageSharp) {
+      return getImage(imageNode.childImageSharp.gatsbyImageData)
+    }
+
+    return null
+  }
+
   const seo = {
     title: "KarmaCall Blog",
     description: "Stay updated on the latest in KarmaCall technology.",
@@ -70,38 +109,44 @@ export default function BlogIndex() {
   return (
     <Wrapper seo={seo}>
       <div className="blog-grid">
-        {sortedArticles.map(article => (
-          <div className="blog-card" key={article.id}>
-            <Link to={`${article.slug}`} className="blog-link">
-              <div className="blog-image-container">
-                {article.featuredImage && (
-                  <img
-                    className="blog-image"
-                    src={article.featuredImage}
-                    alt={article.title}
-                    loading="lazy"
-                    onLoad={e => {
-                      e.target.style.opacity = "1"
-                      e.target.style.transform = "scale(1)"
-                    }}
-                    style={{
-                      opacity: "0",
-                      transform: "scale(1.05)",
-                      transition: "opacity 0.3s ease, transform 0.3s ease",
-                    }}
-                  />
-                )}
-              </div>
-              <div className="blog-content">
-                <h3 className="blog-title">{article.title}</h3>
-                <div className="blog-meta">
-                  <span className="blog-author">{article.author || "KarmaCall Team"}</span>
-                  <span className="blog-date">{formatDate(article.date)}</span>
+        {sortedArticles.map(article => {
+          const gatsbyImage = getImageFromSrc(article.featuredImage)
+
+          return (
+            <div className="blog-card" key={article.id}>
+              <Link to={`${article.slug}`} className="blog-link">
+                <div className="blog-image-container">
+                  {article.featuredImage && gatsbyImage ? (
+                    <GatsbyImage image={gatsbyImage} alt={article.title} className="blog-image" loading="lazy" />
+                  ) : article.featuredImage ? (
+                    <img
+                      className="blog-image"
+                      src={article.featuredImage}
+                      alt={article.title}
+                      loading="lazy"
+                      onLoad={e => {
+                        e.target.style.opacity = "1"
+                        e.target.style.transform = "scale(1)"
+                      }}
+                      style={{
+                        opacity: "0",
+                        transform: "scale(1.05)",
+                        transition: "opacity 0.3s ease, transform 0.3s ease",
+                      }}
+                    />
+                  ) : null}
                 </div>
-              </div>
-            </Link>
-          </div>
-        ))}
+                <div className="blog-content">
+                  <h3 className="blog-title">{article.title}</h3>
+                  <div className="blog-meta">
+                    <span className="blog-author">{article.author || "KarmaCall Team"}</span>
+                    <span className="blog-date">{formatDate(article.date)}</span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          )
+        })}
         {Array.from({ length: placeholdersNeeded }, (_, index) => (
           <div className="blog-placeholder" key={`placeholder-${index}`}></div>
         ))}

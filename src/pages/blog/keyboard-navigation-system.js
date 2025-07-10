@@ -9,6 +9,8 @@ import ActionBar from "../../components/blog_components/ActionBar"
 import TableOfContents from "../../components/blog_components/TableOfContents"
 import ScrollToTop from "../../components/blog_components/ScrollToTop"
 import TextSizeControl from "../../components/blog_components/TextSizeControl"
+import RelatedArticles from "../../components/blog_components/RelatedArticles"
+import CommentSection from "../../components/blog_components/CommentSection"
 
 // ============================================================
 // ARTICLE METADATA - EDIT THIS SECTION FOR EACH NEW ARTICLE
@@ -845,6 +847,12 @@ export default function KeyboardNavigationSystemDoc() {
                 </div>
               </div>
             </div>
+
+            {/* Related Articles Section */}
+            <RelatedArticles currentArticleSlug={articleMetadata.slug} />
+
+            {/* Comment Section */}
+            <CommentSection articleSlug={articleMetadata.slug} articleTitle={articleMetadata.title} />
           </div>
 
           {/* Sidebar with Table of Contents */}
