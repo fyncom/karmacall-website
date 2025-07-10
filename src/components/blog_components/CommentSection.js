@@ -37,7 +37,14 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   const [loadingComments, setLoadingComments] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState("")
-  const [sortBy, setSortBy] = useState("top") // "top" or "recent"
+  const [sortBy, setSortBy] = useState(() => {
+    // Load saved sort preference from localStorage, default to "top"
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("comments_sort_preference") || "top"
+    }
+    return "top"
+  })
+  const [topSortedComments, setTopSortedComments] = useState([])
 
   // Debug logging
   useEffect(() => {
@@ -85,6 +92,53 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
       localStorage.setItem(`comment_votes_${articleSlug}`, JSON.stringify(commentVotes))
     }
   }, [commentVotes, articleSlug])
+
+  // Save sort preference to localStorage when it changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("comments_sort_preference", sortBy)
+    }
+  }, [sortBy])
+
+  // Function to recursively collect all comment IDs that have replies
+  const getAllCommentIdsWithReplies = comments => {
+    const ids = []
+    const processComment = comment => {
+      if (comment.replies && comment.replies.length > 0) {
+        ids.push(comment.id)
+        comment.replies.forEach(processComment)
+      }
+    }
+    comments.forEach(processComment)
+    return ids
+  }
+
+  // Initialize expanded comments when comments load (expand all by default)
+  // Also calculate the initial top sorting that will be preserved
+  useEffect(() => {
+    if (comments.length > 0) {
+      const allCommentIdsWithReplies = getAllCommentIdsWithReplies(comments)
+      setExpandedComments(new Set(allCommentIdsWithReplies))
+
+      // Calculate top sorting once on page load
+      const commentsWithVotes = comments.map(comment => ({
+        ...comment,
+        voteData: getVoteData(comment.id),
+      }))
+
+      const initialTopSorted = commentsWithVotes.sort((a, b) => {
+        const scoreA = a.voteData.score
+        const scoreB = b.voteData.score
+        if (scoreA !== scoreB) {
+          return scoreB - scoreA // Higher score first
+        }
+        // If scores are equal, sort by most likes
+        return b.voteData.likes - a.voteData.likes
+      })
+
+      setTopSortedComments(initialTopSorted)
+    }
+  }, [comments])
 
   // Detect dark mode preference
   useEffect(() => {
@@ -409,25 +463,33 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     return { ...voteData, score }
   }
 
-  const getSortedComments = comments => {
-    const commentsWithVotes = comments.map(comment => ({
-      ...comment,
-      voteData: getVoteData(comment.id),
-    }))
+  const getTotalReplyCount = comment => {
+    if (!comment.replies || comment.replies.length === 0) {
+      return 0
+    }
 
+    let total = comment.replies.length
+    comment.replies.forEach(reply => {
+      total += getTotalReplyCount(reply)
+    })
+
+    return total
+  }
+
+  const getSortedComments = comments => {
     if (sortBy === "top") {
-      // Sort by highest score (likes - dislikes), then by most likes as tiebreaker
-      return commentsWithVotes.sort((a, b) => {
-        const scoreA = a.voteData.score
-        const scoreB = b.voteData.score
-        if (scoreA !== scoreB) {
-          return scoreB - scoreA // Higher score first
-        }
-        // If scores are equal, sort by most likes
-        return b.voteData.likes - a.voteData.likes
-      })
+      // Use the cached top sorting calculated on page load
+      // Update vote data for display but preserve the original order
+      return topSortedComments.map(comment => ({
+        ...comment,
+        voteData: getVoteData(comment.id),
+      }))
     } else {
       // Sort by most recent (assuming comment.date is a valid date string)
+      const commentsWithVotes = comments.map(comment => ({
+        ...comment,
+        voteData: getVoteData(comment.id),
+      }))
       return commentsWithVotes.sort((a, b) => {
         return new Date(b.date) - new Date(a.date)
       })
@@ -552,9 +614,9 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   }
 
   const nestedCommentStyle = {
-    marginLeft: "2rem",
+    marginLeft: "1.25rem",
     marginTop: "0.75rem",
-    paddingLeft: "1rem",
+    paddingLeft: "0.75rem",
     borderLeft: `2px solid ${isDarkMode ? "#444" : "#ddd"}`,
   }
 
@@ -600,9 +662,26 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     const voteData = getVoteData(comment.id)
     const { likes, dislikes, score, userVote } = voteData
 
+    const handleCommentClick = e => {
+      // Don't toggle if clicking on interactive elements
+      if (e.target.tagName === "BUTTON" || e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") {
+        return
+      }
+      // Only toggle if comment has replies
+      if (hasReplies) {
+        toggleReplies(comment.id)
+      }
+    }
+
     return (
       <div key={comment.id} style={depth > 0 ? nestedCommentStyle : {}}>
-        <div style={commentItemStyle}>
+        <div
+          style={{
+            ...commentItemStyle,
+            cursor: hasReplies ? "pointer" : "default",
+          }}
+          onClick={handleCommentClick}
+        >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
             <div style={commentAuthorStyle}>{comment.author}</div>
             <div style={commentDateStyle}>{comment.date}</div>
@@ -736,7 +815,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
                   onFocus={e => (e.target.style.color = isDarkMode ? "#ccc" : "#333")}
                   onBlur={e => (e.target.style.color = isDarkMode ? "#999" : "#666")}
                 >
-                  {isExpanded ? "▼" : "▶"} {comment.replies.length} {comment.replies.length === 1 ? "reply" : "replies"}
+                  {isExpanded ? "▼" : "▶"} {getTotalReplyCount(comment)} {getTotalReplyCount(comment) === 1 ? "reply" : "replies"}
                 </button>
               )}
 
