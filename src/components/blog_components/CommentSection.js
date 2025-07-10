@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react"
 import { formatVoteScore } from "../../utils/numberFormatter"
+import { getRelativeTime, formatDate } from "../../utils/timeFormatter"
 
 // Transform Cusdis comment format to our expected format
 const transformCusdisComment = cusdisComment => {
@@ -723,7 +724,9 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
             <div style={commentAuthorStyle}>{comment.author}</div>
-            <div style={commentDateStyle}>{comment.date}</div>
+            <div style={commentDateStyle} title={formatDate(comment.date, { includeTime: true })}>
+              {getRelativeTime(comment.date)}
+            </div>
           </div>
           <div style={commentTextStyle}>{comment.text}</div>
 
