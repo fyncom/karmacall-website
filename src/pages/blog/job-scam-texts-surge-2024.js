@@ -47,6 +47,7 @@ const articleMetadata = {
 //
 export default function JobScamTextsSurge2024() {
   const [shareCount, setShareCount] = React.useState(0)
+  const [commentCount, setCommentCount] = React.useState(0)
   const [textSize, setTextSize] = React.useState("medium")
 
   // Generate text size styles from centralized system
@@ -54,6 +55,16 @@ export default function JobScamTextsSurge2024() {
 
   const handleTextSizeChange = newSize => {
     setTextSize(newSize)
+  }
+
+  const handleCommentClick = () => {
+    const commentsSection = document.getElementById("comments")
+    if (commentsSection) {
+      commentsSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }
   }
 
   // Share count handling and text size initialization
@@ -99,7 +110,13 @@ export default function JobScamTextsSurge2024() {
           {/* Main article content */}
           <div style={{ flex: "1", minWidth: "0" }}>
             {/* Action bar with share and comment buttons */}
-            <ActionBar articleData={articleMetadata} shareCount={shareCount} onShareCountUpdate={setShareCount} />
+            <ActionBar
+              articleData={articleMetadata}
+              shareCount={shareCount}
+              onShareCountUpdate={setShareCount}
+              commentCount={commentCount}
+              onCommentClick={handleCommentClick}
+            />
 
             {/* Featured image */}
             <FeaturedImage
@@ -375,7 +392,7 @@ export default function JobScamTextsSurge2024() {
             <RelatedArticles currentArticleSlug={articleMetadata.slug} />
 
             {/* Comment Section */}
-            <CommentSection articleSlug={articleMetadata.slug} articleTitle={articleMetadata.title} />
+            <CommentSection articleSlug={articleMetadata.slug} articleTitle={articleMetadata.title} onCommentCountChange={setCommentCount} />
           </div>
 
           {/* Table of Contents Sidebar */}

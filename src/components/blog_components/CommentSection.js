@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react"
-import { formatVoteScore } from "../../utils/numberFormatter"
+import { formatVoteScore, getTotalCommentCount } from "../../utils/numberFormatter"
 import { getRelativeTime, formatDate } from "../../utils/timeFormatter"
 
 // Transform Cusdis comment format to our expected format
@@ -23,7 +23,7 @@ const transformCusdisComment = cusdisComment => {
   }
 }
 
-const CommentSection = ({ articleSlug, articleTitle }) => {
+const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => {
   const cusdisAppId = process.env.GATSBY_CUSDIS
   const commentRef = useRef(null)
   const [isDarkMode, setIsDarkMode] = useState(false)
@@ -55,6 +55,14 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     console.log("CommentSection - Article Slug:", articleSlug)
     console.log("CommentSection - Article Title:", articleTitle)
   }, [cusdisAppId, articleSlug, articleTitle])
+
+  // Update comment count when comments change
+  useEffect(() => {
+    if (onCommentCountChange) {
+      const totalCount = getTotalCommentCount(comments)
+      onCommentCountChange(totalCount)
+    }
+  }, [comments, onCommentCountChange])
 
   // Load saved user info and votes from localStorage
   useEffect(() => {

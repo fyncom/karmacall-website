@@ -75,3 +75,36 @@ export const formatShareCount = count => {
 export const formatVoteScore = score => {
   return formatNumber(score, true, 0) || "0"
 }
+
+/**
+ * Recursively counts total comments including all nested replies
+ * @param {Array} comments - Array of comment objects
+ * @returns {number} Total count of comments and replies
+ */
+export const getTotalCommentCount = (comments) => {
+  if (!comments || !Array.isArray(comments)) {
+    return 0
+  }
+  
+  let total = comments.length
+  
+  comments.forEach(comment => {
+    if (comment.replies && Array.isArray(comment.replies)) {
+      total += getTotalCommentCount(comment.replies)
+    }
+  })
+  
+  return total
+}
+
+/**
+ * Formats comment count for display (like share count formatting)
+ * @param {number} count - The comment count
+ * @returns {string|null} Formatted count or null if 0
+ */
+export const formatCommentCount = (count) => {
+  if (!count || count === 0) {
+    return null
+  }
+  return formatNumber(count)
+}

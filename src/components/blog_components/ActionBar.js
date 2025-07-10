@@ -2,7 +2,7 @@ import React from "react"
 import ShareButton from "./ShareButton"
 import CommentButton from "./CommentButton"
 
-const ActionBar = ({ articleData, shareCount, onShareCountUpdate, className, style }) => {
+const ActionBar = ({ articleData, shareCount, onShareCountUpdate, commentCount, onCommentClick, className, style }) => {
   return (
     <div
       className={className}
@@ -16,7 +16,7 @@ const ActionBar = ({ articleData, shareCount, onShareCountUpdate, className, sty
       }}
     >
       <ShareButton articleData={articleData} shareCount={shareCount} onShareCountUpdate={onShareCountUpdate} />
-      <CommentButton />
+      <CommentButton commentCount={commentCount} onClick={onCommentClick} />
     </div>
   )
 }
