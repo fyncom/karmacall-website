@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react"
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react"
 import { formatVoteScore, getTotalCommentCount } from "../../utils/numberFormatter"
 import { getRelativeTime, formatDate } from "../../utils/timeFormatter"
 import { sanitizeComment, sanitizeName, sanitizeEmail } from "../../utils/sanitizer"
@@ -7,7 +7,9 @@ import { checkRateLimit, recordAttempt } from "../../utils/rateLimiter"
 
 // Transform Cusdis comment format to our expected format
 const transformCusdisComment = cusdisComment => {
-  console.log("Transforming comment:", cusdisComment)
+  if (process.env.NODE_ENV === "development") {
+    console.log("Transforming comment:", cusdisComment)
+  }
 
   return {
     id: cusdisComment.id,
@@ -52,11 +54,13 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
   })
   const [topSortedComments, setTopSortedComments] = useState([])
 
-  // Debug logging
+  // Production logging (only errors)
   useEffect(() => {
-    console.log("CommentSection - Cusdis App ID:", cusdisAppId)
-    console.log("CommentSection - Article Slug:", articleSlug)
-    console.log("CommentSection - Article Title:", articleTitle)
+    if (process.env.NODE_ENV === "development") {
+      console.log("CommentSection - Cusdis App ID:", cusdisAppId)
+      console.log("CommentSection - Article Slug:", articleSlug)
+      console.log("CommentSection - Article Title:", articleTitle)
+    }
   }, [cusdisAppId, articleSlug, articleTitle])
 
   // Update comment count when comments change
@@ -192,30 +196,38 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
     // Fetch comments from Cusdis API
     const fetchComments = async () => {
       try {
-        console.log("Fetching comments from Cusdis API...")
+        if (process.env.NODE_ENV === "development") {
+          console.log("Fetching comments from Cusdis API...")
+        }
         const response = await fetch(`https://cusdis.com/api/open/comments?appId=${cusdisAppId}&pageId=${articleSlug}`)
         if (response.ok) {
           const data = await response.json()
-          console.log("Comments fetched successfully:", data)
-          console.log("Raw comment data:", data.data)
+          if (process.env.NODE_ENV === "development") {
+            console.log("Comments fetched successfully:", data)
+            console.log("Raw comment data:", data.data)
 
-          // Check each comment's approval status
-          if (data.data && data.data.data && data.data.data.length > 0) {
-            data.data.data.forEach((comment, index) => {
-              console.log(`Comment ${index}:`, {
-                id: comment.id,
-                content: comment.content,
-                approved: comment.approved,
-                by_nickname: comment.by_nickname,
+            // Check each comment's approval status
+            if (data.data && data.data.data && data.data.data.length > 0) {
+              data.data.data.forEach((comment, index) => {
+                console.log(`Comment ${index}:`, {
+                  id: comment.id,
+                  content: comment.content,
+                  approved: comment.approved,
+                  by_nickname: comment.by_nickname,
+                })
               })
-            })
+            }
           }
 
           // Access the correct nested data structure: data.data.data
           const transformedComments = (data.data && data.data.data ? data.data.data : []).map(transformCusdisComment)
-          console.log("Transformed comments:", transformedComments)
+          if (process.env.NODE_ENV === "development") {
+            console.log("Transformed comments:", transformedComments)
+          }
           setComments(transformedComments)
-          console.log("Comments state updated with", transformedComments.length, "comments")
+          if (process.env.NODE_ENV === "development") {
+            console.log("Comments state updated with", transformedComments.length, "comments")
+          }
         } else {
           console.error("Failed to fetch comments - Response not OK:", response.status, response.statusText)
           setComments([])
@@ -273,7 +285,59 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
     }
   }, [cusdisAppId, articleSlug])
 
+  // Utility functions needed by useMemo
+  const getVoteData = commentId => {
+    const voteData = commentVotes[commentId] || { likes: 0, dislikes: 0, userVote: null }
+    const score = voteData.likes - voteData.dislikes
+    return { ...voteData, score }
+  }
+
+  const getTotalReplyCount = comment => {
+    if (!comment.replies || comment.replies.length === 0) {
+      return 0
+    }
+
+    let total = comment.replies.length
+    comment.replies.forEach(reply => {
+      total += getTotalReplyCount(reply)
+    })
+
+    return total
+  }
+
+  // Memoized sorted comments - must be before early returns
+  const getSortedComments = useMemo(() => {
+    if (sortBy === "top") {
+      // Use the cached top sorting calculated on page load
+      // Update vote data for display but preserve the original order
+      return topSortedComments.map(comment => ({
+        ...comment,
+        voteData: getVoteData(comment.id),
+      }))
+    } else {
+      // Sort by most recent (assuming comment.date is a valid date string)
+      const commentsWithVotes = comments.map(comment => ({
+        ...comment,
+        voteData: getVoteData(comment.id),
+      }))
+      return commentsWithVotes.sort((a, b) => {
+        return new Date(b.date) - new Date(a.date)
+      })
+    }
+  }, [comments, sortBy, topSortedComments, commentVotes])
+
   if (!cusdisAppId || cusdisAppId === "YOUR_CUSDIS_APP_ID" || cusdisAppId === "undefined") {
+    // In production, don't show setup instructions to regular users
+    if (process.env.NODE_ENV === "production") {
+      return (
+        <div style={{ marginTop: "2rem", padding: "1rem", backgroundColor: "#f8f9fa", color: "#6c757d", borderRadius: "8px" }}>
+          <h3>💬 Comments</h3>
+          <p>Comments are temporarily unavailable. Please check back later.</p>
+        </div>
+      )
+    }
+
+    // Development mode - show setup instructions
     return (
       <div style={{ marginTop: "2rem", padding: "1rem", backgroundColor: "#f8d7da", color: "#721c24", borderRadius: "8px" }}>
         <h3>💬 Comment System Setup Required</h3>
@@ -290,7 +354,7 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
           <li>Create a new website/app in your Cusdis dashboard</li>
           <li>Copy your App ID from the dashboard</li>
           <li>
-            Add <code>GATSBY_CUSDIS=your_app_id_here</code> to your <code>.env.development</code> file
+            Add <code>GATSBY_CUSDIS=your_app_id_here</code> to your <code>.env.development</code> and <code>.env.production</code> files
           </li>
           <li>Restart the development server</li>
         </ol>
@@ -306,7 +370,9 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
     setSubmitting(true)
     setSubmitMessage("")
 
-    console.log("Submitting comment to Cusdis API...")
+    if (process.env.NODE_ENV === "development") {
+      console.log("Submitting comment to Cusdis API...")
+    }
 
     // Input validation and sanitization
     const sanitizedNickname = sanitizeName(nickname)
@@ -588,45 +654,6 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
 
       return newVotes
     })
-  }
-
-  const getVoteData = commentId => {
-    const voteData = commentVotes[commentId] || { likes: 0, dislikes: 0, userVote: null }
-    const score = voteData.likes - voteData.dislikes
-    return { ...voteData, score }
-  }
-
-  const getTotalReplyCount = comment => {
-    if (!comment.replies || comment.replies.length === 0) {
-      return 0
-    }
-
-    let total = comment.replies.length
-    comment.replies.forEach(reply => {
-      total += getTotalReplyCount(reply)
-    })
-
-    return total
-  }
-
-  const getSortedComments = comments => {
-    if (sortBy === "top") {
-      // Use the cached top sorting calculated on page load
-      // Update vote data for display but preserve the original order
-      return topSortedComments.map(comment => ({
-        ...comment,
-        voteData: getVoteData(comment.id),
-      }))
-    } else {
-      // Sort by most recent (assuming comment.date is a valid date string)
-      const commentsWithVotes = comments.map(comment => ({
-        ...comment,
-        voteData: getVoteData(comment.id),
-      }))
-      return commentsWithVotes.sort((a, b) => {
-        return new Date(b.date) - new Date(a.date)
-      })
-    }
   }
 
   const containerStyle = {
@@ -1198,7 +1225,7 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
         {loadingComments ? (
           <div style={{ textAlign: "center", padding: "2rem", color: isDarkMode ? "#999" : "#666" }}>Loading comments...</div>
         ) : comments.length > 0 ? (
-          getSortedComments(comments).map(comment => renderComment(comment))
+          getSortedComments.map(comment => renderComment(comment))
         ) : (
           <div style={{ textAlign: "center", padding: "2rem", color: isDarkMode ? "#999" : "#666" }}>No comments yet. Be the first to comment!</div>
         )}
