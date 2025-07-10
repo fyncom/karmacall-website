@@ -11,7 +11,7 @@
  * @returns {string|null} Formatted number string or null if below threshold
  */
 export const formatNumber = (num, showSign = false, minThreshold = 0) => {
-  if (num < minThreshold) return null
+  if (Math.abs(num) < minThreshold) return null
 
   const sign = showSign && num > 0 ? "+" : ""
   const absNum = Math.abs(num)
