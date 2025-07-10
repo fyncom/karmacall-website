@@ -288,7 +288,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
           nickname: nickname,
           email: email,
           content: replyText,
-          replyTo: commentId,
+          parentId: commentId,
         }),
       })
 
