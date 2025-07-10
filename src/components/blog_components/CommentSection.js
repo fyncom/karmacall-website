@@ -1,4 +1,25 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState, useCallback } from "react"
+
+// Transform Cusdis comment format to our expected format
+const transformCusdisComment = cusdisComment => {
+  console.log("Transforming comment:", cusdisComment)
+
+  return {
+    id: cusdisComment.id,
+    author: cusdisComment.by_nickname || "Anonymous",
+    text: cusdisComment.content || "",
+    date: new Date(cusdisComment.createdAt).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+    likes: 0, // Cusdis doesn't have built-in likes, so we start with 0
+    replies: cusdisComment.replies && cusdisComment.replies.data ? cusdisComment.replies.data.map(transformCusdisComment) : [],
+    approved: true, // Comments from the API are already approved
+  }
+}
 
 const CommentSection = ({ articleSlug, articleTitle }) => {
   const cusdisAppId = process.env.GATSBY_CUSDIS
@@ -15,6 +36,13 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   const [loadingComments, setLoadingComments] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState("")
+
+  // Debug logging
+  useEffect(() => {
+    console.log("CommentSection - Cusdis App ID:", cusdisAppId)
+    console.log("CommentSection - Article Slug:", articleSlug)
+    console.log("CommentSection - Article Title:", articleTitle)
+  }, [cusdisAppId, articleSlug, articleTitle])
 
   // Load saved user info from localStorage
   useEffect(() => {
@@ -61,7 +89,8 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   }, [])
 
   useEffect(() => {
-    if (!cusdisAppId || cusdisAppId === "YOUR_CUSDIS_APP_ID") {
+    if (!cusdisAppId || cusdisAppId === "YOUR_CUSDIS_APP_ID" || cusdisAppId === "undefined") {
+      console.log("Cusdis App ID not configured, showing configuration message")
       setLoadingComments(false)
       return
     }
@@ -69,13 +98,32 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     // Fetch comments from Cusdis API
     const fetchComments = async () => {
       try {
+        console.log("Fetching comments from Cusdis API...")
         const response = await fetch(`https://cusdis.com/api/open/comments?appId=${cusdisAppId}&pageId=${articleSlug}`)
         if (response.ok) {
           const data = await response.json()
-          const transformedComments = (data.data || []).map(transformCusdisComment)
+          console.log("Comments fetched successfully:", data)
+          console.log("Raw comment data:", data.data)
+
+          // Check each comment's approval status
+          if (data.data && data.data.data && data.data.data.length > 0) {
+            data.data.data.forEach((comment, index) => {
+              console.log(`Comment ${index}:`, {
+                id: comment.id,
+                content: comment.content,
+                approved: comment.approved,
+                by_nickname: comment.by_nickname,
+              })
+            })
+          }
+
+          // Access the correct nested data structure: data.data.data
+          const transformedComments = (data.data && data.data.data ? data.data.data : []).map(transformCusdisComment)
+          console.log("Transformed comments:", transformedComments)
           setComments(transformedComments)
+          console.log("Comments state updated with", transformedComments.length, "comments")
         } else {
-          console.error("Failed to fetch comments")
+          console.error("Failed to fetch comments - Response not OK:", response.status, response.statusText)
           setComments([])
         }
       } catch (error) {
@@ -106,12 +154,54 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     }
   }, [cusdisAppId, articleSlug])
 
-  if (!cusdisAppId || cusdisAppId === "YOUR_CUSDIS_APP_ID") {
+  // Function to refresh comments
+  const refreshComments = useCallback(async () => {
+    if (!cusdisAppId || cusdisAppId === "YOUR_CUSDIS_APP_ID" || cusdisAppId === "undefined") {
+      return
+    }
+
+    try {
+      console.log("Refreshing comments...")
+      const response = await fetch(`https://cusdis.com/api/open/comments?appId=${cusdisAppId}&pageId=${articleSlug}`)
+      if (response.ok) {
+        const data = await response.json()
+        console.log("Comments refreshed:", data)
+        console.log("Refresh - Raw comment data:", data.data)
+
+        // Access the correct nested data structure: data.data.data
+        const transformedComments = (data.data && data.data.data ? data.data.data : []).map(transformCusdisComment)
+        setComments(transformedComments)
+      } else {
+        console.error("Failed to refresh comments:", response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error("Error refreshing comments:", error)
+    }
+  }, [cusdisAppId, articleSlug])
+
+  if (!cusdisAppId || cusdisAppId === "YOUR_CUSDIS_APP_ID" || cusdisAppId === "undefined") {
     return (
       <div style={{ marginTop: "2rem", padding: "1rem", backgroundColor: "#f8d7da", color: "#721c24", borderRadius: "8px" }}>
+        <h3>💬 Comment System Setup Required</h3>
         <p>
-          <strong>Note for site administrator:</strong> The comment system is not yet configured. Please replace <code>'YOUR_CUSDIS_APP_ID'</code> in{" "}
-          <code>src/components/blog_components/CommentSection.js</code> with your actual Cusdis App ID.
+          <strong>For site administrator:</strong> To enable comments, you need to configure the Cusdis comment system:
+        </p>
+        <ol style={{ paddingLeft: "1.5rem", margin: "1rem 0" }}>
+          <li>
+            Sign up for a free account at{" "}
+            <a href="https://cusdis.com" target="_blank" rel="noopener noreferrer">
+              cusdis.com
+            </a>
+          </li>
+          <li>Create a new website/app in your Cusdis dashboard</li>
+          <li>Copy your App ID from the dashboard</li>
+          <li>
+            Add <code>GATSBY_CUSDIS=your_app_id_here</code> to your <code>.env.development</code> file
+          </li>
+          <li>Restart the development server</li>
+        </ol>
+        <p>
+          <strong>Current status:</strong> GATSBY_CUSDIS = "{cusdisAppId || "undefined"}"
         </p>
       </div>
     )
@@ -121,6 +211,8 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     e.preventDefault()
     setSubmitting(true)
     setSubmitMessage("")
+
+    console.log("Submitting comment to Cusdis API...")
 
     try {
       // Submit to Cusdis API
@@ -140,24 +232,35 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
         }),
       })
 
+      console.log("Comment submission response:", response.status, response.statusText)
+
       if (response.ok) {
-        setSubmitMessage("Comment posted successfully!")
-        setComment("")
-        // Refresh comments
-        const fetchResponse = await fetch(`https://cusdis.com/api/open/comments?appId=${cusdisAppId}&pageId=${articleSlug}`)
-        if (fetchResponse.ok) {
-          const data = await fetchResponse.json()
-          const transformedComments = (data.data || []).map(transformCusdisComment)
-          setComments(transformedComments)
+        const responseData = await response.json()
+        console.log("Comment submission successful:", responseData)
+
+        // Check if comment needs approval
+        if (responseData.data && responseData.data.approved === false) {
+          setSubmitMessage("Thank you! Your comment has been submitted and is waiting for approval. It will appear once reviewed.")
+        } else {
+          setSubmitMessage("Comment posted successfully!")
         }
-        // Clear success message after 3 seconds
-        setTimeout(() => setSubmitMessage(""), 3000)
+
+        setComment("")
+
+        // Always refresh comments to show any that are approved
+        await refreshComments()
+
+        // Clear success message after 5 seconds for approval messages, 3 for regular
+        const timeout = responseData.data && responseData.data.approved === false ? 8000 : 3000
+        setTimeout(() => setSubmitMessage(""), timeout)
       } else {
-        throw new Error("Failed to post comment")
+        const errorText = await response.text()
+        console.error("Comment submission failed:", response.status, errorText)
+        throw new Error(`Failed to post comment: ${response.status} ${response.statusText}`)
       }
     } catch (error) {
       console.error("Error posting comment:", error)
-      setSubmitMessage("Error posting comment. Please try again.")
+      setSubmitMessage(`Error posting comment: ${error.message}`)
       setTimeout(() => setSubmitMessage(""), 5000)
     } finally {
       setSubmitting(false)
@@ -167,6 +270,8 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   const handleReply = async (commentId, replyText) => {
     setSubmitting(true)
     setSubmitMessage("")
+
+    console.log("Submitting reply to Cusdis API...")
 
     try {
       // Submit reply to Cusdis API
@@ -187,25 +292,36 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
         }),
       })
 
+      console.log("Reply submission response:", response.status, response.statusText)
+
       if (response.ok) {
-        setSubmitMessage("Reply posted successfully!")
+        const responseData = await response.json()
+        console.log("Reply submission successful:", responseData)
+
+        // Check if reply needs approval
+        if (responseData.data && responseData.data.approved === false) {
+          setSubmitMessage("Thank you! Your reply has been submitted and is waiting for approval. It will appear once reviewed.")
+        } else {
+          setSubmitMessage("Reply posted successfully!")
+        }
+
         setReplyingTo(null)
         setReplyText("")
-        // Refresh comments
-        const fetchResponse = await fetch(`https://cusdis.com/api/open/comments?appId=${cusdisAppId}&pageId=${articleSlug}`)
-        if (fetchResponse.ok) {
-          const data = await fetchResponse.json()
-          const transformedComments = (data.data || []).map(transformCusdisComment)
-          setComments(transformedComments)
-        }
-        // Clear success message after 3 seconds
-        setTimeout(() => setSubmitMessage(""), 3000)
+
+        // Always refresh comments to show any that are approved
+        await refreshComments()
+
+        // Clear success message after 8 seconds for approval messages, 3 for regular
+        const timeout = responseData.data && responseData.data.approved === false ? 8000 : 3000
+        setTimeout(() => setSubmitMessage(""), timeout)
       } else {
-        throw new Error("Failed to post reply")
+        const errorText = await response.text()
+        console.error("Reply submission failed:", response.status, errorText)
+        throw new Error(`Failed to post reply: ${response.status} ${response.statusText}`)
       }
     } catch (error) {
       console.error("Error posting reply:", error)
-      setSubmitMessage("Error posting reply. Please try again.")
+      setSubmitMessage(`Error posting reply: ${error.message}`)
       setTimeout(() => setSubmitMessage(""), 5000)
     } finally {
       setSubmitting(false)
@@ -240,24 +356,6 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
       newLiked.add(commentId)
     }
     setLikedComments(newLiked)
-  }
-
-  // Transform Cusdis comment format to our expected format
-  const transformCusdisComment = cusdisComment => {
-    return {
-      id: cusdisComment.id,
-      author: cusdisComment.by_nickname || "Anonymous",
-      text: cusdisComment.content || "",
-      date: new Date(cusdisComment.createdAt).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      likes: 0, // Cusdis doesn't have built-in likes, so we start with 0
-      replies: cusdisComment.replies ? cusdisComment.replies.map(transformCusdisComment) : [],
-    }
   }
 
   const containerStyle = {
@@ -446,6 +544,12 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
               onMouseOut={e => {
                 e.target.style.color = isLiked ? "#e74c3c" : isDarkMode ? "#999" : "#666"
               }}
+              onFocus={e => {
+                e.target.style.color = "#e74c3c"
+              }}
+              onBlur={e => {
+                e.target.style.color = isLiked ? "#e74c3c" : isDarkMode ? "#999" : "#666"
+              }}
               title={isLiked ? "Unlike this comment" : "Like this comment"}
             >
               <span>{isLiked ? "❤️" : "🤍"}</span>
@@ -475,6 +579,18 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
                   e.target.style.color = isDarkMode ? "#66b3ff" : "#007bff"
                 }
               }}
+              onFocus={e => {
+                if (canReply) {
+                  e.target.style.backgroundColor = isDarkMode ? "#66b3ff" : "#007bff"
+                  e.target.style.color = "white"
+                }
+              }}
+              onBlur={e => {
+                if (canReply) {
+                  e.target.style.backgroundColor = "transparent"
+                  e.target.style.color = isDarkMode ? "#66b3ff" : "#007bff"
+                }
+              }}
             >
               Reply
             </button>
@@ -485,6 +601,8 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
                 onClick={() => toggleReplies(comment.id)}
                 onMouseOver={e => (e.target.style.color = isDarkMode ? "#ccc" : "#333")}
                 onMouseOut={e => (e.target.style.color = isDarkMode ? "#999" : "#666")}
+                onFocus={e => (e.target.style.color = isDarkMode ? "#ccc" : "#333")}
+                onBlur={e => (e.target.style.color = isDarkMode ? "#999" : "#666")}
               >
                 {isExpanded ? "▼" : "▶"} {comment.replies.length} {comment.replies.length === 1 ? "reply" : "replies"}
               </button>
@@ -529,6 +647,16 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
                       e.target.style.backgroundColor = "#007bff"
                     }
                   }}
+                  onFocus={e => {
+                    if (replyText.trim() && !submitting) {
+                      e.target.style.backgroundColor = "#0056b3"
+                    }
+                  }}
+                  onBlur={e => {
+                    if (replyText.trim() && !submitting) {
+                      e.target.style.backgroundColor = "#007bff"
+                    }
+                  }}
                 >
                   {submitting ? "Posting..." : "Reply"}
                 </button>
@@ -545,6 +673,12 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
                     e.target.style.backgroundColor = isDarkMode ? "#333" : "#f8f9fa"
                   }}
                   onMouseOut={e => {
+                    e.target.style.backgroundColor = "transparent"
+                  }}
+                  onFocus={e => {
+                    e.target.style.backgroundColor = isDarkMode ? "#333" : "#f8f9fa"
+                  }}
+                  onBlur={e => {
                     e.target.style.backgroundColor = "transparent"
                   }}
                 >
@@ -584,6 +718,8 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
               disabled={submitting}
               onMouseOver={e => !submitting && (e.target.style.backgroundColor = "#0056b3")}
               onMouseOut={e => !submitting && (e.target.style.backgroundColor = "#007bff")}
+              onFocus={e => !submitting && (e.target.style.backgroundColor = "#0056b3")}
+              onBlur={e => !submitting && (e.target.style.backgroundColor = "#007bff")}
             >
               {submitting ? "Posting..." : "Comment"}
             </button>
