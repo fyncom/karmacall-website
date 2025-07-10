@@ -30,6 +30,8 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   const [email, setEmail] = useState("")
   const [comment, setComment] = useState("")
   const [expandedComments, setExpandedComments] = useState(new Set())
+  const [collapsingComments, setCollapsingComments] = useState(new Set())
+  const [expandingComments, setExpandingComments] = useState(new Set())
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyText, setReplyText] = useState("")
   const [commentVotes, setCommentVotes] = useState({}) // Store votes: { commentId: { likes: 5, dislikes: 2, userVote: 'like'|'dislike'|null } }
@@ -118,7 +120,15 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   useEffect(() => {
     if (comments.length > 0) {
       const allCommentIdsWithReplies = getAllCommentIdsWithReplies(comments)
+
+      // Set all comments as expanding initially for animation
+      setExpandingComments(new Set(allCommentIdsWithReplies))
       setExpandedComments(new Set(allCommentIdsWithReplies))
+
+      // Clean up expanding state after animation
+      setTimeout(() => {
+        setExpandingComments(new Set())
+      }, 300)
 
       // Calculate top sorting once on page load
       const commentsWithVotes = comments.map(comment => ({
@@ -401,13 +411,42 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   }
 
   const toggleReplies = commentId => {
-    const newExpanded = new Set(expandedComments)
-    if (newExpanded.has(commentId)) {
-      newExpanded.delete(commentId)
+    const isExpanded = expandedComments.has(commentId)
+
+    if (isExpanded) {
+      // Start collapse animation
+      setCollapsingComments(prev => new Set(prev).add(commentId))
+
+      // After animation completes, actually collapse
+      setTimeout(() => {
+        setExpandedComments(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(commentId)
+          return newSet
+        })
+        setCollapsingComments(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(commentId)
+          return newSet
+        })
+      }, 300)
     } else {
-      newExpanded.add(commentId)
+      // Start expand animation
+      setExpandingComments(prev => new Set(prev).add(commentId))
+
+      // Immediately add to expanded (content appears in DOM)
+      setExpandedComments(prev => new Set(prev).add(commentId))
+
+      // Use setTimeout to trigger the animation after DOM update
+      setTimeout(() => {
+        // This triggers the CSS transition from 0 to full height
+        setExpandingComments(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(commentId)
+          return newSet
+        })
+      }, 10) // Small delay to ensure DOM is updated
     }
-    setExpandedComments(newExpanded)
   }
 
   const startReply = commentId => {
@@ -940,7 +979,19 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
           )}
         </div>
 
-        {hasReplies && isExpanded && <div>{comment.replies.map(reply => renderComment(reply, depth + 1))}</div>}
+        {hasReplies && (isExpanded || collapsingComments.has(comment.id)) && (
+          <div
+            style={{
+              overflow: "hidden",
+              transition: "max-height 0.3s ease-out, opacity 0.2s ease-out, transform 0.3s ease-out",
+              maxHeight: collapsingComments.has(comment.id) ? "0" : expandingComments.has(comment.id) ? "0" : "1000px",
+              opacity: collapsingComments.has(comment.id) ? 0 : expandingComments.has(comment.id) ? 0 : 1,
+              transform: expandingComments.has(comment.id) ? "translateY(-10px)" : "translateY(0)",
+            }}
+          >
+            {comment.replies.map(reply => renderComment(reply, depth + 1))}
+          </div>
+        )}
       </div>
     )
   }
