@@ -37,6 +37,7 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
   const [loadingComments, setLoadingComments] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState("")
+  const [sortBy, setSortBy] = useState("top") // "top" or "recent"
 
   // Debug logging
   useEffect(() => {
@@ -406,6 +407,31 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
     const voteData = commentVotes[commentId] || { likes: 0, dislikes: 0, userVote: null }
     const score = voteData.likes - voteData.dislikes
     return { ...voteData, score }
+  }
+
+  const getSortedComments = comments => {
+    const commentsWithVotes = comments.map(comment => ({
+      ...comment,
+      voteData: getVoteData(comment.id),
+    }))
+
+    if (sortBy === "top") {
+      // Sort by highest score (likes - dislikes), then by most likes as tiebreaker
+      return commentsWithVotes.sort((a, b) => {
+        const scoreA = a.voteData.score
+        const scoreB = b.voteData.score
+        if (scoreA !== scoreB) {
+          return scoreB - scoreA // Higher score first
+        }
+        // If scores are equal, sort by most likes
+        return b.voteData.likes - a.voteData.likes
+      })
+    } else {
+      // Sort by most recent (assuming comment.date is a valid date string)
+      return commentsWithVotes.sort((a, b) => {
+        return new Date(b.date) - new Date(a.date)
+      })
+    }
   }
 
   const containerStyle = {
@@ -888,13 +914,31 @@ const CommentSection = ({ articleSlug, articleTitle }) => {
         </form>
       </div>
 
-      {/* Recent Comments */}
+      {/* Comments */}
       <div style={recentCommentsStyle}>
-        <div style={sectionTitleStyle}>Recent Comments</div>
+        <div style={{ marginBottom: "1rem" }}>
+          <select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            style={{
+              ...sectionTitleStyle,
+              backgroundColor: "transparent",
+              border: "none",
+              outline: "none",
+              cursor: "pointer",
+              appearance: "auto", // Show the dropdown arrow
+              padding: "0",
+              margin: "0",
+            }}
+          >
+            <option value="top">Top</option>
+            <option value="recent">Recent</option>
+          </select>
+        </div>
         {loadingComments ? (
           <div style={{ textAlign: "center", padding: "2rem", color: isDarkMode ? "#999" : "#666" }}>Loading comments...</div>
         ) : comments.length > 0 ? (
-          comments.map(comment => renderComment(comment))
+          getSortedComments(comments).map(comment => renderComment(comment))
         ) : (
           <div style={{ textAlign: "center", padding: "2rem", color: isDarkMode ? "#999" : "#666" }}>No comments yet. Be the first to comment!</div>
         )}
