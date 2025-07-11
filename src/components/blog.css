@@ -108,17 +108,17 @@
 }
 
 /* Fix for specific images with cropping/positioning issues */
-.blog-card .blog-image[src*="interactive-rewards-blog-social-graphic"] {
+.blog-card .blog-image-container img[src*="interactive-rewards-blog-social-graphic"] {
   object-position: left center;
 }
 
 /* Fix for attention economy multi-screens image - center the main content */
-.blog-card .blog-image[src*="attention-economy-multi-screens"] {
+.blog-card .blog-image-container img[src*="attention-economy-multi-screens"] {
   object-position: center center;
 }
 
 /* Fix for inbox-money illustration - ensure it fits properly */
-.blog-card .blog-image[src*="inbox-money"] {
+.blog-card .blog-image-container img[src*="inbox-money"] {
   object-fit: contain;
   background: var(--color-background-alt, #f9f9f9);
 }
