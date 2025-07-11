@@ -25,6 +25,7 @@
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
   line-height: 1.1;
+  text-align: center;
 }
 
 .interactive-data-subtitle {
@@ -33,6 +34,7 @@
   max-width: 800px;
   margin: 0 auto;
   line-height: 1.6;
+  text-align: center;
 }
 
 /* Navigation Styles */
@@ -122,6 +124,7 @@
   font-weight: 700;
   color: var(--color-text, #1e293b);
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 .section-description {
@@ -130,6 +133,7 @@
   max-width: 700px;
   margin: 0 auto;
   line-height: 1.6;
+  text-align: center;
 }
 
 /* Statistics Cards */
@@ -186,6 +190,7 @@
   margin-bottom: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid var(--border-color, #f1f5f9);
+  text-align: center;
 }
 
 .chart-title {
@@ -199,8 +204,18 @@
 .chart-subtitle {
   font-size: 0.875rem;
   color: var(--color-text-secondary, #64748b);
-  text-align: center;
+  text-align: center !important;
   margin-bottom: 1.5rem;
+}
+
+/* More specific selector to override global mobile styles */
+.chart-wrapper .chart-subtitle,
+.chart-wrapper p.chart-subtitle {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+  display: block !important;
 }
 
 .chart-container {
@@ -456,4 +471,44 @@
   .interactive-nav {
     gap: 0.375rem;
   }
+  
+  /* Override global mobile styles for chart subtitles */
+  .chart-wrapper .chart-subtitle,
+  .chart-wrapper p.chart-subtitle {
+    text-align: center !important;
+  }
+}
+
+/* Final override - highest specificity for chart subtitles */
+.interactive-data-page .interactive-data-container .chart-wrapper .chart-subtitle,
+.interactive-data-page .interactive-data-container .chart-wrapper p.chart-subtitle,
+.interactive-data-page .chart-wrapper .chart-subtitle,
+.interactive-data-page .chart-wrapper p.chart-subtitle {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align-last: center !important;
+}
+
+/* Final override - highest specificity for section titles */
+.interactive-data-page .interactive-data-container .section-title,
+.interactive-data-page .section-title,
+.interactive-data-page .interactive-data-container h2.section-title,
+.interactive-data-page h2.section-title {
+  text-align: center !important;
+}
+
+/* Final override - highest specificity for main page title and subtitle */
+.interactive-data-page .interactive-data-container .interactive-data-title,
+.interactive-data-page .interactive-data-title,
+.interactive-data-page .interactive-data-container h1.interactive-data-title,
+.interactive-data-page h1.interactive-data-title {
+  text-align: center !important;
+}
+
+.interactive-data-page .interactive-data-container .interactive-data-subtitle,
+.interactive-data-page .interactive-data-subtitle,
+.interactive-data-page .interactive-data-container p.interactive-data-subtitle,
+.interactive-data-page p.interactive-data-subtitle {
+  text-align: center !important;
 }
