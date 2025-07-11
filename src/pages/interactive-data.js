@@ -117,7 +117,9 @@ export default function InteractiveData() {
                   "37% smishing activity rate",
                 ]
                 const tactics = ["Fake Parcel Delivery", "Fake Package & Task Scams", "Phishing Links", "Top fraud scheme", "KYC & OTP Theft"]
-                return `${notes[context.dataIndex]} | Tactics: ${tactics[context.dataIndex]}`
+                const noteText = notes[context.dataIndex] || `${context.raw}% increase`
+                const tacticText = tactics[context.dataIndex] || "Various tactics"
+                return `${noteText} | Tactics: ${tacticText}`
               },
             },
           },
@@ -134,6 +136,13 @@ export default function InteractiveData() {
           backgroundColor: [colors.blueLight, colors.successLight],
           borderColor: [colors.blue, colors.success],
           borderWidth: 1,
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                return `${context.dataset.label}: ${context.raw} billion calls`
+              },
+            },
+          },
         },
       ],
     }
@@ -148,6 +157,14 @@ export default function InteractiveData() {
           borderColor: colors.danger,
           backgroundColor: colors.dangerLight.replace("0.7", "0.2"),
           tension: 0.1,
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const increase = context.dataIndex === 1 ? " (453% increase)" : ""
+                return `${context.dataset.label}: $${context.raw} million${increase}`
+              },
+            },
+          },
         },
       ],
     }
@@ -219,6 +236,10 @@ export default function InteractiveData() {
     function createChart(canvasId, type, data, options = {}) {
       const ctx = document.getElementById(canvasId)
       if (!ctx) return null
+
+      // Extract custom tooltip callbacks from dataset if they exist
+      const customTooltip = data.datasets[0].tooltip || {}
+
       const defaultOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -226,8 +247,8 @@ export default function InteractiveData() {
           legend: { display: false },
           tooltip: {
             enabled: true,
-            mode: "index",
-            intersect: false,
+            mode: "nearest",
+            intersect: true,
             backgroundColor: colors.tooltipBg,
             titleFont: { size: 14, weight: "bold" },
             bodyFont: { size: 12 },
@@ -235,7 +256,7 @@ export default function InteractiveData() {
             bodyColor: "#ffffff",
             padding: 10,
             cornerRadius: 4,
-            ...data.datasets[0].tooltip,
+            ...customTooltip,
           },
         },
         scales: {
@@ -251,12 +272,29 @@ export default function InteractiveData() {
         },
       }
 
+      // Clean up the dataset - remove the tooltip property as it's not valid Chart.js syntax
+      const cleanData = {
+        ...data,
+        datasets: data.datasets.map(dataset => {
+          const { tooltip, ...cleanDataset } = dataset
+          return cleanDataset
+        }),
+      }
+
       if (type === "line") {
-        return new Chart(ctx, { type, data, options: { ...defaultOptions, ...options } })
+        return new Chart(ctx, { type, data: cleanData, options: { ...defaultOptions, ...options } })
       } else {
         const indexAxis = type === "horizontalBar" ? "y" : "x"
-        if (type === "horizontalBar") type = "bar"
-        return new Chart(ctx, { type, data, options: { ...defaultOptions, indexAxis, ...options } })
+        if (type === "horizontalBar") {
+          type = "bar"
+          // For horizontal bars, we might need different tooltip settings
+          defaultOptions.plugins.tooltip = {
+            ...defaultOptions.plugins.tooltip,
+            mode: "point",
+            intersect: true,
+          }
+        }
+        return new Chart(ctx, { type, data: cleanData, options: { ...defaultOptions, indexAxis, ...options } })
       }
     }
 
@@ -356,7 +394,7 @@ export default function InteractiveData() {
     const handleThemeChange = () => {
       // Re-run the color calculations and chart initialization
       setTimeout(() => {
-        initializeCharts()
+        initializeContent()
       }, 100)
     }
 
