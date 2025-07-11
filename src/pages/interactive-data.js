@@ -3,13 +3,11 @@ import Seo from "../components/seo"
 import "../components/interactive-data.css"
 
 export default function InteractiveData() {
+  // Load external dependencies
   useEffect(() => {
     // Load Chart.js
     const script = document.createElement("script")
     script.src = "https://cdn.jsdelivr.net/npm/chart.js"
-    script.onload = () => {
-      initializeCharts()
-    }
     document.head.appendChild(script)
 
     // Load Google Fonts
@@ -25,218 +23,218 @@ export default function InteractiveData() {
     }
   }, [])
 
-  const initializeCharts = () => {
-    // Ensure Chart.js is available
-    if (typeof window.Chart === "undefined") {
-      console.warn("Chart.js not loaded yet, retrying...")
-      setTimeout(initializeCharts, 100)
-      return
-    }
-
-    const Chart = window.Chart
-
-    // Detect current theme
-    const isDarkMode = () => {
-      // Check for manual theme setting first
-      if (document.documentElement.dataset.theme === "dark") return true
-      if (document.documentElement.dataset.theme === "light") return false
-      // Fall back to system preference
-      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-    }
-
-    // Get theme-aware colors
-    // Utility function to convert hex to rgba
-    const hexToRgba = (hex, alpha) => {
-      const r = parseInt(hex.slice(1, 3), 16)
-      const g = parseInt(hex.slice(3, 5), 16)
-      const b = parseInt(hex.slice(5, 7), 16)
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`
-    }
-
-    const getThemeColors = () => {
-      const dark = isDarkMode()
-
-      const baseColors = {
-        primary: dark ? "#8b5cf6" : "#6366f1",
-        danger: dark ? "#f87171" : "#ef4444",
-        success: dark ? "#34d399" : "#10b981",
-        blue: dark ? "#60a5fa" : "#3b82f6",
-        text: dark ? "#f1f5f9" : "#1e293b",
-        textSecondary: dark ? "#cbd5e1" : "#64748b",
-        gridColor: dark ? "#374151" : "#e2e8f0",
+  // Chart initialization and theme handling
+  useEffect(() => {
+    // Wait for Chart.js to load
+    const initializeWhenReady = () => {
+      if (typeof window.Chart === "undefined") {
+        setTimeout(initializeWhenReady, 100)
+        return
       }
 
-      return {
-        ...baseColors,
-        primaryLight: hexToRgba(baseColors.primary, 0.7),
-        dangerLight: hexToRgba(baseColors.danger, 0.7),
-        dangerLightBg: hexToRgba(baseColors.danger, 0.2),
-        successLight: hexToRgba(baseColors.success, 0.7),
-        blueLight: hexToRgba(baseColors.blue, 0.7),
-        tooltipBg: dark ? "rgba(15, 23, 42, 0.9)" : "rgba(15, 23, 42, 0.8)",
+      const Chart = window.Chart
+
+      // Utility function to convert hex to rgba
+      const hexToRgba = (hex, alpha) => {
+        const r = parseInt(hex.slice(1, 3), 16)
+        const g = parseInt(hex.slice(3, 5), 16)
+        const b = parseInt(hex.slice(5, 7), 16)
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`
       }
-    }
 
-    const colors = getThemeColors()
+      // Detect current theme
+      const isDarkMode = () => {
+        // Check for manual theme setting first
+        if (document.documentElement.dataset.theme === "dark") return true
+        if (document.documentElement.dataset.theme === "light") return false
+        // Fall back to system preference
+        return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+      }
 
-    const spamCallGrowthData = {
-      labels: ["Colombia", "Uruguay", "Argentina", "Philippines", "Mexico", "Japan", "France", "Thailand", "United States", "Canada"],
-      datasets: [
-        {
-          label: "Increase in Spam Call Threat",
-          data: [400, 400, 300, 225.17, 230, 180, 100, 82.81, 18.2, 50],
-          backgroundColor: colors.primaryLight,
-          borderColor: colors.primary,
-          borderWidth: 1,
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                const drivers = [
-                  "Financial Scams, Extortion",
-                  "Financial Scams",
-                  "Financial Impersonation",
-                  "Loan & Job Scams",
-                  "Bank Impersonation",
-                  "Tech Support Scams",
-                  "Energy & Job Scams",
-                  "Fake Product Sales",
-                  "Medicare & AI Deepfakes",
-                  "Amazon Impersonation",
-                ]
-                return `${context.dataset.label}: ${context.raw}% | Drivers: ${drivers[context.dataIndex]}`
+      const getThemeColors = () => {
+        const dark = isDarkMode()
+
+        const baseColors = {
+          primary: dark ? "#8b5cf6" : "#6366f1",
+          danger: dark ? "#f87171" : "#ef4444",
+          success: dark ? "#34d399" : "#10b981",
+          blue: dark ? "#60a5fa" : "#3b82f6",
+          text: dark ? "#f1f5f9" : "#1e293b",
+          textSecondary: dark ? "#cbd5e1" : "#64748b",
+          gridColor: dark ? "#374151" : "#e2e8f0",
+        }
+
+        return {
+          ...baseColors,
+          primaryLight: hexToRgba(baseColors.primary, 0.7),
+          dangerLight: hexToRgba(baseColors.danger, 0.7),
+          dangerLightBg: hexToRgba(baseColors.danger, 0.2),
+          successLight: hexToRgba(baseColors.success, 0.7),
+          blueLight: hexToRgba(baseColors.blue, 0.7),
+          tooltipBg: dark ? "rgba(15, 23, 42, 0.9)" : "rgba(15, 23, 42, 0.8)",
+        }
+      }
+
+      const colors = getThemeColors()
+
+      const spamCallGrowthData = {
+        labels: ["Colombia", "Uruguay", "Argentina", "Philippines", "Mexico", "Japan", "France", "Thailand", "United States", "Canada"],
+        datasets: [
+          {
+            label: "Increase in Spam Call Threat",
+            data: [400, 400, 300, 225.17, 230, 180, 100, 82.81, 18.2, 50],
+            backgroundColor: colors.primaryLight,
+            borderColor: colors.primary,
+            borderWidth: 1,
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  const drivers = [
+                    "Financial Scams, Extortion",
+                    "Financial Scams",
+                    "Financial Impersonation",
+                    "Loan & Job Scams",
+                    "Bank Impersonation",
+                    "Tech Support Scams",
+                    "Energy & Job Scams",
+                    "Fake Product Sales",
+                    "Medicare & AI Deepfakes",
+                    "Amazon Impersonation",
+                  ]
+                  return `${context.dataset.label}: ${context.raw}% | Drivers: ${drivers[context.dataIndex]}`
+                },
               },
             },
           },
-        },
-      ],
-    }
+        ],
+      }
 
-    const textScamGrowthData = {
-      labels: ["United Kingdom", "United States", "Thailand", "Africa (Region)", "India"],
-      datasets: [
-        {
-          label: "Increase in Text Scam Volume/Activity",
-          data: [663, 328, 123, 3000, 37],
-          backgroundColor: colors.dangerLight,
-          borderColor: colors.danger,
-          borderWidth: 1,
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                const notes = [
-                  "663% increase in volume",
-                  "328% increase in volume",
-                  "Surge from 58.3M to 130M messages",
-                  "Up to 3,000% increase in notifications",
-                  "37% smishing activity rate",
-                ]
-                const tactics = ["Fake Parcel Delivery", "Fake Package & Task Scams", "Phishing Links", "Top fraud scheme", "KYC & OTP Theft"]
-                const noteText = notes?.[context.dataIndex] ?? `${context.raw}% increase`
-                const tacticText = tactics[context.dataIndex] || "Various tactics"
-                return `${noteText} | Tactics: ${tacticText}`
+      const textScamGrowthData = {
+        labels: ["United Kingdom", "United States", "Thailand", "Africa (Region)", "India"],
+        datasets: [
+          {
+            label: "Increase in Text Scam Volume/Activity",
+            data: [663, 328, 123, 3000, 37],
+            backgroundColor: colors.dangerLight,
+            borderColor: colors.danger,
+            borderWidth: 1,
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  const notes = [
+                    "663% increase in volume",
+                    "328% increase in volume",
+                    "Surge from 58.3M to 130M messages",
+                    "Up to 3,000% increase in notifications",
+                    "37% smishing activity rate",
+                  ]
+                  const tactics = ["Fake Parcel Delivery", "Fake Package & Task Scams", "Phishing Links", "Top fraud scheme", "KYC & OTP Theft"]
+                  const noteText = notes?.[context.dataIndex] ?? `${context.raw}% increase`
+                  const tacticText = tactics[context.dataIndex] || "Various tactics"
+                  return `${noteText} | Tactics: ${tacticText}`
+                },
               },
             },
           },
-        },
-      ],
-    }
+        ],
+      }
 
-    const globalCallVolumeData = {
-      labels: ["Q4 2024", "Q1 2025"],
-      datasets: [
-        {
-          label: "Unwanted Calls (Billions)",
-          data: [11.3, 12.5],
-          backgroundColor: [colors.blueLight, colors.successLight],
-          borderColor: [colors.blue, colors.success],
-          borderWidth: 1,
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                return `${context.dataset.label}: ${context.raw} billion calls`
+      const globalCallVolumeData = {
+        labels: ["Q4 2024", "Q1 2025"],
+        datasets: [
+          {
+            label: "Unwanted Calls (Billions)",
+            data: [11.3, 12.5],
+            backgroundColor: [colors.blueLight, colors.successLight],
+            borderColor: [colors.blue, colors.success],
+            borderWidth: 1,
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return `${context.dataset.label}: ${context.raw} billion calls`
+                },
               },
             },
           },
-        },
-      ],
-    }
+        ],
+      }
 
-    const smishingLossData = {
-      labels: ["2020", "2024"],
-      datasets: [
-        {
-          label: "Reported Losses in US ($M)",
-          data: [85, 470],
-          fill: true,
-          borderColor: colors.danger,
-          backgroundColor: colors.dangerLightBg,
-          tension: 0.1,
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                const increase = context.dataIndex === 1 ? " (453% increase)" : ""
-                return `${context.dataset.label}: $${context.raw} million${increase}`
+      const smishingLossData = {
+        labels: ["2020", "2024"],
+        datasets: [
+          {
+            label: "Reported Losses in US ($M)",
+            data: [85, 470],
+            fill: true,
+            borderColor: colors.danger,
+            backgroundColor: colors.dangerLightBg,
+            tension: 0.1,
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  const increase = context.dataIndex === 1 ? " (453% increase)" : ""
+                  return `${context.dataset.label}: $${context.raw} million${increase}`
+                },
               },
             },
           },
+        ],
+      }
+
+      const regionalCallAnalysis = [
+        {
+          title: "🌎 The South American Surge",
+          content: `South America is experiencing the most dramatic escalation in voice-based threats globally. The surge, with risk ratios up 400% in Colombia and Uruguay, represents a concerted expansion by organized crime syndicates. They are capitalizing on a rapidly digitizing population and less mature cybersecurity defenses. While Brazil's volume is highest, its growth has stabilized, suggesting a pivot by scammers to less-saturated neighboring countries with a heavy focus on financial and extortion scams.`,
         },
-      ],
-    }
+        {
+          title: "🌏 The Southeast Asian Hotspot",
+          content: `This region is a global hub for industrialized cybercrime. In the Philippines, a 225% increase in scam calls directly correlates with a 68% decrease in SMS scams, a "balloon effect" caused by the SIM Registration Act pushing criminals to the less-regulated voice channel (often via apps like Viber). In Thailand, both call and text scams have exploded, with scammers adeptly impersonating government entities to exploit public trust, leading to severe socioeconomic damage.`,
+        },
+        {
+          title: "🌍 The European Front",
+          content: `While Spain remains a spam hotspot, France is showing faster growth, with a 100% increase in its risk ratio. A key trend is a sophisticated, multi-channel employment scam deployed across Western Europe, starting with a robocall and moving to WhatsApp. This, along with energy provider scams, shows how attackers tailor their lures to exploit local economic anxieties and pressure points, making their attacks highly effective.`,
+        },
+      ]
 
-    const regionalCallAnalysis = [
-      {
-        title: "🌎 The South American Surge",
-        content: `South America is experiencing the most dramatic escalation in voice-based threats globally. The surge, with risk ratios up 400% in Colombia and Uruguay, represents a concerted expansion by organized crime syndicates. They are capitalizing on a rapidly digitizing population and less mature cybersecurity defenses. While Brazil's volume is highest, its growth has stabilized, suggesting a pivot by scammers to less-saturated neighboring countries with a heavy focus on financial and extortion scams.`,
-      },
-      {
-        title: "🌏 The Southeast Asian Hotspot",
-        content: `This region is a global hub for industrialized cybercrime. In the Philippines, a 225% increase in scam calls directly correlates with a 68% decrease in SMS scams, a "balloon effect" caused by the SIM Registration Act pushing criminals to the less-regulated voice channel (often via apps like Viber). In Thailand, both call and text scams have exploded, with scammers adeptly impersonating government entities to exploit public trust, leading to severe socioeconomic damage.`,
-      },
-      {
-        title: "🌍 The European Front",
-        content: `While Spain remains a spam hotspot, France is showing faster growth, with a 100% increase in its risk ratio. A key trend is a sophisticated, multi-channel employment scam deployed across Western Europe, starting with a robocall and moving to WhatsApp. This, along with energy provider scams, shows how attackers tailor their lures to exploit local economic anxieties and pressure points, making their attacks highly effective.`,
-      },
-    ]
+      const smishingTactics = [
+        {
+          icon: "📦",
+          title: "Fake Package Delivery",
+          description:
+            'Impersonates postal services (UPS, FedEx) claiming a delivery issue. A link leads to a phishing site to steal credit card info for a small "redelivery fee".',
+        },
+        {
+          icon: "💳",
+          title: "Fake Fraud Alerts",
+          description:
+            "Poses as a bank or retailer (Amazon) with a panic-inducing message about a suspicious purchase. Urges you to call a scam number or click a malicious link.",
+        },
+        {
+          icon: "💬",
+          title: "Wrong Number / Romance",
+          description:
+            'Starts with a seemingly accidental text. If you reply, the scammer builds a fake friendship or romance, leading to "pig butchering" investment scams.',
+        },
+        {
+          icon: "💼",
+          title: "Phony Job / Task Scams",
+          description:
+            'Offers an easy, high-paying online job. After building trust with a small initial payment, it requires you to invest your own money for higher "earnings" that are never paid out.',
+        },
+      ]
 
-    const smishingTactics = [
-      {
-        icon: "📦",
-        title: "Fake Package Delivery",
-        description:
-          'Impersonates postal services (UPS, FedEx) claiming a delivery issue. A link leads to a phishing site to steal credit card info for a small "redelivery fee".',
-      },
-      {
-        icon: "💳",
-        title: "Fake Fraud Alerts",
-        description:
-          "Poses as a bank or retailer (Amazon) with a panic-inducing message about a suspicious purchase. Urges you to call a scam number or click a malicious link.",
-      },
-      {
-        icon: "💬",
-        title: "Wrong Number / Romance",
-        description:
-          'Starts with a seemingly accidental text. If you reply, the scammer builds a fake friendship or romance, leading to "pig butchering" investment scams.',
-      },
-      {
-        icon: "💼",
-        title: "Phony Job / Task Scams",
-        description:
-          'Offers an easy, high-paying online job. After building trust with a small initial payment, it requires you to invest your own money for higher "earnings" that are never paid out.',
-      },
-    ]
-
-    const solutionsData = [
-      {
-        title: "🤖 The AI Arms Race: Democratization of Fraud",
-        content: `Generative AI is a force multiplier for criminals, enabling them to create fluent, personalized, and grammatically perfect scam messages at scale, blurring the line between mass phishing and targeted attacks. This has led to an "AI vs. AI" arms race, where defenders deploy their own AI to detect AI-generated voices and text anomalies. However, with the human element involved in 68% of breaches, the focus must shift from "spotting fakes" to procedural verification.`,
-      },
-      {
-        title: "📜 The Regulatory Patchwork: A Global Comparison",
-        content: `Nations have adopted fragmented strategies. The UK mandates proactive, network-level blocking by carriers. India uses a complex registration system hampered by low public adoption. Brazil focuses on identification and traceability, placing the burden on users. The US relies on a complaint-driven enforcement model. Data suggests that proactive, network-level mandates (like the UK's) are more effective than strategies that rely on individual user action.`,
-      },
-      {
-        title: "💡 Strategic Recommendations",
-        content: `
+      const solutionsData = [
+        {
+          title: "🤖 The AI Arms Race: Democratization of Fraud",
+          content: `Generative AI is a force multiplier for criminals, enabling them to create fluent, personalized, and grammatically perfect scam messages at scale, blurring the line between mass phishing and targeted attacks. This has led to an "AI vs. AI" arms race, where defenders deploy their own AI to detect AI-generated voices and text anomalies. However, with the human element involved in 68% of breaches, the focus must shift from "spotting fakes" to procedural verification.`,
+        },
+        {
+          title: "📜 The Regulatory Patchwork: A Global Comparison",
+          content: `Nations have adopted fragmented strategies. The UK mandates proactive, network-level blocking by carriers. India uses a complex registration system hampered by low public adoption. Brazil focuses on identification and traceability, placing the burden on users. The US relies on a complaint-driven enforcement model. Data suggests that proactive, network-level mandates (like the UK's) are more effective than strategies that rely on individual user action.`,
+        },
+        {
+          title: "💡 Strategic Recommendations",
+          content: `
           <ul class="list-disc list-inside space-y-3 text-slate-600">
             <li><strong>For Carriers:</strong> Adopt an "AI vs. AI" defense, prioritize call verification (not just blocking), and enhance cross-border intelligence sharing.</li>
             <li><strong>For Businesses:</strong> Secure all communication channels, and shift security training from "spotting fakes" to mandatory "procedural verification" for any sensitive request.</li>
@@ -244,80 +242,80 @@ export default function InteractiveData() {
             <li><strong>For Consumers:</strong> Trust but always verify. Establish a "digital safe word" with family for financial requests. Actively use reporting tools like the 7726 short code.</li>
           </ul>
         `,
-      },
-    ]
-
-    function createChart(canvasId, type, data, options = {}) {
-      const ctx = document.getElementById(canvasId)
-      if (!ctx) return null
-
-      // Extract custom tooltip callbacks from dataset if they exist
-      const customTooltip = data.datasets[0].tooltip || {}
-
-      const defaultOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            enabled: true,
-            mode: "nearest",
-            intersect: true,
-            backgroundColor: colors.tooltipBg,
-            titleFont: { size: 14, weight: "bold" },
-            bodyFont: { size: 12 },
-            titleColor: "#ffffff",
-            bodyColor: "#ffffff",
-            padding: 10,
-            cornerRadius: 4,
-            ...customTooltip,
-          },
         },
-        scales: {
-          x: {
-            grid: { display: false },
-            ticks: { color: colors.textSecondary },
-          },
-          y: {
-            grid: { color: colors.gridColor },
-            ticks: { color: colors.textSecondary },
-            beginAtZero: true,
-          },
-        },
-      }
+      ]
 
-      // Clean up the dataset - remove the tooltip property as it's not valid Chart.js syntax
-      const cleanData = {
-        ...data,
-        datasets: data.datasets.map(dataset => {
-          const { tooltip, ...cleanDataset } = dataset
-          return cleanDataset
-        }),
-      }
+      function createChart(canvasId, type, data, options = {}) {
+        const ctx = document.getElementById(canvasId)
+        if (!ctx) return null
 
-      if (type === "line") {
-        return new Chart(ctx, { type, data: cleanData, options: { ...defaultOptions, ...options } })
-      } else {
-        const indexAxis = type === "horizontalBar" ? "y" : "x"
-        if (type === "horizontalBar") {
-          type = "bar"
-          // For horizontal bars, we might need different tooltip settings
-          defaultOptions.plugins.tooltip = {
-            ...defaultOptions.plugins.tooltip,
-            mode: "point",
-            intersect: true,
-          }
+        // Extract custom tooltip callbacks from dataset if they exist
+        const customTooltip = data.datasets[0].tooltip || {}
+
+        const defaultOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              enabled: true,
+              mode: "nearest",
+              intersect: true,
+              backgroundColor: colors.tooltipBg,
+              titleFont: { size: 14, weight: "bold" },
+              bodyFont: { size: 12 },
+              titleColor: "#ffffff",
+              bodyColor: "#ffffff",
+              padding: 10,
+              cornerRadius: 4,
+              ...customTooltip,
+            },
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: colors.textSecondary },
+            },
+            y: {
+              grid: { color: colors.gridColor },
+              ticks: { color: colors.textSecondary },
+              beginAtZero: true,
+            },
+          },
         }
-        return new Chart(ctx, { type, data: cleanData, options: { ...defaultOptions, indexAxis, ...options } })
-      }
-    }
 
-    function setupAccordions(containerId, data) {
-      const container = document.getElementById(containerId)
-      if (!container) return
-      container.innerHTML = data
-        .map(
-          (item, index) => `
+        // Clean up the dataset - remove the tooltip property as it's not valid Chart.js syntax
+        const cleanData = {
+          ...data,
+          datasets: data.datasets.map(dataset => {
+            const { tooltip, ...cleanDataset } = dataset
+            return cleanDataset
+          }),
+        }
+
+        if (type === "line") {
+          return new Chart(ctx, { type, data: cleanData, options: { ...defaultOptions, ...options } })
+        } else {
+          const indexAxis = type === "horizontalBar" ? "y" : "x"
+          if (type === "horizontalBar") {
+            type = "bar"
+            // For horizontal bars, we might need different tooltip settings
+            defaultOptions.plugins.tooltip = {
+              ...defaultOptions.plugins.tooltip,
+              mode: "point",
+              intersect: true,
+            }
+          }
+          return new Chart(ctx, { type, data: cleanData, options: { ...defaultOptions, indexAxis, ...options } })
+        }
+      }
+
+      function setupAccordions(containerId, data) {
+        const container = document.getElementById(containerId)
+        if (!container) return
+        container.innerHTML = data
+          .map(
+            (item, index) => `
         <div class="accordion-item">
           <button class="accordion-trigger" data-index="${index}">
             <span>${item.title}</span>
@@ -328,100 +326,103 @@ export default function InteractiveData() {
           </div>
         </div>
       `
-        )
-        .join("")
+          )
+          .join("")
 
-      container.addEventListener("click", function (e) {
-        const trigger = e.target.closest(".accordion-trigger")
-        if (trigger) {
-          const content = trigger.nextElementSibling
-          const arrow = trigger.querySelector(".accordion-arrow")
-          const isOpen = content.style.maxHeight && content.style.maxHeight !== "0px"
+        container.addEventListener("click", function (e) {
+          const trigger = e.target.closest(".accordion-trigger")
+          if (trigger) {
+            const content = trigger.nextElementSibling
+            const arrow = trigger.querySelector(".accordion-arrow")
+            const isOpen = content.style.maxHeight && content.style.maxHeight !== "0px"
 
-          container.querySelectorAll(".accordion-content").forEach(el => (el.style.maxHeight = "0px"))
-          container.querySelectorAll(".accordion-arrow").forEach(el => {
-            el.classList.remove("open")
-            el.style.transform = "rotate(0deg)"
-          })
+            container.querySelectorAll(".accordion-content").forEach(el => (el.style.maxHeight = "0px"))
+            container.querySelectorAll(".accordion-arrow").forEach(el => {
+              el.classList.remove("open")
+              el.style.transform = "rotate(0deg)"
+            })
 
-          if (!isOpen) {
-            content.style.maxHeight = content.scrollHeight + "px"
-            arrow.classList.add("open")
-            arrow.style.transform = "rotate(180deg)"
-          } else {
-            content.style.maxHeight = "0px"
-            arrow.classList.remove("open")
-            arrow.style.transform = "rotate(0deg)"
+            if (!isOpen) {
+              content.style.maxHeight = content.scrollHeight + "px"
+              arrow.classList.add("open")
+              arrow.style.transform = "rotate(180deg)"
+            } else {
+              content.style.maxHeight = "0px"
+              arrow.classList.remove("open")
+              arrow.style.transform = "rotate(0deg)"
+            }
           }
-        }
-      })
-    }
+        })
+      }
 
-    function populateSmishingTactics() {
-      const container = document.getElementById("texts-tactics")
-      if (!container) return
-      container.innerHTML = smishingTactics
-        .map(
-          tactic => `
+      function populateSmishingTactics() {
+        const container = document.getElementById("texts-tactics")
+        if (!container) return
+        container.innerHTML = smishingTactics
+          .map(
+            tactic => `
         <div class="tactic-card">
           <span class="tactic-icon">${tactic.icon}</span>
           <h4 class="tactic-title">${tactic.title}</h4>
           <p class="tactic-description">${tactic.description}</p>
         </div>
       `
-        )
-        .join("")
-    }
-
-    const nav = document.getElementById("main-nav")
-    const contentContainer = document.getElementById("content-container")
-
-    nav.addEventListener("click", e => {
-      if (e.target.tagName === "BUTTON") {
-        const targetId = e.target.dataset.target
-
-        nav.querySelectorAll(".nav-tab").forEach(item => {
-          item.classList.remove("active")
-        })
-        e.target.classList.add("active")
-
-        contentContainer.querySelectorAll(".content-section").forEach(section => {
-          section.classList.remove("active")
-        })
-        document.getElementById(targetId).classList.add("active")
+          )
+          .join("")
       }
-    })
 
-    // Function to initialize/reinitialize all charts and content
-    const initializeContent = () => {
-      createChart("callGrowthChart", "horizontalBar", spamCallGrowthData)
-      createChart("textGrowthChart", "horizontalBar", textScamGrowthData)
-      createChart("globalCallVolumeChart", "bar", globalCallVolumeData)
-      createChart("smishingLossChart", "line", smishingLossData)
-      setupAccordions("accordion-calls", regionalCallAnalysis)
-      setupAccordions("accordion-solutions", solutionsData)
-      populateSmishingTactics()
+      const nav = document.getElementById("main-nav")
+      const contentContainer = document.getElementById("content-container")
+
+      nav.addEventListener("click", e => {
+        if (e.target.tagName === "BUTTON") {
+          const targetId = e.target.dataset.target
+
+          nav.querySelectorAll(".nav-tab").forEach(item => {
+            item.classList.remove("active")
+          })
+          e.target.classList.add("active")
+
+          contentContainer.querySelectorAll(".content-section").forEach(section => {
+            section.classList.remove("active")
+          })
+          document.getElementById(targetId).classList.add("active")
+        }
+      })
+
+      // Function to initialize/reinitialize all charts and content
+      const initializeContent = () => {
+        createChart("callGrowthChart", "horizontalBar", spamCallGrowthData)
+        createChart("textGrowthChart", "horizontalBar", textScamGrowthData)
+        createChart("globalCallVolumeChart", "bar", globalCallVolumeData)
+        createChart("smishingLossChart", "line", smishingLossData)
+        setupAccordions("accordion-calls", regionalCallAnalysis)
+        setupAccordions("accordion-solutions", solutionsData)
+        populateSmishingTactics()
+      }
+
+      // Listen for theme changes to update charts
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+      const handleThemeChange = () => {
+        // Re-run the color calculations and chart initialization
+        setTimeout(initializeContent, 100)
+      }
+
+      // Use modern addEventListener instead of deprecated addListener
+      mediaQuery.addEventListener("change", handleThemeChange)
+
+      // Initial content setup
+      initializeContent()
+
+      // Cleanup function for theme listener and timeout
+      return () => {
+        mediaQuery.removeEventListener("change", handleThemeChange)
+      }
     }
 
-    // Listen for theme changes to update charts
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-    const handleThemeChange = () => {
-      // Re-run the color calculations and chart initialization
-      setTimeout(initializeContent, 100)
-    }
-
-    // Use modern addEventListener instead of deprecated addListener
-    mediaQuery.addEventListener("change", handleThemeChange)
-
-    // Initial content setup
-    const timeoutId = setTimeout(initializeContent, 1000)
-
-    // Cleanup function for theme listener and timeout
-    return () => {
-      mediaQuery.removeEventListener("change", handleThemeChange)
-      clearTimeout(timeoutId)
-    }
-  }
+    // Call the inner function to start initialization
+    initializeWhenReady()
+  }, [])
 
   return (
     <>
