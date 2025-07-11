@@ -117,7 +117,7 @@ export default function InteractiveData() {
                   "37% smishing activity rate",
                 ]
                 const tactics = ["Fake Parcel Delivery", "Fake Package & Task Scams", "Phishing Links", "Top fraud scheme", "KYC & OTP Theft"]
-                const noteText = notes[context.dataIndex] || `${context.raw}% increase`
+                const noteText = notes?.[context.dataIndex] ?? `${context.raw}% increase`
                 const tacticText = tactics[context.dataIndex] || "Various tactics"
                 return `${noteText} | Tactics: ${tacticText}`
               },
