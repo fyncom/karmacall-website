@@ -1,9 +1,9 @@
 /* Interactive Data Page Styles */
 .interactive-data-page {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: var(--color-background, #f8fafc);
   min-height: 100vh;
-  color: #1e293b;
+  color: var(--color-text, #1e293b);
 }
 
 .interactive-data-container {
@@ -21,7 +21,7 @@
 .interactive-data-title {
   font-size: 3.5rem;
   font-weight: 700;
-  color: #6366f1;
+  color: var(--color-primary, #6366f1);
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -29,7 +29,7 @@
 
 .interactive-data-subtitle {
   font-size: 1.25rem;
-  color: #64748b;
+  color: var(--color-text-secondary, #64748b);
   max-width: 800px;
   margin: 0 auto;
   line-height: 1.6;
@@ -40,11 +40,11 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(248, 250, 252, 0.95);
+  background: var(--color-background, rgba(248, 250, 252, 0.95));
   backdrop-filter: blur(10px);
   padding: 1.5rem 0;
   margin-bottom: 2rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
 }
 
 .interactive-nav {
@@ -62,8 +62,8 @@
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: white;
-  color: #64748b;
+  background: var(--color-background-alt, white);
+  color: var(--color-text-secondary, #64748b);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 2px solid transparent;
 }
@@ -71,18 +71,18 @@
 .nav-tab:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  color: #1e293b;
+  color: var(--color-text, #1e293b);
 }
 
 .nav-tab.active {
-  background: #6366f1;
+  background: var(--color-primary, #6366f1);
   color: white;
-  border-color: #4f46e5;
+  border-color: var(--fyncom-blue, #4f46e5);
   box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
 }
 
 .nav-tab.active:hover {
-  background: #5855eb;
+  background: var(--fyncom-blue, #5855eb);
 }
 
 /* Content Section Styles */
@@ -114,13 +114,13 @@
 .section-title {
   font-size: 2.25rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--color-text, #1e293b);
   margin-bottom: 1rem;
 }
 
 .section-description {
   font-size: 1.125rem;
-  color: #64748b;
+  color: var(--color-text-secondary, #64748b);
   max-width: 700px;
   margin: 0 auto;
   line-height: 1.6;
@@ -135,12 +135,12 @@
 }
 
 .stat-card {
-  background: white;
+  background: var(--color-background-alt, white);
   border-radius: 16px;
   padding: 2rem;
   text-align: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f1f5f9;
+  border: 1px solid var(--border-color, #f1f5f9);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -156,43 +156,43 @@
 }
 
 .stat-number.primary {
-  color: #6366f1;
+  color: var(--color-primary, #6366f1);
 }
 .stat-number.danger {
-  color: #ef4444;
+  color: var(--fyncom-red, #ef4444);
 }
 .stat-number.success {
-  color: #10b981;
+  color: var(--karmacall-green, #10b981);
 }
 
 .stat-label {
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--color-text-secondary, #64748b);
   font-weight: 500;
   line-height: 1.4;
 }
 
 /* Chart Container */
 .chart-wrapper {
-  background: white;
+  background: var(--color-background-alt, white);
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f1f5f9;
+  border: 1px solid var(--border-color, #f1f5f9);
 }
 
 .chart-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--color-text, #1e293b);
   text-align: center;
   margin-bottom: 0.5rem;
 }
 
 .chart-subtitle {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-text-secondary, #64748b);
   text-align: center;
   margin-bottom: 1.5rem;
 }
@@ -211,11 +211,11 @@
 }
 
 .accordion-item {
-  background: white;
+  background: var(--color-background-alt, white);
   border-radius: 12px;
   margin-bottom: 1rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border: 1px solid #f1f5f9;
+  border: 1px solid var(--border-color, #f1f5f9);
   overflow: hidden;
   transition: box-shadow 0.3s ease;
 }
@@ -236,18 +236,18 @@
   align-items: center;
   font-weight: 600;
   font-size: 1.1rem;
-  color: #1e293b;
+  color: var(--color-text, #1e293b);
   transition: background-color 0.3s ease;
 }
 
 .accordion-trigger:hover {
-  background: #f8fafc;
+  background: var(--color-background, #f8fafc);
 }
 
 .accordion-arrow {
   transform: rotate(0deg);
   transition: transform 0.3s ease;
-  color: #6366f1;
+  color: var(--color-primary, #6366f1);
   font-size: 1.2rem;
 }
 
@@ -263,10 +263,23 @@
 
 .accordion-inner {
   padding: 0 1.5rem 1.5rem;
-  border-top: 1px solid #f1f5f9;
-  color: #64748b;
+  border-top: 1px solid var(--border-color, #f1f5f9);
+  color: var(--color-text-secondary, #64748b);
   line-height: 1.7;
   font-size: 1rem;
+}
+
+.accordion-inner ul {
+  color: var(--color-text-secondary, #64748b);
+}
+
+.accordion-inner li {
+  color: var(--color-text-secondary, #64748b);
+  margin-bottom: 0.75rem;
+}
+
+.accordion-inner strong {
+  color: var(--color-text, #1e293b);
 }
 
 /* Tactics Grid */
@@ -279,12 +292,12 @@
 }
 
 .tactic-card {
-  background: white;
+  background: var(--color-background-alt, white);
   border-radius: 16px;
   padding: 2rem;
   text-align: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f1f5f9;
+  border: 1px solid var(--border-color, #f1f5f9);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -302,14 +315,70 @@
 .tactic-title {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--color-text, #1e293b);
   margin-bottom: 0.75rem;
 }
 
 .tactic-description {
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--color-text-secondary, #64748b);
   line-height: 1.5;
+}
+
+/* Dark Mode Specific Overrides */
+@media (prefers-color-scheme: dark) {
+  .interactive-data-page {
+    background: var(--color-background, #121212);
+  }
+  
+  .interactive-nav-container {
+    background: var(--color-background, rgba(18, 18, 18, 0.95));
+  }
+  
+  .nav-tab.active {
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.5);
+  }
+  
+  .stat-card, .chart-wrapper, .accordion-item, .tactic-card {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .stat-card:hover, .tactic-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+  
+  .accordion-item:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Manual Dark Mode Support */
+:root[data-theme="dark"] .interactive-data-page {
+  background: var(--color-background, #121212);
+}
+
+:root[data-theme="dark"] .interactive-nav-container {
+  background: var(--color-background, rgba(18, 18, 18, 0.95));
+}
+
+:root[data-theme="dark"] .nav-tab.active {
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.5);
+}
+
+:root[data-theme="dark"] .stat-card,
+:root[data-theme="dark"] .chart-wrapper,
+:root[data-theme="dark"] .accordion-item,
+:root[data-theme="dark"] .tactic-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .stat-card:hover,
+:root[data-theme="dark"] .tactic-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="dark"] .accordion-item:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Responsive Design */

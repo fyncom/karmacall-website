@@ -35,14 +35,44 @@ export default function InteractiveData() {
 
     const Chart = window.Chart
 
+    // Detect current theme
+    const isDarkMode = () => {
+      // Check for manual theme setting first
+      if (document.documentElement.dataset.theme === "dark") return true
+      if (document.documentElement.dataset.theme === "light") return false
+      // Fall back to system preference
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+    }
+
+    // Get theme-aware colors
+    const getThemeColors = () => {
+      const dark = isDarkMode()
+      return {
+        primary: dark ? "#8b5cf6" : "#6366f1",
+        primaryLight: dark ? "rgba(139, 92, 246, 0.7)" : "rgba(99, 102, 241, 0.7)",
+        danger: dark ? "#f87171" : "#ef4444",
+        dangerLight: dark ? "rgba(248, 113, 113, 0.7)" : "rgba(225, 29, 72, 0.7)",
+        success: dark ? "#34d399" : "#10b981",
+        successLight: dark ? "rgba(52, 211, 153, 0.7)" : "rgba(34, 197, 94, 0.7)",
+        blue: dark ? "#60a5fa" : "#3b82f6",
+        blueLight: dark ? "rgba(96, 165, 250, 0.7)" : "rgba(59, 130, 246, 0.7)",
+        text: dark ? "#f1f5f9" : "#1e293b",
+        textSecondary: dark ? "#cbd5e1" : "#64748b",
+        gridColor: dark ? "#374151" : "#e2e8f0",
+        tooltipBg: dark ? "rgba(15, 23, 42, 0.9)" : "rgba(15, 23, 42, 0.8)",
+      }
+    }
+
+    const colors = getThemeColors()
+
     const spamCallGrowthData = {
       labels: ["Colombia", "Uruguay", "Argentina", "Philippines", "Mexico", "Japan", "France", "Thailand", "United States", "Canada"],
       datasets: [
         {
           label: "Increase in Spam Call Threat",
           data: [400, 400, 300, 225.17, 230, 180, 100, 82.81, 18.2, 50],
-          backgroundColor: "rgba(79, 70, 229, 0.7)",
-          borderColor: "rgba(79, 70, 229, 1)",
+          backgroundColor: colors.primaryLight,
+          borderColor: colors.primary,
           borderWidth: 1,
           tooltip: {
             callbacks: {
@@ -73,8 +103,8 @@ export default function InteractiveData() {
         {
           label: "Increase in Text Scam Volume/Activity",
           data: [663, 328, 123, 3000, 37],
-          backgroundColor: "rgba(225, 29, 72, 0.7)",
-          borderColor: "rgba(225, 29, 72, 1)",
+          backgroundColor: colors.dangerLight,
+          borderColor: colors.danger,
           borderWidth: 1,
           tooltip: {
             callbacks: {
@@ -101,8 +131,8 @@ export default function InteractiveData() {
         {
           label: "Unwanted Calls (Billions)",
           data: [11.3, 12.5],
-          backgroundColor: ["rgba(59, 130, 246, 0.7)", "rgba(34, 197, 94, 0.7)"],
-          borderColor: ["rgba(59, 130, 246, 1)", "rgba(34, 197, 94, 1)"],
+          backgroundColor: [colors.blueLight, colors.successLight],
+          borderColor: [colors.blue, colors.success],
           borderWidth: 1,
         },
       ],
@@ -115,8 +145,8 @@ export default function InteractiveData() {
           label: "Reported Losses in US ($M)",
           data: [85, 470],
           fill: true,
-          borderColor: "rgba(225, 29, 72, 1)",
-          backgroundColor: "rgba(225, 29, 72, 0.2)",
+          borderColor: colors.danger,
+          backgroundColor: colors.dangerLight.replace("0.7", "0.2"),
           tension: 0.1,
         },
       ],
@@ -198,9 +228,11 @@ export default function InteractiveData() {
             enabled: true,
             mode: "index",
             intersect: false,
-            backgroundColor: "rgba(15, 23, 42, 0.8)",
+            backgroundColor: colors.tooltipBg,
             titleFont: { size: 14, weight: "bold" },
             bodyFont: { size: 12 },
+            titleColor: "#ffffff",
+            bodyColor: "#ffffff",
             padding: 10,
             cornerRadius: 4,
             ...data.datasets[0].tooltip,
@@ -209,11 +241,11 @@ export default function InteractiveData() {
         scales: {
           x: {
             grid: { display: false },
-            ticks: { color: "#475569" },
+            ticks: { color: colors.textSecondary },
           },
           y: {
-            grid: { color: "#e2e8f0" },
-            ticks: { color: "#475569" },
+            grid: { color: colors.gridColor },
+            ticks: { color: colors.textSecondary },
             beginAtZero: true,
           },
         },
@@ -308,7 +340,8 @@ export default function InteractiveData() {
       }
     })
 
-    setTimeout(() => {
+    // Function to initialize/reinitialize all charts and content
+    const initializeContent = () => {
       createChart("callGrowthChart", "horizontalBar", spamCallGrowthData)
       createChart("textGrowthChart", "horizontalBar", textScamGrowthData)
       createChart("globalCallVolumeChart", "bar", globalCallVolumeData)
@@ -316,7 +349,26 @@ export default function InteractiveData() {
       setupAccordions("accordion-calls", regionalCallAnalysis)
       setupAccordions("accordion-solutions", solutionsData)
       populateSmishingTactics()
-    }, 1000)
+    }
+
+    // Listen for theme changes to update charts
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const handleThemeChange = () => {
+      // Re-run the color calculations and chart initialization
+      setTimeout(() => {
+        initializeCharts()
+      }, 100)
+    }
+
+    mediaQuery.addListener(handleThemeChange)
+
+    // Initial content setup
+    setTimeout(initializeContent, 1000)
+
+    // Cleanup function for theme listener
+    return () => {
+      mediaQuery.removeListener(handleThemeChange)
+    }
   }
 
   return (
