@@ -304,6 +304,229 @@
   }
 }
 
+/* Mobile styles for individual blog article pages */
+@media (max-width: 768px) {
+  /* Main article container adjustments */
+  .article-container,
+  div[style*="maxWidth: \"1200px\""],
+  div[style*="max-width: 1200px"] {
+    max-width: 100% !important;
+    padding: 1rem !important;
+    margin: 0 !important;
+  }
+  
+  /* Override the desktop flex layout for mobile */
+  div[style*="display: flex"][style*="gap: \"3rem\""],
+  div[style*="display: flex"][style*="gap: 3rem"] {
+    display: block !important;
+    gap: 0 !important;
+  }
+  
+  /* Main content area mobile styles */
+  div[style*="flex: \"1\""],
+  div[style*="flex: 1"] {
+    flex: none !important;
+    min-width: auto !important;
+    width: 100% !important;
+  }
+  
+  /* Sidebar mobile handling - hide or reposition */
+  div[style*="width: \"280px\""],
+  div[style*="width: 280px"] {
+    width: 100% !important;
+    flex-shrink: 1 !important;
+    position: relative !important;
+    top: auto !important;
+    margin-top: 2rem;
+  }
+  
+  /* Article title mobile sizing */
+  h1[style*="fontSize: \"2.5rem\""],
+  h1[style*="font-size: 2.5rem"] {
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Article subtitle mobile sizing */
+  p[style*="fontSize: \"1.2rem\""],
+  p[style*="font-size: 1.2rem"] {
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+  
+  /* Article content headings mobile adjustments */
+  h2[style*="fontSize: \"1.8rem\""],
+  h2[style*="font-size: 1.8rem"] {
+    font-size: 1.5rem !important;
+    margin-top: 2rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  h3[style*="fontSize: \"1.4rem\""],
+  h3[style*="font-size: 1.4rem"] {
+    font-size: 1.2rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  /* Table of contents mobile behavior */
+  .table-of-contents,
+  div[style*="width: \"280px\""][style*="position: sticky"] {
+    width: 100% !important;
+    position: relative !important;
+    top: auto !important;
+    margin-bottom: 2rem;
+    order: 1;
+  }
+  
+  /* Related articles mobile grid */
+  div[style*="gridTemplateColumns: \"repeat(auto-fit, minmax(250px, 1fr))\""],
+  div[style*="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))"] {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  /* Comment section mobile adjustments */
+  .comment-section {
+    margin-top: 2rem !important;
+    padding: 1rem !important;
+  }
+  
+  /* Action bar mobile layout */
+  .action-bar,
+  div[style*="display: flex"][style*="justify-content: space-between"] {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    margin-bottom: 1rem !important;
+    align-items: center !important;
+  }
+  
+  /* Text size control mobile positioning */
+  .text-size-control {
+    justify-content: center !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Featured image mobile optimization */
+  .featured-image-wrapper {
+    max-height: 250px !important;
+    overflow: hidden;
+  }
+  
+  /* Responsive padding for content boxes */
+  div[style*="padding: \"1.5rem\""],
+  div[style*="padding: 1.5rem"] {
+    padding: 1rem !important;
+  }
+  
+  /* Mobile typography improvements */
+  .article-content p,
+  div[style*="marginBottom: \"1.5rem\""] p {
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Callout boxes mobile styling */
+  div[style*="background: \"var(--color-background-alt"],
+  div[style*="background: var(--color-background-alt"] {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* List styling mobile improvements */
+  ul[style*="paddingLeft: \"2rem\""],
+  ul[style*="padding-left: 2rem"] {
+    padding-left: 1.5rem !important;
+  }
+  
+  li[style*="marginBottom: \"0.5rem\""],
+  li[style*="margin-bottom: 0.5rem"] {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Hide desktop spacer on mobile */
+  .desktop-only-spacer {
+    display: none !important;
+  }
+  
+  /* Article header mobile layout */
+  .article-header div[style*="display: flex"] {
+    display: block !important;
+    gap: 0 !important;
+  }
+  
+  /* Blog meta mobile layout */
+  .blog-meta {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.25rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Table of contents mobile styles */
+  .table-of-contents {
+    width: 100% !important;
+    position: relative !important;
+    top: auto !important;
+    margin-bottom: 2rem !important;
+    order: -1; /* Move ToC to top on mobile */
+  }
+  
+  /* Table of contents background adjustment for mobile */
+  .table-of-contents > div {
+    background-color: var(--color-background, white) !important;
+    border: 1px solid var(--border-color, #eee) !important;
+    padding: 1rem !important;
+  }
+  
+  /* Better touch targets for mobile */
+  button, 
+  .nav-tab,
+  a[style*="padding"] {
+    min-height: 44px !important;
+    padding: 0.75rem 1rem !important;
+  }
+  
+  /* Text size control mobile improvements */
+  .text-size-control button {
+    width: 40px !important;
+    height: 40px !important;
+    margin: 0 0.25rem !important;
+  }
+  
+  /* Action bar buttons mobile layout */
+  .action-bar button {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.9rem !important;
+    white-space: nowrap !important;
+  }
+  
+  /* Improve readability for mobile */
+  strong, 
+  b {
+    font-weight: 600 !important;
+  }
+  
+  /* Mobile-specific spacing adjustments */
+  .article-content > * {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Ensure images are responsive */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Fix for any overflow issues */
+  .article-content {
+    overflow-x: hidden !important;
+  }
+}
+
 /* Featured Image Component Styles */
 .featured-image-container {
   margin-bottom: 1rem;

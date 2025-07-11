@@ -60,12 +60,13 @@ const ArticleHeader = ({ articleData, className, style }) => {
           </div>
         </div>
 
-        {/* Empty space to match sidebar width */}
+        {/* Empty space to match sidebar width - hidden on mobile */}
         <div
           style={{
             width: "280px",
             flexShrink: 0,
           }}
+          className="desktop-only-spacer"
         >
           {/* This empty div ensures the header content aligns with main content */}
         </div>

@@ -152,7 +152,7 @@ const TableOfContents = ({ title, className, style }) => {
 
   return (
     <div
-      className={className}
+      className={`table-of-contents ${className || ""}`}
       style={{
         width: "280px",
         flexShrink: 0,
