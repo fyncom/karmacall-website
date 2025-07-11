@@ -87,11 +87,11 @@ export default function BlogIndex() {
 
     // Debug logging for development
     if (process.env.NODE_ENV === "development") {
-      console.log(`Looking for image: ${srcPath}`)
-      console.log(`Relative path: ${relativePath}`)
-      console.log(`Found node:`, imageNode)
+      logDebug(`Looking for image: ${srcPath}`)
+      logDebug(`Relative path: ${relativePath}`)
+      logDebug(`Found node:`, imageNode)
       if (!imageNode) {
-        console.log(
+        logDebug(
           "Available images:",
           data.allFile.nodes.map(n => n.relativePath)
         )
