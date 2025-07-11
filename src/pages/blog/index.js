@@ -184,7 +184,7 @@ export default function BlogIndex() {
                   ) : (
                     // No image placeholder
                     <div className="blog-image-placeholder">
-                      <div className="blog-image-placeholder-icon">📖</div>
+                      <div className="blog-image-placeholder-icon" role="img" aria-label="Book icon">📖</div>
                     </div>
                   )}
                 </div>
