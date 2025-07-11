@@ -45,20 +45,34 @@ export default function InteractiveData() {
     }
 
     // Get theme-aware colors
+    // Utility function to convert hex to rgba
+    const hexToRgba = (hex, alpha) => {
+      const r = parseInt(hex.slice(1, 3), 16)
+      const g = parseInt(hex.slice(3, 5), 16)
+      const b = parseInt(hex.slice(5, 7), 16)
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`
+    }
+
     const getThemeColors = () => {
       const dark = isDarkMode()
-      return {
+
+      const baseColors = {
         primary: dark ? "#8b5cf6" : "#6366f1",
-        primaryLight: dark ? "rgba(139, 92, 246, 0.7)" : "rgba(99, 102, 241, 0.7)",
         danger: dark ? "#f87171" : "#ef4444",
-        dangerLight: dark ? "rgba(248, 113, 113, 0.7)" : "rgba(225, 29, 72, 0.7)",
         success: dark ? "#34d399" : "#10b981",
-        successLight: dark ? "rgba(52, 211, 153, 0.7)" : "rgba(34, 197, 94, 0.7)",
         blue: dark ? "#60a5fa" : "#3b82f6",
-        blueLight: dark ? "rgba(96, 165, 250, 0.7)" : "rgba(59, 130, 246, 0.7)",
         text: dark ? "#f1f5f9" : "#1e293b",
         textSecondary: dark ? "#cbd5e1" : "#64748b",
         gridColor: dark ? "#374151" : "#e2e8f0",
+      }
+
+      return {
+        ...baseColors,
+        primaryLight: hexToRgba(baseColors.primary, 0.7),
+        dangerLight: hexToRgba(baseColors.danger, 0.7),
+        dangerLightBg: hexToRgba(baseColors.danger, 0.2),
+        successLight: hexToRgba(baseColors.success, 0.7),
+        blueLight: hexToRgba(baseColors.blue, 0.7),
         tooltipBg: dark ? "rgba(15, 23, 42, 0.9)" : "rgba(15, 23, 42, 0.8)",
       }
     }
@@ -155,7 +169,7 @@ export default function InteractiveData() {
           data: [85, 470],
           fill: true,
           borderColor: colors.danger,
-          backgroundColor: colors.dangerLight.replace("0.7", "0.2"),
+          backgroundColor: colors.dangerLightBg,
           tension: 0.1,
           tooltip: {
             callbacks: {
@@ -393,19 +407,19 @@ export default function InteractiveData() {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
     const handleThemeChange = () => {
       // Re-run the color calculations and chart initialization
-      setTimeout(() => {
-        initializeContent()
-      }, 100)
+      setTimeout(initializeContent, 100)
     }
 
-    mediaQuery.addListener(handleThemeChange)
+    // Use modern addEventListener instead of deprecated addListener
+    mediaQuery.addEventListener("change", handleThemeChange)
 
     // Initial content setup
-    setTimeout(initializeContent, 1000)
+    const timeoutId = setTimeout(initializeContent, 1000)
 
-    // Cleanup function for theme listener
+    // Cleanup function for theme listener and timeout
     return () => {
-      mediaQuery.removeListener(handleThemeChange)
+      mediaQuery.removeEventListener("change", handleThemeChange)
+      clearTimeout(timeoutId)
     }
   }
 
