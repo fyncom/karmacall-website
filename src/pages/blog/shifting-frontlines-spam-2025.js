@@ -140,19 +140,36 @@ export default function ShiftingFrontlinesSpam2025() {
                   million unwanted calls bombarding consumers daily. This isn't just a nuisance—it's a full-scale assault on global communication
                   infrastructure.
                 </p>
-                <div style={{ background: "#f8fafc", padding: "1.5rem", borderRadius: "8px", marginBottom: "1.5rem", border: "1px solid #e2e8f0" }}>
-                  <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1rem", color: "#1e293b" }}>Key Statistics at a Glance:</h3>
+                <div
+                  style={{
+                    background: "var(--color-background-alt, #f8fafc)",
+                    padding: "1.5rem",
+                    borderRadius: "8px",
+                    marginBottom: "1.5rem",
+                    border: "1px solid var(--border-color, #e2e8f0)",
+                  }}
+                >
+                  <h3
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                      marginBottom: "1rem",
+                      color: "var(--color-text, #1e293b)",
+                    }}
+                  >
+                    Key Statistics at a Glance:
+                  </h3>
                   <ul style={{ marginBottom: "0", paddingLeft: "1.5rem" }}>
-                    <li style={{ marginBottom: "0.5rem" }}>
+                    <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                       <strong>$1.03 Trillion:</strong> Global financial losses to scams in 2024
                     </li>
-                    <li style={{ marginBottom: "0.5rem" }}>
+                    <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                       <strong>137+ Million:</strong> Unwanted calls per day globally
                     </li>
-                    <li style={{ marginBottom: "0.5rem" }}>
+                    <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                       <strong>68%:</strong> Security breaches involving human element
                     </li>
-                    <li style={{ marginBottom: "0.5rem" }}>
+                    <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                       <strong>400%:</strong> Increase in spam call risk in Colombia and Uruguay
                     </li>
                   </ul>
@@ -204,16 +221,16 @@ export default function ShiftingFrontlinesSpam2025() {
                   Evolution of Smishing Tactics
                 </h3>
                 <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
-                  <li style={{ marginBottom: "0.5rem" }}>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                     <strong>Fake Package Delivery:</strong> Impersonating postal services with delivery issues requiring "redelivery fees"
                   </li>
-                  <li style={{ marginBottom: "0.5rem" }}>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                     <strong>Fake Fraud Alerts:</strong> Posing as banks or retailers claiming suspicious purchases
                   </li>
-                  <li style={{ marginBottom: "0.5rem" }}>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                     <strong>Romance/Wrong Number:</strong> Building fake relationships leading to investment scams
                   </li>
-                  <li style={{ marginBottom: "0.5rem" }}>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                     <strong>Job Scams:</strong> Offering high-paying work requiring upfront investments
                   </li>
                 </ul>
@@ -228,8 +245,22 @@ export default function ShiftingFrontlinesSpam2025() {
                   <strong>fluent, personalized, and grammatically perfect scam messages at scale</strong>. This has sparked an "AI vs. AI" arms race where
                   defenders deploy machine learning to detect AI-generated voices and text anomalies.
                 </p>
-                <div style={{ background: "#fef3c7", padding: "1.5rem", borderRadius: "8px", marginBottom: "1.5rem", border: "1px solid #f59e0b" }}>
-                  <p style={{ marginBottom: "0", fontWeight: "500" }}>
+                <div
+                  style={{
+                    background: "var(--color-background-alt, #fef3c7)",
+                    padding: "1.5rem",
+                    borderRadius: "8px",
+                    marginBottom: "1.5rem",
+                    border: "1px solid var(--karmacall-gold, #f59e0b)",
+                  }}
+                >
+                  <p
+                    style={{
+                      marginBottom: "0",
+                      fontWeight: "500",
+                      color: "var(--color-text, #333)",
+                    }}
+                  >
                     <strong>⚠️ Critical Insight:</strong> With human elements involved in 68% of security breaches, the focus must shift from "spotting fakes"
                     to implementing procedural verification protocols.
                   </p>
@@ -242,16 +273,16 @@ export default function ShiftingFrontlinesSpam2025() {
                 </h2>
                 <p style={{ marginBottom: "1.5rem" }}>Nations have adopted fragmented strategies with varying effectiveness:</p>
                 <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
-                  <li style={{ marginBottom: "0.5rem" }}>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                     <strong>UK:</strong> Mandates proactive, network-level blocking by carriers
                   </li>
-                  <li style={{ marginBottom: "0.5rem" }}>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                     <strong>India:</strong> Complex registration system with low public adoption
                   </li>
-                  <li style={{ marginBottom: "0.5rem" }}>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                     <strong>Brazil:</strong> Focus on identification and traceability, burden on users
                   </li>
-                  <li style={{ marginBottom: "0.5rem" }}>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
                     <strong>US:</strong> Complaint-driven enforcement model
                   </li>
                 </ul>
@@ -273,9 +304,9 @@ export default function ShiftingFrontlinesSpam2025() {
                   For Telecommunications Carriers
                 </h3>
                 <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
-                  <li style={{ marginBottom: "0.5rem" }}>Adopt "AI vs. AI" defense systems</li>
-                  <li style={{ marginBottom: "0.5rem" }}>Prioritize call verification over simple blocking</li>
-                  <li style={{ marginBottom: "0.5rem" }}>Enhance cross-border intelligence sharing</li>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>Adopt "AI vs. AI" defense systems</li>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>Prioritize call verification over simple blocking</li>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>Enhance cross-border intelligence sharing</li>
                 </ul>
                 <h3
                   id="for-businesses"
@@ -284,9 +315,13 @@ export default function ShiftingFrontlinesSpam2025() {
                   For Businesses
                 </h3>
                 <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
-                  <li style={{ marginBottom: "0.5rem" }}>Secure all communication channels</li>
-                  <li style={{ marginBottom: "0.5rem" }}>Implement mandatory procedural verification for sensitive requests</li>
-                  <li style={{ marginBottom: "0.5rem" }}>Shift security training from "spotting fakes" to verification protocols</li>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>Secure all communication channels</li>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
+                    Implement mandatory procedural verification for sensitive requests
+                  </li>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
+                    Shift security training from "spotting fakes" to verification protocols
+                  </li>
                 </ul>
                 <h3
                   id="for-consumers"
@@ -295,9 +330,11 @@ export default function ShiftingFrontlinesSpam2025() {
                   For Consumers
                 </h3>
                 <ul style={{ marginBottom: "1.5rem", paddingLeft: "2rem" }}>
-                  <li style={{ marginBottom: "0.5rem" }}>Trust but always verify</li>
-                  <li style={{ marginBottom: "0.5rem" }}>Establish "digital safe words" with family for financial requests</li>
-                  <li style={{ marginBottom: "0.5rem" }}>Actively use reporting tools like the 7726 short code</li>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>Trust but always verify</li>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>
+                    Establish "digital safe words" with family for financial requests
+                  </li>
+                  <li style={{ marginBottom: "0.5rem", color: "var(--color-text, #333)" }}>Actively use reporting tools like the 7726 short code</li>
                 </ul>
                 <h2
                   id="karmacall-solution"
@@ -310,8 +347,22 @@ export default function ShiftingFrontlinesSpam2025() {
                   making spam blocking profitable for consumers while creating economic barriers for mass scammers represents a paradigm shift from reactive
                   filtering to proactive economic deterrence.
                 </p>
-                <div style={{ background: "#ecfdf5", padding: "1.5rem", borderRadius: "8px", marginBottom: "1.5rem", border: "1px solid #10b981" }}>
-                  <p style={{ marginBottom: "0", fontWeight: "500" }}>
+                <div
+                  style={{
+                    background: "var(--color-background-alt, #ecfdf5)",
+                    padding: "1.5rem",
+                    borderRadius: "8px",
+                    marginBottom: "1.5rem",
+                    border: "1px solid var(--karmacall-green, #10b981)",
+                  }}
+                >
+                  <p
+                    style={{
+                      marginBottom: "0",
+                      fontWeight: "500",
+                      color: "var(--color-text, #333)",
+                    }}
+                  >
                     <strong>💡 The Economic Insight:</strong> By creating direct financial incentives for spam blocking and imposing costs on mass messaging, we
                     can make large-scale scamming operations economically unfeasible while preserving legitimate communication.
                   </p>
@@ -332,10 +383,31 @@ export default function ShiftingFrontlinesSpam2025() {
                   impossible. This requires a fundamental shift from reactive defense to proactive economic design.
                 </p>
                 <div
-                  style={{ background: "#f1f5f9", padding: "2rem", borderRadius: "12px", marginTop: "2rem", border: "1px solid #cbd5e1", textAlign: "center" }}
+                  style={{
+                    background: "var(--color-background-alt, #f1f5f9)",
+                    padding: "2rem",
+                    borderRadius: "12px",
+                    marginTop: "2rem",
+                    border: "1px solid var(--border-color, #cbd5e1)",
+                    textAlign: "center",
+                  }}
                 >
-                  <h3 style={{ fontSize: "1.3rem", fontWeight: "600", marginBottom: "1rem", color: "#1e293b" }}>Experience the Full Interactive Data</h3>
-                  <p style={{ marginBottom: "1.5rem", color: "#475569" }}>
+                  <h3
+                    style={{
+                      fontSize: "1.3rem",
+                      fontWeight: "600",
+                      marginBottom: "1rem",
+                      color: "var(--color-text, #1e293b)",
+                    }}
+                  >
+                    Experience the Full Interactive Data
+                  </h3>
+                  <p
+                    style={{
+                      marginBottom: "1.5rem",
+                      color: "var(--color-text-secondary, #475569)",
+                    }}
+                  >
                     Explore detailed regional breakdowns, interactive charts, and comprehensive data visualizations that reveal the full scope of the global
                     spam crisis.
                   </p>
@@ -343,7 +415,7 @@ export default function ShiftingFrontlinesSpam2025() {
                     href="/interactive-data"
                     style={{
                       display: "inline-block",
-                      backgroundColor: "#4f46e5",
+                      backgroundColor: "var(--color-primary, #4f46e5)",
                       color: "white",
                       padding: "12px 24px",
                       borderRadius: "8px",
@@ -351,10 +423,10 @@ export default function ShiftingFrontlinesSpam2025() {
                       fontWeight: "600",
                       transition: "background-color 0.2s ease",
                     }}
-                    onMouseOver={e => (e.target.style.backgroundColor = "#4338ca")}
-                    onMouseOut={e => (e.target.style.backgroundColor = "#4f46e5")}
-                    onFocus={e => (e.target.style.backgroundColor = "#4338ca")}
-                    onBlur={e => (e.target.style.backgroundColor = "#4f46e5")}
+                    onMouseOver={e => (e.target.style.backgroundColor = "var(--fyncom-blue, #4338ca)")}
+                    onMouseOut={e => (e.target.style.backgroundColor = "var(--color-primary, #4f46e5)")}
+                    onFocus={e => (e.target.style.backgroundColor = "var(--fyncom-blue, #4338ca)")}
+                    onBlur={e => (e.target.style.backgroundColor = "var(--color-primary, #4f46e5)")}
                   >
                     View Interactive Data →
                   </a>
