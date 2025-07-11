@@ -40,21 +40,29 @@ const blogArticles = [
 ]
 
 export default function BlogIndex() {
-  // Query all blog images
+  // Query all blog images with enhanced coverage
   const data = useStaticQuery(graphql`
     query BlogIndexImages {
-      allFile(filter: { sourceInstanceName: { eq: "images" }, relativeDirectory: { regex: "/^(blog|illustrations)$/" } }) {
+      allFile(
+        filter: {
+          sourceInstanceName: { eq: "images" }
+          relativeDirectory: { regex: "/^(blog|illustrations)/" }
+          extension: { regex: "/(jpg|jpeg|png|gif|webp)$/i" }
+        }
+      ) {
         nodes {
           relativePath
+          name
+          extension
           childImageSharp {
-            gatsbyImageData(width: 400, layout: CONSTRAINED, placeholder: BLURRED, formats: [AUTO, WEBP])
+            gatsbyImageData(width: 400, height: 267, layout: FIXED, placeholder: BLURRED, formats: [AUTO, WEBP])
           }
         }
       }
     }
   `)
 
-  // Extract filename from the src path and get Gatsby image
+  // Enhanced image finder with better matching logic
   const getImageFromSrc = srcPath => {
     if (!srcPath) return null
 
@@ -68,8 +76,27 @@ export default function BlogIndex() {
       relativePath = srcPath.replace(/.*images\//, "")
     }
 
-    // Find the matching image in our query results
-    const imageNode = data.allFile.nodes.find(node => node.relativePath === relativePath)
+    // Try exact match first
+    let imageNode = data.allFile.nodes.find(node => node.relativePath === relativePath)
+
+    // If exact match fails, try filename matching (for cases where path might differ)
+    if (!imageNode) {
+      const filename = relativePath.split("/").pop().split(".")[0] // Get filename without extension
+      imageNode = data.allFile.nodes.find(node => node.name === filename)
+    }
+
+    // Debug logging for development
+    if (process.env.NODE_ENV === "development") {
+      console.log(`Looking for image: ${srcPath}`)
+      console.log(`Relative path: ${relativePath}`)
+      console.log(`Found node:`, imageNode)
+      if (!imageNode) {
+        console.log(
+          "Available images:",
+          data.allFile.nodes.map(n => n.relativePath)
+        )
+      }
+    }
 
     if (imageNode?.childImageSharp) {
       return getImage(imageNode.childImageSharp.gatsbyImageData)
@@ -116,25 +143,50 @@ export default function BlogIndex() {
             <div className="blog-card" key={article.id}>
               <Link to={`${article.slug}`} className="blog-link">
                 <div className="blog-image-container">
-                  {article.featuredImage && gatsbyImage ? (
-                    <GatsbyImage image={gatsbyImage} alt={article.title} className="blog-image" loading="lazy" />
+                  {gatsbyImage ? (
+                    // Always prefer GatsbyImage when available for optimization
+                    <GatsbyImage
+                      image={gatsbyImage}
+                      alt={article.title}
+                      className="blog-image"
+                      loading="lazy"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                      }}
+                      imgStyle={{
+                        objectFit: article.featuredImage.includes("illustrations/") ? "contain" : "cover",
+                        objectPosition: article.featuredImage.includes("interactive-rewards-blog-social-graphic") ? "left center" : "center center",
+                      }}
+                    />
                   ) : article.featuredImage ? (
+                    // Fallback to regular img only if GatsbyImage processing failed
                     <img
                       className="blog-image"
                       src={article.featuredImage}
                       alt={article.title}
                       loading="lazy"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: article.featuredImage.includes("illustrations/") ? "contain" : "cover",
+                        objectPosition: article.featuredImage.includes("interactive-rewards-blog-social-graphic") ? "left center" : "center center",
+                      }}
                       onLoad={e => {
                         e.target.style.opacity = "1"
-                        e.target.style.transform = "scale(1)"
                       }}
-                      style={{
-                        opacity: "0",
-                        transform: "scale(1.05)",
-                        transition: "opacity 0.3s ease, transform 0.3s ease",
+                      onError={() => {
+                        if (process.env.NODE_ENV === "development") {
+                          console.warn(`Failed to load image: ${article.featuredImage}`)
+                        }
                       }}
                     />
-                  ) : null}
+                  ) : (
+                    // No image placeholder
+                    <div className="blog-image-placeholder">
+                      <div className="blog-image-placeholder-icon">📖</div>
+                    </div>
+                  )}
                 </div>
                 <div className="blog-content">
                   <h3 className="blog-title">{article.title}</h3>
