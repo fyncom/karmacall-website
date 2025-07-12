@@ -5,6 +5,23 @@ import { sanitizeComment, sanitizeName, sanitizeEmail } from "../../utils/saniti
 import { validateEmail, validateName, validateMessage } from "../../utils/inputValidation"
 import { checkRateLimit, recordAttempt } from "../../utils/rateLimiter"
 
+// Mobile detection hook
+const useMobile = () => {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  return isMobile
+}
+
 // Transform Cusdis comment format to our expected format
 const transformCusdisComment = cusdisComment => {
   if (process.env.NODE_ENV === "development") {
@@ -31,6 +48,7 @@ const transformCusdisComment = cusdisComment => {
 const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => {
   const cusdisAppId = process.env.GATSBY_CUSDIS
   const commentRef = useRef(null)
+  const isMobile = useMobile()
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [nickname, setNickname] = useState("")
   const [email, setEmail] = useState("")
@@ -660,6 +678,108 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
     })
   }
 
+  // Responsive style functions
+  const getResponsiveStyles = () => {
+    const basePadding = isMobile ? "0.75rem" : "1rem"
+    const baseFontSize = isMobile ? "0.85rem" : "0.9rem"
+    const smallFontSize = isMobile ? "0.75rem" : "0.8rem"
+    const buttonSize = isMobile ? "24px" : "28px"
+    const buttonFontSize = isMobile ? "0.7rem" : "0.75rem"
+    const scoreFontSize = isMobile ? "0.75rem" : "0.8rem"
+    const scorePadding = isMobile ? "0 0.25rem" : "0 0.5rem"
+    const replyButtonPadding = isMobile ? "0.3rem 0.6rem" : "0.4rem 0.8rem"
+    const replyButtonFontSize = isMobile ? "0.75rem" : "0.8rem"
+    const nestedMargin = isMobile ? "1rem" : "1.25rem"
+    const nestedPadding = isMobile ? "0.5rem" : "0.75rem"
+
+    return {
+      commentItem: {
+        padding: basePadding,
+        backgroundColor: isDarkMode ? "#2a2a2a" : "#f8f9fa",
+        borderRadius: "6px",
+        marginBottom: "0.75rem",
+        border: `1px solid ${isDarkMode ? "#333" : "#e1e5e9"}`,
+      },
+      nestedComment: {
+        marginLeft: nestedMargin,
+        marginTop: "0.75rem",
+        paddingLeft: nestedPadding,
+        borderLeft: `2px solid ${isDarkMode ? "#444" : "#ddd"}`,
+      },
+      commentAuthor: {
+        fontWeight: "600",
+        color: isDarkMode ? "#66b3ff" : "#007bff",
+        fontSize: baseFontSize,
+        marginBottom: "0.25rem",
+      },
+      commentText: {
+        color: isDarkMode ? "#e1e5e9" : "#333",
+        fontSize: baseFontSize,
+        lineHeight: "1.4",
+        marginBottom: "0.5rem",
+      },
+      commentDate: {
+        color: isDarkMode ? "#999" : "#666",
+        fontSize: smallFontSize,
+        marginBottom: "0.5rem",
+      },
+      votingButton: {
+        width: buttonSize,
+        height: buttonSize,
+        padding: "0",
+        margin: "0 0.125rem 0 0",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "4px",
+        fontSize: buttonFontSize,
+        cursor: "pointer",
+        transition: "all 0.2s",
+      },
+      scoreDisplay: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: scoreFontSize,
+        fontWeight: "600",
+        minWidth: "fit-content",
+        padding: scorePadding,
+        margin: "0 0.125rem 0 0",
+      },
+      replyButton: {
+        padding: replyButtonPadding,
+        fontSize: replyButtonFontSize,
+      },
+      commentActions: {
+        display: isMobile ? "grid" : "flex",
+        gridTemplateColumns: isMobile ? "1fr 1fr" : "auto",
+        gridTemplateRows: isMobile ? "auto auto" : "auto",
+        alignItems: "center",
+        justifyContent: isMobile ? "stretch" : "space-between",
+        marginTop: "0.75rem",
+        gap: isMobile ? "0.5rem" : "0",
+      },
+      commentVoting: {
+        display: "flex",
+        alignItems: "center",
+        gap: "0",
+        gridColumn: isMobile ? "1" : "auto",
+        gridRow: isMobile ? "2" : "auto",
+        justifySelf: isMobile ? "start" : "auto",
+      },
+      commentReplyActions: {
+        display: "flex",
+        alignItems: "center",
+        gap: "0.5rem",
+        gridColumn: isMobile ? "2" : "auto",
+        gridRow: isMobile ? "2" : "auto",
+        justifySelf: isMobile ? "end" : "auto",
+      },
+    }
+  }
+
+  const styles = getResponsiveStyles()
+
   const containerStyle = {
     marginTop: "3rem",
     backgroundColor: isDarkMode ? "#1a1a1a" : "#ffffff",
@@ -769,41 +889,6 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
     marginBottom: "1rem",
   }
 
-  const commentItemStyle = {
-    padding: "1rem",
-    backgroundColor: isDarkMode ? "#2a2a2a" : "#f8f9fa",
-    borderRadius: "6px",
-    marginBottom: "0.75rem",
-    border: `1px solid ${isDarkMode ? "#333" : "#e1e5e9"}`,
-  }
-
-  const nestedCommentStyle = {
-    marginLeft: "1.25rem",
-    marginTop: "0.75rem",
-    paddingLeft: "0.75rem",
-    borderLeft: `2px solid ${isDarkMode ? "#444" : "#ddd"}`,
-  }
-
-  const commentAuthorStyle = {
-    fontWeight: "600",
-    color: isDarkMode ? "#66b3ff" : "#007bff",
-    fontSize: "0.9rem",
-    marginBottom: "0.25rem",
-  }
-
-  const commentTextStyle = {
-    color: isDarkMode ? "#e1e5e9" : "#333",
-    fontSize: "0.9rem",
-    lineHeight: "1.4",
-    marginBottom: "0.5rem",
-  }
-
-  const commentDateStyle = {
-    color: isDarkMode ? "#999" : "#666",
-    fontSize: "0.8rem",
-    marginBottom: "0.5rem",
-  }
-
   const replyFormStyle = {
     marginTop: "1rem",
     padding: "1rem",
@@ -838,43 +923,37 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
     }
 
     return (
-      <div key={comment.id} style={depth > 0 ? nestedCommentStyle : {}}>
+      <div key={comment.id} style={depth > 0 ? styles.nestedComment : {}}>
         <div
           style={{
-            ...commentItemStyle,
+            ...styles.commentItem,
             cursor: hasReplies ? "pointer" : "default",
           }}
+          className="comment-item"
           onClick={handleCommentClick}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-            <div style={commentAuthorStyle}>{comment.author}</div>
-            <div style={commentDateStyle} title={formatDate(comment.date, { includeTime: true })}>
+          <div className="comment-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+            <div className="comment-author" style={styles.commentAuthor}>
+              {comment.author}
+            </div>
+            <div className="comment-date" style={styles.commentDate} title={formatDate(comment.date, { includeTime: true })}>
               {getRelativeTime(comment.date)}
             </div>
           </div>
-          <div style={commentTextStyle} dangerouslySetInnerHTML={{ __html: sanitizeComment(comment.text) }} />
+          <div className="comment-text" style={styles.commentText} dangerouslySetInnerHTML={{ __html: sanitizeComment(comment.text) }} />
 
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "0.75rem" }}>
+          <div className="comment-actions" style={styles.commentActions}>
             {/* Left side: Voting buttons with score in between */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0" }}>
+            <div className="comment-voting" style={styles.commentVoting}>
               {/* Like Button */}
               <button
+                className="comment-like-button"
                 style={{
-                  width: "28px",
-                  height: "28px",
-                  padding: "0",
-                  margin: "0 0.125rem 0 0",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  ...styles.votingButton,
                   backgroundColor:
                     userVote === "like" ? (isDarkMode ? "rgba(40, 167, 69, 0.2)" : "rgba(40, 167, 69, 0.1)") : isDarkMode ? "#2a2a2a" : "#f8f9fa",
                   color: userVote === "like" ? "#28a745" : isDarkMode ? "#999" : "#666",
                   border: `1px solid ${userVote === "like" ? "#28a745" : isDarkMode ? "#444" : "#ddd"}`,
-                  borderRadius: "4px",
-                  fontSize: "0.75rem",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
                 }}
                 onClick={() => handleVote(comment.id, "like")}
                 onMouseOver={e => {
@@ -906,16 +985,10 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
 
               {/* Score Display */}
               <span
+                className="comment-score"
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "0.8rem",
-                  fontWeight: "600",
+                  ...styles.scoreDisplay,
                   color: score > 0 ? "#28a745" : score < 0 ? "#dc3545" : isDarkMode ? "#999" : "#666",
-                  minWidth: "fit-content",
-                  padding: "0 0.5rem",
-                  margin: "0 0.125rem 0 0",
                 }}
                 title={`Net score: ${score > 0 ? "+" : ""}${score} (${likes} likes, ${dislikes} dislikes)`}
               >
@@ -924,22 +997,13 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
 
               {/* Dislike Button */}
               <button
+                className="comment-dislike-button"
                 style={{
-                  width: "28px",
-                  height: "28px",
-                  padding: "0",
-                  margin: "0",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  ...styles.votingButton,
                   backgroundColor:
                     userVote === "dislike" ? (isDarkMode ? "rgba(220, 53, 69, 0.2)" : "rgba(220, 53, 69, 0.1)") : isDarkMode ? "#2a2a2a" : "#f8f9fa",
                   color: userVote === "dislike" ? "#dc3545" : isDarkMode ? "#999" : "#666",
                   border: `1px solid ${userVote === "dislike" ? "#dc3545" : isDarkMode ? "#444" : "#ddd"}`,
-                  borderRadius: "4px",
-                  fontSize: "0.75rem",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
                 }}
                 onClick={() => handleVote(comment.id, "dislike")}
                 onMouseOver={e => {
@@ -971,10 +1035,13 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
             </div>
 
             {/* Right side: Reply button and show replies */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <div className="comment-reply-actions" style={styles.commentReplyActions}>
               {hasReplies && (
                 <button
-                  style={expandButtonStyle}
+                  style={{
+                    ...expandButtonStyle,
+                    ...styles.replyButton,
+                  }}
                   onClick={() => toggleReplies(comment.id)}
                   onMouseOver={e => (e.target.style.color = isDarkMode ? "#ccc" : "#333")}
                   onMouseOut={e => (e.target.style.color = isDarkMode ? "#999" : "#666")}
@@ -988,6 +1055,7 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
               <button
                 style={{
                   ...replyButtonStyle,
+                  ...styles.replyButton,
                   opacity: canReply ? 1 : 0.5,
                   cursor: canReply ? "pointer" : "not-allowed",
                   color: canReply ? (isDarkMode ? "#66b3ff" : "#007bff") : isDarkMode ? "#555" : "#999",
