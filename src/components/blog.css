@@ -625,6 +625,17 @@
     div[style*="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))"] h3 {
       text-align: center !important;
     }
+    
+    /* Override center alignment for comment headers */
+    .comment-header,
+    .comment-author,
+    .comment-date {
+      text-align: left !important;
+    }
+    
+    .comment-date {
+      text-align: right !important;
+    }
   }
   
   /* Mobile-specific spacing adjustments */
