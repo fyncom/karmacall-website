@@ -69,28 +69,18 @@ const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit }) => {
             <div className="featured-image-placeholder-content">
               <div className="featured-image-placeholder-icon">📖</div>
               <div className="featured-image-placeholder-title">Featured Image</div>
-              <div className="featured-image-placeholder-subtitle">{imageError ? "Failed to load" : "Coming soon..."}</div>
+              <div className="featured-image-placeholder-subtitle">Image not configured</div>
+              <div className="featured-image-placeholder-path">{src || "No image path provided"}</div>
             </div>
           </div>
         )}
-
-        {/* Optional overlay for better text readability if needed */}
-        <div className="featured-image-overlay" />
       </div>
 
-      {/* Image description and credits - only show if provided */}
+      {/* Image description and credit */}
       {(imageDescription || imageCredit) && (
-        <div className="featured-image-description">
-          {imageDescription && (
-            <p style={{ margin: imageCredit ? "0 0 0.5rem 0" : "0" }}>
-              <strong>Image description:</strong> {imageDescription}
-            </p>
-          )}
-          {imageCredit && (
-            <p className="featured-image-credit">
-              <strong>Credits:</strong> {imageCredit}
-            </p>
-          )}
+        <div className="featured-image-meta">
+          {imageDescription && <div className="featured-image-description">{imageDescription}</div>}
+          {imageCredit && <div className="featured-image-credit">Credit: {imageCredit}</div>}
         </div>
       )}
     </div>

@@ -54,8 +54,6 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
     const topSimilar = similarArticles.slice(0, 2)
     result.push(...topSimilar)
 
-    console.log(`📊 Added ${topSimilar.length} most similar articles to slots 1-2`)
-
     // 3rd spot: most recent article (unless already in first 2 spots)
     if (result.length < maxArticles && mostRecentArticle) {
       const alreadyIncluded = result.some(article => article.slug === mostRecentArticle.slug)
@@ -65,13 +63,11 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
           ...mostRecentArticle,
           isRecent: true, // Mark as recent for different styling/badge
         })
-        console.log(`📅 Added most recent article "${mostRecentArticle.title}" to slot 3`)
       } else {
         // Most recent was already in similar articles, find next similar article
         const nextSimilar = similarArticles.find(article => !result.some(resultArticle => resultArticle.slug === article.slug))
         if (nextSimilar) {
           result.push(nextSimilar)
-          console.log(`🔄 Most recent already included, added next similar article "${nextSimilar.title}" to slot 3`)
         }
       }
     }
@@ -82,18 +78,11 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
 
       if (nextSimilar) {
         result.push(nextSimilar)
-        console.log(`🔍 Added additional similar article "${nextSimilar.title}" to slot ${result.length}`)
       } else {
         // No more similar articles available
         break
       }
     }
-
-    console.log(`✅ Final related articles (${result.length}/${maxArticles}):`)
-    result.forEach((article, index) => {
-      const badge = article.isRecent ? "RECENT" : `${article.similarityScore}% SIMILAR`
-      console.log(`  ${index + 1}. ${article.title} (${badge})`)
-    })
 
     return result
   }
@@ -172,12 +161,17 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     image={gatsbyImage}
                     alt={article.title}
                     style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
                       width: "100%",
                       height: "100%",
                     }}
                     imgStyle={{
                       objectFit: "cover",
                       objectPosition: "center",
+                      width: "100%",
+                      height: "100%",
                     }}
                   />
                 ) : (
@@ -188,8 +182,30 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                       backgroundImage: `url('${article.image}')`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "var(--color-text-secondary, #999)",
+                      fontSize: "0.8rem",
+                      backgroundColor: "var(--color-background-alt, #f9f9f9)",
                     }}
-                  />
+                    onError={e => {
+                      e.target.style.backgroundImage = "none"
+                      e.target.innerHTML = `
+                        <div style="text-align: center; padding: 1rem;">
+                          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🖼️</div>
+                          <div>Image not found</div>
+                          <div style="font-size: 0.7rem; margin-top: 0.25rem;">${article.image}</div>
+                        </div>
+                      `
+                    }}
+                  >
+                    <div style={{ textAlign: "center", padding: "1rem" }}>
+                      <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>🖼️</div>
+                      <div>Loading image...</div>
+                      <div style={{ fontSize: "0.7rem", marginTop: "0.25rem" }}>{article.image}</div>
+                    </div>
+                  </div>
                 )}
               </div>
               <div style={{ padding: "1rem", display: "flex", flexDirection: "column", height: "200px" }}>
