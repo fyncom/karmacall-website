@@ -81,11 +81,45 @@ export default function ShiftingFrontlinesSpam2025() {
 
   return (
     <Wrapper seo={seo}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem" }}>
         <ArticleHeader articleData={articleMetadata} />
-        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginTop: "0.5rem", position: "relative" }}>
+
+        {/* Responsive layout with CSS media queries */}
+        <div
+          className="blog-layout-container"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "2rem",
+            marginTop: "0.5rem",
+          }}
+        >
+          {/* Add responsive styles */}
+          <style>
+            {`
+              @media (min-width: 768px) {
+                .blog-layout-container {
+                  flex-direction: row !important;
+                  gap: 3rem !important;
+                  align-items: flex-start !important;
+                }
+                .blog-main-content {
+                  flex: 1 !important;
+                  min-width: 0 !important;
+                }
+              }
+            `}
+          </style>
+
           {/* Main article content */}
-          <div style={{ flex: "1", minWidth: "0" }}>
+          <div
+            className="blog-main-content"
+            style={{
+              width: "100%",
+              maxWidth: "100%",
+              overflow: "hidden",
+            }}
+          >
             <ActionBar
               articleData={articleMetadata}
               shareCount={shareCount}
@@ -104,6 +138,11 @@ export default function ShiftingFrontlinesSpam2025() {
               style={{
                 ...textSizeStyles[textSize],
                 color: "var(--color-text, #333)",
+                width: "100%",
+                maxWidth: "100%",
+                wordWrap: "break-word",
+                overflowWrap: "break-word",
+                hyphens: "auto",
               }}
             >
               <style>{`

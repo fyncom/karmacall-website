@@ -3,10 +3,45 @@ import React from "react"
 const ArticleHeader = ({ articleData, className, style }) => {
   return (
     <div className={className} style={style}>
-      {/* Header section with same width as main content */}
-      <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start", marginBottom: "1.5rem" }}>
-        {/* Header content - same width as main content column */}
-        <div style={{ flex: "1", minWidth: "0" }}>
+      {/* Responsive header layout */}
+      <div
+        className="article-header-container"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+          marginBottom: "1.5rem",
+        }}
+      >
+        {/* Add responsive styles */}
+        <style>
+          {`
+            @media (min-width: 768px) {
+              .article-header-container {
+                flex-direction: row !important;
+                gap: 3rem !important;
+                align-items: flex-start !important;
+              }
+              .article-header-content {
+                flex: 1 !important;
+                min-width: 0 !important;
+              }
+              .article-header-spacer {
+                display: block !important;
+              }
+            }
+          `}
+        </style>
+
+        {/* Header content */}
+        <div
+          className="article-header-content"
+          style={{
+            width: "100%",
+            maxWidth: "100%",
+            overflow: "hidden",
+          }}
+        >
           {/* Title */}
           <h1
             style={{
@@ -15,6 +50,9 @@ const ArticleHeader = ({ articleData, className, style }) => {
               lineHeight: "1.2",
               marginBottom: "1rem",
               color: "var(--color-text, #333)",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              hyphens: "auto",
             }}
           >
             {articleData.title}
@@ -28,6 +66,9 @@ const ArticleHeader = ({ articleData, className, style }) => {
               fontSize: "1rem",
               borderBottom: "1px solid var(--border-color, #eee)",
               paddingBottom: "1rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.5rem",
             }}
           >
             <span className="blog-author">{articleData.author}</span>
@@ -53,6 +94,8 @@ const ArticleHeader = ({ articleData, className, style }) => {
                 color: "var(--color-text-secondary, #666)",
                 fontStyle: "italic",
                 marginBottom: "0",
+                wordWrap: "break-word",
+                overflowWrap: "break-word",
               }}
             >
               {articleData.description}
@@ -60,14 +103,16 @@ const ArticleHeader = ({ articleData, className, style }) => {
           </div>
         </div>
 
-        {/* Empty space to match sidebar width */}
+        {/* Desktop spacer - hidden on mobile */}
         <div
+          className="article-header-spacer"
           style={{
             width: "280px",
             flexShrink: 0,
+            display: "none",
           }}
         >
-          {/* This empty div ensures the header content aligns with main content */}
+          {/* This empty div ensures the header content aligns with main content on desktop */}
         </div>
       </div>
     </div>
