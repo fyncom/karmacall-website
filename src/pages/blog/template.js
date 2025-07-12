@@ -85,6 +85,8 @@ export default function BlogTemplate() {
     title: articleMetadata.title,
     description: articleMetadata.description,
     keywords: articleMetadata.keywords,
+    image: articleMetadata.featuredImage,
+    pathname: articleMetadata.slug,
   }
 
   return (
