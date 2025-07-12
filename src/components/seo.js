@@ -41,12 +41,12 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
   const metaKeywords = keywords.length > 0 ? keywords : defaultKeywords
   const canonical = pathname ? `${site.siteMetadata.siteUrl}${pathname}` : site.siteMetadata.siteUrl
 
-  // Use custom image if provided, otherwise use default
+  // Use custom image if provided, otherwise use default KarmaCall logo
   const socialImage = image
     ? image.startsWith("http")
       ? image
       : `${site.siteMetadata.siteUrl}${image}`
-    : "https://www.karmacall.com/TwitterBanner-KarmaCall.jpg"
+    : `${site.siteMetadata.siteUrl}/static/karmacall-logo.png`
 
   return (
     <Helmet htmlAttributes={{ lang }} title={title} titleTemplate={defaultTitle ? `%s | ${defaultTitle}` : null}>
