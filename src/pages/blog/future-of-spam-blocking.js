@@ -97,6 +97,8 @@ export default function FutureOfSpamBlocking() {
     title: articleMetadata.title,
     description: articleMetadata.description,
     keywords: articleMetadata.keywords,
+    image: articleMetadata.featuredImage,
+    pathname: articleMetadata.slug,
   }
 
   return (

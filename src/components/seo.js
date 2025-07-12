@@ -10,7 +10,7 @@ import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
 import "../utils/accessibility.css"
 
-function Seo({ description, title, lang = "en", keywords = [], children, pathname = "" }) {
+function Seo({ description, title, lang = "en", keywords = [], children, pathname = "", image = "" }) {
   const { site } = useStaticQuery(
     graphql`
       query {
@@ -41,6 +41,13 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
   const metaKeywords = keywords.length > 0 ? keywords : defaultKeywords
   const canonical = pathname ? `${site.siteMetadata.siteUrl}${pathname}` : site.siteMetadata.siteUrl
 
+  // Use custom image if provided, otherwise use default
+  const socialImage = image
+    ? image.startsWith("http")
+      ? image
+      : `${site.siteMetadata.siteUrl}${image}`
+    : "https://www.karmacall.com/TwitterBanner-KarmaCall.jpg"
+
   return (
     <Helmet htmlAttributes={{ lang }} title={title} titleTemplate={defaultTitle ? `%s | ${defaultTitle}` : null}>
       <meta name="description" content={metaDescription} />
@@ -54,17 +61,21 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
       {/* OpenGraph tags */}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={metaDescription} />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content="article" />
       <meta property="og:url" content={canonical} />
-      <meta property="og:image" content="https://www.karmacall.com/TwitterBanner-KarmaCall.jpg" />
+      <meta property="og:image" content={socialImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content="KarmaCall" />
 
       {/* Twitter Card tags */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:creator" content={site.siteMetadata?.author || ``} />
+      <meta name="twitter:creator" content="@GetKarmaCall" />
+      <meta name="twitter:site" content="@GetKarmaCall" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={metaDescription} />
-      <meta name="twitter:image" content="https://www.karmacall.com/TwitterBanner-KarmaCall.jpg" />
+      <meta name="twitter:image" content={socialImage} />
+      <meta name="twitter:image:alt" content={title} />
 
       {/* Robots and canonical */}
       <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
