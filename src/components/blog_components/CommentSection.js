@@ -683,12 +683,12 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
     const basePadding = isMobile ? "0.75rem" : "1rem"
     const baseFontSize = isMobile ? "0.85rem" : "0.9rem"
     const smallFontSize = isMobile ? "0.75rem" : "0.8rem"
-    const buttonSize = isMobile ? "24px" : "28px"
-    const buttonFontSize = isMobile ? "0.7rem" : "0.75rem"
+    const buttonSize = isMobile ? "20px" : "28px"
+    const buttonFontSize = isMobile ? "0.65rem" : "0.75rem"
     const scoreFontSize = isMobile ? "0.75rem" : "0.8rem"
-    const scorePadding = isMobile ? "0 0.25rem" : "0 0.5rem"
-    const replyButtonPadding = isMobile ? "0.3rem 0.6rem" : "0.4rem 0.8rem"
-    const replyButtonFontSize = isMobile ? "0.75rem" : "0.8rem"
+    const scorePadding = isMobile ? "0 0.4rem" : "0 0.5rem"
+    const replyButtonPadding = isMobile ? "0.25rem 0.5rem" : "0.4rem 0.8rem"
+    const replyButtonFontSize = isMobile ? "0.7rem" : "0.8rem"
     const nestedMargin = isMobile ? "1rem" : "1.25rem"
     const nestedPadding = isMobile ? "0.5rem" : "0.75rem"
 
@@ -706,11 +706,19 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
         paddingLeft: nestedPadding,
         borderLeft: `2px solid ${isDarkMode ? "#444" : "#ddd"}`,
       },
+      commentHeader: {
+        display: "table",
+        width: "100%",
+        marginBottom: "0.5rem",
+      },
       commentAuthor: {
         fontWeight: "600",
         color: isDarkMode ? "#66b3ff" : "#007bff",
         fontSize: baseFontSize,
-        marginBottom: "0.25rem",
+        marginBottom: "0",
+        display: "table-cell",
+        textAlign: "left",
+        width: "50%",
       },
       commentText: {
         color: isDarkMode ? "#e1e5e9" : "#333",
@@ -721,7 +729,10 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
       commentDate: {
         color: isDarkMode ? "#999" : "#666",
         fontSize: smallFontSize,
-        marginBottom: "0.5rem",
+        marginBottom: "0",
+        display: "table-cell",
+        textAlign: "right",
+        width: "50%",
       },
       votingButton: {
         width: buttonSize,
@@ -932,12 +943,44 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
           className="comment-item"
           onClick={handleCommentClick}
         >
-          <div className="comment-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-            <div className="comment-author" style={styles.commentAuthor}>
-              {comment.author}
-            </div>
-            <div className="comment-date" style={styles.commentDate} title={formatDate(comment.date, { includeTime: true })}>
-              {getRelativeTime(comment.date)}
+          {/* Comment header with debug borders */}
+          <div style={{ width: "100%", backgroundColor: "yellow" }}>
+            {console.log("Mobile state:", isMobile)}
+            {console.log("Comment header styles:", styles.commentHeader)}
+            <div
+              className="comment-header"
+              style={{
+                ...styles.commentHeader,
+                border: "2px solid red",
+                display: "table !important",
+                width: "100% !important",
+              }}
+            >
+              <div
+                className="comment-author"
+                style={{
+                  ...styles.commentAuthor,
+                  border: "2px solid blue",
+                  display: "table-cell !important",
+                  textAlign: "left !important",
+                  width: "50% !important",
+                }}
+              >
+                {comment.author}
+              </div>
+              <div
+                className="comment-date"
+                style={{
+                  ...styles.commentDate,
+                  border: "2px solid green",
+                  display: "table-cell !important",
+                  textAlign: "right !important",
+                  width: "50% !important",
+                }}
+                title={formatDate(comment.date, { includeTime: true })}
+              >
+                {getRelativeTime(comment.date)}
+              </div>
             </div>
           </div>
           <div className="comment-text" style={styles.commentText} dangerouslySetInnerHTML={{ __html: sanitizeComment(comment.text) }} />
