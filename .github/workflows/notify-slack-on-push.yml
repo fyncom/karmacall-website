@@ -1,0 +1,133 @@
+name: Notify Slack on Push to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get commit details
+        id: commit-details
+        run: |
+          echo "commit_count=$(git rev-list --count HEAD)" >> $GITHUB_OUTPUT
+          echo "files_changed=$(git diff --name-only HEAD~1 | wc -l)" >> $GITHUB_OUTPUT
+          echo "branch_name=$(git branch --show-current)" >> $GITHUB_OUTPUT
+
+      - name: Send Slack notification
+        id: slack-notification
+        run: |
+          # Validate webhook URL exists
+          if [ -z "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            echo "❌ SLACK_WEBHOOK_URL secret is not set"
+            exit 1
+          fi
+
+          payload=$(jq -n --arg repo "${{ github.repository }}" \
+                          --arg pusher "${{ github.actor }}" \
+                          --arg url "${{ github.event.head_commit.url }}" \
+                          --arg message "${{ github.event.head_commit.message }}" \
+                          --arg commit_count "${{ steps.commit-details.outputs.commit_count }}" \
+                          --arg files_changed "${{ steps.commit-details.outputs.files_changed }}" \
+                          --arg branch "${{ steps.commit-details.outputs.branch_name }}" \
+                          --arg short_sha "${{ github.sha }}" \
+                          '{
+                            "blocks": [
+                              {
+                                "type": "section",
+                                "text": {
+                                  "type": "mrkdwn",
+                                  "text": ":rocket: *Push to `main` detected!*"
+                                }
+                              },
+                              {
+                                "type": "section",
+                                "fields": [
+                                  {
+                                    "type": "mrkdwn",
+                                    "text": "*Repository:*\n\($repo)"
+                                  },
+                                  {
+                                    "type": "mrkdwn",
+                                    "text": "*Branch:*\n\($branch)"
+                                  },
+                                  {
+                                    "type": "mrkdwn",
+                                    "text": "*Pusher:*\n\($pusher)"
+                                  },
+                                  {
+                                    "type": "mrkdwn",
+                                    "text": "*Commit SHA:*\n`\($short_sha | .[0:7])`"
+                                  },
+                                  {
+                                    "type": "mrkdwn",
+                                    "text": "*Files Changed:*\n\($files_changed)"
+                                  },
+                                  {
+                                    "type": "mrkdwn",
+                                    "text": "*Total Commits:*\n\($commit_count)"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "section",
+                                "text": {
+                                  "type": "mrkdwn",
+                                  "text": "*Commit Message:*\n\($message)"
+                                }
+                              },
+                              {
+                                "type": "actions",
+                                "elements": [
+                                  {
+                                    "type": "button",
+                                    "text": {
+                                      "type": "plain_text",
+                                      "text": "View Commit"
+                                    },
+                                    "url": $url,
+                                    "style": "primary"
+                                  },
+                                  {
+                                    "type": "button",
+                                    "text": {
+                                      "type": "plain_text",
+                                      "text": "View Repository"
+                                    },
+                                    "url": "https://github.com/\($repo)"
+                                  }
+                                ]
+                              }
+                            ]
+                          }')
+
+          # Send notification with error handling
+          response=$(curl -s -w "%{http_code}" -X POST -H 'Content-type: application/json' \
+               --data "$payload" \
+               ${{ secrets.SLACK_WEBHOOK_URL }})
+
+          http_code="${response: -3}"
+          response_body="${response%???}"
+
+          if [ "$http_code" = "200" ]; then
+            echo "✅ Slack notification sent successfully"
+            echo "response=$response_body" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Failed to send Slack notification. HTTP Code: $http_code"
+            echo "Response: $response_body"
+            exit 1
+          fi
+
+      - name: Handle notification failure
+        if: failure() && steps.slack-notification.outcome == 'failure'
+        run: |
+          echo "⚠️ Slack notification failed, but workflow continues"
+          echo "Check your SLACK_WEBHOOK_URL secret and webhook configuration"
