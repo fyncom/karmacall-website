@@ -4,6 +4,7 @@
   align-items: start;
   padding: 10px 10px 10px 10px;
   background-color: var(--color-background);
+  min-height: 110px;
 }
 .header-top p {
   flex: 1;
@@ -135,10 +136,6 @@ button.user:hover {
 }
 
 @media (max-width: 768px) {
-    .header-container {
-      padding: 0 1rem;
-    }
-    
     .left-header-logo {
         /*max-width: 40% !important; !* Smaller size for mobile, adjust as needed *!*/
         max-width: 90px !important; /* Smaller size for mobile, adjust as needed */
@@ -162,20 +159,18 @@ button.user:hover {
   .dropdown {
     display: none;
   }
+  .login-buttons {
+    display: none;
+  }
   button,
   .cta-button,
   a {
     min-width: 44px;
     min-height: 44px;
   }
-  .login-buttons {
-    gap: 5px;
-  }
   .user {
-      width: 60px !important;
-      padding: 8px 4px;
-      font-size: 14px;
-      margin-right: 5px;
+      /*min-height: ;*/
+      max-width: 40px;
   }
   .mobile-menu-icon {
     font-size: 50px;
@@ -228,50 +223,5 @@ button.user:hover {
   }
   .menu-item-with-children.active .submenu {
     display: block;
-  }
-}
-
-/* Additional responsive fixes for smaller devices */
-@media (max-width: 480px) {
-  .header-container {
-    padding: 0 0.5rem;
-  }
-  
-  .user {
-    width: 55px !important;
-    font-size: 13px;
-    padding: 6px 2px;
-  }
-  
-  .mobile-menu-icon {
-    font-size: 40px;
-  }
-}
-
-/* Very small devices (iPhone SE 320px) */
-@media (max-width: 320px) {
-  .header-container {
-    padding: 0 0.25rem;
-  }
-  
-  .left-header-logo {
-    max-width: 75px !important;
-    height: 40px !important;
-  }
-  
-  .user {
-    width: 50px !important;
-    font-size: 12px;
-    padding: 6px 2px;
-    margin-right: 2px;
-  }
-  
-  .arrow-container {
-    width: 15px;
-    left: 60px;
-  }
-  
-  .mobile-menu-icon {
-    font-size: 35px;
   }
 }
