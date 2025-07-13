@@ -311,6 +311,54 @@
   background: var(--color-background-alt, #2a2a2a);
 }
 
+/* Mobile Table of Contents Styles */
+.mobile-toc-button {
+  display: none !important;
+}
+
+.mobile-toc-overlay {
+  display: none !important;
+}
+
+.desktop-toc {
+  display: block;
+}
+
+/* Show mobile TOC elements only on mobile */
+@media (max-width: 768px) {
+  .mobile-toc-button {
+    display: block !important;
+  }
+  
+  .mobile-toc-button button:hover {
+    background-color: var(--color-primary-dark, #005a9e) !important;
+    transform: scale(1.05);
+  }
+  
+  .mobile-toc-button button:focus {
+    outline: 2px solid var(--color-focus, #007acc);
+    outline-offset: 2px;
+  }
+  
+  .mobile-toc-overlay {
+    display: block !important;
+  }
+  
+  .desktop-toc {
+    display: none !important;
+  }
+  
+  /* Improve mobile TOC overlay content */
+  .mobile-toc-overlay nav a:hover {
+    background-color: var(--color-hover-bg, rgba(0, 122, 204, 0.05)) !important;
+  }
+  
+  .mobile-toc-overlay nav a:focus {
+    outline: 2px solid var(--color-focus, #007acc);
+    outline-offset: 1px;
+  }
+}
+
 /* Featured Image Component Styles */
 .featured-image-container {
   margin-bottom: 1rem;
