@@ -6,7 +6,13 @@ import Seo from "./seo"
 
 export const Wrapper = ({ children, seo }) => (
   <div>
-    <Seo title={seo.title} description={seo.description} />
+    <Seo 
+      title={seo.title} 
+      description={seo.description} 
+      keywords={seo.keywords}
+      image={seo.image}
+      pathname={seo.pathname}
+    />
     <Header />
     <div className="gatsby-focus-wrapper">{children}</div>
     <Footer />

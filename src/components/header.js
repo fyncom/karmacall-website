@@ -81,6 +81,9 @@ const Header = () => {
         <nav ref={menuRef} id="mobile-menu" className={isMenuOpen ? "mobile-menu open" : "mobile-menu"}>
           <ul>
             <li className="mobile-menu-item">
+              <Link to="/login">Login</Link>
+            </li>
+            <li className="mobile-menu-item">
               <Link to="/about">About</Link>
             </li>
             <li className="mobile-menu-item">
@@ -111,6 +114,9 @@ const Header = () => {
         </nav>
 
         <ul className="nav-links">
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
           <li>
             <Link to="/about">About</Link>
           </li>

@@ -1,9 +1,10 @@
 .header-top {
   display: flex;
   justify-content: space-between;
-  align-items: start;
-  padding: 10px 10px 10px 10px;
+  align-items: center;
+  padding: 10px;
   background-color: var(--color-background);
+  min-height: 100px;
 }
 .header-top p {
   flex: 1;
@@ -16,7 +17,6 @@
   width: 100%;
   margin: 0 auto;
 }
-
 .nav-links {
   list-style-type: none;
   margin: 0;
@@ -36,7 +36,6 @@
     --dropdown-container-color
   ); /* Add a hover effect for better UX */
 }
-
 .login-buttons {
   display: grid; /* Side by side buttons */
   gap: 10px; /* Space between buttons */
@@ -114,6 +113,11 @@ button.user:hover {
 .right-header-logo {
     margin-left: 20px;
 }
+.fyncom-logo-header {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
 .arrow-container {
     width: 30px; /* Length of the arrow */
     height: 2px; /* Thickness of the arrow */
@@ -135,27 +139,43 @@ button.user:hover {
 }
 
 @media (max-width: 768px) {
-    .left-header-logo {
-        /*max-width: 40% !important; !* Smaller size for mobile, adjust as needed *!*/
-        max-width: 90px !important; /* Smaller size for mobile, adjust as needed */
-        height: 50px !important; /* Maintain aspect ratio */
-    }
-    .right-header-logo {
-        margin-left: 2px !important;
-    }
-    .arrow-container {
-        width: 20px; /* Length of the arrow */
-        left: 75px; /* Adjust this value to control the overlap */
-    }
+  .header-top {
+    padding: 10px 10px 10px 10px;
+    min-height: auto;
+  }
+  .fyncom-logo-header {
+      display: flex;
+      align-items: center;
+      height: auto; /* Let it size naturally based on logo heights */
+      position: relative;
+  }
+  .left-header-logo {
+      /* Remove width/height constraints to respect Gatsby fixed dimensions */
+      /* KarmaCall logo is fixed at 110px width by Gatsby */
+      transform: scale(0.95);
+  }
+  .right-header-logo {
+      margin-left: 2px !important;
+      /* FynCom logo is fixed at 160px width by Gatsby */
+      /* Scale down slightly for mobile since it includes tagline */
+      transform: scale(0.95);
+  }
+  .arrow-container {
+      width: 20px; /* Length of the arrow */
+      left: 90px; /* Position between the two logos */
+  }
   ul {
     padding: 0;
   }
-  .mobile-menu-icon,
+
   .mobile-menu {
     display: revert;
   }
   .nav-links,
   .dropdown {
+    display: none;
+  }
+  .login-buttons {
     display: none;
   }
   button,
@@ -169,7 +189,8 @@ button.user:hover {
       max-width: 40px;
   }
   .mobile-menu-icon {
-    font-size: 50px;
+    font-size: 40px;
+    padding-right: 15px;
     display: block;
     cursor: pointer;
   }
@@ -219,5 +240,15 @@ button.user:hover {
   }
   .menu-item-with-children.active .submenu {
     display: block;
+  }
+}
+
+/* Extra small screens (iPhone SE and similar) */
+@media (max-width: 375px) {
+  .mobile-menu-icon {
+    padding-right: 20px;
+  }
+  .header-top {
+    padding: 8px 5px 8px 5px;
   }
 }
