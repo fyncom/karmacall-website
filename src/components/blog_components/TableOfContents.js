@@ -190,8 +190,9 @@ const TableOfContents = ({ title, className, style }) => {
           className="mobile-toc-button"
           style={{
             position: "fixed",
-            bottom: "20px",
+            top: "50%",
             right: "20px",
+            transform: "translateY(-50%)",
             zIndex: 1000,
             display: "none", // Hidden by default, shown via CSS media query
           }}
@@ -214,6 +215,7 @@ const TableOfContents = ({ title, className, style }) => {
               alignItems: "center",
               justifyContent: "center",
               transition: "all 0.3s ease",
+              opacity: isMobileMenuOpen ? 1 : 0.35,
             }}
           >
             {isMobileMenuOpen ? "✕" : "☰"}

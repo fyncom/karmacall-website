@@ -333,6 +333,7 @@
   .mobile-toc-button button:hover {
     background-color: var(--color-primary-dark, #005a9e) !important;
     transform: scale(1.05);
+    opacity: 1 !important;
   }
   
   .mobile-toc-button button:focus {
