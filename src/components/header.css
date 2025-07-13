@@ -190,7 +190,7 @@ button.user:hover {
   }
   .mobile-menu-icon {
     font-size: 40px;
-    padding-right: 10px;
+    padding-right: 15px;
     display: block;
     cursor: pointer;
   }
@@ -240,5 +240,15 @@ button.user:hover {
   }
   .menu-item-with-children.active .submenu {
     display: block;
+  }
+}
+
+/* Extra small screens (iPhone SE and similar) */
+@media (max-width: 375px) {
+  .mobile-menu-icon {
+    padding-right: 20px;
+  }
+  .header-top {
+    padding: 8px 5px 8px 5px;
   }
 }
