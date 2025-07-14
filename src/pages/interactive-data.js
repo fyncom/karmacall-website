@@ -6,7 +6,6 @@ export default function InteractiveData() {
   const [activeTab, setActiveTab] = useState("overview")
   const [isChartLibLoaded, setIsChartLibLoaded] = useState(false)
   const [isChartLibLoading, setIsChartLibLoading] = useState(false)
-  const [chartsInitialized, setChartsInitialized] = useState(false)
   const chartsRef = useRef({})
 
   // Load Chart.js only when needed (lazy loading)
@@ -17,7 +16,7 @@ export default function InteractiveData() {
 
     return new Promise((resolve, reject) => {
       // Check if Chart.js is already loaded
-      if (typeof window.Chart !== "undefined") {
+      if (typeof window !== "undefined" && typeof window.Chart !== "undefined") {
         setIsChartLibLoaded(true)
         setIsChartLibLoading(false)
         resolve()
@@ -40,56 +39,68 @@ export default function InteractiveData() {
     })
   }
 
-  // Load Google Fonts only once
+  // Load Google Fonts and Chart.js on component mount
   useEffect(() => {
     const fontLink = document.createElement("link")
     fontLink.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     fontLink.rel = "stylesheet"
     document.head.appendChild(fontLink)
 
+    // Load Chart.js immediately for better UX
+    loadChartLibrary().catch(error => {
+      console.error("Failed to load Chart.js on mount:", error)
+    })
+
     return () => {
       if (fontLink.parentNode) fontLink.parentNode.removeChild(fontLink)
     }
   }, [])
 
-  // Initialize charts when Chart.js is loaded and charts are needed
+  // Initialize charts when Chart.js is loaded and when active tab changes
   useEffect(() => {
-    if (!isChartLibLoaded || chartsInitialized) return
+    if (!isChartLibLoaded || typeof window === "undefined") return
 
-    const initializeCharts = async () => {
-      try {
-        const Chart = window.Chart
-        if (!Chart) return
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      initializeChartsForTab(activeTab)
+    }, 100)
 
-        // Chart data and configuration
-        const colors = getThemeColors()
-        const chartData = getChartData(colors)
+    return () => clearTimeout(timer)
+  }, [isChartLibLoaded, activeTab])
 
-        // Only initialize charts that are visible
-        if (activeTab === "overview") {
-          createChart("callGrowthChart", "horizontalBar", chartData.spamCallGrowthData)
-          createChart("textGrowthChart", "horizontalBar", chartData.textScamGrowthData)
-        } else if (activeTab === "calls") {
-          createChart("globalCallVolumeChart", "bar", chartData.globalCallVolumeData)
-        } else if (activeTab === "texts") {
-          createChart("smishingLossChart", "line", chartData.smishingLossData)
-        }
+  const initializeChartsForTab = tab => {
+    try {
+      const Chart = window.Chart
+      if (!Chart) return
 
-        setChartsInitialized(true)
-      } catch (error) {
-        console.error("Error initializing charts:", error)
+      // Chart data and configuration
+      const colors = getThemeColors()
+      const chartData = getChartData(colors)
+
+      // Destroy any existing charts for current tab
+      if (tab === "overview") {
+        createChart("callGrowthChart", "horizontalBar", chartData.spamCallGrowthData)
+        createChart("textGrowthChart", "horizontalBar", chartData.textScamGrowthData)
+      } else if (tab === "calls") {
+        createChart("globalCallVolumeChart", "bar", chartData.globalCallVolumeData)
+      } else if (tab === "texts") {
+        createChart("smishingLossChart", "line", chartData.smishingLossData)
       }
+    } catch (error) {
+      console.error("Error initializing charts:", error)
     }
+  }
 
-    initializeCharts()
-  }, [isChartLibLoaded, activeTab, chartsInitialized])
-
-  const handleTabChange = newTab => {
+  const handleTabChange = async newTab => {
     setActiveTab(newTab)
 
     // Load Chart.js when user actually wants to see charts
     if ((newTab === "overview" || newTab === "calls" || newTab === "texts") && !isChartLibLoaded) {
-      loadChartLibrary()
+      try {
+        await loadChartLibrary()
+      } catch (error) {
+        console.error("Failed to load chart library:", error)
+      }
     }
   }
 
@@ -115,7 +126,7 @@ export default function InteractiveData() {
       success: dark ? "#34d399" : "#10b981",
       blue: dark ? "#60a5fa" : "#3b82f6",
       text: dark ? "#f1f5f9" : "#1e293b",
-      textSecondary: dark ? "#cbd5e1" : "#64748b",
+      textSecondary: dark ? "#cbd5e1" : "#374151",
       gridColor: dark ? "#374151" : "#e2e8f0",
     }
 
@@ -136,11 +147,11 @@ export default function InteractiveData() {
         labels: ["Colombia", "Uruguay", "Argentina", "Philippines", "Mexico", "Japan", "France", "Thailand", "United States", "Canada"],
         datasets: [
           {
-            label: "Increase in Spam Call Threat",
+            label: "Increase in Spam Call Threat (%)",
             data: [400, 400, 300, 225.17, 230, 180, 100, 82.81, 18.2, 50],
             backgroundColor: colors.primaryLight,
             borderColor: colors.primary,
-            borderWidth: 1,
+            borderWidth: 2,
           },
         ],
       },
@@ -148,11 +159,11 @@ export default function InteractiveData() {
         labels: ["United Kingdom", "United States", "Thailand", "Africa (Region)", "India"],
         datasets: [
           {
-            label: "Increase in Text Scam Volume/Activity",
+            label: "Increase in Text Scam Volume/Activity (%)",
             data: [663, 328, 123, 3000, 37],
             backgroundColor: colors.dangerLight,
             borderColor: colors.danger,
-            borderWidth: 1,
+            borderWidth: 2,
           },
         ],
       },
@@ -164,20 +175,23 @@ export default function InteractiveData() {
             data: [11.3, 12.5],
             backgroundColor: [colors.blueLight, colors.successLight],
             borderColor: [colors.blue, colors.success],
-            borderWidth: 1,
+            borderWidth: 2,
           },
         ],
       },
       smishingLossData: {
-        labels: ["2020", "2024"],
+        labels: ["2020", "2021", "2022", "2023", "2024"],
         datasets: [
           {
             label: "Reported Losses in US ($M)",
-            data: [85, 470],
+            data: [85, 150, 230, 350, 470],
             fill: true,
             borderColor: colors.danger,
             backgroundColor: colors.dangerLightBg,
             tension: 0.1,
+            pointBackgroundColor: colors.danger,
+            pointBorderColor: colors.danger,
+            pointRadius: 5,
           },
         ],
       },
@@ -186,7 +200,10 @@ export default function InteractiveData() {
 
   const createChart = (canvasId, type, data) => {
     const ctx = document.getElementById(canvasId)
-    if (!ctx) return null
+    if (!ctx) {
+      console.warn(`Canvas element with id "${canvasId}" not found`)
+      return null
+    }
 
     // Destroy existing chart if it exists
     if (chartsRef.current[canvasId]) {
@@ -200,44 +217,80 @@ export default function InteractiveData() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { display: false },
+        legend: {
+          display: true,
+          position: "top",
+          labels: {
+            color: colors.text,
+            font: {
+              size: 12,
+              weight: "bold",
+            },
+          },
+        },
         tooltip: {
           enabled: true,
           mode: "nearest",
-          intersect: true,
+          intersect: false,
           backgroundColor: colors.tooltipBg,
           titleFont: { size: 14, weight: "bold" },
           bodyFont: { size: 12 },
           titleColor: "#ffffff",
           bodyColor: "#ffffff",
-          padding: 10,
-          cornerRadius: 4,
+          padding: 12,
+          cornerRadius: 6,
+          displayColors: true,
         },
       },
       scales: {
         x: {
-          grid: { display: false },
-          ticks: { color: colors.textSecondary },
+          grid: {
+            display: false,
+            drawBorder: false,
+          },
+          ticks: {
+            color: colors.textSecondary,
+            font: {
+              size: 11,
+            },
+          },
         },
         y: {
-          grid: { color: colors.gridColor },
-          ticks: { color: colors.textSecondary },
+          grid: {
+            color: colors.gridColor,
+            drawBorder: false,
+          },
+          ticks: {
+            color: colors.textSecondary,
+            font: {
+              size: 11,
+            },
+          },
           beginAtZero: true,
         },
+      },
+      animation: {
+        duration: 1000,
+        easing: "easeOutQuart",
       },
     }
 
     const chartType = type === "horizontalBar" ? "bar" : type
     const indexAxis = type === "horizontalBar" ? "y" : "x"
 
-    const chart = new Chart(ctx, {
-      type: chartType,
-      data: data,
-      options: { ...defaultOptions, indexAxis },
-    })
+    try {
+      const chart = new Chart(ctx, {
+        type: chartType,
+        data: data,
+        options: { ...defaultOptions, indexAxis },
+      })
 
-    chartsRef.current[canvasId] = chart
-    return chart
+      chartsRef.current[canvasId] = chart
+      return chart
+    } catch (error) {
+      console.error(`Error creating chart ${canvasId}:`, error)
+      return null
+    }
   }
 
   const StatCard = ({ number, label, type = "primary" }) => (
@@ -415,9 +468,12 @@ export default function InteractiveData() {
                   </div>
 
                   <div className="stats-grid">
-                    <StatCard number="$1.03 Trillion" label="Estimated Global Financial Losses to Scams in 2024" />
-                    <StatCard number="137+ Million" label="Unwanted Calls Inundating Consumers Globally Per Day" />
+                    <StatCard number="$1.03 Trillion" label="Estimated Global Financial Losses to Scams in 2024" type="danger" />
+                    <StatCard number="137+ Million" label="Unwanted Calls Inundating Consumers Globally Per Day" type="danger" />
                     <StatCard number="68%" label="of Security Breaches Still Involve a Human Element" type="danger" />
+                    <StatCard number="400%" label="Increase in Spam Calls in Colombia & Uruguay" type="danger" />
+                    <StatCard number="663%" label="Text Scam Growth in the United Kingdom" type="danger" />
+                    <StatCard number="$470M" label="U.S. Losses to Text Scams in 2024 Alone" type="danger" />
                   </div>
 
                   <div className="chart-wrapper">
@@ -425,9 +481,36 @@ export default function InteractiveData() {
                     <p className="chart-subtitle">Year-over-year percentage increase in threat risk ratio or call volume.</p>
                     <div className="chart-container">
                       {isChartLibLoading ? (
-                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "400px" }}>Loading charts...</div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "400px",
+                            fontSize: "16px",
+                            color: "var(--color-text-secondary)",
+                          }}
+                        >
+                          Loading charts...
+                        </div>
                       ) : (
-                        <canvas id="callGrowthChart"></canvas>
+                        <>
+                          <canvas id="callGrowthChart" width="800" height="400" style={{ maxWidth: "100%", height: "400px" }}></canvas>
+                          {!isChartLibLoaded && (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "400px",
+                                fontSize: "14px",
+                                color: "var(--color-text-secondary)",
+                              }}
+                            >
+                              Click to load interactive chart data
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -437,9 +520,36 @@ export default function InteractiveData() {
                     <p className="chart-subtitle">Percentage increase in text message scam volume.</p>
                     <div className="chart-container">
                       {isChartLibLoading ? (
-                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "400px" }}>Loading charts...</div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "400px",
+                            fontSize: "16px",
+                            color: "var(--color-text-secondary)",
+                          }}
+                        >
+                          Loading charts...
+                        </div>
                       ) : (
-                        <canvas id="textGrowthChart"></canvas>
+                        <>
+                          <canvas id="textGrowthChart" width="800" height="400" style={{ maxWidth: "100%", height: "400px" }}></canvas>
+                          {!isChartLibLoaded && (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "400px",
+                                fontSize: "14px",
+                                color: "var(--color-text-secondary)",
+                              }}
+                            >
+                              Click to load interactive chart data
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -459,11 +569,38 @@ export default function InteractiveData() {
                   <div className="chart-wrapper">
                     <h3 className="chart-title">Global Unwanted Call Volume is Rising</h3>
                     <p className="chart-subtitle">Volume in billions, per quarter (Q4 2024 - Q1 2025).</p>
-                    <div className="chart-container" style={{ height: "300px", maxHeight: "40vh" }}>
+                    <div className="chart-container" style={{ height: "400px" }}>
                       {isChartLibLoading ? (
-                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Loading charts...</div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
+                            fontSize: "16px",
+                            color: "var(--color-text-secondary)",
+                          }}
+                        >
+                          Loading charts...
+                        </div>
                       ) : (
-                        <canvas id="globalCallVolumeChart"></canvas>
+                        <>
+                          <canvas id="globalCallVolumeChart" width="800" height="400" style={{ maxWidth: "100%", height: "400px" }}></canvas>
+                          {!isChartLibLoaded && (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "400px",
+                                fontSize: "14px",
+                                color: "var(--color-text-secondary)",
+                              }}
+                            >
+                              Click to load interactive chart data
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -488,11 +625,38 @@ export default function InteractiveData() {
                   <div className="chart-wrapper">
                     <h3 className="chart-title">Smishing's Financial Impact is Skyrocketing</h3>
                     <p className="chart-subtitle">Reported losses to text scams in the U.S. (in millions).</p>
-                    <div className="chart-container" style={{ height: "300px", maxHeight: "40vh" }}>
+                    <div className="chart-container" style={{ height: "400px" }}>
                       {isChartLibLoading ? (
-                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Loading charts...</div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
+                            fontSize: "16px",
+                            color: "var(--color-text-secondary)",
+                          }}
+                        >
+                          Loading charts...
+                        </div>
                       ) : (
-                        <canvas id="smishingLossChart"></canvas>
+                        <>
+                          <canvas id="smishingLossChart" width="800" height="400" style={{ maxWidth: "100%", height: "400px" }}></canvas>
+                          {!isChartLibLoaded && (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "400px",
+                                fontSize: "14px",
+                                color: "var(--color-text-secondary)",
+                              }}
+                            >
+                              Click to load interactive chart data
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>

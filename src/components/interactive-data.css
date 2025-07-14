@@ -30,7 +30,7 @@
 
 .interactive-data-subtitle {
   font-size: 1.25rem;
-  color: var(--color-text-secondary, #64748b);
+  color: var(--color-text-secondary, #374151);
   max-width: 800px;
   margin: 0 auto;
   line-height: 1.6;
@@ -65,7 +65,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   background: var(--color-background-alt, white);
-  color: var(--color-text-secondary, #64748b);
+  color: var(--color-text-secondary, #374151);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 2px solid transparent;
   white-space: nowrap;
@@ -129,7 +129,7 @@
 
 .section-description {
   font-size: 1.125rem;
-  color: var(--color-text-secondary, #64748b);
+  color: var(--color-text-secondary, #374151);
   max-width: 700px;
   margin: 0 auto;
   line-height: 1.6;
@@ -139,7 +139,7 @@
 /* Statistics Cards */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
 }
@@ -177,7 +177,7 @@
 
 .stat-label {
   font-size: 0.95rem;
-  color: var(--color-text-secondary, #64748b);
+  color: var(--color-text-secondary, #374151);
   font-weight: 500;
   line-height: 1.4;
 }
@@ -203,7 +203,7 @@
 
 .chart-subtitle {
   font-size: 0.875rem;
-  color: var(--color-text-secondary, #64748b);
+  color: var(--color-text-secondary, #374151);
   margin-bottom: 1.5rem;
 }
 
@@ -283,17 +283,17 @@
 .accordion-inner {
   padding: 0 1.5rem 1.5rem;
   border-top: 1px solid var(--border-color, #f1f5f9);
-  color: var(--color-text-secondary, #64748b);
+  color: var(--color-text-secondary, #374151);
   line-height: 1.7;
   font-size: 1rem;
 }
 
 .accordion-inner ul {
-  color: var(--color-text-secondary, #64748b);
+  color: var(--color-text-secondary, #374151);
 }
 
 .accordion-inner li {
-  color: var(--color-text-secondary, #64748b);
+  color: var(--color-text-secondary, #374151);
   margin-bottom: 0.75rem;
 }
 
@@ -340,7 +340,7 @@
 
 .tactic-description {
   font-size: 0.9rem;
-  color: var(--color-text-secondary, #64748b);
+  color: var(--color-text-secondary, #374151);
   line-height: 1.5;
 }
 
