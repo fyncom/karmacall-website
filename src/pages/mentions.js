@@ -100,7 +100,7 @@ const Mentions = () => {
           <h2>On AI Agents and Automated Calling</h2>
           <VideoTrigger
             videoData={{
-              title: "Sam Altman & Mamoon Hamid on AI Investment Opportunities",
+              title: "Jack Altman & Mamoon Hamid on AI Investment Opportunities",
               timestamp: "Watch 2 minutes starting at 26:21",
               embedUrl: "https://www.youtube.com/embed/PzEzKbsAp5E?start=1581",
             }}
