@@ -34,21 +34,27 @@ const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit }) => {
     }
 
     // Debug logging
-    console.log("🔍 FeaturedImage debug:", {
-      originalSrc: srcPath,
-      relativePath,
-      availableImages: data.allFile.nodes.map(n => n.relativePath),
-    })
+    if (process.env.NODE_ENV === "development") {
+      console.log("🔍 FeaturedImage debug:", {
+        originalSrc: srcPath,
+        relativePath,
+        availableImages: data.allFile.nodes.map(n => n.relativePath),
+      })
+    }
 
     // Find the matching image in our query results
     const imageNode = data.allFile.nodes.find(node => node.relativePath === relativePath)
 
     if (imageNode?.childImageSharp) {
-      console.log("✅ Found Gatsby image for:", relativePath)
+      if (process.env.NODE_ENV === "development") {
+        console.log("✅ Found Gatsby image for:", relativePath)
+      }
       return getImage(imageNode.childImageSharp.gatsbyImageData)
     }
 
-    console.log("❌ No Gatsby image found for:", relativePath)
+    if (process.env.NODE_ENV === "development") {
+      console.log("❌ No Gatsby image found for:", relativePath)
+    }
     return null
   }
 
