@@ -95,8 +95,10 @@ const BlockSpamEarnCash = () => {
             destinationAddress: nanoAccount,
           }),
         })
+        console.log("Response status:", response.status)
         if (response.ok) {
           const data = await response.json()
+          console.log("API response data:", data)
           if (data.accountBlockCount > 0) {
             setNanoBlockCount(data.accountBlockCount)
             const numberWithCommas = data.accountBlockCount.toLocaleString()
@@ -104,9 +106,11 @@ const BlockSpamEarnCash = () => {
             const newMessage = `<span class="payments-counter">${numberWithCommas} instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanexplorer.com/nano/account/${nanoAccount}">See these payments happening in real-time!</a>`
             setDynamicMessage(newMessage)
           }
+        } else {
+          console.error("API response not ok:", response.status, response.statusText)
         }
       } catch (error) {
-        console.error("ERROR", error)
+        console.error("ERROR fetching block count:", error)
       }
     }
     getBlockCount()
