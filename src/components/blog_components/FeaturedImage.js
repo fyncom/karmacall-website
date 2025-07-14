@@ -12,7 +12,7 @@ const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit }) => {
         nodes {
           relativePath
           childImageSharp {
-            gatsbyImageData(width: 800, layout: CONSTRAINED, placeholder: BLURRED, formats: [AUTO, WEBP])
+            gatsbyImageData(width: 1200, layout: CONSTRAINED, placeholder: BLURRED, formats: [AUTO, WEBP], quality: 90)
           }
         }
       }
@@ -33,13 +33,22 @@ const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit }) => {
       relativePath = srcPath.replace(/.*images\//, "")
     }
 
+    // Debug logging
+    console.log("🔍 FeaturedImage debug:", {
+      originalSrc: srcPath,
+      relativePath,
+      availableImages: data.allFile.nodes.map(n => n.relativePath),
+    })
+
     // Find the matching image in our query results
     const imageNode = data.allFile.nodes.find(node => node.relativePath === relativePath)
 
     if (imageNode?.childImageSharp) {
+      console.log("✅ Found Gatsby image for:", relativePath)
       return getImage(imageNode.childImageSharp.gatsbyImageData)
     }
 
+    console.log("❌ No Gatsby image found for:", relativePath)
     return null
   }
 

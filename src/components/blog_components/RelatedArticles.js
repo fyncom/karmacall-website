@@ -91,7 +91,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
 
     console.log(`✅ Final related articles (${result.length}/${maxArticles}):`)
     result.forEach((article, index) => {
-      const badge = article.isRecent ? "RECENT" : `${article.similarityScore}% SIMILAR`
+      const badge = article.isRecent ? "RECENT" : "RELATED"
       console.log(`  ${index + 1}. ${article.title} (${badge})`)
     })
 
@@ -134,15 +134,37 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
         {relatedArticles.map((article, index) => {
           const gatsbyImage = getImageFromSrc(article.image)
 
-          // Function to truncate text to fit within a certain number of characters
-          const truncateText = (text, maxLength) => {
-            if (text.length <= maxLength) return text
-            return text.substring(0, maxLength).trim() + "..."
+          // Function to calculate dynamic truncation based on title length
+          const calculateDescriptionTruncation = (title, description) => {
+            // Base character limit
+            let baseLimit = 120
+
+            // Reduce limit for longer titles to ensure proper spacing
+            if (title.length > 80) {
+              baseLimit = 80
+            } else if (title.length > 60) {
+              baseLimit = 100
+            } else if (title.length > 40) {
+              baseLimit = 110
+            }
+
+            // If description is already short enough, return as is
+            if (description.length <= baseLimit) return description
+
+            // Truncate and ensure we don't cut in the middle of a word
+            const truncated = description.substring(0, baseLimit).trim()
+            const lastSpace = truncated.lastIndexOf(" ")
+
+            if (lastSpace > baseLimit * 0.8) {
+              // If we can find a good word boundary
+              return truncated.substring(0, lastSpace) + "..."
+            }
+
+            return truncated + "..."
           }
 
-          // Truncate title and description based on their typical display lengths
-          const truncatedTitle = truncateText(article.title, 60)
-          const truncatedDescription = truncateText(article.description, 120)
+          // Calculate description truncation based on title length
+          const truncatedDescription = calculateDescriptionTruncation(article.title, article.description)
 
           return (
             <a
@@ -212,12 +234,10 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     marginBottom: "0.5rem",
                     color: "var(--color-text, #333)",
                     lineHeight: "1.3",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    wordBreak: "break-word",
                   }}
                 >
-                  {truncatedTitle}
+                  {article.title}
                 </h3>
                 <p
                   style={{
@@ -225,11 +245,6 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     color: "var(--color-text-secondary, #666)",
                     lineHeight: "1.4",
                     margin: "0",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    display: "-webkit-box",
-                    WebkitLineClamp: "3",
-                    WebkitBoxOrient: "vertical",
                     wordBreak: "break-word",
                     flex: "1",
                   }}
@@ -255,7 +270,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     })}
                   </span>
                 </div>
-                {(article.similarityScore || article.isRecent) && (
+                {article.isRecent && (
                   <div
                     style={{
                       display: "flex",
@@ -266,14 +281,14 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     <span
                       style={{
                         fontSize: "0.7rem",
-                        backgroundColor: article.isRecent ? "var(--color-primary, #007acc)" : "var(--color-background-alt, #f9f9f9)",
-                        color: article.isRecent ? "white" : "var(--color-text-secondary, #666)",
+                        backgroundColor: "var(--color-primary, #007acc)",
+                        color: "white",
                         padding: "2px 6px",
                         borderRadius: "10px",
                         fontWeight: "500",
                       }}
                     >
-                      {article.isRecent ? "Latest" : `${Math.round(article.similarityScore)}% similar`}
+                      Latest
                     </span>
                   </div>
                 )}
