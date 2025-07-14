@@ -186,26 +186,29 @@ export default function BlogPostTemplate({ data, children, pageContext, location
                     font-size: calc(${textSizeStyles[textSize].fontSize} * 1.1) !important;
                   }
                   .article-content-${textSize} blockquote {
-                    border-left: 4px solid #007acc;
-                    background: #f0f8ff;
+                    border-left: 4px solid var(--color-primary, #007acc);
+                    background: var(--color-background-alt, #f0f8ff);
                     padding: 1rem 1.5rem;
                     margin: 1.5rem 0;
                     border-radius: 4px;
+                    color: var(--color-text, #333);
                   }
                   .article-content-${textSize} code {
-                    background: #f5f5f5;
+                    background: var(--color-background-alt, #f5f5f5);
+                    color: var(--color-text, #333);
                     padding: 0.2rem 0.4rem;
                     border-radius: 3px;
                     font-family: monospace;
                     font-size: 0.9em;
                   }
                   .article-content-${textSize} pre {
-                    background: #1e1e1e;
-                    color: #d4d4d4;
+                    background: var(--color-background-alt, #1e1e1e);
+                    color: var(--color-text, #d4d4d4);
                     padding: 1rem;
                     border-radius: 6px;
                     overflow-x: auto;
                     margin: 1.5rem 0;
+                    border: 1px solid var(--border-color, #ddd);
                   }
                   .article-content-${textSize} pre code {
                     background: none;
@@ -216,37 +219,43 @@ export default function BlogPostTemplate({ data, children, pageContext, location
                   .article-content-${textSize} ol {
                     padding-left: 2rem;
                     margin-bottom: 1.5rem;
+                    color: var(--color-text, #333);
                   }
                   .article-content-${textSize} li {
                     margin-bottom: 0.5rem;
+                    color: var(--color-text, #333);
                   }
                   .article-content-${textSize} a {
-                    color: #007acc;
+                    color: var(--color-primary, #007acc);
                     text-decoration: underline;
                   }
                   .article-content-${textSize} a:hover {
-                    color: #005c8a;
+                    color: var(--color-link, #005c8a);
                   }
                   .article-content-${textSize} img {
                     max-width: 100%;
                     height: auto;
                     border-radius: 6px;
                     margin: 1.5rem 0;
+                    border: 1px solid var(--border-color, #eee);
                   }
                   .article-content-${textSize} table {
                     width: 100%;
                     border-collapse: collapse;
                     margin: 1.5rem 0;
+                    background: var(--color-background, white);
                   }
                   .article-content-${textSize} th,
                   .article-content-${textSize} td {
-                    border: 1px solid #ddd;
+                    border: 1px solid var(--border-color, #ddd);
                     padding: 0.75rem;
                     text-align: left;
+                    color: var(--color-text, #333);
                   }
                   .article-content-${textSize} th {
-                    background: #f5f5f5;
+                    background: var(--color-background-alt, #f5f5f5);
                     font-weight: 600;
+                    color: var(--color-text, #333);
                   }
                 `}
               </style>

@@ -150,11 +150,13 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
               }}
               onMouseEnter={e => {
                 e.target.style.transform = "translateY(-4px)"
-                e.target.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.12)"
+                e.target.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.15)"
+                e.target.style.borderColor = "var(--color-primary, #007acc)"
               }}
               onMouseLeave={e => {
                 e.target.style.transform = "translateY(0)"
                 e.target.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)"
+                e.target.style.borderColor = "var(--border-color, #eee)"
               }}
             >
               <div
@@ -242,9 +244,10 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                         color: article.isRecent ? "white" : "var(--color-text-secondary, #666)",
                         padding: "2px 6px",
                         borderRadius: "10px",
+                        fontWeight: "500",
                       }}
                     >
-                      {article.isRecent ? "Latest" : `${article.similarityScore}% match`}
+                      {article.isRecent ? "Latest" : `${Math.round(article.similarityScore)}% similar`}
                     </span>
                   )}
                 </div>
@@ -269,6 +272,15 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
               backgroundColor: "var(--color-background-alt, #f9f9f9)",
               height: "calc(200px + 4:3 aspect ratio height)", // Match the total height of real cards
               minHeight: "280px", // Ensure consistent height with image + content
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={e => {
+              e.target.style.borderColor = "var(--color-primary, #007acc)"
+              e.target.style.backgroundColor = "var(--color-background, white)"
+            }}
+            onMouseLeave={e => {
+              e.target.style.borderColor = "var(--border-color, #eee)"
+              e.target.style.backgroundColor = "var(--color-background-alt, #f9f9f9)"
             }}
           >
             <div
