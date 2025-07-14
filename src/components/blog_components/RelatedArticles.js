@@ -194,7 +194,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                   />
                 )}
               </div>
-              <div style={{ padding: "1rem", display: "flex", flexDirection: "column", height: "200px" }}>
+              <div style={{ padding: "1rem", display: "flex", flexDirection: "column", minHeight: "200px" }}>
                 <h3
                   style={{
                     fontSize: "1.1rem",
@@ -211,8 +211,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     fontSize: "0.85rem",
                     color: "var(--color-text-secondary, #666)",
                     lineHeight: "1.4",
-                    margin: "0 0 auto 0", // Push the date/author to bottom
-                    flex: "1", // Take available space
+                    margin: "0 0 1rem 0", // Fixed bottom margin instead of flex
                     overflow: "hidden",
                   }}
                 >
@@ -225,18 +224,26 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    marginTop: "0.75rem", // Fixed spacing from description
+                    marginTop: "auto", // Push to bottom
                   }}
                 >
-                  <span>
+                  <span style={{ textAlign: "left" }}>{article.author}</span>
+                  <span style={{ textAlign: "right" }}>
                     {new Date(article.date).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
-                    })}{" "}
-                    • {article.author}
+                    })}
                   </span>
-                  {(article.similarityScore || article.isRecent) && (
+                </div>
+                {(article.similarityScore || article.isRecent) && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "0.5rem",
+                    }}
+                  >
                     <span
                       style={{
                         fontSize: "0.7rem",
@@ -249,8 +256,8 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     >
                       {article.isRecent ? "Latest" : `${Math.round(article.similarityScore)}% similar`}
                     </span>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </a>
           )
