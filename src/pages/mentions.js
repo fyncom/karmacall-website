@@ -95,6 +95,74 @@ const Mentions = () => {
       </section>
 
       <div className="mentions-container">
+        {/* Link: https://fyncom.com/mentions#ai-agents-automated-calling */}
+        <section className="mention-section" id="ai-agents-automated-calling">
+          <h2>On AI Agents and Automated Calling</h2>
+          <VideoTrigger
+            videoData={{
+              title: "Sam Altman & Mamoon Hamid on AI Investment Opportunities",
+              timestamp: "Watch 2 minutes starting at 26:21",
+              embedUrl: "https://www.youtube.com/embed/PzEzKbsAp5E?start=1581",
+            }}
+          />
+          <div className="mention-content">
+            <div className="conversation-format">
+              <div className="exchange">
+                <h4>On AI Agents & Automated Calling in Health Care</h4>
+                <p>
+                  <strong>Mamoon Hamid (Kleiner Perkins):</strong> Discusses how AI agents can now autonomously perform jobs traditionally done by skilled
+                  workers like nurses. He specifically highlights autonomous agents that make "thousands of phone calls" to patients for pre-op conversations,
+                  wellness checks, and post-op follow-ups.
+                </p>
+              </div>
+
+              <div className="exchange">
+                <h4>The Uniquely AI Advantage: Timing and Persistence</h4>
+                <p>
+                  <strong>Key Insight:</strong> Hamid explains that AI can succeed where humans struggle. Patients often prefer calls at specific times ("8am to
+                  9am... or 5pm to 6pm"), which is hard to schedule for a human nurse. However, an AI agent can be instructed to "call only those hours."
+                </p>
+                <p>
+                  <strong>He continues with a critical point:</strong> "AI will never give up... those calls today are probably made, they go to voicemail, and
+                  then you don't do a follow-up because you just don't have enough humans to make those follow-up phone calls."
+                </p>
+              </div>
+
+              <div className="exchange">
+                <h4>The Double-Edged Sword of "Abundance Through AI"</h4>
+                <p>
+                  <strong>The Promise:</strong> Hamid describes creating "abundance through AI" where automated systems can make unlimited calls at optimal
+                  times, theoretically improving healthcare outcomes.
+                </p>
+                <p>
+                  <strong>The Peril:</strong> This vision reveals a critical challenge. When AI agents can make unlimited calls and "never give up," how do we
+                  distinguish between beneficial automated calls (like a healthcare follow-up) and the inevitable explosion of harmful ones (spam, scams, and
+                  unwanted solicitations)?
+                </p>
+              </div>
+
+              <div className="exchange">
+                <h4>The KarmaCall Connection: Enabling Trust in an Automated World</h4>
+                <p>
+                  This discussion perfectly illustrates why KarmaCall's economic filtering approach is essential for the future of communication. As AI agents
+                  become capable of making "thousands of phone calls" that "never give up," a new layer of trust is required.
+                </p>
+                <p>
+                  <strong>Economic Differentiation:</strong> KarmaCall provides this layer. Legitimate organizations like healthcare systems can afford small,
+                  refundable deposits for important patient calls. In contrast, spammers and scammers cannot afford to pay for mass automated campaigns. This
+                  simple economic principle enables the beneficial use of AI calling that Hamid describes while blocking the harmful automated calls that will
+                  otherwise plague consumers.
+                </p>
+                <p>
+                  <strong>Trust Through Economics:</strong> When your doctor's office or a legitimate business calls you through KarmaCall, you instantly know
+                  it's important because they have placed a financial deposit behind the call. When a scammer tries, they're blocked, and you get paid. This is
+                  how we harness the power of AI communication while protecting users from its potential for misuse.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Link: https://fyncom.com/mentions#agent-communication-trust */}
         <section className="mention-section" id="agent-communication-trust">
           <h2>On Agent Communication and Trust Transfer</h2>
@@ -110,15 +178,7 @@ const Mentions = () => {
               <p>
                 <strong>
                   <button
-                    style={{
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                      color: "var(--karmacall-green)",
-                      background: "none",
-                      border: "none",
-                      padding: "0",
-                      font: "inherit",
-                    }}
+                    className="video-link-button"
                     {...createKeyboardClickHandlers(() =>
                       openModal({
                         title: "Seamless Communications Protocols (23:51-24:35)",
@@ -138,15 +198,7 @@ const Mentions = () => {
               <p>
                 <strong>
                   <button
-                    style={{
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                      color: "var(--karmacall-green)",
-                      background: "none",
-                      border: "none",
-                      padding: "0",
-                      font: "inherit",
-                    }}
+                    className="video-link-button"
                     {...createKeyboardClickHandlers(() =>
                       openModal({
                         title: "Transfer of Trust (24:30-25:05)",
@@ -165,15 +217,7 @@ const Mentions = () => {
               <p>
                 <strong>
                   <button
-                    style={{
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                      color: "var(--karmacall-green)",
-                      background: "none",
-                      border: "none",
-                      padding: "0",
-                      font: "inherit",
-                    }}
+                    className="video-link-button"
                     {...createKeyboardClickHandlers(() =>
                       openModal({
                         title: "Agent Swarms and Trust Networks (21:46-22:46)",
