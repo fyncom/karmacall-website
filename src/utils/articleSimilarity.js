@@ -2,6 +2,26 @@
 // This should be kept in sync with the actual blog articles
 export const articlesDatabase = [
   {
+    slug: "/blog/sample-mdx-article",
+    title: "How to Write Blog Posts in MDX - Sample Article",
+    description:
+      "Learn how to create engaging blog content using MDX that automatically converts to our JavaScript blog format. This sample demonstrates markdown features, social sharing, and more.",
+    date: "2025-01-12",
+    author: "KarmaCall Team",
+    image: "../../images/blog/interactive-rewards-blog-social-graphic.jpg",
+    keywords: ["mdx", "blog", "markdown", "javascript", "gatsby", "social sharing", "karmacall"],
+  },
+  {
+    slug: "/blog/test-mdx-post",
+    title: "MDX Blog System is Live - Better Writing, Better Sharing",
+    description:
+      "Our new MDX-powered blog system combines easy Markdown writing with sophisticated features. Write naturally, share perfectly, and maintain all the advanced functionality you love.",
+    date: "2025-01-12",
+    author: "KarmaCall Team",
+    image: "../../images/blog/interactive-rewards-blog-social-graphic.jpg",
+    keywords: ["mdx", "blog", "social sharing", "gatsby", "markdown", "karmacall", "developer experience"],
+  },
+  {
     slug: "/blog/shifting-frontlines-spam-2025",
     title: "The Shifting Frontlines of Spam: Interactive Report Reveals Global Crisis",
     description:
