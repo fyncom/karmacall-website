@@ -134,6 +134,16 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
         {relatedArticles.map((article, index) => {
           const gatsbyImage = getImageFromSrc(article.image)
 
+          // Function to truncate text to fit within a certain number of characters
+          const truncateText = (text, maxLength) => {
+            if (text.length <= maxLength) return text
+            return text.substring(0, maxLength).trim() + "..."
+          }
+
+          // Truncate title and description based on their typical display lengths
+          const truncatedTitle = truncateText(article.title, 60)
+          const truncatedDescription = truncateText(article.description, 120)
+
           return (
             <a
               key={index}
@@ -194,7 +204,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                   />
                 )}
               </div>
-              <div style={{ padding: "1rem", display: "flex", flexDirection: "column", minHeight: "200px" }}>
+              <div style={{ padding: "1rem", display: "flex", flexDirection: "column", height: "200px" }}>
                 <h3
                   style={{
                     fontSize: "1.1rem",
@@ -202,20 +212,29 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     marginBottom: "0.5rem",
                     color: "var(--color-text, #333)",
                     lineHeight: "1.3",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  {article.title}
+                  {truncatedTitle}
                 </h3>
                 <p
                   style={{
                     fontSize: "0.85rem",
                     color: "var(--color-text-secondary, #666)",
                     lineHeight: "1.4",
-                    margin: "0 0 1rem 0", // Fixed bottom margin instead of flex
+                    margin: "0",
                     overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: "3",
+                    WebkitBoxOrient: "vertical",
+                    wordBreak: "break-word",
+                    flex: "1",
                   }}
                 >
-                  {article.description.length > 140 ? `${article.description.substring(0, 140)}...` : article.description}
+                  {truncatedDescription}
                 </p>
                 <div
                   style={{
@@ -224,7 +243,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    marginTop: "auto", // Push to bottom
+                    marginTop: "0.75rem",
                   }}
                 >
                   <span style={{ textAlign: "left" }}>{article.author}</span>
