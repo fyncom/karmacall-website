@@ -87,6 +87,9 @@ const BlockSpamEarnCash = () => {
 
   useEffect(() => {
     const getBlockCount = async () => {
+      console.log("baseUrl:", baseUrl)
+      console.log("Full API URL:", `${baseUrl}nano/accountBlockCount`)
+      console.log("nanoAccount:", nanoAccount)
       try {
         const response = await fetch(`${baseUrl}nano/accountBlockCount`, {
           method: "POST",
@@ -105,9 +108,14 @@ const BlockSpamEarnCash = () => {
             // const newMessage = `<span class="payments-counter">${numberWithCommas} instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanoblockexplorer.com/explorer/account/${nanoAccount}/history">See these payments happening in real-time!</a>`
             const newMessage = `<span class="payments-counter">${numberWithCommas} instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanexplorer.com/nano/account/${nanoAccount}">See these payments happening in real-time!</a>`
             setDynamicMessage(newMessage)
+            console.log("Updated dynamic message with count:", numberWithCommas)
+          } else {
+            console.log("Account block count is 0 or undefined:", data.accountBlockCount)
           }
         } else {
           console.error("API response not ok:", response.status, response.statusText)
+          const errorText = await response.text()
+          console.error("Error response body:", errorText)
         }
       } catch (error) {
         console.error("ERROR fetching block count:", error)

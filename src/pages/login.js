@@ -171,6 +171,7 @@ const Login = () => {
         data: { sessionId: process.env.GATSBY_DEBUG_SESSION_ID },
       }
     } else {
+      console.log("Full verification trigger URL:", baseUrl + "verification/trigger")
       try {
         const response = await fetch(baseUrl + "verification/trigger", {
           method: "POST",
@@ -180,6 +181,7 @@ const Login = () => {
             number: phoneNumber,
           }),
         })
+        console.log("Verification trigger response status:", response.status)
         if (response.status === 418) {
           openBannedModal()
           return {
@@ -188,6 +190,7 @@ const Login = () => {
           }
         }
         const data = await response.json()
+        console.log("Verification trigger response data:", data)
         return {
           status: response.status,
           data: data,
@@ -292,7 +295,11 @@ const Login = () => {
         data: verifyData,
       }
     } catch (error) {
-      console.log(error)
+      console.error("Error in verifyConfirm:", error)
+      return {
+        error: true,
+        message: error.message || "An error occurred",
+      }
     }
   }
 
