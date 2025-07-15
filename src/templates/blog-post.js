@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { graphql } from "gatsby"
 import { MDXProvider } from "@mdx-js/react"
 import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import { Wrapper } from "../components/Markdown-Wrapper"
 import "../components/blog.css"
 import { getShareCount, setMockShareCount } from "../utils/shareCounter"
@@ -20,7 +21,7 @@ export default function BlogPostTemplate({ data, children, pageContext, location
   const { mdx } = data
   const { frontmatter, fields, body } = mdx
 
-  // Custom components for ReactMarkdown to add IDs to headings
+  // Custom components for ReactMarkdown to add IDs to headings and support tables
   const markdownComponents = {
     h1: ({ children, ...props }) => (
       <h1 id={`heading-${children?.toString().toLowerCase().replace(/\s+/g, "-")}`} {...props}>
@@ -51,6 +52,31 @@ export default function BlogPostTemplate({ data, children, pageContext, location
       <h6 id={`heading-${children?.toString().toLowerCase().replace(/\s+/g, "-")}`} {...props}>
         {children}
       </h6>
+    ),
+    table: ({ children, ...props }) => (
+      <table style={{ width: "100%", borderCollapse: "collapse", margin: "1.5rem 0", background: "var(--color-background, white)" }} {...props}>
+        {children}
+      </table>
+    ),
+    th: ({ children, ...props }) => (
+      <th
+        style={{
+          border: "1px solid var(--border-color, #ddd)",
+          padding: "0.75rem",
+          textAlign: "left",
+          background: "var(--color-background-alt, #f5f5f5)",
+          fontWeight: 600,
+          color: "var(--color-text, #333)",
+        }}
+        {...props}
+      >
+        {children}
+      </th>
+    ),
+    td: ({ children, ...props }) => (
+      <td style={{ border: "1px solid var(--border-color, #ddd)", padding: "0.75rem", textAlign: "left", color: "var(--color-text, #333)" }} {...props}>
+        {children}
+      </td>
     ),
   }
 
@@ -257,11 +283,54 @@ export default function BlogPostTemplate({ data, children, pageContext, location
                     font-weight: 600;
                     color: var(--color-text, #333);
                   }
+                  .article-content-${textSize} .mdx-content {
+                    width: 100%;
+                  }
+                  .article-content-${textSize} .mdx-content h1 {
+                    font-size: calc(${textSizeStyles[textSize].fontSize} * 2.5) !important;
+                    margin-bottom: 1rem;
+                    color: var(--color-text, #333);
+                  }
+                  .article-content-${textSize} .mdx-content h2 {
+                    font-size: calc(${textSizeStyles[textSize].fontSize} * 1.8) !important;
+                    margin-top: 2rem;
+                    margin-bottom: 1rem;
+                    color: var(--color-text, #333);
+                  }
+                  .article-content-${textSize} .mdx-content h3 {
+                    font-size: calc(${textSizeStyles[textSize].fontSize} * 1.4) !important;
+                    margin-top: 1.5rem;
+                    margin-bottom: 0.75rem;
+                    color: var(--color-text, #333);
+                  }
+                  .article-content-${textSize} .mdx-content p {
+                    margin-bottom: 1rem;
+                    line-height: 1.6;
+                    color: var(--color-text, #333);
+                  }
+                  .article-content-${textSize} .mdx-content ul,
+                  .article-content-${textSize} .mdx-content ol {
+                    margin-bottom: 1rem;
+                    padding-left: 2rem;
+                  }
+                  .article-content-${textSize} .mdx-content li {
+                    margin-bottom: 0.5rem;
+                  }
                 `}
               </style>
               <div className={`article-content-${textSize}`}>
                 {/* This is where the MDX content gets rendered */}
-                <MDXProvider>{children || (body && <ReactMarkdown components={markdownComponents}>{body}</ReactMarkdown>)}</MDXProvider>
+                <MDXProvider components={markdownComponents}>
+                  {children ? (
+                    <div className="mdx-content">{children}</div>
+                  ) : (
+                    body && (
+                      <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                        {body}
+                      </ReactMarkdown>
+                    )
+                  )}
+                </MDXProvider>
               </div>
             </div>
 

@@ -73,7 +73,7 @@ export const articlesDatabase = [
     title: "Job Scam Texts Cost Americans $470M in 2024 - Here's the Economic Solution",
     description:
       "Job scam texts were the #2 most common hoax in 2024, costing Americans nearly half a billion dollars. Discover how FynCom's refundable deposit technology makes mass scamming economically impossible while protecting legitimate job seekers.",
-    date: "2024-06-07",
+    date: "2025-06-07",
     author: "KarmaCall Team",
     image: "../../images/illustrations/inbox-money.png",
     keywords: [
