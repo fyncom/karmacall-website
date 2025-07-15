@@ -89,9 +89,16 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   await createHelpPages(helpItemsUser, "/user-help-center")
 
   // Create blog post pages from MDX files
+  const isProd = process.env.NODE_ENV === "production"
   const blogPostQuery = await graphql(`
     {
-      allMdx(filter: { fields: { slug: { regex: "/^/blog/" } } }, sort: { frontmatter: { date: DESC } }) {
+      allMdx(
+        filter: {
+          fields: { slug: { regex: "/^/blog/" } }
+          frontmatter: { draft: { ne: ${isProd ? "true" : "null"} } }
+        }
+        sort: { frontmatter: { date: DESC } }
+      ) {
         nodes {
           id
           fields {
@@ -99,6 +106,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
           }
           frontmatter {
             title
+            draft
           }
         }
       }
