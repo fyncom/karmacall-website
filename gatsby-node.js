@@ -24,12 +24,6 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       finalSlug = `/blog${slug}`
     }
 
-    // Debug logging
-    console.log(`🐛 MDX Node: ${node.internal.contentFilePath}`)
-    console.log(`🐛 Source Instance: ${fileNode?.sourceInstanceName}`)
-    console.log(`🐛 Original slug: ${slug}`)
-    console.log(`🐛 Final slug: ${finalSlug}`)
-
     createNodeField({
       node,
       name: "slug",
@@ -118,8 +112,6 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
       },
     })
   })
-
-  console.log(`✅ Created ${blogPosts.length} blog post pages from MDX files`)
 }
 
 exports.onCreatePage = ({ page, actions }) => {
