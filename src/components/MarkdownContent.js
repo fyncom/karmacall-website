@@ -1,5 +1,10 @@
 import React from "react"
-import DOMPurify from "dompurify"
+
+let DOMPurify = null
+if (typeof window !== "undefined") {
+  // Only import DOMPurify in the browser
+  DOMPurify = require("dompurify")?.default || require("dompurify")
+}
 
 const MarkdownContent = ({ content }) => {
   if (!content) {
@@ -15,8 +20,9 @@ const MarkdownContent = ({ content }) => {
       .replace(/\n/g, "<br />")
   }
 
-  // Sanitize the HTML before rendering
-  const sanitizedHtml = DOMPurify.sanitize(convertMarkdown(content))
+  const html = convertMarkdown(content)
+  // Only sanitize in the browser (DOMPurify is not available in SSR)
+  const sanitizedHtml = DOMPurify ? DOMPurify.sanitize(html) : html
 
   return <div className="markdown-content" dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
 }
