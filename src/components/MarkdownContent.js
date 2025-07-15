@@ -1,4 +1,5 @@
 import React from "react"
+import DOMPurify from "dompurify"
 
 const MarkdownContent = ({ content }) => {
   if (!content) {
@@ -14,7 +15,10 @@ const MarkdownContent = ({ content }) => {
       .replace(/\n/g, "<br />")
   }
 
-  return <div className="markdown-content" dangerouslySetInnerHTML={{ __html: convertMarkdown(content) }} />
+  // Sanitize the HTML before rendering
+  const sanitizedHtml = DOMPurify.sanitize(convertMarkdown(content))
+
+  return <div className="markdown-content" dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
 }
 
 export default MarkdownContent
