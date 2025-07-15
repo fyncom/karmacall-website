@@ -7,11 +7,8 @@
   "dependencies": {
     "@mdx-js/mdx": "^3.0.0",
     "@mdx-js/react": "^2.3.0",
-    "@react-pdf/renderer": "^3.1.14",
     "axios": "^1.6.2",
-    "chokidar": "^4.0.3",
     "dompurify": "^3.0.6",
-    "fs-extra": "^11.1.1",
     "gatsby": "^5.12.9",
     "gatsby-image": "^3.11.0",
     "gatsby-plugin-facebook-pixel": "^1.0.8",
@@ -33,10 +30,7 @@
     "gatsby-transformer-remark": "^6.12.3",
     "gatsby-transformer-sharp": "^5.12.0",
     "github-markdown-css": "^5.4.0",
-    "gray-matter": "^4.0.3",
     "lodash": "^4.17.21",
-    "marked": "^9.1.5",
-    "pdfjs-dist": "^4.0.189",
     "query-string": "^8.1.0",
     "react": "^18.2.0",
     "react-cookie-consent": "^9.0.0",
@@ -46,12 +40,10 @@
     "react-helmet": "^6.1.0",
     "react-icons": "^4.11.0",
     "react-markdown": "^9.0.0",
-    "react-pdf": "^7.5.1",
     "react-syntax-highlighter": "^15.5.0",
     "slugify": "^1.6.6"
   },
   "devDependencies": {
-    "node-loader": "^2.0.0",
     "prettier": "^2.8.8"
   },
   "keywords": [
@@ -65,12 +57,7 @@
     "start": "gatsby develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
-    "blog:watch": "node scripts/mdx-to-js-converter.js --watch",
-    "blog:build": "node scripts/mdx-to-js-converter.js --build",
-    "blog:convert": "node scripts/mdx-to-js-converter.js",
-    "dev:mdx": "node scripts/dev-with-mdx.js",
-    "blog:test": "gatsby develop && echo 'Visit http://localhost:8000/blog/index-mdx to see the new MDX blog system'"
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   },
   "repository": {
     "type": "git",

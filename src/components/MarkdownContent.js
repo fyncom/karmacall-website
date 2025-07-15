@@ -1,29 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { marked } from "marked";
+import React from "react"
 
 const MarkdownContent = ({ content }) => {
-  const [sanitizedContent, setSanitizedContent] = useState("");
-
-  useEffect(() => {
-    if (content) {
-      // Use a dynamic import to load DOMPurify only on the client-side
-      import('dompurify').then(({ default: DOMPurify }) => {
-        // DOMPurify should be destructured from the imported module
-        setSanitizedContent(DOMPurify.sanitize(marked(content)));
-      });
-    }
-  }, [content]);
-
-  if (!sanitizedContent) {
-    return null; // You can add a loading spinner here if you prefer
+  if (!content) {
+    return null
   }
 
-  return (
-    <div
-      className="markdown-content"
-      dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-    />
-  );
-};
+  // Simple markdown to HTML conversion for basic formatting
+  const convertMarkdown = text => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/`(.*?)`/g, "<code>$1</code>")
+      .replace(/\n/g, "<br />")
+  }
 
-export default MarkdownContent;
+  return <div className="markdown-content" dangerouslySetInnerHTML={{ __html: convertMarkdown(content) }} />
+}
+
+export default MarkdownContent

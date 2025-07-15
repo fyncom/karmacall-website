@@ -6,8 +6,7 @@
  * @type {import("gatsby").GatsbyNode["createPages"]}
  */
 const path = require("path");
-const axios = require("axios");
-const fs = require("fs-extra");
+const axios = require("axios")
 const { createFilePath } = require("gatsby-source-filesystem")
 
 exports.createPages = async ({ actions }) => {
@@ -19,18 +18,9 @@ exports.createPages = async ({ actions }) => {
     defer: true,
   })
 }
-exports.onCreateWebpackConfig = ({ actions }) => {
-  actions.setWebpackConfig({
-    module: {
-      rules: [
-        {
-          test: /\.node$/,
-          use: ["node-loader"],
-        },
-      ],
-    },
-  })
-}
+
+
+
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
   if (node.internal.type === "Mdx") {
