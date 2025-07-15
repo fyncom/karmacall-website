@@ -12,18 +12,17 @@ const { createFilePath } = require("gatsby-source-filesystem")
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
   if (node.internal.type === "Mdx") {
-    const slug = createFilePath({ node, getNode })
-
-    // Create blog-friendly slugs for blog posts
+    let slug = createFilePath({ node, getNode })
+    // Remove trailing slash if present (except for root)
+    if (slug.length > 1 && slug.endsWith("/")) {
+      slug = slug.slice(0, -1)
+    }
     let finalSlug = slug
-
-    // Check if this MDX file is from the blog-posts directory
     const fileNode = getNode(node.parent)
     if (fileNode && fileNode.sourceInstanceName === "blog-posts") {
-      // Force all blog posts to have /blog/ prefix
-      finalSlug = `/blog${slug}`
+      // Only add /blog prefix if not already present
+      finalSlug = slug.startsWith("/blog") ? slug : `/blog${slug}`
     }
-
     createNodeField({
       node,
       name: "slug",
