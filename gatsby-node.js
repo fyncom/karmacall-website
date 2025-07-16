@@ -9,6 +9,9 @@ const path = require("path");
 const axios = require("axios")
 const { createFilePath } = require("gatsby-source-filesystem")
 
+// This isn't necessary. This removes useful functionality.
+// You're forcing static behavior in a system made to be dynamic.
+// todo : remove this & learn to use dynamic fields
 // Explicitly define the MDX schema to ensure frontmatter, fields, and body are available
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions
@@ -36,14 +39,13 @@ exports.createSchemaCustomization = ({ actions }) => {
 }
 
 
-
-
-
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
   if (node.internal.type === "Mdx") {
     const slug = createFilePath({ node, getNode })
 
+    // todo - should be able to get all files in 1 directory.
+    //    Then you wouldn't need this
     // Create blog-friendly slugs for blog posts
     let finalSlug = slug
 
