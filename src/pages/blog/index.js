@@ -9,7 +9,7 @@ export default function BlogIndex() {
   // Query all MDX blog posts and images
   const data = useStaticQuery(graphql`
     query BlogIndexQuery {
-      allMdx(filter: { fields: { slug: { regex: "/^/blog/" } }, frontmatter: { draft: { ne: true } } }, sort: { frontmatter: { date: DESC } }) {
+      allMdx(filter: { fields: { slug: { regex: "/^/blog/" } } }, sort: { frontmatter: { date: DESC } }) {
         nodes {
           id
           frontmatter {
@@ -17,7 +17,9 @@ export default function BlogIndex() {
             description
             author
             date
-            featuredImage
+            featuredImage {
+              publicURL
+            }
           }
           fields {
             slug
@@ -92,7 +94,7 @@ export default function BlogIndex() {
       <div className="blog-grid">
         {posts.map(post => {
           const { id, frontmatter, fields } = post
-          const gatsbyImage = getImageFromSrc(frontmatter.featuredImage)
+          const gatsbyImage = getImageFromSrc(frontmatter.featuredImage?.publicURL)
           return (
             <div className="blog-card" key={id}>
               <Link to={fields.slug} className="blog-link">
@@ -105,28 +107,28 @@ export default function BlogIndex() {
                       loading="lazy"
                       style={{ width: "100%", height: "100%" }}
                       imgStyle={{
-                        objectFit: frontmatter.featuredImage?.includes("illustrations/") ? "contain" : "cover",
-                        objectPosition: frontmatter.featuredImage?.includes("interactive-rewards-blog-social-graphic") ? "left center" : "center center",
+                        objectFit: frontmatter.featuredImage?.publicURL?.includes("illustrations/") ? "contain" : "cover",
+                        objectPosition: frontmatter.featuredImage?.publicURL?.includes("interactive-rewards-blog-social-graphic") ? "left center" : "center center",
                       }}
                     />
-                  ) : frontmatter.featuredImage ? (
+                  ) : frontmatter.featuredImage?.publicURL ? (
                     <img
                       className="blog-image"
-                      src={frontmatter.featuredImage}
+                      src={frontmatter.featuredImage.publicURL}
                       alt={frontmatter.title}
                       loading="lazy"
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: frontmatter.featuredImage?.includes("illustrations/") ? "contain" : "cover",
-                        objectPosition: frontmatter.featuredImage?.includes("interactive-rewards-blog-social-graphic") ? "left center" : "center center",
+                        objectFit: frontmatter.featuredImage?.publicURL?.includes("illustrations/") ? "contain" : "cover",
+                        objectPosition: frontmatter.featuredImage?.publicURL?.includes("interactive-rewards-blog-social-graphic") ? "left center" : "center center",
                       }}
                       onLoad={e => {
                         e.target.style.opacity = "1"
                       }}
                       onError={() => {
                         if (process.env.NODE_ENV === "development") {
-                          console.warn(`Failed to load image: ${frontmatter.featuredImage}`)
+                          console.warn(`Failed to load image: ${frontmatter.featuredImage?.publicURL}`)
                         }
                       }}
                     />

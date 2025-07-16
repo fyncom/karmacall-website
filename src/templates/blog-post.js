@@ -10,7 +10,6 @@ import ArticleHeader from "../components/blog_components/ArticleHeader"
 import ActionBar from "../components/blog_components/ActionBar"
 import TableOfContents from "../components/blog_components/TableOfContents"
 import RelatedArticles from "../components/blog_components/RelatedArticles"
-import FeaturedImage from "../components/blog_components/FeaturedImage"
 import ScrollToTop from "../components/blog_components/ScrollToTop"
 import TextSizeControl from "../components/blog_components/TextSizeControl"
 import CommentSection from "../components/blog_components/CommentSection"
@@ -104,7 +103,7 @@ export default function BlogPostTemplate({ data, children, pageContext, location
     title: frontmatter.title,
     description: frontmatter.description,
     keywords: frontmatter.keywords,
-    image: frontmatter.featuredImage?.publicURL || frontmatter.featuredImage,
+    image: frontmatter.featuredImage?.publicURL,
     pathname: fields.slug,
   }
 
@@ -122,12 +121,18 @@ export default function BlogPostTemplate({ data, children, pageContext, location
               onCommentClick={handleCommentClick}
             />
             {frontmatter.featuredImage && (
-              <FeaturedImage
-                src={frontmatter.featuredImage}
-                alt={frontmatter.title}
-                imageDescription={frontmatter.imageDescription || "Featured image for this article."}
-                imageCredit={frontmatter.imageCredit || ""}
-              />
+              <div style={{ marginBottom: "2rem" }}>
+                <img
+                  src={frontmatter.featuredImage?.publicURL}
+                  alt={frontmatter.title}
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    borderRadius: "8px",
+                    border: "1px solid var(--border-color, #eee)"
+                  }}
+                />
+              </div>
             )}
             <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
             <div style={{ ...textSizeStyles[textSize], color: "var(--color-text, #333)" }}>
@@ -249,10 +254,10 @@ export const pageQuery = graphql`
         author
         date(formatString: "YYYY-MM-DD")
         dateDisplay: date(formatString: "MMMM DD, YYYY")
-        featuredImage
+        featuredImage {
+          publicURL
+        }
         keywords
-        imageDescription
-        imageCredit
       }
       fields {
         slug

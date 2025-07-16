@@ -1,0 +1,168 @@
+---
+title: "Keyboard Navigation System Documentation"
+description: "Comprehensive guide to the accessible keyboard navigation system implemented across KarmaCall's website, featuring smart detection, contextual help, and elegant user experience."
+author: "KarmaCall Development Team"
+date: "2024-12-20"
+featuredImage: null
+keywords: ["accessibility", "keyboard navigation", "WCAG", "web development", "user experience", "inclusive design"]
+slug: "/blog/keyboard-navigation-system"
+---
+
+
+**This documentation covers the comprehensive keyboard navigation system implemented across KarmaCall's website.** The system provides full accessibility compliance while maintaining an elegant, non-intrusive user experience for all users.
+
+## System Overview
+
+Our keyboard navigation system addresses the common accessibility challenge where users must tab through entire articles to reach navigation elements like table of contents. The solution is designed with these core principles:
+
+- **Invisible to mouse users:** No visual clutter or skip links that interfere with the design
+- **Discoverable for keyboard users:** Contextual hints appear only when needed
+- **Standard patterns:** Uses familiar keyboard shortcuts and navigation patterns
+- **Screen reader friendly:** Comprehensive ARIA support and announcements
+
+## Keyboard Shortcuts
+
+### Global Shortcuts
+
+- `Alt + T` - Jump to table of contents
+- `Alt + C` - Jump to main content
+- `Tab` - Navigate forward through interactive elements
+- `Shift + Tab` - Navigate backward through interactive elements
+
+### Table of Contents Navigation
+
+When focused on the table of contents, additional shortcuts become available:
+
+- `Enter` or `Space` - Expand/collapse table of contents
+- `Arrow Up/Down` - Navigate between links
+- `Home` - Jump to first link
+- `End` - Jump to last link
+- `Enter` - Navigate to selected section
+- `Escape` - Close table of contents
+
+## Smart Keyboard Detection
+
+The system automatically detects when users are navigating with keyboards and provides contextual help without cluttering the interface for mouse users.
+
+### Detection Mechanism
+
+1. **Tab key detection:** System monitors for Tab key usage to identify keyboard navigation
+2. **Mouse override:** Any mouse activity immediately hides keyboard-specific UI elements
+3. **Contextual timing:** Help appears after 1.5 seconds of keyboard use, ensuring intentional navigation
+4. **One-time display:** Hints show only once per session to avoid repetitive interruptions
+
+### Hint Behavior
+
+The keyboard navigation hint follows these UX principles:
+
+- **Non-intrusive positioning:** Appears in top-right corner, away from main content
+- **Smooth animation:** Slides in from the right with CSS transitions
+- **Auto-dismissal:** Disappears after 4 seconds automatically
+- **Mouse-sensitive:** Hides immediately when user switches to mouse
+
+## Implementation Details
+
+### Core Utilities
+
+The system is built around several key utilities in `src/utils/keyboardNavigation.js`:
+
+#### Key Functions
+
+- `createKeyboardClickHandlers()` - Creates accessible click handlers for interactive elements
+- `handleListNavigation()` - Manages arrow key navigation within lists
+- `handleEscapeKey()` - Provides consistent escape key behavior
+- `focusUtils` - Focus management utilities for complex interactions
+- `ariaUtils` - ARIA announcement and state management helpers
+
+### Component Integration
+
+The keyboard navigation system is integrated across multiple components:
+
+- **Header:** Mobile menu toggle with keyboard support
+- **TableOfContents:** Full arrow key navigation and keyboard shortcuts
+- **Video thumbnails:** Keyboard activation for video playback
+- **Modal dialogs:** Escape key handling and focus management
+- **Interactive buttons:** Consistent Enter/Space key activation
+
+## Accessibility Compliance
+
+The system meets and exceeds WCAG 2.1 AA standards for keyboard accessibility:
+
+### WCAG Guidelines Addressed
+
+- **2.1.1 Keyboard:** All functionality available via keyboard
+- **2.1.2 No Keyboard Trap:** Focus can always move away from any component
+- **2.4.3 Focus Order:** Logical and intuitive focus sequence
+- **2.4.7 Focus Visible:** Clear visual focus indicators
+- **4.1.2 Name, Role, Value:** Proper ARIA attributes and semantics
+
+### Screen Reader Support
+
+Comprehensive screen reader support includes:
+
+- **ARIA live regions:** Announce navigation actions and state changes
+- **Descriptive labels:** Clear context for all interactive elements
+- **State announcements:** Expanded/collapsed states for collapsible elements
+- **Navigation instructions:** Contextual help for complex interactions
+
+## Testing and Verification
+
+### Manual Testing Checklist
+
+To verify the keyboard navigation system:
+
+1. **Tab navigation:** Verify logical tab order through all interactive elements
+2. **Keyboard shortcuts:** Test Alt+T and Alt+C shortcuts work correctly
+3. **TOC navigation:** Verify arrow keys, Enter, and Escape work in table of contents
+4. **Focus indicators:** Ensure all focused elements have visible outlines
+5. **Smart detection:** Verify hints appear only for keyboard users
+
+### Automated Testing Tools
+
+- **Lighthouse Accessibility Audit:** Automated WCAG compliance checking
+- **axe-core:** Comprehensive accessibility testing library
+- **WAVE:** Web accessibility evaluation tool
+- **Screen readers:** NVDA (Windows), VoiceOver (Mac), Orca (Linux)
+
+## Performance Considerations
+
+The keyboard navigation system is designed with performance in mind:
+
+- **Minimal overhead:** Event listeners only added when needed
+- **Efficient detection:** Smart keyboard detection with minimal CPU impact
+- **CSS-only animations:** Smooth transitions without JavaScript animation loops
+- **Cleanup handlers:** Proper event listener cleanup to prevent memory leaks
+
+## UTM Parameter Cleaning
+
+The website includes automatic UTM parameter cleaning to provide a cleaner user experience while preserving analytics tracking data.
+
+### UTM Cleaning Features
+
+- **Automatic cleaning:** UTM parameters are automatically removed from URLs after analytics tracking
+- **Preserves tracking:** Analytics data is captured before URL cleaning occurs
+- **Comprehensive coverage:** Removes UTM parameters plus Facebook, Google, and other tracking parameters
+- **Preserves other parameters:** Non-tracking query parameters are maintained
+- **History management:** Uses replaceState to avoid creating additional browser history entries
+
+#### Cleaned Parameters
+
+The system automatically removes these tracking parameters:
+
+- **UTM:** utm_source, utm_medium, utm_campaign, utm_term, utm_content
+- **Facebook:** fbclid (Facebook Click ID)
+- **Google:** gclid (Google Click ID)
+- **Other platforms:** msclkid, twclid, ttclid, rdt_cid, and more
+
+## Future Enhancements
+
+Planned improvements to the keyboard navigation system:
+
+- **Custom shortcut configuration:** Allow users to customize keyboard shortcuts
+- **Voice control integration:** Support for voice navigation commands
+- **Gesture support:** Touch gesture equivalents for mobile devices
+- **Advanced focus management:** Smarter focus restoration and context awareness
+
+### Developer Resources
+
+For technical implementation details, code examples, and integration guides, refer to the keyboard navigation utility at `src/utils/keyboardNavigation.js`. For questions about accessibility implementation or suggestions for improvements, contact the development team at [dev@karmacall.com](mailto:dev@karmacall.com).

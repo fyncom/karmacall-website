@@ -76,7 +76,6 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
       allMdx(
         filter: {
           fields: { slug: { regex: "/^/blog/" } }
-          frontmatter: { draft: { ne: ${isProd ? "true" : "null"} } }
         }
         sort: { frontmatter: { date: DESC } }
       ) {
@@ -87,7 +86,6 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
           }
           frontmatter {
             title
-            draft
           }
         }
       }
