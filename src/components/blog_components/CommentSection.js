@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react"
 import { formatVoteScore, getTotalCommentCount } from "../../utils/numberFormatter"
 import { getRelativeTime, formatDate } from "../../utils/timeFormatter"
+import { trackComment } from "../../utils/analytics"
 
 // Transform Cusdis comment format to our expected format
 const transformCusdisComment = cusdisComment => {
@@ -407,6 +408,9 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
           setSubmitMessage("Comment posted successfully!")
         }
 
+        // Track comment posting in both GA and PostHog
+        trackComment('posted', window.location.pathname, articleTitle)
+
         setComment("")
 
         // Always refresh comments to show any that are approved
@@ -467,6 +471,9 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
         } else {
           setSubmitMessage("Reply posted successfully!")
         }
+
+        // Track reply posting in both GA and PostHog
+        trackComment('replied', window.location.pathname, articleTitle)
 
         setReplyingTo(null)
         setReplyText("")

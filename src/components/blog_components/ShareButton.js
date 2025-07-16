@@ -1,8 +1,7 @@
 import React from "react"
-import { createShortUrl } from "../../utils/urlShortener"
-import { incrementShareCount, getShareCount, formatShareCount } from "../../utils/shareCounter"
+import { trackShare, trackLinkCopy, trackEmailShare } from "../../utils/analytics"
 
-export default function ShareButton({ articleData, shareCount, onShareCountUpdate }) {
+export default function ShareButton({ articleData }) {
   const [showShareDialog, setShowShareDialog] = React.useState(false)
   const [linkCopied, setLinkCopied] = React.useState(false)
 
@@ -16,42 +15,30 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
   }
 
   const handleShareAction = platform => {
+    // Track with both Google Analytics and PostHog
     if (typeof window !== "undefined") {
-      const currentPath = window.location.pathname
-      const newCount = incrementShareCount(currentPath)
-      if (onShareCountUpdate) {
-        onShareCountUpdate(newCount)
+      const articlePath = window.location.pathname
+      const articleTitle = articleData?.title || document.title
+      
+      if (platform === 'copy_link') {
+        trackLinkCopy(articlePath, articleTitle)
+      } else if (platform === 'email') {
+        trackEmailShare(articlePath, articleTitle)
+      } else {
+        trackShare(platform, articlePath, articleTitle)
       }
-      console.log(`📈 Share count incremented to ${newCount} for ${platform}`)
     }
   }
 
   const copyToClipboard = () => {
     if (typeof window !== "undefined" && navigator.clipboard) {
       const currentUrl = window.location.href.split("?")[0] // Remove existing params
-      const shortUrl = createShortUrl(currentUrl, "copy_link")
-      navigator.clipboard.writeText(shortUrl)
+      navigator.clipboard.writeText(currentUrl)
       setLinkCopied(true)
 
       // Increment share count
       handleShareAction("copy_link")
 
-      // Get stored UTM data for enhanced tracking
-      const storedUTM = sessionStorage.getItem("utm_data")
-      const utmData = storedUTM ? JSON.parse(storedUTM) : {}
-
-      // Track with Google Analytics
-      if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", "share", {
-          method: "copy_link",
-          content_type: "blog_post",
-          item_id: window.location.pathname,
-          // Include original UTM data to track full journey
-          original_utm_source: utmData.source || null,
-          original_utm_medium: utmData.medium || null,
-          original_utm_campaign: utmData.campaign || null,
-        })
-      }
     }
   }
 
@@ -68,28 +55,13 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
       action: () => {
         if (typeof window !== "undefined") {
           const currentUrl = window.location.href.split("?")[0]
-          const shortUrl = createShortUrl(currentUrl, "email")
-          window.open(`mailto:?subject=Check out this article&body=${shortUrl}`)
+          const subject = encodeURIComponent(articleData?.title || "Check out this article")
+          const body = encodeURIComponent(`Check out this article: ${currentUrl}`)
+          window.open(`mailto:?subject=${subject}&body=${body}`)
 
           // Increment share count
           handleShareAction("email")
 
-          // Get stored UTM data for enhanced tracking
-          const storedUTM = sessionStorage.getItem("utm_data")
-          const utmData = storedUTM ? JSON.parse(storedUTM) : {}
-
-          // Track with Google Analytics
-          if (window.gtag) {
-            window.gtag("event", "share", {
-              method: "email",
-              content_type: "blog_post",
-              item_id: window.location.pathname,
-              // Include original UTM data to track full journey
-              original_utm_source: utmData.source || null,
-              original_utm_medium: utmData.medium || null,
-              original_utm_campaign: utmData.campaign || null,
-            })
-          }
         }
       },
     },
@@ -99,20 +71,11 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
       action: () => {
         if (typeof window !== "undefined") {
           const currentUrl = window.location.href.split("?")[0]
-          const shortUrl = createShortUrl(currentUrl, "facebook")
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shortUrl)}`)
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`)
 
           // Increment share count
           handleShareAction("facebook")
 
-          // Track with Google Analytics
-          if (window.gtag) {
-            window.gtag("event", "share", {
-              method: "facebook",
-              content_type: "blog_post",
-              item_id: window.location.pathname,
-            })
-          }
         }
       },
     },
@@ -122,20 +85,12 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
       action: () => {
         if (typeof window !== "undefined") {
           const currentUrl = window.location.href.split("?")[0]
-          const shortUrl = createShortUrl(currentUrl, "twitter")
-          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shortUrl)}&text=Check out this article`)
+          const tweetText = encodeURIComponent(`Check out this article: ${articleData?.title || ''}`)
+          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${tweetText}`)
 
           // Increment share count
           handleShareAction("twitter")
 
-          // Track with Google Analytics
-          if (window.gtag) {
-            window.gtag("event", "share", {
-              method: "twitter",
-              content_type: "blog_post",
-              item_id: window.location.pathname,
-            })
-          }
         }
       },
     },
@@ -145,20 +100,11 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
       action: () => {
         if (typeof window !== "undefined") {
           const currentUrl = window.location.href.split("?")[0]
-          const shortUrl = createShortUrl(currentUrl, "linkedin")
-          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shortUrl)}`)
+          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`)
 
           // Increment share count
           handleShareAction("linkedin")
 
-          // Track with Google Analytics
-          if (window.gtag) {
-            window.gtag("event", "share", {
-              method: "linkedin",
-              content_type: "blog_post",
-              item_id: window.location.pathname,
-            })
-          }
         }
       },
     },
@@ -168,20 +114,12 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
       action: () => {
         if (typeof window !== "undefined") {
           const currentUrl = window.location.href.split("?")[0]
-          const shortUrl = createShortUrl(currentUrl, "reddit")
-          window.open(`https://reddit.com/submit?url=${encodeURIComponent(shortUrl)}&title=Check out this article`)
+          const title = encodeURIComponent(articleData?.title || "Check out this article")
+          window.open(`https://reddit.com/submit?url=${encodeURIComponent(currentUrl)}&title=${title}`)
 
           // Increment share count
           handleShareAction("reddit")
 
-          // Track with Google Analytics
-          if (window.gtag) {
-            window.gtag("event", "share", {
-              method: "reddit",
-              content_type: "blog_post",
-              item_id: window.location.pathname,
-            })
-          }
         }
       },
     },
@@ -191,20 +129,12 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
       action: () => {
         if (typeof window !== "undefined") {
           const currentUrl = window.location.href.split("?")[0]
-          const shortUrl = createShortUrl(currentUrl, "bluesky")
-          window.open(`https://bsky.app/intent/compose?text=Check out this article: ${encodeURIComponent(shortUrl)}`)
+          const blueskyText = encodeURIComponent(`Check out this article: ${articleData?.title || ''} ${currentUrl}`)
+          window.open(`https://bsky.app/intent/compose?text=${blueskyText}`)
 
           // Increment share count
           handleShareAction("bluesky")
 
-          // Track with Google Analytics
-          if (window.gtag) {
-            window.gtag("event", "share", {
-              method: "bluesky",
-              content_type: "blog_post",
-              item_id: window.location.pathname,
-            })
-          }
         }
       },
     },
@@ -218,13 +148,13 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: formatShareCount(shareCount) ? "0.3rem" : "0",
-          width: formatShareCount(shareCount) ? "auto" : "32px",
+          gap: "0",
+          width: "32px",
           height: "32px",
-          padding: formatShareCount(shareCount) ? "0 0.6rem" : "0",
+          padding: "0",
           backgroundColor: showShareDialog ? "var(--color-primary, #007acc)" : "transparent",
           border: "2px solid var(--border-color, #ddd)",
-          borderRadius: formatShareCount(shareCount) ? "16px" : "50%",
+          borderRadius: "50%",
           color: showShareDialog ? "white" : "var(--color-text, #333)",
           fontSize: "0.9rem",
           cursor: "pointer",
@@ -233,7 +163,6 @@ export default function ShareButton({ articleData, shareCount, onShareCountUpdat
         }}
       >
         <span>📤</span>
-        {formatShareCount(shareCount) && <span style={{ fontSize: "0.8rem", fontWeight: "600" }}>{formatShareCount(shareCount)}</span>}
       </button>
 
       {/* Share Dialog - positioned directly under share button with right sides aligned */}

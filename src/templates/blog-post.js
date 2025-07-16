@@ -5,9 +5,8 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Wrapper } from "../components/Markdown-Wrapper"
 import "../components/blog.css"
-import { getShareCount, setMockShareCount } from "../utils/shareCounter"
-import { preloadUrls } from "../utils/urlShortener"
 import { generateTextSizeStyles, getFontSize } from "../components/blog_components/FontSizeSystem"
+import { trackPageView } from "../utils/analytics"
 import ArticleHeader from "../components/blog_components/ArticleHeader"
 import ActionBar from "../components/blog_components/ActionBar"
 import TableOfContents from "../components/blog_components/TableOfContents"
@@ -120,19 +119,14 @@ export default function BlogPostTemplate({ data, children, pageContext, location
 
       const currentPath = window.location.pathname
 
-      // Set mock data for testing (remove in production)
-      if (process.env.NODE_ENV === "development") {
-        setMockShareCount(fields.slug, Math.floor(Math.random() * 100))
-      }
-
-      // Load current share count
-      const currentCount = getShareCount(currentPath)
-      setShareCount(currentCount)
-
-      // Preload share URLs for better performance
-      preloadUrls(currentPath)
+      // Track blog post view in both GA and PostHog
+      trackPageView(currentPath, frontmatter.title, {
+        article_author: frontmatter.author,
+        article_date: frontmatter.date,
+        article_keywords: frontmatter.keywords
+      })
     }
-  }, [fields.slug])
+  }, [fields.slug, frontmatter.title, frontmatter.author, frontmatter.date])
 
   // Transform frontmatter to match existing component expectations
   const articleMetadata = {

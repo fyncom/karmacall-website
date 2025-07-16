@@ -1,21 +1,13 @@
 import { useEffect, useState } from "react"
-import { createShortUrl, preloadUrls } from "../utils/urlShortener"
-import { getShareCount, incrementShareCount, formatShareCount } from "../utils/shareCounter"
+import { trackShare, trackLinkCopy, trackEmailShare } from "../utils/analytics"
 
-// Custom hook for sharing functionality with share counting
+// Custom hook for sharing functionality with PostHog tracking
 export const useShareUrls = () => {
   const [linkCopied, setLinkCopied] = useState(false)
-  const [shareCount, setShareCount] = useState(0)
 
-  // Preload URLs and load share count when hook is used
+  // Initialize PostHog tracking when hook is used
   useEffect(() => {
-    preloadUrls()
-
-    if (typeof window !== "undefined") {
-      const currentPath = window.location.pathname
-      const currentCount = getShareCount(currentPath)
-      setShareCount(currentCount)
-    }
+    // PostHog handles URL tracking automatically
   }, [])
 
   // Get current page URL without parameters
@@ -24,19 +16,24 @@ export const useShareUrls = () => {
     return window.location.href.split("?")[0]
   }
 
-  // Generate short URL for a specific platform
-  const getShortUrl = platform => {
-    const currentUrl = getCurrentUrl()
-    return createShortUrl(currentUrl, platform)
+  // Get current URL for sharing (no shortening needed)
+  const getShareUrl = () => {
+    return getCurrentUrl()
   }
 
-  // Handle share action with counting
+  // Handle share action with dual tracking (GA + PostHog)
   const handleShareAction = platform => {
     if (typeof window !== "undefined") {
-      const currentPath = window.location.pathname
-      const newCount = incrementShareCount(currentPath)
-      setShareCount(newCount)
-      console.log(`📈 Share count incremented to ${newCount} for ${platform}`)
+      const articlePath = window.location.pathname
+      const articleTitle = document.title
+      
+      if (platform === 'copy_link') {
+        trackLinkCopy(articlePath, articleTitle)
+      } else if (platform === 'email') {
+        trackEmailShare(articlePath, articleTitle)
+      } else {
+        trackShare(platform, articlePath, articleTitle)
+      }
     }
   }
 
@@ -45,21 +42,12 @@ export const useShareUrls = () => {
     if (typeof window === "undefined" || !navigator.clipboard) return false
 
     try {
-      const shortUrl = getShortUrl("copy_link")
-      await navigator.clipboard.writeText(shortUrl)
+      const shareUrl = getShareUrl()
+      await navigator.clipboard.writeText(shareUrl)
       setLinkCopied(true)
 
-      // Increment share count
+      // Track with PostHog
       handleShareAction("copy_link")
-
-      // Track with Google Analytics
-      if (window.gtag) {
-        window.gtag("event", "share", {
-          method: "copy_link",
-          content_type: "blog_post",
-          item_id: window.location.pathname,
-        })
-      }
 
       return true
     } catch (error) {
@@ -70,29 +58,20 @@ export const useShareUrls = () => {
 
   // Share via email
   const shareViaEmail = () => {
-    const shortUrl = getShortUrl("email")
+    const shareUrl = getShareUrl()
     const subject = encodeURIComponent("Check out this article")
-    const body = encodeURIComponent(shortUrl)
+    const body = encodeURIComponent(`Check out this article: ${shareUrl}`)
 
     window.open(`mailto:?subject=${subject}&body=${body}`)
 
-    // Increment share count
+    // Track with PostHog
     handleShareAction("email")
-
-    // Track with Google Analytics
-    if (typeof window !== "undefined" && window.gtag) {
-      window.gtag("event", "share", {
-        method: "email",
-        content_type: "blog_post",
-        item_id: window.location.pathname,
-      })
-    }
   }
 
   // Share on social platform
   const shareOnPlatform = platform => {
-    const shortUrl = getShortUrl(platform)
-    const encodedUrl = encodeURIComponent(shortUrl)
+    const shareUrl = getShareUrl()
+    const encodedUrl = encodeURIComponent(shareUrl)
 
     let shareUrl = ""
 
@@ -120,17 +99,8 @@ export const useShareUrls = () => {
     if (shareUrl) {
       window.open(shareUrl)
 
-      // Increment share count
+      // Track with PostHog
       handleShareAction(platform)
-
-      // Track with Google Analytics
-      if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", "share", {
-          method: platform,
-          content_type: "blog_post",
-          item_id: window.location.pathname,
-        })
-      }
     }
   }
 
@@ -141,12 +111,10 @@ export const useShareUrls = () => {
 
   return {
     linkCopied,
-    shareCount,
     copyToClipboard,
     shareViaEmail,
     shareOnPlatform,
-    getShortUrl,
+    getShareUrl,
     resetCopiedState,
-    formatShareCount: () => formatShareCount(shareCount),
   }
 }
