@@ -8,7 +8,7 @@ const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit }) => {
   // Query all blog images
   const data = useStaticQuery(graphql`
     query BlogFeaturedImages {
-      allFile(filter: { sourceInstanceName: { eq: "images" }, relativeDirectory: { regex: "/^(blog|illustrations)$/" } }) {
+      allFile(filter: { sourceInstanceName: { eq: "images" }, relativeDirectory: { in: ["blog", "illustrations"] } }) {
         nodes {
           relativePath
           childImageSharp {

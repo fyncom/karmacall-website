@@ -7,7 +7,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
   // Query all blog images
   const data = useStaticQuery(graphql`
     query RelatedArticlesImages {
-      allFile(filter: { sourceInstanceName: { eq: "images" }, relativeDirectory: { regex: "/^(blog|illustrations)$/" } }) {
+      allFile(filter: { sourceInstanceName: { eq: "images" }, relativeDirectory: { in: ["blog", "illustrations"] } }) {
         nodes {
           relativePath
           childImageSharp {

@@ -9,15 +9,33 @@ const path = require("path");
 const axios = require("axios")
 const { createFilePath } = require("gatsby-source-filesystem")
 
-exports.createPages = async ({ actions }) => {
-  const { createPage } = actions
-  createPage({
-    path: "/using-dsg",
-    component: require.resolve("./src/templates/using-dsg.js"),
-    context: {},
-    defer: true,
-  })
+// Explicitly define the MDX schema to ensure frontmatter, fields, and body are available
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions
+  createTypes(`
+    type Mdx implements Node {
+      body: String
+      frontmatter: Frontmatter
+      fields: Fields
+    }
+    type Frontmatter {
+      title: String
+      date: Date @dateformat
+      draft: Boolean
+      description: String
+      author: String
+      featuredImage: String
+      keywords: [String]
+      imageDescription: String
+      imageCredit: String
+    }
+    type Fields {
+      slug: String
+    }
+  `)
 }
+
+
 
 
 
@@ -92,13 +110,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   const isProd = process.env.NODE_ENV === "production"
   const blogPostQuery = await graphql(`
     {
-      allMdx(
-        filter: {
-          fields: { slug: { regex: "/^/blog/" } }
-          frontmatter: { draft: { ne: ${isProd ? "true" : "null"} } }
-        }
-        sort: { frontmatter: { date: DESC } }
-      ) {
+      allMdx {
         nodes {
           id
           fields {
@@ -107,6 +119,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
           frontmatter {
             title
             draft
+            date
           }
         }
       }
@@ -118,7 +131,27 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     return
   }
 
-  const blogPosts = blogPostQuery.data.allMdx.nodes
+  const allMdxNodes = blogPostQuery.data.allMdx.nodes
+
+  // Filter and sort blog posts in JavaScript
+  const blogPosts = allMdxNodes
+    .filter(post => {
+      // Only include posts with blog slugs
+      if (!post.fields?.slug?.startsWith("/blog/")) {
+        return false
+      }
+      // Filter out drafts in production
+      if (isProd && post.frontmatter?.draft === true) {
+        return false
+      }
+      return true
+    })
+    .sort((a, b) => {
+      // Sort by date descending
+      const dateA = new Date(a.frontmatter?.date || 0)
+      const dateB = new Date(b.frontmatter?.date || 0)
+      return dateB - dateA
+    })
 
   // Create individual blog post pages
   blogPosts.forEach(post => {
