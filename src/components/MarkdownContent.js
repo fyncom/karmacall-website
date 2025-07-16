@@ -1,30 +1,29 @@
-import React from "react"
-
-let DOMPurify = null
-if (typeof window !== "undefined") {
-  // Only import DOMPurify in the browser
-  DOMPurify = require("dompurify")?.default || require("dompurify")
-}
+import React, { useState, useEffect } from "react";
+import { marked } from "marked";
 
 const MarkdownContent = ({ content }) => {
-  if (!content) {
-    return null
+  const [sanitizedContent, setSanitizedContent] = useState("");
+
+  useEffect(() => {
+    if (content) {
+      // Use a dynamic import to load DOMPurify only on the client-side
+      import('dompurify').then(({ default: DOMPurify }) => {
+        // DOMPurify should be destructured from the imported module
+        setSanitizedContent(DOMPurify.sanitize(marked(content)));
+      });
+    }
+  }, [content]);
+
+  if (!sanitizedContent) {
+    return null; // You can add a loading spinner here if you prefer
   }
 
-  // Simple markdown to HTML conversion for basic formatting
-  const convertMarkdown = text => {
-    return text
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/`(.*?)`/g, "<code>$1</code>")
-      .replace(/\n/g, "<br />")
-  }
+  return (
+    <div
+      className="markdown-content"
+      dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+    />
+  );
+};
 
-  const html = convertMarkdown(content)
-  // Only sanitize in the browser (DOMPurify is not available in SSR)
-  const sanitizedHtml = DOMPurify ? DOMPurify.sanitize(html) : html
-
-  return <div className="markdown-content" dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
-}
-
-export default MarkdownContent
+export default MarkdownContent;

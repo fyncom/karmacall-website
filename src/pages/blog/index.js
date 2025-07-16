@@ -1,160 +1,77 @@
 import React from "react"
 import "../../components/help-center.css"
-import { Link, graphql, useStaticQuery } from "gatsby"
-import { GatsbyImage, getImage } from "gatsby-plugin-image"
+import { graphql, Link } from "gatsby"
 import { Wrapper } from "../../components/Markdown-Wrapper"
+// import { GatsbyImage, getImage } from "gatsby-plugin-image"
+import truncate from "lodash/truncate" // You may need to install lodash if not already installed
 import "../../components/blog.css"
+import Img from "gatsby-image";
 
-export default function BlogIndex() {
-  // Query all MDX blog posts and images
-  const data = useStaticQuery(graphql`
-    query BlogIndexQuery {
-      allMdx(filter: { fields: { slug: { regex: "/^/blog/" } } }, sort: { frontmatter: { date: DESC } }) {
-        nodes {
-          id
-          frontmatter {
-            title
-            description
-            author
-            date
-            featuredImage {
-              publicURL
-            }
-          }
-          fields {
-            slug
-          }
-        }
-      }
-      allFile(
-        filter: {
-          sourceInstanceName: { eq: "images" }
-          relativeDirectory: { regex: "/^(blog|illustrations)/" }
-          extension: { regex: "/(jpg|jpeg|png|gif|webp)$/i" }
-        }
-      ) {
-        nodes {
-          relativePath
-          name
-          extension
-          childImageSharp {
-            gatsbyImageData(width: 400, height: 267, layout: FIXED, placeholder: BLURRED, formats: [AUTO, WEBP])
-          }
-        }
-      }
-    }
-  `)
-
-  // Enhanced image finder with better matching logic
-  const getImageFromSrc = srcPath => {
-    if (!srcPath) return null
-    let relativePath = srcPath
-    if (srcPath.includes("../../images/")) {
-      relativePath = srcPath.replace("../../images/", "")
-    } else if (srcPath.includes("../images/")) {
-      relativePath = srcPath.replace("../images/", "")
-    } else if (srcPath.includes("images/")) {
-      relativePath = srcPath.replace(/.*images\//, "")
-    }
-    let imageNode = data.allFile.nodes.find(node => node.relativePath === relativePath)
-    if (!imageNode) {
-      const filename = relativePath.split("/").pop().split(".")[0]
-      imageNode = data.allFile.nodes.find(node => node.name === filename)
-    }
-    if (imageNode?.childImageSharp) {
-      return getImage(imageNode.childImageSharp.gatsbyImageData)
-    }
-    return null
-  }
-
+export default function BlogIndex({ data }) {
   const seo = {
     title: "KarmaCall Blog",
     description: "Stay updated on the latest in KarmaCall technology.",
   }
-
-  const formatDate = dateString => {
-    if (!dateString) return "Date not available"
-    const date = new Date(dateString)
-    if (isNaN(date.getTime())) {
-      return dateString
-    }
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+  // A function to truncate text to a specific length
+  const shortenText = (text, length) => {
+    return truncate(text, {
+      length: length, // maximum length of the text
+      separator: /,? +/, // truncates at the nearest space or comma
     })
   }
-
-  const posts = data.allMdx.nodes
-  const remainder = posts.length % 4
-  const placeholdersNeeded = remainder === 0 ? 0 : 4 - remainder
-
   return (
     <Wrapper seo={seo}>
       <div className="blog-grid">
-        {posts.map(post => {
-          const { id, frontmatter, fields } = post
-          const gatsbyImage = getImageFromSrc(frontmatter.featuredImage?.publicURL)
-          return (
-            <div className="blog-card" key={id}>
-              <Link to={fields.slug} className="blog-link">
-                <div className="blog-image-container">
-                  {gatsbyImage ? (
-                    <GatsbyImage
-                      image={gatsbyImage}
-                      alt={frontmatter.title}
-                      className="blog-image"
-                      loading="lazy"
-                      style={{ width: "100%", height: "100%" }}
-                      imgStyle={{
-                        objectFit: frontmatter.featuredImage?.publicURL?.includes("illustrations/") ? "contain" : "cover",
-                        objectPosition: frontmatter.featuredImage?.publicURL?.includes("interactive-rewards-blog-social-graphic") ? "left center" : "center center",
-                      }}
-                    />
-                  ) : frontmatter.featuredImage?.publicURL ? (
-                    <img
-                      className="blog-image"
-                      src={frontmatter.featuredImage.publicURL}
-                      alt={frontmatter.title}
-                      loading="lazy"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: frontmatter.featuredImage?.publicURL?.includes("illustrations/") ? "contain" : "cover",
-                        objectPosition: frontmatter.featuredImage?.publicURL?.includes("interactive-rewards-blog-social-graphic") ? "left center" : "center center",
-                      }}
-                      onLoad={e => {
-                        e.target.style.opacity = "1"
-                      }}
-                      onError={() => {
-                        if (process.env.NODE_ENV === "development") {
-                          console.warn(`Failed to load image: ${frontmatter.featuredImage?.publicURL}`)
-                        }
-                      }}
-                    />
-                  ) : (
-                    <div className="blog-image-placeholder">
-                      <div className="blog-image-placeholder-icon" role="img" aria-label="Book icon">
-                        📖
-                      </div>
-                    </div>
-                  )}
+        {data.allMdx.nodes.map(({ id, excerpt, frontmatter, fields }) => (
+          <div className="blog-card" key={id}>
+            <Link className={"blog-link"} to={`${fields.slug}`}>
+              <div className="blog-image-container">
+                <Img
+                  fluid={frontmatter.featuredImage.childImageSharp.fluid}
+                  className={"blog-image"}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              </div>
+              <div className="blog-content">
+                <h3 className="blog-title">{frontmatter.title}</h3>
+                <div className="blog-meta">
+                  <span className="blog-author">{frontmatter.author || "KarmaCall Team"}</span>
+                  <span className="blog-date">{frontmatter.date}</span>
                 </div>
-                <div className="blog-content">
-                  <h3 className="blog-title">{frontmatter.title}</h3>
-                  <div className="blog-meta">
-                    <span className="blog-author">{frontmatter.author || "KarmaCall Team"}</span>
-                    <span className="blog-date">{formatDate(frontmatter.date)}</span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-          )
-        })}
-        {Array.from({ length: placeholdersNeeded }, (_, index) => (
-          <div className="blog-placeholder" key={`placeholder-${index}`}></div>
+              </div>
+            </Link>
+          </div>
         ))}
       </div>
     </Wrapper>
   )
 }
+export const pageQuery = graphql`
+  query {
+    allMdx(sort: { frontmatter: { date: DESC } }) {
+      nodes {
+        id
+        excerpt(pruneLength: 250)
+        frontmatter {
+          title
+          date(formatString: "MMMM DD, YYYY")
+          description
+          featuredImage {
+            publicURL
+            childImageSharp {
+              fluid(maxWidth: 800) {
+                ...GatsbyImageSharpFluid
+              }
+            }
+          }
+        }
+        fields {
+          slug
+        }
+      }
+    }
+  }
+`

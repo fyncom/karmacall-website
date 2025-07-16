@@ -10,6 +10,7 @@ import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
 import "../utils/accessibility.css"
 
+// todo consider adding a graphQL query here to send to the socials
 function Seo({ description, title, lang = "en", keywords = [], children, pathname = "", image = "" }) {
   const { site } = useStaticQuery(
     graphql`
@@ -17,9 +18,13 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
         site {
           siteMetadata {
             title
+            titleTemplate
             description
             author
             siteUrl
+            image
+            author
+            twitterUsername
           }
         }
       }
@@ -40,7 +45,8 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
   ]
   const metaKeywords = keywords.length > 0 ? keywords : defaultKeywords
   const canonical = pathname ? `${site.siteMetadata.siteUrl}${pathname}` : site.siteMetadata.siteUrl
-
+  // todo figure out whether you should pass back a graphQL query from the blogs:?
+  // const socialImage = image ? `${site.siteMetadata.siteUrl}${pathname}` : site.siteMetadata.siteUrl
   // Use custom image if provided, otherwise use default KarmaCall logo
   const socialImage = image
     ? image.startsWith("http")
@@ -49,7 +55,11 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
     : `${site.siteMetadata.siteUrl}/static/karmacall-logo.png`
 
   return (
-    <Helmet htmlAttributes={{ lang }} title={title} titleTemplate={defaultTitle ? `%s | ${defaultTitle}` : null}>
+    <Helmet
+      htmlAttributes={{ lang }}
+      title={title}
+      titleTemplate={defaultTitle ? `%s | ${defaultTitle}` : null}
+    >
       <meta name="description" content={metaDescription} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="keywords" content={metaKeywords.join(", ")} />
@@ -58,23 +68,25 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
       <meta name="theme-color" content="#008080" media="(prefers-color-scheme: light)" />
       <meta name="theme-color" content="#003554" media="(prefers-color-scheme: dark)" />
 
-      {/* OpenGraph tags */}
+      {/* Open Graph / Facebook / Instagram */}
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={canonical} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={metaDescription} />
-      <meta property="og:type" content="article" />
-      <meta property="og:url" content={canonical} />
+      <meta property="og:image" content={site.siteMetadata?.siteUrl + site.siteMetadata?.image} />
+
       <meta property="og:image" content={socialImage} />
-      <meta property="og:image:width" content="1200" />
+      {/*<meta property="og:image:width" content="1200" />*/}
       <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content="KarmaCall" />
 
       {/* Twitter Card tags */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:creator" content="@GetKarmaCall" />
-      <meta name="twitter:site" content="@GetKarmaCall" />
+      <meta name="twitter:url" content={site.siteMetadata?.siteUrl} />
+      <meta name="twitter:creator" content={site.siteMetadata?.twitterUsername || ``} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={metaDescription} />
-      <meta name="twitter:image" content={socialImage} />
+      <meta name="twitter:image" content={site.siteMetadata?.siteUrl + site.siteMetadata?.image} />
       <meta name="twitter:image:alt" content={title} />
 
       {/* Robots and canonical */}

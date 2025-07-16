@@ -12,28 +12,17 @@ const { createFilePath } = require("gatsby-source-filesystem")
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
   if (node.internal.type === "Mdx") {
-    let slug = createFilePath({ node, getNode })
-    // Remove trailing slash if present (except for root)
-    if (slug.length > 1 && slug.endsWith("/")) {
-      slug = slug.slice(0, -1)
-    }
-    let finalSlug = slug
-    const fileNode = getNode(node.parent)
-    if (fileNode && fileNode.sourceInstanceName === "blog-posts") {
-      // Only add /blog prefix if not already present
-      finalSlug = slug.startsWith("/blog") ? slug : `/blog${slug}`
-    }
+    const slug = createFilePath({ node, getNode })
     createNodeField({
       node,
       name: "slug",
-      value: finalSlug,
+      value: `${slug}`,
     })
   }
 }
 const helpCenterTemplate = path.resolve("./src/templates/helpCenterTemplate.js")
-const blogPostTemplate = path.resolve("./src/templates/blog-post.js")
 
-exports.createPages = async ({ actions, graphql, reporter }) => {
+exports.createPages = async ({ actions }) => {
   const { createPage } = actions
   const { helpItems, helpItemsUser } = require("./static/help-items.js")
 
@@ -43,9 +32,8 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
       if (!item.url || item.url === "filtering") {
         continue
       }
-      const { topicUrl, url } = item
-      const content = await axios
-        .get(url)
+      const { topicUrl, url } = item;
+      const content = await axios.get(url)
         .then(res => {
           return res.data
         })
@@ -59,7 +47,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
           content, // Pass markdown content to context
           title: item.title, // Optional: Pass title to use in SEO component
           type: basePath.includes("user") ? "user" : "business", // Determine if it"s user or business help center
-        },
+        }
       })
     }
   }
@@ -68,64 +56,4 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   await createHelpPages(helpItems, "/help-center")
   // Create pages for user help center
   await createHelpPages(helpItemsUser, "/user-help-center")
-
-  // Create blog post pages from MDX files
-  const isProd = process.env.NODE_ENV === "production"
-  const blogPostQuery = await graphql(`
-    {
-      allMdx(
-        filter: {
-          fields: { slug: { regex: "/^/blog/" } }
-        }
-        sort: { frontmatter: { date: DESC } }
-      ) {
-        nodes {
-          id
-          fields {
-            slug
-          }
-          frontmatter {
-            title
-          }
-        }
-      }
-    }
-  `)
-
-  if (blogPostQuery.errors) {
-    reporter.panicOnBuild("Error loading MDX blog posts", blogPostQuery.errors)
-    return
-  }
-
-  const blogPosts = blogPostQuery.data.allMdx.nodes
-
-  // Create individual blog post pages
-  blogPosts.forEach(post => {
-    createPage({
-      path: post.fields.slug,
-      component: blogPostTemplate,
-      context: {
-        id: post.id,
-      },
-    })
-  })
-}
-
-exports.onCreatePage = ({ page, actions }) => {
-  const { deletePage } = actions
-
-  // Delete template page in production
-  if (process.env.NODE_ENV === "production" && page.path === "/blog/template/") {
-    deletePage(page)
-  }
-
-  // Delete any template pages (files starting with underscore)
-  if (page.path.includes("/_")) {
-    deletePage(page)
-  }
-
-  // Delete README pages
-  if (page.path.includes("/readme/") || page.path.includes("/README/")) {
-    deletePage(page)
-  }
 }
