@@ -11,7 +11,6 @@ import { getBrowserEnvironment } from "../utils/browserUtils"
 import "../components/login.css" // Import the login-specific CSS
 import CookieConsentEEA from "../components/CookieConsentEEA"
 import ClientOnly from "../components/ClientOnly"
-import { checkRateLimit, recordAttempt, getRateLimitStatus } from "../utils/rateLimiter"
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("")
@@ -26,7 +25,6 @@ const Login = () => {
   const [isBannedModalOpen, setIsBannedModalOpen] = useState(false)
   const [referralCode, setReferralCode] = useState("")
   const [returnTo, setReturnTo] = useState("")
-  const [rateLimitStatus, setRateLimitStatus] = useState(null)
   const location = useLocation()
   const environment = getBrowserEnvironment()
 
@@ -92,53 +90,11 @@ const Login = () => {
     }
   }, [sessionId, phoneNumber, countryCode, otp, nanoAccount, userId])
 
-  // Update rate limit status periodically
-  useEffect(() => {
-    if (!phoneNumber || !countryCode) return
-
-    const identifier = `${countryCode}${phoneNumber}`
-
-    const updateRateLimit = () => {
-      const status = getRateLimitStatus("login", identifier)
-      setRateLimitStatus(status)
-    }
-
-    // Update immediately
-    updateRateLimit()
-
-    // Set up interval to update every second when blocked
-    const interval = setInterval(() => {
-      const status = getRateLimitStatus("login", identifier)
-      setRateLimitStatus(status)
-
-      // Stop updating if no longer blocked
-      if (!status.isBlocked) {
-        clearInterval(interval)
-      }
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [phoneNumber, countryCode])
 
   const handlePhoneSubmit = async event => {
     event.preventDefault()
 
-    // Check rate limit before processing (use phone number as identifier)
-    const identifier = `${countryCode}${phoneNumber}`
-    const rateLimitCheck = checkRateLimit("login", identifier)
-
-    if (!rateLimitCheck.allowed) {
-      alert(rateLimitCheck.message || "Too many login attempts. Please wait before trying again.")
-      // Update rate limit status for UI
-      const status = getRateLimitStatus("login", identifier)
-      setRateLimitStatus(status)
-      return
-    }
-
     try {
-      // Record the attempt
-      recordAttempt("login", identifier)
-
       const result = await triggerVerification()
       if (result.status === 200) {
         setSessionId(result.data.sessionId)
@@ -151,14 +107,8 @@ const Login = () => {
         openErrorModal()
       }
 
-      // Update rate limit status after attempt
-      const status = getRateLimitStatus("login", identifier)
-      setRateLimitStatus(status)
     } catch (error) {
       console.log(error)
-      // Update rate limit status on error too
-      const status = getRateLimitStatus("login", identifier)
-      setRateLimitStatus(status)
     }
   }
 
@@ -545,23 +495,6 @@ const Login = () => {
             <div className="container">
               <ClientOnly>
                 <form method="get" id="phoneNumberInput" onSubmit={handlePhoneSubmit}>
-                  {/* Rate Limit Status */}
-                  {rateLimitStatus && rateLimitStatus.isBlocked && (
-                    <div
-                      style={{
-                        marginBottom: "1rem",
-                        padding: "0.75rem 1rem",
-                        backgroundColor: "#fff3cd",
-                        color: "#856404",
-                        border: "1px solid #ffeaa7",
-                        borderRadius: "4px",
-                        fontSize: "0.9rem",
-                        textAlign: "center",
-                      }}
-                    >
-                      ⚠️ Too many login attempts. Please wait {rateLimitStatus.waitTimeSeconds} seconds before trying again.
-                    </div>
-                  )}
 
                   <div>
                     <p>
@@ -588,13 +521,8 @@ const Login = () => {
                         <button
                           type="submit"
                           className="user"
-                          disabled={rateLimitStatus && rateLimitStatus.isBlocked}
-                          style={{
-                            opacity: rateLimitStatus && rateLimitStatus.isBlocked ? 0.6 : 1,
-                            cursor: rateLimitStatus && rateLimitStatus.isBlocked ? "not-allowed" : "pointer",
-                          }}
                         >
-                          {rateLimitStatus && rateLimitStatus.isBlocked ? "Rate Limited" : "Confirm Phone Number"}
+                          Confirm Phone Number
                         </button>
                       </span>
                     </p>
