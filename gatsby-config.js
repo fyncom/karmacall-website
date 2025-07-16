@@ -63,6 +63,7 @@ module.exports = {
         path: `${__dirname}/src/images`,
       },
     },
+
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     {
@@ -106,15 +107,35 @@ module.exports = {
       },
     },
     {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `blog-posts`,
+        path: `${__dirname}/blog-posts`,
+      },
+    },
+    {
       resolve: `gatsby-plugin-mdx`,
       options: {
         extensions: [`.mdx`, `.md`],
+
         gatsbyRemarkPlugins: [
           {
             resolve: `gatsby-remark-images`,
             options: {
               // to see where this pops up.
               maxWidth: 593, // Example option for gatsby-remark-images
+            },
+          },
+          {
+            resolve: `gatsby-remark-autolink-headers`,
+            options: {
+              offsetY: `100`,
+              icon: false,
+              className: `heading-anchor`,
+              maintainCase: false,
+              removeAccents: true,
+              isIconAfterHeader: false,
+              elements: [`h1`, `h2`, `h3`, `h4`, `h5`, `h6`],
             },
           },
           // other plugins here

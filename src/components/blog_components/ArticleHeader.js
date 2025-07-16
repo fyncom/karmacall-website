@@ -67,12 +67,14 @@ const ArticleHeader = ({ articleData, className, style }) => {
               borderBottom: "1px solid var(--border-color, #eee)",
               paddingBottom: "1rem",
               display: "flex",
-              flexDirection: "column",
-              gap: "0.5rem",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            <span className="blog-author">{articleData.author}</span>
-            <span className="blog-date">
+            <span className="blog-author" style={{ textAlign: "left" }}>
+              {articleData.author}
+            </span>
+            <span className="blog-date" style={{ textAlign: "right" }}>
               {new Date(articleData.date).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",

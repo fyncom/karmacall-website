@@ -8,6 +8,15 @@ import "../../components/blog.css"
 // Static articles database - update this when adding new articles
 const blogArticles = [
   {
+    id: "sample-mdx-article",
+    title: "How to Write Blog Posts in MDX - Sample Article",
+    description: "Learn how to create engaging blog content using MDX that automatically converts to our JavaScript blog format. This sample demonstrates markdown features, social sharing, and more.",
+    author: "KarmaCall Team",
+    date: "2025-01-12",
+    slug: "/blog/sample-mdx-article",
+    featuredImage: "../../images/blog/interactive-rewards-blog-social-graphic.jpg",
+  },
+  {
     id: "shifting-frontlines-spam-2025",
     title: "The Shifting Frontlines of Spam: Interactive Report Reveals Global Crisis",
     description:

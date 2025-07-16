@@ -7,7 +7,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
   // Query all blog images
   const data = useStaticQuery(graphql`
     query RelatedArticlesImages {
-      allFile(filter: { sourceInstanceName: { eq: "images" }, relativeDirectory: { regex: "/^(blog|illustrations)$/" } }) {
+      allFile(filter: { sourceInstanceName: { eq: "images" }, relativeDirectory: { in: ["blog", "illustrations"] } }) {
         nodes {
           relativePath
           childImageSharp {
@@ -91,7 +91,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
 
     console.log(`✅ Final related articles (${result.length}/${maxArticles}):`)
     result.forEach((article, index) => {
-      const badge = article.isRecent ? "RECENT" : `${article.similarityScore}% SIMILAR`
+      const badge = article.isRecent ? "RECENT" : "RELATED"
       console.log(`  ${index + 1}. ${article.title} (${badge})`)
     })
 
@@ -134,6 +134,38 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
         {relatedArticles.map((article, index) => {
           const gatsbyImage = getImageFromSrc(article.image)
 
+          // Function to calculate dynamic truncation based on title length
+          const calculateDescriptionTruncation = (title, description) => {
+            // Base character limit
+            let baseLimit = 120
+
+            // Reduce limit for longer titles to ensure proper spacing
+            if (title.length > 80) {
+              baseLimit = 80
+            } else if (title.length > 60) {
+              baseLimit = 100
+            } else if (title.length > 40) {
+              baseLimit = 110
+            }
+
+            // If description is already short enough, return as is
+            if (description.length <= baseLimit) return description
+
+            // Truncate and ensure we don't cut in the middle of a word
+            const truncated = description.substring(0, baseLimit).trim()
+            const lastSpace = truncated.lastIndexOf(" ")
+
+            if (lastSpace > baseLimit * 0.8) {
+              // If we can find a good word boundary
+              return truncated.substring(0, lastSpace) + "..."
+            }
+
+            return truncated + "..."
+          }
+
+          // Calculate description truncation based on title length
+          const truncatedDescription = calculateDescriptionTruncation(article.title, article.description)
+
           return (
             <a
               key={index}
@@ -150,11 +182,13 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
               }}
               onMouseEnter={e => {
                 e.target.style.transform = "translateY(-4px)"
-                e.target.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.12)"
+                e.target.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.15)"
+                e.target.style.borderColor = "var(--color-primary, #007acc)"
               }}
               onMouseLeave={e => {
                 e.target.style.transform = "translateY(0)"
                 e.target.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)"
+                e.target.style.borderColor = "var(--border-color, #eee)"
               }}
             >
               <div
@@ -200,6 +234,7 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     marginBottom: "0.5rem",
                     color: "var(--color-text, #333)",
                     lineHeight: "1.3",
+                    wordBreak: "break-word",
                   }}
                 >
                   {article.title}
@@ -209,12 +244,12 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     fontSize: "0.85rem",
                     color: "var(--color-text-secondary, #666)",
                     lineHeight: "1.4",
-                    margin: "0 0 auto 0", // Push the date/author to bottom
-                    flex: "1", // Take available space
-                    overflow: "hidden",
+                    margin: "0",
+                    wordBreak: "break-word",
+                    flex: "1",
                   }}
                 >
-                  {article.description.length > 140 ? `${article.description.substring(0, 140)}...` : article.description}
+                  {truncatedDescription}
                 </p>
                 <div
                   style={{
@@ -223,31 +258,40 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    marginTop: "0.75rem", // Fixed spacing from description
+                    marginTop: "0.75rem",
                   }}
                 >
-                  <span>
+                  <span style={{ textAlign: "left" }}>{article.author}</span>
+                  <span style={{ textAlign: "right" }}>
                     {new Date(article.date).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
-                    })}{" "}
-                    • {article.author}
+                    })}
                   </span>
-                  {(article.similarityScore || article.isRecent) && (
+                </div>
+                {article.isRecent && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "0.5rem",
+                    }}
+                  >
                     <span
                       style={{
                         fontSize: "0.7rem",
-                        backgroundColor: article.isRecent ? "var(--color-primary, #007acc)" : "var(--color-background-alt, #f9f9f9)",
-                        color: article.isRecent ? "white" : "var(--color-text-secondary, #666)",
+                        backgroundColor: "var(--color-primary, #007acc)",
+                        color: "white",
                         padding: "2px 6px",
                         borderRadius: "10px",
+                        fontWeight: "500",
                       }}
                     >
-                      {article.isRecent ? "Latest" : `${article.similarityScore}% match`}
+                      Latest
                     </span>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </a>
           )
@@ -269,6 +313,15 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
               backgroundColor: "var(--color-background-alt, #f9f9f9)",
               height: "calc(200px + 4:3 aspect ratio height)", // Match the total height of real cards
               minHeight: "280px", // Ensure consistent height with image + content
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={e => {
+              e.target.style.borderColor = "var(--color-primary, #007acc)"
+              e.target.style.backgroundColor = "var(--color-background, white)"
+            }}
+            onMouseLeave={e => {
+              e.target.style.borderColor = "var(--border-color, #eee)"
+              e.target.style.backgroundColor = "var(--color-background-alt, #f9f9f9)"
             }}
           >
             <div

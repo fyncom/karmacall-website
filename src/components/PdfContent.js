@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from "react"
 import "./pdf.css"
-import { FaArrowCircleRight, FaArrowCircleLeft } from "react-icons/fa"
-import { Document, Page, pdfjs } from "react-pdf"
-import "react-pdf/dist/esm/Page/TextLayer.css"
-import "react-pdf/dist/esm/Page/AnnotationLayer.css"
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
+import { FaDownload, FaEye } from "react-icons/fa"
 
 const PdfContent = ({ file }) => {
-  const [numPages, setNumPages] = useState(null)
-  const [pageNumber, setPageNumber] = useState(1) // Set the initial page
   const [prefersDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
@@ -20,15 +13,10 @@ const PdfContent = ({ file }) => {
     if (typeof window !== "undefined") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
       setIsDarkMode(mediaQuery.matches)
-      mediaQuery.addEventListener("change", setDarkModeFromMediaQuery) // Add the event listener for changes
-      return () =>
-        mediaQuery.removeEventListener("change", setDarkModeFromMediaQuery) // Cleanup function to remove the event listener
+      mediaQuery.addEventListener("change", setDarkModeFromMediaQuery)
+      return () => mediaQuery.removeEventListener("change", setDarkModeFromMediaQuery)
     }
   }, [])
-
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages)
-  }
 
   const handleDownload = () => {
     let pageTitle = document.title || "Download"
@@ -48,55 +36,26 @@ const PdfContent = ({ file }) => {
     document.body.removeChild(link)
   }
 
+  const handleView = () => {
+    window.open(file, "_blank")
+  }
+
   return (
     <div className="pdf-viewer">
       <div className="pdf-container">
-        <div
-          className="pdf-navigation previous"
-          onClick={() => setPageNumber(Math.max(pageNumber - 1, 1))}
-        >
-          <FaArrowCircleLeft />
+        <div className="pdf-placeholder">
+          <div className="pdf-icon">📄</div>
+          <h3>PDF Document</h3>
+          <p>This document is available for download or viewing in a new tab.</p>
+          <div className="pdf-actions">
+            <button className="pdf-download" onClick={handleDownload}>
+              <FaDownload /> Download PDF
+            </button>
+            <button className="pdf-view" onClick={handleView}>
+              <FaEye /> View in New Tab
+            </button>
+          </div>
         </div>
-        <Document
-          file={file}
-          className={`pdf-document ${prefersDarkMode ? "dark-mode" : ""}`}
-          onLoadSuccess={onDocumentLoadSuccess}
-          onError={error =>
-            console.error("PDF failed to load: ", error.message)
-          }
-        >
-          <Page pageNumber={pageNumber} />
-        </Document>
-        <div
-          className="pdf-navigation next"
-          onClick={() => setPageNumber(Math.min(pageNumber + 1, numPages))}
-        >
-          <FaArrowCircleRight />
-        </div>
-        <p>
-          Page {pageNumber} of {numPages}
-        </p>
-        <button
-          onClick={() =>
-            setPageNumber(prevPageNumber => Math.max(prevPageNumber - 1, 1))
-          }
-          disabled={pageNumber === 1}
-        >
-          Previous
-        </button>
-        <button
-          onClick={() =>
-            setPageNumber(prevPageNumber =>
-              Math.min(prevPageNumber + 1, numPages)
-            )
-          }
-          disabled={pageNumber === numPages}
-        >
-          Next
-        </button>
-        <button className="pdf-download" onClick={handleDownload}>
-          Download PDF
-        </button>
       </div>
     </div>
   )

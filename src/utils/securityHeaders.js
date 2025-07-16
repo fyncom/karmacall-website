@@ -12,9 +12,6 @@ export const generateSecurityHeaders = (environment = "production") => {
   const isDevelopment = environment === "development"
 
   const headers = {
-    // Content Security Policy
-    "Content-Security-Policy": generateCSPHeader(environment),
-
     // Strict Transport Security
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
 
@@ -81,38 +78,6 @@ export const generateSecurityHeaders = (environment = "production") => {
 }
 
 /**
- * Generate CSP header for security headers
- * @param {string} environment - Environment
- * @returns {string} - CSP header value
- */
-const generateCSPHeader = environment => {
-  const isDevelopment = environment === "development"
-
-  const directives = [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.auth0.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://static.hotjar.com https://script.hotjar.com https://cusdis.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.auth0.com https://static.hotjar.com",
-    "img-src 'self' data: https: https://www.google-analytics.com https://www.googletagmanager.com https://static.hotjar.com https://script.hotjar.com https://fyncom-static-files.s3.us-west-1.amazonaws.com",
-    "font-src 'self' https://fonts.gstatic.com data:",
-    "connect-src 'self' https://api.karmacall.com https://dev-api.karmacall.com https://server.fyncom.com https://ipapi.co https://www.google-analytics.com https://www.googletagmanager.com https://static.hotjar.com https://script.hotjar.com https://vc.hotjar.io wss://ws.hotjar.com https://cusdis.com",
-    "frame-src 'self' https://www.youtube.com https://buy.stripe.com https://fyncom.chargebee.com https://js.stripe.com",
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self' https://api.karmacall.com https://dev-api.karmacall.com https://server.fyncom.com https://buy.stripe.com https://fyncom.chargebee.com",
-    "frame-ancestors 'none'",
-    "upgrade-insecure-requests",
-  ]
-
-  if (isDevelopment) {
-    // Add localhost for development
-    directives[1] += " http://localhost:* ws://localhost:* http://127.0.0.1:* ws://127.0.0.1:*"
-    directives[5] += " http://localhost:* ws://localhost:* http://127.0.0.1:* ws://127.0.0.1:*"
-  }
-
-  return directives.join("; ")
-}
-
-/**
  * Validate security headers
  * @param {object} headers - Headers to validate
  * @returns {object} - Validation result
@@ -120,7 +85,7 @@ const generateCSPHeader = environment => {
 export const validateSecurityHeaders = headers => {
   const result = { isValid: true, warnings: [], errors: [] }
 
-  const requiredHeaders = ["Content-Security-Policy", "X-Frame-Options", "X-Content-Type-Options", "X-XSS-Protection", "Referrer-Policy"]
+  const requiredHeaders = ["X-Frame-Options", "X-Content-Type-Options", "X-XSS-Protection", "Referrer-Policy"]
 
   // Check for required headers
   requiredHeaders.forEach(header => {
