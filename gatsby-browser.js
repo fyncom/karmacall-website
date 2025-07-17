@@ -7,7 +7,8 @@
 import ReactGA from "react-ga4"
 import React from "react"
 import CookieConsentEEA from "./src/components/CookieConsentEEA"
-import { autoWipeAfterTracking } from "./src/utils/utmWiper"
+import posthog from "posthog-js"
+import { setTrackingConsent } from "./src/utils/analytics"
 
 // Import proper font definitions with font-display: swap
 import "./src/components/fonts.css"
@@ -17,12 +18,19 @@ export const wrapRootElement = ({ element }) => {
   return (
     <>
       {element}
-      <CookieConsentEEA />
+      <CookieConsentEEA 
+        onConsentChange={(hasConsent) => {
+          // Update consent for both platforms when user changes preference
+          if (typeof window !== "undefined") {
+            setTimeout(() => setTrackingConsent(hasConsent), 100)
+          }
+        }}
+      />
     </>
   )
 }
 
-// Initialize ReactGA with your Google Analytics measurement ID
+// Initialize ReactGA and PostHog
 export const onClientEntry = () => {
   // Only initialize in production or if debug mode is enabled
   if (process.env.NODE_ENV === "production" || process.env.GATSBY_DEBUG_MODE === "true") {
@@ -33,6 +41,23 @@ export const onClientEntry = () => {
         cookieFlags: "samesite=none;secure",
       },
     })
+
+    // Initialize PostHog
+    if (process.env.GATSBY_POSTHOG_API_KEY && process.env.GATSBY_POSTHOG_HOST) {
+      posthog.init(process.env.GATSBY_POSTHOG_API_KEY, {
+        api_host: process.env.GATSBY_POSTHOG_HOST,
+        autocapture: true,
+        capture_pageview: false, // We'll manually capture pageviews
+        loaded: (posthog) => {
+          window.posthog = posthog
+          
+          // Set up consent handling for both platforms
+          const consentStatus = localStorage.getItem("cookie_consent_eea")
+          const hasConsent = consentStatus === "accepted" || consentStatus === "non_eea_user"
+          setTrackingConsent(hasConsent)
+        }
+      })
+    }
   }
 
   // Add preload links for critical fonts to improve loading performance
@@ -68,17 +93,23 @@ export const onRouteUpdate = ({ location }) => {
       // Add GDPR context parameters
       consent: consentStatus === "accepted" || consentStatus === "non_eea_user" ? "granted" : "denied",
     })
-  }
 
-  // Auto-wipe UTM parameters after analytics tracking is complete
-  // This provides a cleaner user experience while preserving tracking data
-  autoWipeAfterTracking(2500, {
-    preserveOtherParams: true,
-    updateHistory: true,
-    onComplete: (success, trackingData) => {
-      if (success && Object.keys(trackingData).length > 0) {
-        console.log("UTM parameters cleaned from URL:", trackingData)
-      }
-    },
-  })
+    // Capture pageview with PostHog (respects consent automatically)
+    if (window.posthog) {
+      window.posthog.capture('$pageview', {
+        $current_url: window.location.href,
+        path: location.pathname,
+        referrer: document.referrer
+      })
+    }
+
+    // Enhanced GA tracking for blog posts
+    if (location.pathname.startsWith('/blog/') && window.gtag) {
+      window.gtag('event', 'blog_page_view', {
+        event_category: 'blog',
+        page_path: location.pathname,
+        page_title: document.title
+      })
+    }
+  }
 }

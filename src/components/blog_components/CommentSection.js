@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react"
 import { formatVoteScore, getTotalCommentCount } from "../../utils/numberFormatter"
 import { getRelativeTime, formatDate } from "../../utils/timeFormatter"
-import { sanitizeComment, sanitizeName, sanitizeEmail } from "../../utils/sanitizer"
-import { validateEmail, validateName, validateMessage } from "../../utils/inputValidation"
-import { checkRateLimit, recordAttempt } from "../../utils/rateLimiter"
+import { trackComment } from "../../utils/analytics"
 
 // Transform Cusdis comment format to our expected format
 const transformCusdisComment = cusdisComment => {
@@ -374,43 +372,6 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
       console.log("Submitting comment to Cusdis API...")
     }
 
-    // Input validation and sanitization
-    const sanitizedNickname = sanitizeName(nickname)
-    const sanitizedEmail = sanitizeEmail(email)
-    const sanitizedComment = sanitizeComment(comment)
-
-    // Validate inputs
-    const nameValidation = validateName(sanitizedNickname, { minLength: 2, maxLength: 50 })
-    const emailValidation = validateEmail(sanitizedEmail)
-    const commentValidation = validateMessage(sanitizedComment, { minLength: 5, maxLength: 2000 })
-
-    if (!nameValidation.isValid) {
-      setSubmitMessage(`Name error: ${nameValidation.errors[0]}`)
-      setSubmitting(false)
-      return
-    }
-
-    if (!emailValidation.isValid) {
-      setSubmitMessage(`Email error: ${emailValidation.errors[0]}`)
-      setSubmitting(false)
-      return
-    }
-
-    if (!commentValidation.isValid) {
-      setSubmitMessage(`Comment error: ${commentValidation.errors[0]}`)
-      setSubmitting(false)
-      return
-    }
-
-    // Rate limiting check
-    const identifier = `${sanitizedEmail}_${typeof window !== "undefined" ? window.location.pathname : ""}`
-    const rateLimitResult = checkRateLimit("comments", identifier)
-
-    if (!rateLimitResult.allowed) {
-      setSubmitMessage(rateLimitResult.message || "Too many comments. Please wait before posting again.")
-      setSubmitting(false)
-      return
-    }
 
     try {
       // Submit to Cusdis API
@@ -424,9 +385,9 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
           pageId: articleSlug,
           pageTitle: articleTitle,
           pageUrl: typeof window !== "undefined" ? window.location.href : "",
-          nickname: sanitizedNickname,
-          email: sanitizedEmail,
-          content: sanitizedComment,
+          nickname: nickname,
+          email: email,
+          content: comment,
         }),
       })
 
@@ -440,15 +401,15 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
           console.log("Comment submission successful:", responseData)
         }
 
-        // Record successful attempt for rate limiting
-        recordAttempt("comments", identifier)
-
         // Check if comment needs approval
         if (responseData.data && responseData.data.approved === false) {
           setSubmitMessage("Thank you! Your comment has been submitted and is waiting for approval. It will appear once reviewed.")
         } else {
           setSubmitMessage("Comment posted successfully!")
         }
+
+        // Track comment posting in both GA and PostHog
+        trackComment('posted', window.location.pathname, articleTitle)
 
         setComment("")
 
@@ -478,43 +439,6 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
 
     console.log("Submitting reply to Cusdis API...")
 
-    // Input validation and sanitization for replies
-    const sanitizedNickname = sanitizeName(nickname)
-    const sanitizedEmail = sanitizeEmail(email)
-    const sanitizedReply = sanitizeComment(replyText)
-
-    // Validate inputs
-    const nameValidation = validateName(sanitizedNickname, { minLength: 2, maxLength: 50 })
-    const emailValidation = validateEmail(sanitizedEmail)
-    const replyValidation = validateMessage(sanitizedReply, { minLength: 5, maxLength: 2000 })
-
-    if (!nameValidation.isValid) {
-      setSubmitMessage(`Name error: ${nameValidation.errors[0]}`)
-      setSubmitting(false)
-      return
-    }
-
-    if (!emailValidation.isValid) {
-      setSubmitMessage(`Email error: ${emailValidation.errors[0]}`)
-      setSubmitting(false)
-      return
-    }
-
-    if (!replyValidation.isValid) {
-      setSubmitMessage(`Reply error: ${replyValidation.errors[0]}`)
-      setSubmitting(false)
-      return
-    }
-
-    // Rate limiting check for replies
-    const identifier = `${sanitizedEmail}_${typeof window !== "undefined" ? window.location.pathname : ""}`
-    const rateLimitResult = checkRateLimit("comments", identifier)
-
-    if (!rateLimitResult.allowed) {
-      setSubmitMessage(rateLimitResult.message || "Too many replies. Please wait before posting again.")
-      setSubmitting(false)
-      return
-    }
 
     try {
       // Submit reply to Cusdis API
@@ -528,9 +452,9 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
           pageId: articleSlug,
           pageTitle: articleTitle,
           pageUrl: typeof window !== "undefined" ? window.location.href : "",
-          nickname: sanitizedNickname,
-          email: sanitizedEmail,
-          content: sanitizedReply,
+          nickname: nickname,
+          email: email,
+          content: replyText,
           parentId: commentId,
         }),
       })
@@ -541,15 +465,15 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
         const responseData = await response.json()
         console.log("Reply submission successful:", responseData)
 
-        // Record successful attempt for rate limiting
-        recordAttempt("comments", identifier)
-
         // Check if reply needs approval
         if (responseData.data && responseData.data.approved === false) {
           setSubmitMessage("Thank you! Your reply has been submitted and is waiting for approval. It will appear once reviewed.")
         } else {
           setSubmitMessage("Reply posted successfully!")
         }
+
+        // Track reply posting in both GA and PostHog
+        trackComment('replied', window.location.pathname, articleTitle)
 
         setReplyingTo(null)
         setReplyText("")
@@ -852,7 +776,7 @@ const CommentSection = ({ articleSlug, articleTitle, onCommentCountChange }) => 
               {getRelativeTime(comment.date)}
             </div>
           </div>
-          <div style={commentTextStyle} dangerouslySetInnerHTML={{ __html: sanitizeComment(comment.text) }} />
+          <div style={commentTextStyle}>{comment.text}</div>
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "0.75rem" }}>
             {/* Left side: Voting buttons with score in between */}

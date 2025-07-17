@@ -68,7 +68,7 @@ const disableTracking = () => {
   }
 };
 
-const CookieConsentEEA = () => {
+const CookieConsentEEA = ({ onConsentChange }) => {
   const [showBanner, setShowBanner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isEEA, setIsEEA] = useState(false);
@@ -171,11 +171,13 @@ const CookieConsentEEA = () => {
   const handleCookieAccept = () => {
     localStorage.setItem("cookie_consent_eea", "accepted");
     initializeTracking();
+    if (onConsentChange) onConsentChange(true);
   };
 
   const handleCookieDecline = () => {
     localStorage.setItem("cookie_consent_eea", "rejected");
     disableTracking();
+    if (onConsentChange) onConsentChange(false);
   };
 
   if (!showBanner || loading) return null;

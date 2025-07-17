@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(rm:*)",
+      "Bash(npm install:*)",
+      "Bash(cp:*)",
+      "Bash(npm run develop:*)",
+      "Bash(timeout 10 npm run develop)",
+      "Bash(npm run clean:*)",
+      "Bash(timeout 15 npm run develop)"
     ],
     "deny": []
   }
