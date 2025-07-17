@@ -9,10 +9,7 @@ const path = require("path");
 const axios = require("axios")
 const { createFilePath } = require("gatsby-source-filesystem")
 
-// This isn't necessary. This removes useful functionality.
-// You're forcing static behavior in a system made to be dynamic.
-// todo : remove this & learn to use dynamic fields
-// Explicitly define the MDX schema to ensure frontmatter, fields, and body are available
+// Enhanced MDX schema for robust GraphQL frontmatter handling
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions
   createTypes(`
@@ -22,18 +19,20 @@ exports.createSchemaCustomization = ({ actions }) => {
       fields: Fields
     }
     type Frontmatter {
-      title: String
+      title: String!
       date: Date @dateformat
       draft: Boolean
       description: String
       author: String
-      featuredImage: String
+      featuredImage: File @fileByRelativePath
+      featuredImagePath: String
       keywords: [String]
       imageDescription: String
       imageCredit: String
+      slug: String
     }
     type Fields {
-      slug: String
+      slug: String!
     }
   `)
 }
@@ -43,24 +42,39 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
   if (node.internal.type === "Mdx") {
     const slug = createFilePath({ node, getNode })
-
-    // todo - should be able to get all files in 1 directory.
-    //    Then you wouldn't need this
+    const fileNode = getNode(node.parent)
+    
     // Create blog-friendly slugs for blog posts
     let finalSlug = slug
-
-    // Check if this MDX file is from the blog-posts directory
-    const fileNode = getNode(node.parent)
-    if (fileNode && fileNode.sourceInstanceName === "blog-posts") {
-      // Force all blog posts to have /blog/ prefix
-      finalSlug = `/blog${slug}`
+    
+    // Handle both old blog-posts directory and new src/pages/blog structure
+    if (fileNode) {
+      if (fileNode.sourceInstanceName === "blog-posts") {
+        // Legacy blog-posts directory
+        finalSlug = `/blog${slug}`
+      } else if (fileNode.sourceInstanceName === "blogs" && fileNode.relativePath.includes("blog/")) {
+        // New src/pages/blog structure - use the existing slug
+        finalSlug = slug
+      }
     }
 
-    // Debug logging
-    console.log(`🐛 MDX Node: ${node.internal.contentFilePath}`)
-    console.log(`🐛 Source Instance: ${fileNode?.sourceInstanceName}`)
-    console.log(`🐛 Original slug: ${slug}`)
-    console.log(`🐛 Final slug: ${finalSlug}`)
+    // Clean up slug if it ends with /index
+    if (finalSlug.endsWith("/index")) {
+      finalSlug = finalSlug.replace("/index", "")
+    }
+    
+    // Ensure blog posts have /blog/ prefix
+    if (finalSlug.includes("/blog/") && !finalSlug.startsWith("/blog/")) {
+      finalSlug = finalSlug.replace(/.*\/blog\//, "/blog/")
+    }
+
+    // Debug logging for development
+    if (process.env.NODE_ENV === "development") {
+      console.log(`🐛 MDX Node: ${node.internal.contentFilePath}`)
+      console.log(`🐛 Source Instance: ${fileNode?.sourceInstanceName}`)
+      console.log(`🐛 Original slug: ${slug}`)
+      console.log(`🐛 Final slug: ${finalSlug}`)
+    }
 
     createNodeField({
       node,
@@ -108,11 +122,16 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   // Create pages for user help center
   await createHelpPages(helpItemsUser, "/user-help-center")
 
-  // Create blog post pages from MDX files
+  // Create blog post pages from MDX files with enhanced GraphQL queries
   const isProd = process.env.NODE_ENV === "production"
   const blogPostQuery = await graphql(`
     {
-      allMdx {
+      allMdx(
+        sort: { frontmatter: { date: DESC } }
+        filter: { 
+          fields: { slug: { regex: "/^\/blog\//" } }
+        }
+      ) {
         nodes {
           id
           fields {
@@ -122,6 +141,18 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
             title
             draft
             date
+            description
+            author
+            featuredImage {
+              publicURL
+              childImageSharp {
+                gatsbyImageData(width: 1200, height: 630, layout: FIXED)
+              }
+            }
+            featuredImagePath
+            keywords
+            imageDescription
+            imageCredit
           }
         }
       }
@@ -135,7 +166,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
 
   const allMdxNodes = blogPostQuery.data.allMdx.nodes
 
-  // Filter and sort blog posts in JavaScript
+  // Filter blog posts - sorting is now handled by GraphQL
   const blogPosts = allMdxNodes
     .filter(post => {
       // Only include posts with blog slugs
@@ -147,12 +178,6 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
         return false
       }
       return true
-    })
-    .sort((a, b) => {
-      // Sort by date descending
-      const dateA = new Date(a.frontmatter?.date || 0)
-      const dateB = new Date(b.frontmatter?.date || 0)
-      return dateB - dateA
     })
 
   // Create individual blog post pages

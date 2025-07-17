@@ -41,12 +41,23 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
   const metaKeywords = keywords.length > 0 ? keywords : defaultKeywords
   const canonical = pathname ? `${site.siteMetadata.siteUrl}${pathname}` : site.siteMetadata.siteUrl
 
-  // Use custom image if provided, otherwise use default KarmaCall logo
-  const socialImage = image
-    ? image.startsWith("http")
-      ? image
-      : `${site.siteMetadata.siteUrl}${image}`
-    : `${site.siteMetadata.siteUrl}/static/karmacall-logo.png`
+  // Enhanced image handling for GraphQL frontmatter
+  const socialImage = (() => {
+    if (image) {
+      // Handle GraphQL image objects with publicURL
+      if (typeof image === "object" && image.publicURL) {
+        return `${site.siteMetadata.siteUrl}${image.publicURL}`
+      }
+      // Handle direct image paths
+      if (typeof image === "string") {
+        return image.startsWith("http")
+          ? image
+          : `${site.siteMetadata.siteUrl}${image}`
+      }
+    }
+    // Default fallback
+    return `${site.siteMetadata.siteUrl}/static/karmacall-logo.png`
+  })()
 
   return (
     <Helmet htmlAttributes={{ lang }} title={title} titleTemplate={defaultTitle ? `%s | ${defaultTitle}` : null}>

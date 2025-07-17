@@ -1,75 +1,13 @@
 import React from "react"
 import "../../components/help-center.css"
-import { Link, useStaticQuery, graphql } from "gatsby"
+import { Link, graphql } from "gatsby"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import { Wrapper } from "../../components/Markdown-Wrapper"
 import "../../components/blog.css"
 
-// Static articles database - update this when adding new articles
-const blogArticles = [
-  {
-    id: "sample-mdx-article",
-    title: "How to Write Blog Posts in MDX - Sample Article",
-    description: "Learn how to create engaging blog content using MDX that automatically converts to our JavaScript blog format. This sample demonstrates markdown features, social sharing, and more.",
-    author: "KarmaCall Team",
-    date: "2025-01-12",
-    slug: "/blog/sample-mdx-article",
-    featuredImage: "../../images/blog/interactive-rewards-blog-social-graphic.jpg",
-  },
-  {
-    id: "shifting-frontlines-spam-2025",
-    title: "The Shifting Frontlines of Spam: Interactive Report Reveals Global Crisis",
-    description:
-      "Our comprehensive interactive analysis reveals the staggering scale of global spam escalation. With over 137 million unwanted calls daily and $1.03 trillion in losses, discover the regional hotspots, AI-driven tactics, and strategic solutions in this data-rich report.",
-    author: "KarmaCall Team",
-    date: "2025-01-17",
-    slug: "/blog/shifting-frontlines-spam-2025",
-    featuredImage: "../../images/blog/attention-economy-multi-screens.jpg",
-  },
-  {
-    id: "future-of-spam-blocking",
-    title: "Get Cash Back for Blocking Spam, with KarmaCall Version 4.0",
-    description:
-      "KarmaCall 4.0 is a revolutionary new app that pays you to block spam calls. With its fresh new UI and infinitely long call blocking capability.",
-    author: "KarmaCall Team",
-    date: "2024-03-11",
-    slug: "/blog/future-of-spam-blocking",
-    featuredImage: "../../images/blog/interactive-rewards-blog-social-graphic.jpg",
-  },
-  {
-    id: "job-scam-texts-surge-2024",
-    title: "Job Scam Texts Cost Americans $470M in 2024 - Here's the Economic Solution",
-    description:
-      "Job scam texts were the #2 most common hoax in 2024, costing Americans nearly half a billion dollars. Discover how FynCom's refundable deposit technology makes mass scamming economically impossible.",
-    author: "KarmaCall Team",
-    date: "2024-06-07",
-    slug: "/blog/job-scam-texts-surge-2024",
-    featuredImage: "../../images/illustrations/inbox-money.png",
-  },
-]
-
-export default function BlogIndex() {
-  // Query all blog images with enhanced coverage
-  const data = useStaticQuery(graphql`
-    query BlogIndexImages {
-      allFile(
-        filter: {
-          sourceInstanceName: { eq: "images" }
-          relativeDirectory: { regex: "/^(blog|illustrations)/" }
-          extension: { regex: "/(jpg|jpeg|png|gif|webp)$/i" }
-        }
-      ) {
-        nodes {
-          relativePath
-          name
-          extension
-          childImageSharp {
-            gatsbyImageData(width: 400, height: 267, layout: FIXED, placeholder: BLURRED, formats: [AUTO, WEBP])
-          }
-        }
-      }
-    }
-  `)
+export default function BlogIndex({ data }) {
+  const { allMdx, allFile } = data
+  const blogPosts = allMdx.nodes
 
   // Enhanced image finder with better matching logic
   const getImageFromSrc = srcPath => {
@@ -86,12 +24,12 @@ export default function BlogIndex() {
     }
 
     // Try exact match first
-    let imageNode = data.allFile.nodes.find(node => node.relativePath === relativePath)
+    let imageNode = allFile.nodes.find(node => node.relativePath === relativePath)
 
     // If exact match fails, try filename matching (for cases where path might differ)
     if (!imageNode) {
       const filename = relativePath.split("/").pop().split(".")[0] // Get filename without extension
-      imageNode = data.allFile.nodes.find(node => node.name === filename)
+      imageNode = allFile.nodes.find(node => node.name === filename)
     }
 
     // Debug logging for development
@@ -102,7 +40,7 @@ export default function BlogIndex() {
       if (!imageNode) {
         console.log(
           "Available images:",
-          data.allFile.nodes.map(n => n.relativePath)
+          allFile.nodes.map(n => n.relativePath)
         )
       }
     }
@@ -136,21 +74,28 @@ export default function BlogIndex() {
     })
   }
 
-  // Sort articles by date (newest first)
-  const sortedArticles = [...blogArticles].sort((a, b) => new Date(b.date) - new Date(a.date))
-
-  const remainder = sortedArticles.length % 4
+  // blogPosts are already sorted by GraphQL query
+  const remainder = blogPosts.length % 4
   const placeholdersNeeded = remainder === 0 ? 0 : 4 - remainder
 
   return (
     <Wrapper seo={seo}>
       <div className="blog-grid">
-        {sortedArticles.map(article => {
+        {blogPosts.map(post => {
+          const article = {
+            id: post.id,
+            title: post.frontmatter.title,
+            description: post.frontmatter.description,
+            author: post.frontmatter.author,
+            date: post.frontmatter.date,
+            slug: post.fields.slug,
+            featuredImage: post.frontmatter.featuredImagePath || post.frontmatter.featuredImage,
+          }
           const gatsbyImage = getImageFromSrc(article.featuredImage)
 
           return (
-            <div className="blog-card" key={article.id}>
-              <Link to={`${article.slug}`} className="blog-link">
+            <div className="blog-card" key={post.id}>
+              <Link to={article.slug} className="blog-link">
                 <div className="blog-image-container">
                   {gatsbyImage ? (
                     // Always prefer GatsbyImage when available for optimization
@@ -215,3 +160,53 @@ export default function BlogIndex() {
     </Wrapper>
   )
 }
+
+// GraphQL query for blog posts and images
+export const query = graphql`
+  query BlogIndexQuery {
+    allMdx(
+      filter: { fields: { slug: { regex: "/^\/blog\//" } } }
+      sort: { frontmatter: { date: DESC } }
+    ) {
+      nodes {
+        id
+        fields {
+          slug
+        }
+        frontmatter {
+          title
+          description
+          author
+          date
+          featuredImage {
+            publicURL
+            childImageSharp {
+              gatsbyImageData(width: 400, height: 267, layout: FIXED, placeholder: BLURRED, formats: [AUTO, WEBP])
+            }
+          }
+          featuredImagePath
+          keywords
+          imageDescription
+          imageCredit
+          draft
+        }
+      }
+    }
+    allFile(
+      filter: {
+        sourceInstanceName: { eq: "images" }
+        relativeDirectory: { regex: "/^(blog|illustrations)/" }
+        extension: { regex: "/(jpg|jpeg|png|gif|webp)$/i" }
+      }
+    ) {
+      nodes {
+        relativePath
+        name
+        extension
+        childImageSharp {
+          gatsbyImageData(width: 400, height: 267, layout: FIXED, placeholder: BLURRED, formats: [AUTO, WEBP])
+        }
+      }
+    }
+  }
+`
