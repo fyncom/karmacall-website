@@ -170,7 +170,8 @@ export default function BlogPostTemplate({ data, children, pageContext, location
             {/* Featured image - only show if featuredImage is provided */}
             {frontmatter.featuredImage && (
               <FeaturedImage
-                src={frontmatter.featuredImage}
+                src={frontmatter.featuredImage?.publicURL || frontmatter.featuredImage}
+                gatsbyImageData={frontmatter.featuredImage?.childImageSharp?.gatsbyImageData}
                 alt={frontmatter.title}
                 imageDescription={frontmatter.imageDescription || "Featured image for this article."}
                 imageCredit={frontmatter.imageCredit || ""}
@@ -358,7 +359,12 @@ export const pageQuery = graphql`
         author
         date(formatString: "YYYY-MM-DD")
         dateDisplay: date(formatString: "MMMM DD, YYYY")
-        featuredImage
+        featuredImage {
+          publicURL
+          childImageSharp {
+            gatsbyImageData(width: 800, layout: CONSTRAINED, placeholder: BLURRED, formats: [AUTO, WEBP])
+          }
+        }
         keywords
         imageDescription
         imageCredit

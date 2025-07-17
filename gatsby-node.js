@@ -9,64 +9,24 @@ const path = require("path");
 const axios = require("axios")
 const { createFilePath } = require("gatsby-source-filesystem")
 
-// This isn't necessary. This removes useful functionality.
-// You're forcing static behavior in a system made to be dynamic.
-// todo : remove this & learn to use dynamic fields
-// Explicitly define the MDX schema to ensure frontmatter, fields, and body are available
-exports.createSchemaCustomization = ({ actions }) => {
-  const { createTypes } = actions
-  createTypes(`
-    type Mdx implements Node {
-      body: String
-      frontmatter: Frontmatter
-      fields: Fields
-    }
-    type Frontmatter {
-      title: String
-      date: Date @dateformat
-      draft: Boolean
-      description: String
-      author: String
-      featuredImage: String
-      keywords: [String]
-      imageDescription: String
-      imageCredit: String
-    }
-    type Fields {
-      slug: String
-    }
-  `)
-}
+// Using dynamic frontmatter - no static schema customization needed
+// Gatsby will automatically infer the schema from the frontmatter in the MDX files
 
 
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
   if (node.internal.type === "Mdx") {
     const slug = createFilePath({ node, getNode })
-
-    // todo - should be able to get all files in 1 directory.
-    //    Then you wouldn't need this
-    // Create blog-friendly slugs for blog posts
-    let finalSlug = slug
-
-    // Check if this MDX file is from the blog-posts directory
-    const fileNode = getNode(node.parent)
-    if (fileNode && fileNode.sourceInstanceName === "blog-posts") {
-      // Force all blog posts to have /blog/ prefix
-      finalSlug = `/blog${slug}`
-    }
-
-    // Debug logging
-    console.log(`🐛 MDX Node: ${node.internal.contentFilePath}`)
-    console.log(`🐛 Source Instance: ${fileNode?.sourceInstanceName}`)
-    console.log(`🐛 Original slug: ${slug}`)
-    console.log(`🐛 Final slug: ${finalSlug}`)
-
+    
+    // For pages in src/pages/blog/, Gatsby automatically creates the correct routes
+    // We still add the slug field for template compatibility
     createNodeField({
       node,
       name: "slug",
-      value: finalSlug,
+      value: slug,
     })
+    
+    console.log(`📝 Created MDX node with slug: ${slug}`)
   }
 }
 const helpCenterTemplate = path.resolve("./src/templates/helpCenterTemplate.js")
@@ -108,82 +68,26 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   // Create pages for user help center
   await createHelpPages(helpItemsUser, "/user-help-center")
 
-  // Create blog post pages from MDX files
-  const isProd = process.env.NODE_ENV === "production"
-  const blogPostQuery = await graphql(`
-    {
-      allMdx {
-        nodes {
-          id
-          fields {
-            slug
-          }
-          frontmatter {
-            title
-            draft
-            date
-          }
-        }
-      }
-    }
-  `)
-
-  if (blogPostQuery.errors) {
-    reporter.panicOnBuild("Error loading MDX blog posts", blogPostQuery.errors)
-    return
-  }
-
-  const allMdxNodes = blogPostQuery.data.allMdx.nodes
-
-  // Filter and sort blog posts in JavaScript
-  const blogPosts = allMdxNodes
-    .filter(post => {
-      // Only include posts with blog slugs
-      if (!post.fields?.slug?.startsWith("/blog/")) {
-        return false
-      }
-      // Filter out drafts in production
-      if (isProd && post.frontmatter?.draft === true) {
-        return false
-      }
-      return true
-    })
-    .sort((a, b) => {
-      // Sort by date descending
-      const dateA = new Date(a.frontmatter?.date || 0)
-      const dateB = new Date(b.frontmatter?.date || 0)
-      return dateB - dateA
-    })
-
-  // Create individual blog post pages
-  blogPosts.forEach(post => {
-    createPage({
-      path: post.fields.slug,
-      component: blogPostTemplate,
-      context: {
-        id: post.id,
-      },
-    })
-  })
-
-  console.log(`✅ Created ${blogPosts.length} blog post pages from MDX files`)
+  // Blog posts are now automatically created by Gatsby from src/pages/blog/*.mdx
+  // No need to manually create pages - Gatsby handles this with file-based routing
+  console.log(`✅ Blog posts will be automatically created from src/pages/blog/ directory`)
 }
 
 exports.onCreatePage = ({ page, actions }) => {
   const { deletePage } = actions
 
-  // Delete template page in production
-  if (process.env.NODE_ENV === "production" && page.path === "/blog/template/") {
-    deletePage(page)
-  }
-
-  // Delete any template pages (files starting with underscore)
+  // Delete template pages (files starting with underscore)
   if (page.path.includes("/_")) {
     deletePage(page)
   }
 
   // Delete README pages
   if (page.path.includes("/readme/") || page.path.includes("/README/")) {
+    deletePage(page)
+  }
+  
+  // Filter out draft pages in production
+  if (process.env.NODE_ENV === "production" && page.context?.frontmatter?.draft === true) {
     deletePage(page)
   }
 }

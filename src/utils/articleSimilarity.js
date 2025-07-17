@@ -1,97 +1,5 @@
-// Article database - centralized location for all blog articles
-// This should be kept in sync with the actual blog articles
-export const articlesDatabase = [
-  {
-    slug: "/blog/sample-mdx-article",
-    title: "How to Write Blog Posts in MDX - Sample Article",
-    description:
-      "Learn how to create engaging blog content using MDX that automatically converts to our JavaScript blog format. This sample demonstrates markdown features, social sharing, and more.",
-    date: "2025-01-12",
-    author: "KarmaCall Team",
-    image: "../../images/blog/interactive-rewards-blog-social-graphic.jpg",
-    keywords: ["mdx", "blog", "markdown", "javascript", "gatsby", "social sharing", "karmacall"],
-  },
-  {
-    slug: "/blog/test-mdx-post",
-    title: "MDX Blog System is Live - Better Writing, Better Sharing",
-    description:
-      "Our new MDX-powered blog system combines easy Markdown writing with sophisticated features. Write naturally, share perfectly, and maintain all the advanced functionality you love.",
-    date: "2025-01-12",
-    author: "KarmaCall Team",
-    image: "../../images/blog/interactive-rewards-blog-social-graphic.jpg",
-    keywords: ["mdx", "blog", "social sharing", "gatsby", "markdown", "karmacall", "developer experience"],
-  },
-  {
-    slug: "/blog/shifting-frontlines-spam-2025",
-    title: "The Shifting Frontlines of Spam: Interactive Report Reveals Global Crisis",
-    description:
-      "Our comprehensive interactive analysis reveals the staggering scale of global spam escalation. With over 137 million unwanted calls daily and $1.03 trillion in losses, discover the regional hotspots, AI-driven tactics, and strategic solutions in this data-rich report.",
-    date: "2025-06-09",
-    author: "KarmaCall Team",
-    image: "../../images/blog/attention-economy-multi-screens.jpg",
-    keywords: [
-      "spam calls",
-      "text scams",
-      "smishing",
-      "global fraud",
-      "ai deepfakes",
-      "interactive report",
-      "data visualization",
-      "regional analysis",
-      "spam trends",
-      "karmacall",
-      "fyncom",
-      "cybersecurity",
-      "financial fraud",
-    ],
-  },
-  {
-    slug: "/blog/future-of-spam-blocking",
-    title: "Get Cash Back for Blocking Spam, with KarmaCall Version 4.0",
-    description:
-      "KarmaCall 4.0 is a revolutionary new app that pays you to block spam calls. With its fresh new UI and infinitely long call blocking capability, KarmaCall 4.0 is the ultimate solution for protecting your privacy and earning cash back.",
-    date: "2024-03-11",
-    author: "KarmaCall Team",
-    image: "../../images/blog/interactive-rewards-blog-social-graphic.jpg",
-    keywords: [
-      "karmacall",
-      "spam blocking",
-      "app",
-      "version 4.0",
-      "cash back",
-      "rewards",
-      "call protection",
-      "android",
-      "ios",
-      "beta",
-      "flow state",
-      "micro-distractions",
-    ],
-  },
-  {
-    slug: "/blog/job-scam-texts-surge-2024",
-    title: "Job Scam Texts Cost Americans $470M in 2024 - Here's the Economic Solution",
-    description:
-      "Job scam texts were the #2 most common hoax in 2024, costing Americans nearly half a billion dollars. Discover how FynCom's refundable deposit technology makes mass scamming economically impossible while protecting legitimate job seekers.",
-    date: "2025-06-07",
-    author: "KarmaCall Team",
-    image: "../../images/illustrations/inbox-money.png",
-    keywords: [
-      "job scams",
-      "text scams",
-      "ai",
-      "fraud prevention",
-      "refundable deposits",
-      "nanodeposits",
-      "economic solution",
-      "spam",
-      "phishing",
-      "karmacall",
-      "fyncom",
-      "security",
-    ],
-  },
-]
+// Dynamic article similarity utility
+// Works with GraphQL-sourced article data instead of static arrays
 
 /**
  * Calculate similarity score between two articles based on various factors
@@ -145,12 +53,12 @@ export function calculateSimilarity(currentArticle, candidateArticle) {
   if (currentArticle.title && candidateArticle.title) {
     const currentWords = currentArticle.title
       .toLowerCase()
-      .split(/\s+/)
-      .filter(word => word.length > 3) // Only words longer than 3 chars
+      .split(' ')
+      .filter(word => word.trim().length > 3) // Only words longer than 3 chars
     const candidateWords = candidateArticle.title
       .toLowerCase()
-      .split(/\s+/)
-      .filter(word => word.length > 3)
+      .split(' ')
+      .filter(word => word.trim().length > 3)
 
     const titleIntersection = currentWords.filter(word => candidateWords.includes(word))
 
@@ -177,27 +85,28 @@ export function calculateSimilarity(currentArticle, candidateArticle) {
 }
 
 /**
- * Find related articles for a given article
+ * Find related articles for a given article using dynamic GraphQL data
  * @param {string} currentArticleSlug - Slug of the current article
+ * @param {Array} allArticles - Array of all articles from GraphQL
  * @param {number} maxResults - Maximum number of related articles to return (default: 3)
  * @param {number} minSimilarity - Minimum similarity score to include (default: 10)
  * @returns {Array} Array of related articles sorted by similarity score
  */
-export function findRelatedArticles(currentArticleSlug, maxResults = 3, minSimilarity = 10) {
+export function findRelatedArticles(currentArticleSlug, allArticles, maxResults = 3, minSimilarity = 10) {
   // Find the current article
-  const currentArticle = articlesDatabase.find(article => article.slug === currentArticleSlug)
+  const currentArticle = allArticles.find(article => article.slug === currentArticleSlug)
 
   if (!currentArticle) {
     console.warn(`Article not found: ${currentArticleSlug}`)
     // Return most recent articles as fallback
-    return articlesDatabase
+    return allArticles
       .filter(article => article.slug !== currentArticleSlug)
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, maxResults)
   }
 
   // Calculate similarity scores for all other articles
-  const candidateArticles = articlesDatabase
+  const candidateArticles = allArticles
     .filter(article => article.slug !== currentArticleSlug)
     .map(article => ({
       ...article,
@@ -213,7 +122,7 @@ export function findRelatedArticles(currentArticleSlug, maxResults = 3, minSimil
 
   // If we don't have enough similar articles, fill with most recent
   if (candidateArticles.length < maxResults) {
-    const recentArticles = articlesDatabase
+    const recentArticles = allArticles
       .filter(article => article.slug !== currentArticleSlug && !candidateArticles.find(ca => ca.slug === article.slug))
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, maxResults - candidateArticles.length)
@@ -226,10 +135,11 @@ export function findRelatedArticles(currentArticleSlug, maxResults = 3, minSimil
 }
 
 /**
- * Get article by slug from the database
+ * Get article by slug from dynamic data
  * @param {string} slug - Article slug
+ * @param {Array} allArticles - Array of all articles from GraphQL
  * @returns {Object|null} Article object or null if not found
  */
-export function getArticleBySlug(slug) {
-  return articlesDatabase.find(article => article.slug === slug) || null
+export function getArticleBySlug(slug, allArticles) {
+  return allArticles.find(article => article.slug === slug) || null
 }

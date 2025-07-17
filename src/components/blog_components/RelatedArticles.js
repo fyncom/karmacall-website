@@ -1,50 +1,54 @@
 import React from "react"
 import { useStaticQuery, graphql } from "gatsby"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
-import { findRelatedArticles, articlesDatabase } from "../../utils/articleSimilarity"
+import { findRelatedArticles } from "../../utils/articleSimilarity"
 
 const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style }) => {
-  // Query all blog images
+  // Query all blog articles and images
   const data = useStaticQuery(graphql`
-    query RelatedArticlesImages {
-      allFile(filter: { sourceInstanceName: { eq: "images" }, relativeDirectory: { in: ["blog", "illustrations"] } }) {
+    query RelatedArticlesQuery {
+      allMdx(
+        sort: { frontmatter: { date: DESC } }
+      ) {
         nodes {
-          relativePath
-          childImageSharp {
-            gatsbyImageData(width: 300, layout: CONSTRAINED, placeholder: BLURRED, formats: [AUTO, WEBP])
+          id
+          frontmatter {
+            title
+            description
+            author
+            date
+            featuredImage {
+              publicURL
+              childImageSharp {
+                gatsbyImageData(width: 300, layout: CONSTRAINED, placeholder: BLURRED, formats: [AUTO, WEBP])
+              }
+            }
+            keywords
+          }
+          fields {
+            slug
           }
         }
       }
     }
   `)
 
-  // Extract filename from the src path and get Gatsby image
-  const getImageFromSrc = srcPath => {
-    if (!srcPath) return null
 
-    // Extract the relative path from various possible formats
-    let relativePath = srcPath
-    if (srcPath.includes("../../images/")) {
-      relativePath = srcPath.replace("../../images/", "")
-    } else if (srcPath.includes("../images/")) {
-      relativePath = srcPath.replace("../images/", "")
-    } else if (srcPath.includes("images/")) {
-      relativePath = srcPath.replace(/.*images\//, "")
-    }
-
-    // Find the matching image in our query results
-    const imageNode = data.allFile.nodes.find(node => node.relativePath === relativePath)
-
-    if (imageNode?.childImageSharp) {
-      return getImage(imageNode.childImageSharp.gatsbyImageData)
-    }
-
-    return null
-  }
+  // Convert GraphQL data to articles array
+  const allArticles = data.allMdx.nodes.map(node => ({
+    slug: node.fields.slug,
+    title: node.frontmatter.title,
+    description: node.frontmatter.description,
+    author: node.frontmatter.author,
+    date: node.frontmatter.date,
+    image: node.frontmatter.featuredImage?.publicURL || node.frontmatter.featuredImage,
+    imageSharp: node.frontmatter.featuredImage?.childImageSharp,
+    keywords: node.frontmatter.keywords || []
+  }))
 
   // Get similar articles and most recent article
-  const similarArticles = findRelatedArticles(currentArticleSlug, maxArticles + 1, 10) // Get extra in case recent is in similar
-  const mostRecentArticle = articlesDatabase.filter(article => article.slug !== currentArticleSlug).sort((a, b) => new Date(b.date) - new Date(a.date))[0]
+  const similarArticles = findRelatedArticles(currentArticleSlug, allArticles, maxArticles + 1, 10) // Get extra in case recent is in similar
+  const mostRecentArticle = allArticles.filter(article => article.slug !== currentArticleSlug).sort((a, b) => new Date(b.date) - new Date(a.date))[0]
 
   // Build the final related articles array with specific strategy
   const buildRelatedArticles = () => {
@@ -132,7 +136,8 @@ const RelatedArticles = ({ currentArticleSlug, maxArticles = 3, className, style
       >
         {/* Render related articles */}
         {relatedArticles.map((article, index) => {
-          const gatsbyImage = getImageFromSrc(article.image)
+          // Use the sharp image data from GraphQL
+          const gatsbyImage = article.imageSharp?.gatsbyImageData ? getImage(article.imageSharp.gatsbyImageData) : null
 
           // Function to calculate dynamic truncation based on title length
           const calculateDescriptionTruncation = (title, description) => {
