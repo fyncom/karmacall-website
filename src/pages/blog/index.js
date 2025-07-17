@@ -13,14 +13,28 @@ export default function BlogIndex({ data }) {
   const getImageFromSrc = srcPath => {
     if (!srcPath) return null
 
+    // Handle different input types
+    let pathString = srcPath
+    
+    // If srcPath is an object (GraphQL node), extract the publicURL
+    if (typeof srcPath === 'object' && srcPath.publicURL) {
+      pathString = srcPath.publicURL
+    } else if (typeof srcPath === 'object' && srcPath.childImageSharp) {
+      // If it's already a GraphQL image node, return the image directly
+      return getImage(srcPath.childImageSharp.gatsbyImageData)
+    } else if (typeof srcPath !== 'string') {
+      // If it's not a string or expected object, return null
+      return null
+    }
+
     // Extract the relative path from various possible formats
-    let relativePath = srcPath
-    if (srcPath.includes("../../images/")) {
-      relativePath = srcPath.replace("../../images/", "")
-    } else if (srcPath.includes("../images/")) {
-      relativePath = srcPath.replace("../images/", "")
-    } else if (srcPath.includes("images/")) {
-      relativePath = srcPath.replace(/.*images\//, "")
+    let relativePath = pathString
+    if (pathString.includes("../../images/")) {
+      relativePath = pathString.replace("../../images/", "")
+    } else if (pathString.includes("../images/")) {
+      relativePath = pathString.replace("../images/", "")
+    } else if (pathString.includes("images/")) {
+      relativePath = pathString.replace(/.*images\//, "")
     }
 
     // Try exact match first
@@ -34,7 +48,7 @@ export default function BlogIndex({ data }) {
 
     // Debug logging for development
     if (process.env.NODE_ENV === "development") {
-      console.log(`Looking for image: ${srcPath}`)
+      console.log(`Looking for image: ${pathString}`)
       console.log(`Relative path: ${relativePath}`)
       console.log(`Found node:`, imageNode)
       if (!imageNode) {
