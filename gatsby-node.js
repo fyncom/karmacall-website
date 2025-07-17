@@ -7,7 +7,6 @@
  */
 const path = require("path");
 const axios = require("axios");
-const fs = require("fs-extra");
 const { createFilePath } = require("gatsby-source-filesystem")
 
 exports.createPages = async ({ actions }) => {

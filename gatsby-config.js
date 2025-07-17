@@ -6,7 +6,10 @@ require("dotenv").config({
 module.exports = {
   siteMetadata: {
     title: `Block Spam, Get Cash. A Scam call Blocker App with Cash Back! Download today | KarmaCall`,
+    titleTemplate: `%s | KarmaCall`,
     description: `Tired of scam calls? Get paid to block them! KarmaCall auto-blocks spam calls for you and pays you each time. Cash out to gift cards at $1.00 or withdraw anytime.`,
+    image: '/images/karmacall-social-card.jpg',
+    twitterUsername: '@GetKarmaCall',
     author: `@adrianegraphene`,
     siteUrl: `https://www.karmacall.com`,
   },

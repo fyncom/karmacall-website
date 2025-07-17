@@ -9,6 +9,7 @@ import React from "react"
 import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
 
+// todo - pass back image URL slug from GraphQL using frontmatter of original blogs
 function Seo({ description, title, lang = "en", keywords = [], children, pathname = "" }) {
   const { site } = useStaticQuery(
     graphql`
@@ -16,9 +17,12 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
         site {
           siteMetadata {
             title
+            titleTemplate
             description
-            author
             siteUrl
+            image
+            author
+            twitterUsername
           }
         }
       }
@@ -52,15 +56,16 @@ function Seo({ description, title, lang = "en", keywords = [], children, pathnam
       <meta property="og:description" content={metaDescription} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={canonical} />
-      <meta property="og:image" content="https://www.karmacall.com/TwitterBanner-KarmaCall.jpg" />
+      <meta property="og:image" content={site.siteMetadata?.siteUrl + site.siteMetadata?.image} />
+      {/* site_name is a thing? If so, and it's important, pull name from metadata */}
       <meta property="og:site_name" content="KarmaCall" />
 
       {/* Twitter Card tags */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:creator" content={site.siteMetadata?.author || ``} />
+      <meta name="twitter:creator" content={site.siteMetadata?.twitterUsername || ``} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={metaDescription} />
-      <meta name="twitter:image" content="https://www.karmacall.com/TwitterBanner-KarmaCall.jpg" />
+      <meta name="twitter:image" content={site.siteMetadata?.siteUrl + site.siteMetadata?.image} />
 
       {/* Robots and canonical */}
       <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
