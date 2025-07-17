@@ -28,18 +28,25 @@ export default function BlogIndex({ data }) {
         }}
       >
         {data.allMdx.nodes.map(({ id, excerpt, frontmatter, fields }) => (
-          <div className="blog-item" key={id}>
+          <div className="blog-card" key={id}>
             <Link className={"blog-link"} to={`${fields.slug}`}>
-              <h2>
-                <Link to={`${fields.slug}`}>{frontmatter.title}</Link>
-              </h2>
-              <small>{frontmatter.date}</small>
-              <p>{shortenText(frontmatter.description, 100)}</p> {/* Truncate to 100 characters */}
-              {frontmatter.featuredImage?.childImageSharp ? (
-                <Img fluid={frontmatter.featuredImage.childImageSharp.fluid} />
-              ) : (
-                <img className={"gif-image"} src={frontmatter.featuredImage?.publicURL} alt={frontmatter.title} />
-              )}
+              <div className="blog-image-container">
+                <Img
+                  fluid={frontmatter.featuredImage.childImageSharp.fluid}
+                  className={"blog-image"}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              </div>
+              <div className="blog-content">
+                <h3 className="blog-title">{frontmatter.title}</h3>
+                <div className="blog-meta">
+                  <span className="blog-author">{frontmatter.author || "KarmaCall Team"}</span>
+                  <span className="blog-date">{frontmatter.date}</span>
+                </div>
+              </div>
             </Link>
           </div>
         ))}
