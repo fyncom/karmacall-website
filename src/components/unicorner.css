@@ -1,0 +1,60 @@
+/* Container styling */
+.unicorner-container {
+  margin: 0 auto;
+  width: 80%;
+  max-width: 1200px;
+  padding: 10px 10px 10px 10px;
+}
+.unicorner-container h1,
+.unicorner-container h2 {
+  text-align: center;
+  color: var(--fyncom-blue);
+  margin: 0 auto;
+}
+
+.info-section.unicorner,
+.footer-section {
+  max-width: 900px; /* Maximum width of the section */
+  margin: 0 auto; /* This centers the section */
+  padding: 0 20px; /* This adds padding on both sides */
+}
+
+.store-badges img {
+  height: 40px;
+  margin: 0 10px 0 100px;
+  vertical-align: middle;
+  padding-left: 10px;
+  transition: transform 0.3s ease;
+}
+
+.app-img:hover {
+  transform: scale(1.2);
+}
+
+.footer-section {
+  font-size: 0.9em; /* Just an example size */
+}
+
+.unicorner-container > a > .fyncom-logo {
+  margin: 0;
+  max-width: 80px;
+}
+
+/* Specific class for the FynCom Filters image */
+.fyncom-filters-image .gatsby-image-wrapper {
+  max-width: 600px; /* Ensure it doesn't stretch beyond its container */
+  height: auto; /* Maintain aspect ratio */
+  margin: 1.5rem auto;
+}
+
+.fyncom-logo-header-image .gatsby-image-wrapper {
+  /*max-width: 00px; !* Maximum width of the section *!*/
+  /*margin: 0 auto; !* This centers the section *!*/
+  padding: 0 200px; /* This adds padding on both sides */
+}
+
+@media screen and (min-width: 1024px) {
+  .fyncom-filters-image .gatsby-image-wrapper {
+    max-height: 500px; /* Example max height */
+  }
+}
