@@ -6,9 +6,9 @@ import Seo from "./seo"
 import { generateTextSizeStyles, getFontSize } from "../components/blog/FontSizeSystem"
 import ArticleHeader from "../components/blog/ArticleHeader"
 // import ActionBar from "../components/blog/ActionBar"
+// import FeaturedImage from "../components/blog/FeaturedImage"
 import TableOfContents from "../components/blog/TableOfContents"
 import RelatedArticles from "../components/blog/RelatedArticles"
-// import FeaturedImage from "../components/blog/FeaturedImage"
 import ScrollToTop from "../components/blog/ScrollToTop"
 import TextSizeControl from "../components/blog/TextSizeControl"
 
@@ -71,6 +71,8 @@ export const Wrapper = ({ children, seo }) => {
           .gatsby-focus-wrapper .mdx-content h4 { font-size: calc(${textSizeStyles[textSize].fontSize} * 1.1) !important; }
         `}</style>
         {children}
+        <TableOfContents />
+        <ScrollToTop />
       </div>
       <Footer />
     </div>
