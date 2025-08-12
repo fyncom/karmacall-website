@@ -53,19 +53,31 @@ const Header = () => {
   return (
     <header className="header-top">
       <div className="header-container">
-        <Link to="/">
-          <div className="fyncom-logo-header">
+        <div className="fyncom-logo-header">
+          <Link to="/">
             <Img className="left-header-logo" fixed={karmacallLogoData} alt="KarmaCall Logo" />
-            <div className="arrow-container"></div>
+          </Link>
+          <div className="arrow-container"></div>
+          <Link to="https://fyncom.com">
             <Img className="right-header-logo" fixed={logoData} alt="FynCom Logo, which indicates that KarmaCall is built with FynCom tech" />
-          </div>
-        </Link>
-        <div ref={hamburgerRef} className="mobile-menu-icon" onClick={toggleMenu}>
+          </Link>
+        </div>
+        <div
+          ref={hamburgerRef}
+          className="mobile-menu-icon"
+          onClick={toggleMenu}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+          aria-label="Toggle navigation menu"
+        >
           <FaBars />
         </div>
         {/* Mobile Menu Panel */}
-        <nav ref={menuRef} className={isMenuOpen ? "mobile-menu open" : "mobile-menu"}>
+        <nav ref={menuRef} id="mobile-menu" className={isMenuOpen ? "mobile-menu open" : "mobile-menu"}>
           <ul>
+            <li className="mobile-menu-item">
+              <Link to="/login">Login</Link>
+            </li>
             <li className="mobile-menu-item">
               <Link to="/about">About</Link>
             </li>
