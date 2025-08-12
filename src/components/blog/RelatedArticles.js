@@ -1,6 +1,6 @@
 import React from "react"
 import { useStaticQuery, graphql, Link } from "gatsby"
-import Img from "gatsby-image"
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
 const RelatedArticles = ({ currentArticleSlug, keywords = [], maxArticles = 3, className, style }) => {
   const data = useStaticQuery(graphql`
@@ -19,9 +19,7 @@ const RelatedArticles = ({ currentArticleSlug, keywords = [], maxArticles = 3, c
             featuredImage {
               publicURL
               childImageSharp {
-                fluid(maxWidth: 600) {
-                  ...GatsbyImageSharpFluid
-                }
+                gatsbyImageData(maxWidth: 600, layout: CONSTRAINED, placeholder: BLURRED)
               }
             }
           }
@@ -61,7 +59,7 @@ const RelatedArticles = ({ currentArticleSlug, keywords = [], maxArticles = 3, c
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "1.5rem", marginBottom: "2rem" }}>
         {ranked.map((article, index) => {
           const fm = article.frontmatter || {}
-          const fluid = fm.featuredImage?.childImageSharp?.fluid
+          const gImg = getImage(fm.featuredImage?.childImageSharp?.gatsbyImageData)
           return (
             <Link
               key={index}
@@ -89,9 +87,9 @@ const RelatedArticles = ({ currentArticleSlug, keywords = [], maxArticles = 3, c
               }}
             >
               <div style={{ position: "relative", width: "100%", paddingTop: "75%", backgroundColor: "var(--color-background-alt, #f9f9f9)" }}>
-                {fluid ? (
-                  <Img
-                    fluid={fluid}
+                {gImg ? (
+                  <GatsbyImage
+                    image={gImg}
                     alt={fm.title}
                     style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
                     imgStyle={{ objectFit: "cover", objectPosition: "center" }}

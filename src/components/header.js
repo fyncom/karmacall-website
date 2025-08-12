@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import "./header.css"
 import { Link } from "gatsby"
 import { FaBars } from "react-icons/fa"
-import Img from "gatsby-image"
+import { GatsbyImage } from "gatsby-plugin-image"
 import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "./useCombinedQuery"
 
@@ -55,11 +55,11 @@ const Header = () => {
       <div className="header-container">
         <div className="fyncom-logo-header">
           <Link to="/">
-            <Img className="left-header-logo" fixed={karmacallLogoData} alt="KarmaCall Logo" />
+            <GatsbyImage className="left-header-logo" image={karmacallLogoData} alt="KarmaCall Logo" />
           </Link>
           <div className="arrow-container"></div>
           <Link to="https://fyncom.com">
-            <Img className="right-header-logo" fixed={logoData} alt="FynCom Logo, which indicates that KarmaCall is built with FynCom tech" />
+            <GatsbyImage className="right-header-logo" image={logoData} alt="FynCom Logo, which indicates that KarmaCall is built with FynCom tech" />
           </Link>
         </div>
         <div
