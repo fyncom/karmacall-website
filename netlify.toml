@@ -30,20 +30,22 @@
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept"
 
-# Configure link checking plugin to ignore Google Tag Manager certificate errors
+# Speed up Gatsby builds by caching .cache/ and public/ between builds
 [[plugins]]
-package = "netlify-plugin-checklinks"
-  [plugins.inputs]
-  # Skip external links from failing the build
-  skipPatterns = [
-    "www.googletagmanager.com", 
-    "googletagmanager.com",
-    "https://www.googletagmanager.com",
-    "https://googletagmanager.com"
-  ]
-  # Don't throw error on missing service worker
-  todoPatterns = [
-    "sw.js"
-  ]
-  # Disable checking external URLs to avoid certificate issues
-  checkExternal = false
+package = "@netlify/plugin-gatsby"
+
+# Run the link checker only on Deploy Previews to keep production builds fast
+[context.deploy-preview]
+  [[context.deploy-preview.plugins]]
+  package = "netlify-plugin-checklinks"
+    [context.deploy-preview.plugins.inputs]
+    # Skip external links from failing the build
+    skipPatterns = [
+      "www.googletagmanager.com",
+      "googletagmanager.com",
+      "https://www.googletagmanager.com",
+      "https://googletagmanager.com"
+    ]
+    # Don't throw error on missing service worker
+    todoPatterns = ["sw.js"]
+    checkExternal = false

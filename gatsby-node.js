@@ -19,6 +19,10 @@ exports.onCreateWebpackConfig = ({ actions }) => {
         },
       ],
     },
+    // Faster repeated builds in CI by enabling persistent caching
+    cache: {
+      type: "filesystem",
+    },
   })
 }
 exports.onCreateNode = ({ node, getNode, actions }) => {
