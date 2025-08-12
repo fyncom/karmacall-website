@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import "./footer.css"
 import { Link } from "gatsby"
 import { GatsbyImage } from "gatsby-plugin-image"
-import Img from "gatsby-image"
 import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "./useCombinedQuery"
 
@@ -29,13 +28,13 @@ const Footer = () => {
         <div className="footer-links-container">
           <div className="footer-socials">
             <a href="https://www.linkedin.com/company/fyncom">
-              <Img fixed={linkedInlogo} alt="KarmaCall Company's LinkedIn Page, FynCom" />
+              <GatsbyImage image={linkedInlogo} alt="KarmaCall Company's LinkedIn Page, FynCom" />
             </a>
             <a href="https://twitter.com/GetKarmaCall">
-              <Img fixed={xLogo} alt="KarmaCall's X (formally known as Twitter) page" />
+              <GatsbyImage image={xLogo} alt="KarmaCall's X (formally known as Twitter) page" />
             </a>
             <a href="https://www.facebook.com/GetKarmaCall">
-              <Img fixed={fbLogo} alt="KarmaCall's Facebook page" />
+              <GatsbyImage image={fbLogo} alt="KarmaCall's Facebook page" />
             </a>
           </div>
           <ul className="footer-links left">

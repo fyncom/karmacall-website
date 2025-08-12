@@ -8,12 +8,23 @@ module.exports = {
     title: `Block Spam, Get Cash. A Scam call Blocker App with Cash Back! Download today | KarmaCall`,
     titleTemplate: `%s | KarmaCall`,
     description: `Tired of scam calls? Get paid to block them! KarmaCall auto-blocks spam calls for you and pays you each time. Cash out to gift cards at $1.00 or withdraw anytime.`,
-    image: '/images/karmacall-social-card.jpg',
-    twitterUsername: '@GetKarmaCall',
+    image: "/images/karmacall-social-card.jpg",
+    twitterUsername: "@GetKarmaCall",
     author: `@adrianegraphene`,
     siteUrl: `https://www.karmacall.com`,
   },
   plugins: [
+    {
+      resolve: "gatsby-plugin-sharp",
+      options: {
+        defaults: {
+          formats: ["auto", "webp"],
+          placeholder: "dominantColor",
+          quality: 70,
+          breakpoints: [360, 640, 768, 1024, 1366, 1600],
+        },
+      },
+    },
     `gatsby-plugin-sitemap`,
     {
       resolve: "gatsby-plugin-robots-txt",
@@ -118,6 +129,18 @@ module.exports = {
             options: {
               // to see where this pops up.
               maxWidth: 593, // Example option for gatsby-remark-images
+            },
+          },
+          {
+            resolve: `gatsby-remark-autolink-headers`,
+            options: {
+              offsetY: `100`,
+              icon: false,
+              className: `heading-anchor`,
+              maintainCase: false,
+              removeAccents: true,
+              isIconAfterHeader: false,
+              elements: [`h1`, `h2`, `h3`, `h4`, `h5`, `h6`],
             },
           },
           // other plugins here

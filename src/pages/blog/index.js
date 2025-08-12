@@ -2,7 +2,7 @@ import React from "react"
 import "../../components/help-center.css"
 import { graphql, Link } from "gatsby"
 import { Wrapper } from "../../components/Markdown-Wrapper"
-import Img from "gatsby-image"
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import truncate from "lodash/truncate" // You may need to install lodash if not already installed
 import "../../components/blog.css"
 
@@ -19,7 +19,7 @@ export default function BlogIndex({ data }) {
     })
   }
   return (
-    <Wrapper seo={seo}>
+    <Wrapper seo={seo} hideArticleHeader hideTableOfContents hideRelatedArticles hideTextSizeControl>
       <div
         style={{
           display: "grid",
@@ -31,13 +31,10 @@ export default function BlogIndex({ data }) {
           <div className="blog-card" key={id}>
             <Link className={"blog-link"} to={`${fields.slug}`}>
               <div className="blog-image-container">
-                <Img
-                  fluid={frontmatter.featuredImage.childImageSharp.fluid}
+                <GatsbyImage
+                  image={getImage(frontmatter.featuredImage.childImageSharp.gatsbyImageData)}
                   className={"blog-image"}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                  }}
+                  style={{ width: "100%", height: "100%" }}
                 />
               </div>
               <div className="blog-content">
@@ -67,9 +64,7 @@ export const pageQuery = graphql`
           featuredImage {
             publicURL
             childImageSharp {
-              fluid(maxWidth: 800) {
-                ...GatsbyImageSharpFluid
-              }
+              gatsbyImageData(width: 800, layout: CONSTRAINED, placeholder: BLURRED)
             }
           }
         }

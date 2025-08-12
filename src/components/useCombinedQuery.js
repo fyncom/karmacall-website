@@ -161,16 +161,12 @@ export const useCombinedQuery = () => {
       }
       fyncomLogoLight: file(relativePath: { eq: "fyncom-logo.png" }) {
         childImageSharp {
-          fixed(width: 100) {
-            ...GatsbyImageSharpFixed_withWebp_noBase64
-          }
+          gatsbyImageData(width: 100, layout: FIXED, placeholder: NONE)
         }
       }
       fyncomLogoDark: file(relativePath: { eq: "fyncom-logo-white.png" }) {
         childImageSharp {
-          fixed(width: 100) {
-            ...GatsbyImageSharpFixed_withWebp_noBase64
-          }
+          gatsbyImageData(width: 100, layout: FIXED, placeholder: NONE)
         }
       }
       mobileMarketing: file(relativePath: { eq: "illustrations/marketing-mobile-survey.webp" }) {
@@ -200,51 +196,37 @@ export const useCombinedQuery = () => {
       }
       linkedInlogo: file(relativePath: { eq: "logos/linkedin-white-96.png" }) {
         childImageSharp {
-          fixed(width: 24) {
-            ...GatsbyImageSharpFixed_withWebp_noBase64
-          }
+          gatsbyImageData(width: 24, layout: FIXED, placeholder: NONE)
         }
       }
       fbLogo: file(relativePath: { eq: "logos/facebook_logo_secondary_white.png" }) {
         childImageSharp {
-          fixed(width: 24) {
-            ...GatsbyImageSharpFixed_withWebp_noBase64
-          }
+          gatsbyImageData(width: 24, layout: FIXED, placeholder: NONE)
         }
       }
       xLogo: file(relativePath: { eq: "logos/x-logo-white.png" }) {
         childImageSharp {
-          fixed(width: 24) {
-            ...GatsbyImageSharpFixed_withWebp_noBase64
-          }
+          gatsbyImageData(width: 24, layout: FIXED, placeholder: NONE)
         }
       }
       fyncomProductLogoLight: file(relativePath: { eq: "karmacall-site/fyncom-product.png" }) {
         childImageSharp {
-          fixed(width: 160) {
-            ...GatsbyImageSharpFixed_withWebp_noBase64
-          }
+          gatsbyImageData(width: 160, layout: FIXED, placeholder: NONE)
         }
       }
       fyncomProductLogoDark: file(relativePath: { eq: "karmacall-site/fyncom-product-white.png" }) {
         childImageSharp {
-          fixed(width: 160) {
-            ...GatsbyImageSharpFixed_withWebp_noBase64
-          }
+          gatsbyImageData(width: 160, layout: FIXED, placeholder: NONE)
         }
       }
       karmacallLogoNoTaglineLight: file(relativePath: { eq: "karmacall-logo-no-tagline.png" }) {
         childImageSharp {
-          fixed(width: 110) {
-            ...GatsbyImageSharpFixed_withWebp_noBase64
-          }
+          gatsbyImageData(width: 110, layout: FIXED, placeholder: NONE)
         }
       }
       karmacallLogoNoTaglineDark: file(relativePath: { eq: "karmacall-logo-white-no-tagline.png" }) {
         childImageSharp {
-          fixed(width: 110) {
-            ...GatsbyImageSharpFixed_withWebp_noBase64
-          }
+          gatsbyImageData(width: 110, layout: FIXED, placeholder: NONE)
         }
       }
       karmaCall: file(relativePath: { eq: "karmacall-logo.png" }) {
@@ -327,10 +309,10 @@ export const useCombinedQuery = () => {
     smugLady: getImage(data.smugLady.childImageSharp.gatsbyImageData),
     harold: getImage(data.harold.childImageSharp.gatsbyImageData),
     happyLady: getImage(data.happyLady.childImageSharp.gatsbyImageData),
-    fyncomProductLogoLight: data.fyncomProductLogoLight.childImageSharp.fixed,
-    fyncomProductLogoDark: data.fyncomProductLogoDark.childImageSharp.fixed,
-    karmacallLogoNoTaglineLight: data.karmacallLogoNoTaglineLight.childImageSharp.fixed,
-    karmacallLogoNoTaglineDark: data.karmacallLogoNoTaglineDark.childImageSharp.fixed,
+    fyncomProductLogoLight: getImage(data.fyncomProductLogoLight.childImageSharp.gatsbyImageData),
+    fyncomProductLogoDark: getImage(data.fyncomProductLogoDark.childImageSharp.gatsbyImageData),
+    karmacallLogoNoTaglineLight: getImage(data.karmacallLogoNoTaglineLight.childImageSharp.gatsbyImageData),
+    karmacallLogoNoTaglineDark: getImage(data.karmacallLogoNoTaglineDark.childImageSharp.gatsbyImageData),
     filterImage: getImage(data.fyncomFilterGmail.childImageSharp.gatsbyImageData),
     filterImageDark: getImage(data.fyncomFilterGmailDark.childImageSharp.gatsbyImageData),
     appStoreBadge: getImage(data.appStoreBadge.childImageSharp.gatsbyImageData),
@@ -368,8 +350,8 @@ export const useCombinedQuery = () => {
     closingDeals: getImage(data.closingDeals.childImageSharp.gatsbyImageData),
     nanoQrCode: getImage(data.nanoQrCode.childImageSharp.gatsbyImageData),
     fyncomLogoWhite: getImage(data.fyncomLogoWhite.childImageSharp.gatsbyImageData),
-    linkedInlogo: data.linkedInlogo.childImageSharp.fixed,
-    fbLogo: data.fbLogo.childImageSharp.fixed,
-    xLogo: data.xLogo.childImageSharp.fixed,
+    linkedInlogo: getImage(data.linkedInlogo.childImageSharp.gatsbyImageData),
+    fbLogo: getImage(data.fbLogo.childImageSharp.gatsbyImageData),
+    xLogo: getImage(data.xLogo.childImageSharp.gatsbyImageData),
   }
 }

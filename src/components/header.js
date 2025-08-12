@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import "./header.css"
 import { Link } from "gatsby"
 import { FaBars } from "react-icons/fa"
-import Img from "gatsby-image"
+import { GatsbyImage } from "gatsby-plugin-image"
 import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "./useCombinedQuery"
 
@@ -53,19 +53,31 @@ const Header = () => {
   return (
     <header className="header-top">
       <div className="header-container">
-        <Link to="/">
-          <div className="fyncom-logo-header">
-            <Img className="left-header-logo" fixed={karmacallLogoData} alt="KarmaCall Logo" />
-            <div className="arrow-container"></div>
-            <Img className="right-header-logo" fixed={logoData} alt="FynCom Logo, which indicates that KarmaCall is built with FynCom tech" />
-          </div>
-        </Link>
-        <div ref={hamburgerRef} className="mobile-menu-icon" onClick={toggleMenu}>
+        <div className="fyncom-logo-header">
+          <Link to="/">
+            <GatsbyImage className="left-header-logo" image={karmacallLogoData} alt="KarmaCall Logo" />
+          </Link>
+          <div className="arrow-container"></div>
+          <Link to="https://fyncom.com">
+            <GatsbyImage className="right-header-logo" image={logoData} alt="FynCom Logo, which indicates that KarmaCall is built with FynCom tech" />
+          </Link>
+        </div>
+        <div
+          ref={hamburgerRef}
+          className="mobile-menu-icon"
+          onClick={toggleMenu}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+          aria-label="Toggle navigation menu"
+        >
           <FaBars />
         </div>
         {/* Mobile Menu Panel */}
-        <nav ref={menuRef} className={isMenuOpen ? "mobile-menu open" : "mobile-menu"}>
+        <nav ref={menuRef} id="mobile-menu" className={isMenuOpen ? "mobile-menu open" : "mobile-menu"}>
           <ul>
+            <li className="mobile-menu-item">
+              <Link to="/login">Login</Link>
+            </li>
             <li className="mobile-menu-item">
               <Link to="/about">About</Link>
             </li>
