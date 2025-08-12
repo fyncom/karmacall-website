@@ -3,19 +3,41 @@ import "../components/markdown.css"
 import Header from "./header"
 import Footer from "./footer"
 import Seo from "./seo"
+import { useStaticQuery, graphql } from "gatsby"
 import { generateTextSizeStyles, getFontSize } from "../components/blog/FontSizeSystem"
 import ArticleHeader from "../components/blog/ArticleHeader"
 // import ActionBar from "../components/blog/ActionBar"
-// import FeaturedImage from "../components/blog/FeaturedImage"
 import TableOfContents from "../components/blog/TableOfContents"
 import RelatedArticles from "../components/blog/RelatedArticles"
 import ScrollToTop from "../components/blog/ScrollToTop"
 import TextSizeControl from "../components/blog/TextSizeControl"
-
+import FeaturedImage from "../components/blog/FeaturedImage"
 
 export const Wrapper = ({ children, seo }) => {
   const [textSize, setTextSize] = useState("medium")
   const textSizeStyles = generateTextSizeStyles()
+  const imageQuery = useStaticQuery(graphql`
+    query WrapperAllImagesQuery {
+      allFile(filter: { sourceInstanceName: { eq: "images" } }) {
+        nodes {
+          relativePath
+          publicURL
+        }
+      }
+    }
+  `)
+  const featuredImageUrl = (() => {
+    const pick = v => (v && v.publicURL) || (typeof v === "string" ? v : null)
+    const candidate = pick(seo && seo.featuredImage) || pick(seo && seo.image)
+    if (!candidate) return null
+    if (/^https?:\/\//i.test(candidate)) return candidate
+    if (candidate.includes("/images/")) {
+      const relativePath = candidate.replace(/^.*images[\\\/]*/, "")
+      const node = imageQuery?.allFile?.nodes?.find(n => n.relativePath === relativePath)
+      return node?.publicURL || null
+    }
+    return candidate
+  })()
 
   const handleTextSizeChange = newSize => {
     setTextSize(newSize)
@@ -71,6 +93,7 @@ export const Wrapper = ({ children, seo }) => {
         <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
           <div style={{ flex: "1", minWidth: "0" }}>
             <ArticleHeader articleData={seo} reserveSidebarSpace={false} />
+            <FeaturedImage seo={seo} src={featuredImageUrl} imageDescription={seo?.imageDescription} imageCredit={seo?.imageCredit} />
             <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
             {children}
             <RelatedArticles currentArticleSlug={seo?.pathname || seo?.slug} keywords={seo?.keywords || []} />
