@@ -40,6 +40,7 @@ export const onClientEntry = () => {
         api_host: process.env.GATSBY_POSTHOG_HOST,
         autocapture: true,
         capture_pageview: true, // let PostHog auto-capture $pageview on SPA route changes
+        capture_pageleave: true,
         loaded: ph => {
           window.posthog = ph
         },
