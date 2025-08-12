@@ -16,6 +16,7 @@ import FeaturedImage from "../components/blog/FeaturedImage"
 export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents, hideRelatedArticles, hideTextSizeControl }) => {
   const [textSize, setTextSize] = useState("medium")
   const textSizeStyles = generateTextSizeStyles()
+  const [currentPath, setCurrentPath] = useState("")
   const imageQuery = useStaticQuery(graphql`
     query WrapperAllImagesQuery {
       allFile(filter: { sourceInstanceName: { eq: "images" } }) {
@@ -52,6 +53,7 @@ export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents,
       if (savedTextSize && ["small", "medium", "large"].includes(savedTextSize)) {
         setTextSize(savedTextSize)
       }
+      setCurrentPath(window.location.pathname)
     }
   }, [])
 
@@ -94,9 +96,13 @@ export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents,
           <div style={{ flex: "1", minWidth: "0" }}>
             {!hideArticleHeader && <ArticleHeader articleData={seo} reserveSidebarSpace={false} />}
             <FeaturedImage seo={seo} src={featuredImageUrl} imageDescription={seo?.imageDescription} imageCredit={seo?.imageCredit} />
-            {!hideTextSizeControl && <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />}
+            {!hideTextSizeControl && (
+              <div style={{ margin: "0.75rem 0 0.5rem 0" }}>
+                <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
+              </div>
+            )}
             {children}
-            {!hideRelatedArticles && <RelatedArticles currentArticleSlug={seo?.pathname || seo?.slug} keywords={seo?.keywords || []} />}
+            {!hideRelatedArticles && <RelatedArticles currentArticleSlug={seo?.pathname || seo?.slug || currentPath} keywords={seo?.keywords || []} />}
           </div>
           {!hideTableOfContents && <TableOfContents />}
         </div>

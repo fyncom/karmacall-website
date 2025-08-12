@@ -33,7 +33,12 @@ const RelatedArticles = ({ currentArticleSlug, keywords = [], maxArticles = 3, c
   const normalize = arr => (Array.isArray(arr) ? arr.map(k => String(k).toLowerCase().trim()).filter(Boolean) : [])
   const currentKeywords = normalize(keywords)
 
-  const candidates = data?.allMdx?.nodes?.filter(n => n?.fields?.slug !== currentArticleSlug) || []
+  const normalizedCurrentSlug = (currentArticleSlug || "").replace(/\/?$/, "/")
+  const candidates =
+    data?.allMdx?.nodes?.filter(n => {
+      const nodeSlug = (n?.fields?.slug || "").replace(/\/?$/, "/")
+      return nodeSlug !== normalizedCurrentSlug
+    }) || []
 
   const scoreArticle = (node, index) => {
     const nodeKeywords = normalize(node?.frontmatter?.keywords)
