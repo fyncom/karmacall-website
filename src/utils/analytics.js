@@ -31,12 +31,6 @@ export const trackEvent = (eventName, properties = {}, options = {}) => {
     window.gtag('event', gaEventName, gaParams)
     console.log(`📊 GA Event: ${gaEventName}`, gaParams)
   }
-
-  // Track with PostHog
-  if (window.posthog && !options.skipPostHog) {
-    window.posthog.capture(eventName, properties)
-    console.log(`📈 PostHog Event: ${eventName}`, properties)
-  }
 }
 
 /**
@@ -71,16 +65,6 @@ export const trackPageView = (path, title, additionalProps = {}) => {
       event_category: 'blog',
       event_label: title,
       page_path: path,
-      ...additionalProps
-    })
-  }
-
-  // PostHog pageview (also handled in gatsby-browser.js)
-  // But we can send additional blog-specific events
-  if (path.startsWith('/blog/') && window.posthog) {
-    window.posthog.capture('blog_post_viewed', {
-      article_path: path,
-      article_title: title,
       ...additionalProps
     })
   }
@@ -186,15 +170,6 @@ export const setTrackingConsent = (hasConsent) => {
       analytics_storage: hasConsent ? 'granted' : 'denied',
       ad_storage: hasConsent ? 'granted' : 'denied'
     })
-  }
-
-  // PostHog consent (PostHog respects opt-out automatically)
-  if (window.posthog) {
-    if (hasConsent) {
-      window.posthog.opt_in_capturing()
-    } else {
-      window.posthog.opt_out_capturing()
-    }
   }
 }
 

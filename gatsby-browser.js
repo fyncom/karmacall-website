@@ -8,17 +8,20 @@ import ReactGA from "react-ga4"
 import React from "react"
 import CookieConsentEEA from "./src/components/CookieConsentEEA"
 import posthog from "posthog-js"
+import { PostHogProvider } from "posthog-js/react"
 
 // Import proper font definitions with font-display: swap
 import "./src/components/fonts.css"
 
-// Wrap the root element with our cookie consent component
+// Wrap the root element with PostHogProvider and our cookie consent component
 export const wrapRootElement = ({ element }) => {
   return (
-    <>
-      {element}
-      <CookieConsentEEA />
-    </>
+    <PostHogProvider client={posthog}>
+      <>
+        {element}
+        <CookieConsentEEA />
+      </>
+    </PostHogProvider>
   )
 }
 
@@ -33,19 +36,16 @@ export const onClientEntry = () => {
         cookieFlags: "samesite=none;secure",
       },
     })
+  }
 
-    // Initialize PostHog for automatic pageviews and autocapture
-    if (process.env.GATSBY_POSTHOG_API_KEY && process.env.GATSBY_POSTHOG_HOST) {
-      posthog.init(process.env.GATSBY_POSTHOG_API_KEY, {
-        api_host: process.env.GATSBY_POSTHOG_HOST,
-        autocapture: true,
-        capture_pageview: true, // let PostHog auto-capture $pageview on SPA route changes
-        capture_pageleave: true,
-        loaded: ph => {
-          window.posthog = ph
-        },
-      })
-    }
+  // Initialize PostHog and enable defaulta
+  if (typeof window !== "undefined") {
+    posthog.init(process.env.GATSBY_POSTHOG_API_KEY, {
+      api_host: process.env.GATSBY_POSTHOG_API_HOST,
+      defaults: "2025-05-24",
+      capture_exceptions: true,
+      debug: process.env.NODE_ENV === "development",
+    })
   }
 
   // Add preload links for critical fonts to improve loading performance
