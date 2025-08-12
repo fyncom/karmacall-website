@@ -8,6 +8,7 @@
 import React from "react"
 import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
+import "./accessibility.css"
 
 // todo - pass back image URL slug from GraphQL using frontmatter of original blogs
 function Seo({ description, title, lang = "en", keywords = [], children, pathname = "" }) {

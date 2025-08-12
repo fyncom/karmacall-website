@@ -120,6 +120,18 @@ module.exports = {
               maxWidth: 593, // Example option for gatsby-remark-images
             },
           },
+          {
+            resolve: `gatsby-remark-autolink-headers`,
+            options: {
+              offsetY: `100`,
+              icon: false,
+              className: `heading-anchor`,
+              maintainCase: false,
+              removeAccents: true,
+              isIconAfterHeader: false,
+              elements: [`h1`, `h2`, `h3`, `h4`, `h5`, `h6`],
+            },
+          },
           // other plugins here
         ],
       },

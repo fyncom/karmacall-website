@@ -69,3 +69,6 @@ Write comprehensive functional tests to cover user interactions and critical wor
 **Accessibility:** 
 Ensure the UI is accessible. Test for keyboard navigation, screen reader compatibility, etc.
 
+**Running the code** 
+Do not ever user "npm run" commands to run this. We use "gatsby develop" to run and test the code  We'll often have this running and ideally, you can see the existing terminal we have open in the cursor IDE
+you may occasiohnally need to do "npm install" to install new package.
