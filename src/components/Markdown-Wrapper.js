@@ -70,8 +70,10 @@ export const Wrapper = ({ children, seo }) => {
           .gatsby-focus-wrapper .mdx-content h3 { font-size: calc(${textSizeStyles[textSize].fontSize} * 1.3) !important; }
           .gatsby-focus-wrapper .mdx-content h4 { font-size: calc(${textSizeStyles[textSize].fontSize} * 1.1) !important; }
         `}</style>
-        {children}
-        <TableOfContents />
+        <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
+          <div style={{ flex: "1", minWidth: "0" }}>{children}</div>
+          <TableOfContents />
+        </div>
         <ScrollToTop />
       </div>
       <Footer />
