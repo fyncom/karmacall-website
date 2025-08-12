@@ -148,6 +148,60 @@ const TableOfContents = ({ title, className, style }) => {
 
   return (
     <>
+      <style>{`
+        @media (max-width: 1024px) {
+          .desktop-toc { display: none !important; }
+          .mobile-toc-trigger { display: flex !important; }
+        }
+        @media (min-width: 1025px) {
+          .mobile-toc-trigger { display: none !important; }
+          .mobile-toc-overlay { display: none !important; }
+        }
+      `}</style>
+
+      {/* Mobile TOC trigger button - visible on small screens */}
+      <button
+        className="mobile-toc-trigger"
+        onClick={toggleMobileMenu}
+        aria-haspopup="dialog"
+        aria-expanded={isMobileMenuOpen}
+        aria-controls="mobile-toc"
+        style={{
+          position: "fixed",
+          bottom: "5.5rem",
+          right: "2rem",
+          backgroundColor: "var(--color-background, white)",
+          border: "1.5px solid var(--border-color, #eee)",
+          borderRadius: "999px",
+          padding: "8px 12px",
+          display: "none",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+          zIndex: 1002,
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          fontSize: "0.9rem",
+          color: "var(--color-text, #333)",
+          opacity: 0.4,
+        }}
+        title="Open table of contents"
+        onMouseEnter={e => {
+          e.target.style.opacity = "1"
+        }}
+        onMouseLeave={e => {
+          e.target.style.opacity = "0.4"
+        }}
+        onFocus={e => {
+          e.target.style.opacity = "1"
+        }}
+        onBlur={e => {
+          e.target.style.opacity = "0.4"
+        }}
+      >
+        TOC
+      </button>
+
       {/* Mobile TOC overlay - only visible on mobile when open */}
       {isMobileMenuOpen && (
         <div
@@ -160,7 +214,6 @@ const TableOfContents = ({ title, className, style }) => {
             bottom: 0,
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             zIndex: 1001,
-            display: "none", // Hidden by default, shown via CSS media query
           }}
           onClick={() => setIsMobileMenuOpen(false)}
         >
@@ -179,6 +232,7 @@ const TableOfContents = ({ title, className, style }) => {
               boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
               width: "320px",
             }}
+            id="mobile-toc"
             onClick={e => e.stopPropagation()}
             onKeyDown={handleTocKeyDown}
           >
@@ -326,7 +380,18 @@ const TableOfContents = ({ title, className, style }) => {
             padding: "1.5rem",
           }}
         >
-          <div>
+          <div
+            onClick={toggleToc}
+            onKeyDown={e => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                toggleToc()
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", marginBottom: "0.5rem" }}
+          >
             <h3
               style={{
                 fontSize: "1.1rem",
