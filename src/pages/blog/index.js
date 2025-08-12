@@ -19,7 +19,7 @@ export default function BlogIndex({ data }) {
     })
   }
   return (
-    <Wrapper seo={seo}>
+    <Wrapper seo={seo} hideArticleHeader hideTableOfContents hideRelatedArticles hideTextSizeControl>
       <div
         style={{
           display: "grid",

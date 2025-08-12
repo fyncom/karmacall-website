@@ -13,7 +13,7 @@ import ScrollToTop from "../components/blog/ScrollToTop"
 import TextSizeControl from "../components/blog/TextSizeControl"
 import FeaturedImage from "../components/blog/FeaturedImage"
 
-export const Wrapper = ({ children, seo }) => {
+export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents, hideRelatedArticles, hideTextSizeControl }) => {
   const [textSize, setTextSize] = useState("medium")
   const textSizeStyles = generateTextSizeStyles()
   const imageQuery = useStaticQuery(graphql`
@@ -92,13 +92,13 @@ export const Wrapper = ({ children, seo }) => {
         `}</style>
         <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
           <div style={{ flex: "1", minWidth: "0" }}>
-            <ArticleHeader articleData={seo} reserveSidebarSpace={false} />
+            {!hideArticleHeader && <ArticleHeader articleData={seo} reserveSidebarSpace={false} />}
             <FeaturedImage seo={seo} src={featuredImageUrl} imageDescription={seo?.imageDescription} imageCredit={seo?.imageCredit} />
-            <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
+            {!hideTextSizeControl && <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />}
             {children}
-            <RelatedArticles currentArticleSlug={seo?.pathname || seo?.slug} keywords={seo?.keywords || []} />
+            {!hideRelatedArticles && <RelatedArticles currentArticleSlug={seo?.pathname || seo?.slug} keywords={seo?.keywords || []} />}
           </div>
-          <TableOfContents />
+          {!hideTableOfContents && <TableOfContents />}
         </div>
         <ScrollToTop />
       </div>
