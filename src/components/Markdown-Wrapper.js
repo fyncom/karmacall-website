@@ -73,6 +73,7 @@ export const Wrapper = ({ children, seo }) => {
             <ArticleHeader articleData={seo} />
             <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
             {children}
+            <RelatedArticles currentArticleSlug={seo?.pathname || seo?.slug} keywords={seo?.keywords || []} />
           </div>
           <TableOfContents />
         </div>
