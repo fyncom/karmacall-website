@@ -1,6 +1,25 @@
 import React from "react"
 
 const ArticleHeader = ({ articleData, className, style, reserveSidebarSpace = true }) => {
+  const formatDate = dateValue => {
+    if (!dateValue) return null
+    if (typeof dateValue === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+      const [y, m, d] = dateValue.split("-").map(Number)
+      try {
+        return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })
+      } catch (e) {
+        return dateValue
+      }
+    }
+    try {
+      return new Date(dateValue).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    } catch (e) {
+      return String(dateValue)
+    }
+  }
+
+  const displayDate = (articleData && (articleData.dateDisplay || formatDate(articleData.date))) || null
+
   return (
     <div className={className} style={style}>
       {/* Responsive header layout */}
@@ -75,11 +94,7 @@ const ArticleHeader = ({ articleData, className, style, reserveSidebarSpace = tr
               {articleData.author}
             </span>
             <span className="blog-date" style={{ textAlign: "right" }}>
-              {new Date(articleData.date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {displayDate}
             </span>
           </div>
 

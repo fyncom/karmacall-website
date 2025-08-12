@@ -141,6 +141,7 @@ export default function BlogPostTemplate({ data, children, pageContext, location
     description: frontmatter.description,
     author: frontmatter.author,
     date: frontmatter.date,
+    dateDisplay: frontmatter.dateDisplay,
     featuredImage: frontmatter.featuredImage,
     keywords: frontmatter.keywords || [],
     slug: fields.slug,
