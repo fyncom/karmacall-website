@@ -15,7 +15,7 @@ import TextSizeControl from "../components/blog/TextSizeControl"
 
 export const Wrapper = ({ children, seo }) => {
   const [textSize, setTextSize] = useState("medium")
-  const textSizeStyles = generateTextSizeStyles(textSize) // Pass textSize here
+  const textSizeStyles = generateTextSizeStyles()
 
   const handleTextSizeChange = newSize => {
     setTextSize(newSize)
@@ -39,7 +39,7 @@ export const Wrapper = ({ children, seo }) => {
       <Header />
       <ArticleHeader articleData={seo} />
       <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
-      <div className="gatsby-focus-wrapper" style={textSizeStyles}>
+      <div className="gatsby-focus-wrapper" style={textSizeStyles[textSize]}>
         {children}
       </div>
       <Footer />
