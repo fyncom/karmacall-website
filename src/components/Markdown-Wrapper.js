@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, { useEffect, useState, useRef } from "react"
 import "../components/markdown.css"
 import Header from "./header"
 import Footer from "./footer"
@@ -12,11 +12,13 @@ import RelatedArticles from "../components/blog/RelatedArticles"
 import ScrollToTop from "../components/blog/ScrollToTop"
 import TextSizeControl from "../components/blog/TextSizeControl"
 import FeaturedImage from "../components/blog/FeaturedImage"
+import { trackPageView } from "../utils/analytics"
 
 export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents, hideRelatedArticles, hideTextSizeControl }) => {
   const [textSize, setTextSize] = useState("medium")
   const textSizeStyles = generateTextSizeStyles()
   const [currentPath, setCurrentPath] = useState("")
+  const hasTrackedRef = useRef(false)
   const imageQuery = useStaticQuery(graphql`
     query WrapperAllImagesQuery {
       allFile(filter: { sourceInstanceName: { eq: "images" } }) {
@@ -47,6 +49,7 @@ export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents,
     }
   }
 
+  // restore saved text size preference and current path on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedTextSize = localStorage.getItem("textSize")
@@ -56,6 +59,19 @@ export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents,
       setCurrentPath(window.location.pathname)
     }
   }, [])
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && !hasTrackedRef.current) {
+      const path = window.location.pathname
+      setCurrentPath(path)
+      trackPageView(path, seo?.title, {
+        article_author: seo?.author,
+        article_date: seo?.date,
+        article_keywords: seo?.keywords,
+      })
+      hasTrackedRef.current = true
+    }
+  }, [seo?.title, seo?.author, seo?.date])
 
   return (
     <div>
