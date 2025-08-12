@@ -29,21 +29,18 @@ const FeaturedImage = ({ src, alt, title, imageDescription, imageCredit, classNa
   if (!url) return null
   return (
     <div className={className} style={style}>
-      <img
-        src={url}
-        alt={alt || title || "Featured image"}
-        style={{ width: "100%", height: "auto", borderRadius: "6px", border: "1px solid var(--border-color, #eee)" }}
-        loading="lazy"
-      />
+      <div className="featured-image-card">
+        <img src={url} alt={alt || title || "Featured image"} style={{ width: "100%", height: "auto", display: "block", margin: "0 auto" }} loading="lazy" />
+      </div>
       {(imageDescription || imageCredit) && (
-        <div style={{ fontSize: "0.85rem", color: "var(--color-text-secondary, #666)", marginTop: "0.5rem" }}>
+        <div className="featured-image-meta">
           {imageDescription && (
-            <p style={{ margin: 0 }}>
+            <p className="featured-image-description-text" style={{ margin: 0 }}>
               <strong>Image description:</strong> {imageDescription}
             </p>
           )}
           {imageCredit && (
-            <p style={{ margin: 0 }}>
+            <p className="featured-image-credit" style={{ margin: 0 }}>
               <strong>Credits:</strong> {imageCredit}
             </p>
           )}
