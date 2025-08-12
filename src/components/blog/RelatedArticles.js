@@ -19,7 +19,7 @@ const RelatedArticles = ({ currentArticleSlug, keywords = [], maxArticles = 3, c
             featuredImage {
               publicURL
               childImageSharp {
-                gatsbyImageData(maxWidth: 600, layout: CONSTRAINED, placeholder: BLURRED)
+                gatsbyImageData(width: 600, layout: CONSTRAINED, placeholder: BLURRED)
               }
             }
           }

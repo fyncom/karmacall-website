@@ -64,7 +64,7 @@ export const pageQuery = graphql`
           featuredImage {
             publicURL
             childImageSharp {
-              gatsbyImageData(maxWidth: 800, layout: CONSTRAINED, placeholder: BLURRED)
+              gatsbyImageData(width: 800, layout: CONSTRAINED, placeholder: BLURRED)
             }
           }
         }
