@@ -37,8 +37,6 @@ export const Wrapper = ({ children, seo }) => {
     <div>
       <Seo title={seo?.title} description={seo?.description} />
       <Header />
-      <ArticleHeader articleData={seo} />
-      <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
       <div className="gatsby-focus-wrapper" style={textSizeStyles[textSize]}>
         <style>{`
           .gatsby-focus-wrapper p,
@@ -71,7 +69,11 @@ export const Wrapper = ({ children, seo }) => {
           .gatsby-focus-wrapper .mdx-content h4 { font-size: calc(${textSizeStyles[textSize].fontSize} * 1.1) !important; }
         `}</style>
         <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
-          <div style={{ flex: "1", minWidth: "0" }}>{children}</div>
+          <div style={{ flex: "1", minWidth: "0" }}>
+            <ArticleHeader articleData={seo} />
+            <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
+            {children}
+          </div>
           <TableOfContents />
         </div>
         <ScrollToTop />
