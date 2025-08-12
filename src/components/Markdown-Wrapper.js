@@ -70,7 +70,7 @@ export const Wrapper = ({ children, seo }) => {
         `}</style>
         <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
           <div style={{ flex: "1", minWidth: "0" }}>
-            <ArticleHeader articleData={seo} />
+            <ArticleHeader articleData={seo} reserveSidebarSpace={false} />
             <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
             {children}
             <RelatedArticles currentArticleSlug={seo?.pathname || seo?.slug} keywords={seo?.keywords || []} />

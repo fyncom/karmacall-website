@@ -1,6 +1,6 @@
 import React from "react"
 
-const ArticleHeader = ({ articleData, className, style }) => {
+const ArticleHeader = ({ articleData, className, style, reserveSidebarSpace = true }) => {
   return (
     <div className={className} style={style}>
       {/* Responsive header layout */}
@@ -106,16 +106,16 @@ const ArticleHeader = ({ articleData, className, style }) => {
         </div>
 
         {/* Desktop spacer - hidden on mobile */}
-        <div
-          className="article-header-spacer"
-          style={{
-            width: "280px",
-            flexShrink: 0,
-            display: "none",
-          }}
-        >
-          {/* This empty div ensures the header content aligns with main content on desktop */}
-        </div>
+        {reserveSidebarSpace && (
+          <div
+            className="article-header-spacer"
+            style={{
+              width: "280px",
+              flexShrink: 0,
+              display: "none",
+            }}
+          ></div>
+        )}
       </div>
     </div>
   )
