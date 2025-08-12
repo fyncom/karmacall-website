@@ -34,8 +34,8 @@ const ScrollToTop = ({ showThreshold = 300 }) => {
       onClick={scrollToTop}
       style={{
         position: "fixed",
-        top: "2rem",
-        left: "calc(50% - 600px - 6rem)",
+        bottom: "2rem",
+        right: "2rem",
         backgroundColor: "var(--color-background, white)",
         border: "1.5px solid var(--border-color, #eee)",
         borderRadius: "6px",
@@ -57,7 +57,7 @@ const ScrollToTop = ({ showThreshold = 300 }) => {
         e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)"
       }}
       onMouseLeave={e => {
-        e.target.style.backgroundColor = "transparent"
+        e.target.style.backgroundColor = "var(--color-background, white)"
         e.target.style.transform = "translateY(0)"
         e.target.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.1)"
       }}
