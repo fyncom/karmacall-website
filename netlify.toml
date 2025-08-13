@@ -3,6 +3,9 @@
     [headers.values]
         X-Robots-Tag = "index, follow"
 
+[build.environment]
+  NODE_VERSION = "18"
+
 ## Performance optimization plugins
 #[[plugins]]
 # ADDED GRIDSOME cache
@@ -29,6 +32,13 @@
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept"
+
+# Reverse proxy for PostHog to reduce ad-blocker interference
+[[redirects]]
+  from = "/ph/*"
+  to = "https://us.i.posthog.com/:splat"
+  status = 200
+  force = true
 
 # Speed up Gatsby builds by caching .cache/ and public/ between builds
 [[plugins]]

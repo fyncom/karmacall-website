@@ -38,10 +38,11 @@ export const onClientEntry = () => {
     })
   }
 
-  // Initialize PostHog and enable defaulta
+  // Initialize PostHog (use first‑party proxy in production to reduce blocking)
   if (typeof window !== "undefined") {
+    const apiHost = process.env.NODE_ENV === "production" ? "https://www.karmacall.com/ph" : process.env.GATSBY_POSTHOG_API_HOST
     posthog.init(process.env.GATSBY_POSTHOG_API_KEY, {
-      api_host: process.env.GATSBY_POSTHOG_API_HOST,
+      api_host: apiHost,
       defaults: "2025-05-24",
       capture_exceptions: true,
       debug: process.env.NODE_ENV === "development",
