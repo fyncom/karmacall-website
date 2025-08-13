@@ -2,36 +2,21 @@
     for = "/*"
     [headers.values]
         X-Robots-Tag = "index, follow"
-
-[build.environment]
-  NODE_VERSION = "18"
-
-## Performance optimization plugins
-#[[plugins]]
-# ADDED GRIDSOME cache
-#
-
-# THIS WAS ALREADY HERE
-#[[plugins]]
-#package = "@netlify/plugin-lighthouse"
-#  [plugins.inputs]
-#  audit_url = "https://karmacall.com"
-
-# ADDED THIS
-#[[plugins]]
-#package = "netlify-plugin-inline-critical-css"
-#
-# DID NOT ADD THIS SINCE GOOGLE HANDLES IT
-#[[plugins]]
-#package = "netlify-plugin-submit-sitemap"
+        Access-Control-Allow-Origin = "*"
+        Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+        Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept"
 
 # CORS headers for API requests
 [[headers]]
   for = "/api/*"
   [headers.values]
+    X-Robots-Tag = "index, follow"
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept"
+
+[build.environment]
+  NODE_VERSION = "18"
 
 # Reverse proxy for PostHog to reduce ad-blocker interference
 [[redirects]]
