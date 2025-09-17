@@ -9,41 +9,66 @@ const Mentions = () => {
   const MENTION_INDEX = [
     {
       id: "ai-cybercrime-vibe-hacking",
-      speaker: "Stuart Ritchie",
-      co: "Jacob Klein, Alex Moix",
-      topic: 'Anthropic - AI Cybercrime: "Vibe Hacking"',
+      speaker: "Anthropic",
+      co: "Stuart Ritchie, Jacob Klein, Alex Moix",
+      topic: 'AI-Powered Call & Text Scams: The "Vibe Hacking" Revolution',
       date: "Aug 27, 2025",
     },
-    { id: "spam-filters-failure", speaker: "Andrej Karpathy", co: "", label: "Spam filters failure", date: "Aug 18, 2025" },
-    { id: "shadow-economy-digital-scams", speaker: "Mariana Van Zeller", co: "Theo Von", topic: "Shadow economy & scams", date: "Aug 15, 2025" },
-    { id: "ai-attention-economy", speaker: "Eric Schmidt", co: "Peter H. Diamandis", topic: "AI and the attention economy", date: "July 17, 2025" },
+    {
+      id: "spam-filters-failure",
+      speaker: "Andrej Karpathy",
+      co: "OpenAI Co-founder",
+      topic: "Why Even AI Experts Can't Stop Spam Calls & Texts",
+      date: "Aug 18, 2025",
+    },
+    {
+      id: "shadow-economy-digital-scams",
+      speaker: "Mariana Van Zeller",
+      co: "Theo Von",
+      topic: "The $12.5 Billion Call & Text Scam Economy",
+      date: "Aug 15, 2025",
+    },
+    {
+      id: "ai-attention-economy",
+      speaker: "Eric Schmidt",
+      co: "Peter H. Diamandis",
+      topic: "AI, Call Overload, and the Future of Human Attention",
+      date: "July 17, 2025",
+    },
     {
       id: "media-manipulation-unreliable-narrators",
       speaker: "Balaji Srinivasan",
       co: "Erik Torenberg, a16z",
-      topic: "Media manipulation",
+      topic: "Communication Trust and Consensual Contact",
       date: "July 17, 2025",
     },
-    { id: "ai-agents-automated-calling", speaker: "Jack Altman", co: "Mamoon Hamid", topic: "AI agents and automated calling", date: "July 9, 2025" },
-    { id: "digital-identity-trust", speaker: "Sam Lessin", co: "Joe Lonsdale", topic: "Digital identity & trust", date: "May 16, 2025" },
-    { id: "communication-protocols", speaker: "David Daneshgar", co: "Higher Levels", topic: "Communication protocols", date: "May 12, 2025" },
+    { id: "ai-agents-automated-calling", speaker: "Jack Altman", co: "Mamoon Hamid", topic: "AI Agents and Automated Calling", date: "July 9, 2025" },
+    { id: "digital-identity-trust", speaker: "Sam Lessin", co: "Joe Lonsdale", topic: "Digital Identity and Trust", date: "May 16, 2025" },
+    { id: "communication-protocols", speaker: "David Daneshgar", co: "Higher Levels", topic: "Communication Protocols", date: "May 12, 2025" },
     {
       id: "agent-communication-trust",
       speaker: "Konstantine Buhler",
       co: "Sequoia AI Ascent",
-      topic: "Agent communication & trust transfer",
+      topic: "Agent Communication and Trust Transfer",
       date: "May 7, 2025",
     },
-    { id: "infinite-spam-hyperpersonalization", speaker: "Sam Lessin", co: "TBPN", topic: "Infinite spam & hyperpersonalization", date: "Mar 17, 2025" },
-    { id: "digital-vs-human-hackers", speaker: "Ezra Klein", co: "Ben Buchanan", topic: "Digital vs. human hackers", date: "Mar 4, 2025" },
-    { id: "ai-manipulation-phishing", speaker: "Eli Yudkowsky", co: "Stephen Wolfram", topic: "AI manipulation & phishing", date: "Nov 11, 2024" },
-    { id: "crypto-economic-prosperity", speaker: "Jeremy Allaire", co: "TOKEN 2049", topic: "Crypto & economic prosperity", date: "Sept 27, 2024" },
-    { id: "ai-agents-economic-models", speaker: "Reid Hoffman", co: "Erik Brynjolfsson", topic: "AI agents and economic models", date: "Sept 5, 2024" },
+    { id: "infinite-spam-hyperpersonalization", speaker: "Sam Lessin", co: "TBPN", topic: "Infinite Spam and Hyperpersonalization", date: "Mar 17, 2025" },
+    { id: "digital-vs-human-hackers", speaker: "Ezra Klein", co: "Ben Buchanan", topic: "Digital vs Human Hackers", date: "Mar 4, 2025" },
+    {
+      id: "job-scam-surge-2024",
+      speaker: "Federal Trade Commission",
+      co: "LinkedIn News",
+      topic: "The 2024 Job Scam Text Surge",
+      date: "Jan 2025",
+    },
+    { id: "ai-manipulation-phishing", speaker: "Eli Yudkowsky", co: "Stephen Wolfram", topic: "AI Manipulation and Phishing", date: "Nov 11, 2024" },
+    { id: "crypto-economic-prosperity", speaker: "Jeremy Allaire", co: "TOKEN 2049", topic: "Crypto and Economic Prosperity", date: "Sept 27, 2024" },
+    { id: "ai-agents-economic-models", speaker: "Reid Hoffman", co: "Erik Brynjolfsson", topic: "AI Agents and Economic Models", date: "Sept 5, 2024" },
     {
       id: "ai-powered-social-engineering",
       speaker: "Jeffrey Katzenberg",
       co: "WSJ's Emma Tucker, Sujay Jaswa",
-      topic: "AI-powered social engineering",
+      topic: "AI-Powered Social Engineering",
       date: "Sept 25, 2023",
     },
   ]
@@ -203,7 +228,7 @@ const Mentions = () => {
                 Callers," the unwanted communications still flood through.
               </p>
               <p>
-                <strong>The Technical Reality: Call Blocking Is Obsolete:</strong> Karpathy reveals the core problem - spammers use unique numbers for every
+                <strong>The Technical Reality - Call Blocking Is Obsolete:</strong> Karpathy reveals the core problem - spammers use unique numbers for every
                 call and text, making traditional blocking worthless. His experience proves that even the most sophisticated technical solutions are
                 fundamentally playing a losing game of whack-a-mole.
               </p>
