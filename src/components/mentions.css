@@ -51,7 +51,6 @@
 }
 
 .video-trigger {
-  background: linear-gradient(135deg, var(--karmacall-green), #0066cc);
   color: white;
   padding: 1rem 1.5rem;
   border-radius: 8px;
@@ -67,7 +66,6 @@
 .video-trigger:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, #0066cc, var(--karmacall-green));
 }
 
 .video-trigger-content {
@@ -99,7 +97,6 @@
 }
 
 .tweet-trigger {
-  background: linear-gradient(135deg, var(--karmacall-green), #0066cc);
   color: white;
   padding: 1rem 1.5rem;
   border-radius: 8px;
@@ -116,7 +113,6 @@
 .tweet-trigger:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, #0066cc, var(--karmacall-green));
   text-decoration: none;
   color: white;
 }
@@ -223,6 +219,20 @@
   .mentions-container .highlight-text p,
   .mentions-container .conversation-format p { max-width: none; }
 }
+
+/* enforce deterministic color scheme */
+.mention-section:nth-of-type(odd) .highlight-text,
+.mention-section:nth-of-type(odd) .conversation-format { border-left-color: var(--karmacall-green); }
+.mention-section:nth-of-type(even) .highlight-text,
+.mention-section:nth-of-type(even) .conversation-format { border-left-color: var(--karmacall-gold); }
+.mention-section:nth-of-type(odd) .video-trigger { background: linear-gradient(135deg, var(--karmacall-green), #0066cc); }
+.mention-section:nth-of-type(odd) .video-trigger:hover { background: linear-gradient(135deg, #0066cc, var(--karmacall-green)); }
+.mention-section:nth-of-type(even) .video-trigger { background: linear-gradient(135deg, var(--karmacall-gold), #ffa500); }
+.mention-section:nth-of-type(even) .video-trigger:hover { background: linear-gradient(135deg, #ffa500, var(--karmacall-gold)); }
+.mention-section:nth-of-type(odd) .tweet-trigger { background: linear-gradient(135deg, var(--karmacall-green), #0066cc); }
+.mention-section:nth-of-type(odd) .tweet-trigger:hover { background: linear-gradient(135deg, #0066cc, var(--karmacall-green)); }
+.mention-section:nth-of-type(even) .tweet-trigger { background: linear-gradient(135deg, var(--karmacall-gold), #ffa500); }
+.mention-section:nth-of-type(even) .tweet-trigger:hover { background: linear-gradient(135deg, #ffa500, var(--karmacall-gold)); }
 
 /* Modal Styles */
 .video-modal {
