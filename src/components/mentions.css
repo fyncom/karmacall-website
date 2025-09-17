@@ -90,6 +90,53 @@
   opacity: 1;
 }
 
+.tweet-trigger {
+  background: linear-gradient(135deg, var(--karmacall-green), #0066cc);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+  border: none;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+  display: block;
+}
+
+.tweet-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #0066cc, var(--karmacall-green));
+  text-decoration: none;
+  color: white;
+}
+
+.tweet-trigger-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tweet-trigger h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+}
+
+.tweet-trigger .timestamp {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: bold;
+  font-size: 14px;
+  margin: 0.5rem 0 0 0;
+}
+
+.tweet-trigger:hover .play-icon {
+  opacity: 1;
+}
+
 .mention-content h3 {
   color: var(--karmacall-green);
   font-size: 24px;
@@ -341,6 +388,14 @@
   }
 
   .video-trigger .timestamp {
+    font-size: 12px;
+  }
+
+  .tweet-trigger h3 {
+    font-size: 16px;
+  }
+
+  .tweet-trigger .timestamp {
     font-size: 12px;
   }
 

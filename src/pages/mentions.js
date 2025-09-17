@@ -86,6 +86,198 @@ const Mentions = () => {
       </section>
 
       <div className="mentions-container">
+        {/* NEW SECTION: AI Cybercrime and Vibe Hacking */}
+        <section className="mention-section" id="ai-cybercrime-vibe-hacking">
+          <h2>On AI-Powered Call & Text Scams: The "Vibe Hacking" Revolution</h2>
+          <VideoTrigger
+            videoData={{
+              title: "Anthropic on AI Cybercrime: Vibe Hacking",
+              timestamp: "Watch ~2 minutes starting at 0:17",
+              embedUrl: "https://www.youtube.com/embed/EsCNkDrIGCw?start=17",
+            }}
+          />
+          <div className="mention-content">
+            <div className="highlight-text">
+              <p>
+                <strong>Democratizing Sophisticated Phone & Text Scams:</strong> Anthropic introduces "vibe hacking" - where anyone can use natural language to
+                direct AI in creating sophisticated phone and text scams without technical skills. This means the barrier to launching mass calling campaigns
+                has effectively disappeared.
+              </p>
+              <p>
+                <strong>Explosive Scale in Communication Fraud:</strong> A single "vibe hacker" accomplished in weeks what skilled scam teams previously needed
+                months to execute, targeting 17 organizations. When applied to phone calls and texts, this means we're facing an explosion of AI-generated
+                robocalls and scam texts that can instantly adapt to any blocking mechanism.
+              </p>
+              <p>
+                <strong>The Future of Call-Based Attacks:</strong> This validates predictions from other experts on this page. When AI makes it "cheaper to
+                phish everyone" (as Yudkowsky warned in our <a href="#ai-manipulation-phishing">AI manipulation section</a>), sophisticated voice cloning and
+                personalized calling campaigns will become accessible to anyone with basic English skills.
+              </p>
+              <p>
+                <strong>KarmaCall's Economic Shield:</strong> Traditional call blocking and text filtering can't keep pace with AI that adapts faster than
+                security measures. KarmaCall's refundable deposit system creates an economic firewall that scales with the threat - "vibe hackers" simply can't
+                afford to pay deposits for mass campaigns, while legitimate callers can easily afford small deposits to reach you. You get paid for every
+                blocked scam attempt.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* NEW SECTION: Andrej Karpathy on Spam Filter Failure */}
+        <section className="mention-section" id="spam-filters-failure">
+          <h2>On Why Even AI Experts Can't Stop Spam Calls & Texts</h2>
+          <a href="https://x.com/karpathy/status/1957574489358873054?lang=en" target="_blank" rel="noopener noreferrer" className="tweet-trigger">
+            <div className="tweet-trigger-content">
+              <div>
+                <h3>Andrej Karpathy (OpenAI Co-founder) on Spam Call Failure</h3>
+                <p className="timestamp">Read the X Post from August 2025</p>
+              </div>
+              <span className="play-icon">🔗</span>
+            </div>
+          </a>
+          <div className="mention-content">
+            <div className="highlight-text">
+              <p>
+                <strong>Even AI Pioneers Are Helpless:</strong> Andrej Karpathy, OpenAI co-founder and one of the world's leading AI experts, publicly shared
+                his complete inability to stop daily spam calls and texts. Despite using AT&T Active Armor, Do Not Call registry, and iOS "Silence Unknown
+                Callers," the unwanted communications still flood through.
+              </p>
+              <p>
+                <strong>The Technical Reality: Call Blocking Is Obsolete:</strong> Karpathy reveals the core problem - spammers use unique numbers for every
+                call and text, making traditional blocking worthless. His experience proves that even the most sophisticated technical solutions are
+                fundamentally playing a losing game of whack-a-mole.
+              </p>
+              <p>
+                <strong>A $12 Billion Problem Needs Economic Solutions:</strong> When the co-creator of modern AI can't solve spam calls with technology, it's
+                clear we need a different approach. KarmaCall transforms this from a technical arms race into simple economics - scammers can't afford to pay
+                everyone they want to call, but legitimate callers can afford small refundable deposits to reach you.
+              </p>
+              <p>
+                <strong>Getting Paid to Block Future AI Calls:</strong> As Karpathy's AI advances, so do AI-powered calling campaigns. KarmaCall ensures that as
+                call spam becomes more sophisticated, you simply get paid more for blocking it. The economic barrier scales automatically with the threat.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* NEW SECTION: Shadow Economy and Digital Scams */}
+        <section className="mention-section" id="shadow-economy-digital-scams">
+          <h2>On the $12.5 Billion Call & Text Scam Economy</h2>
+          <VideoTrigger
+            videoData={{
+              title: "Mariana Van Zeller on the Global Black & Gray Markets",
+              timestamp: "Watch 1.5 minutes starting at 51:06",
+              embedUrl: "https://www.youtube.com/embed/6J4U3R5dRik?start=3066",
+            }}
+          />
+          <div className="mention-content">
+            <div className="highlight-text">
+              <p>
+                <strong>The Hidden Third of All Economy:</strong> Investigative journalist Mariana Van Zeller reveals that{" "}
+                <strong>38% of the global economy</strong> operates in black and gray markets. Within this shadow economy, phone and text scams represent one of
+                the fastest-growing sectors.
+              </p>
+              <p>
+                <strong>Explosive Growth in Communication Fraud:</strong> Americans lost <strong>$12.5 billion</strong> to scams last year alone, with Van
+                Zeller noting this industry has been "doubling and doubling" annually. Most of these scams begin with an unwanted phone call or text message -
+                the very communications KarmaCall protects against.
+              </p>
+              <p>
+                <strong>Economic Incentives Drive Call Center Crime:</strong> The massive profits from communication-based scams fuel sophisticated
+                international calling operations. These aren't lone actors - they're well-funded criminal enterprises that can afford advanced technology and AI
+                tools, but they rely on the near-zero cost of making calls and sending texts.
+              </p>
+              <p>
+                <strong>Breaking the Economics of Phone Fraud:</strong> KarmaCall directly attacks this $12.5 billion criminal economy by introducing cost where
+                none existed before. When each call requires a refundable deposit, the high-volume, low-margin business model of phone scams becomes instantly
+                unprofitable. You get paid every time they're blocked from reaching you.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* NEW SECTION: Eric Schmidt on AI and Attention */}
+        <section className="mention-section" id="ai-attention-economy">
+          <h2>On AI, Call Overload, and the Future of Human Attention</h2>
+          <VideoTrigger
+            videoData={{
+              title: "Eric Schmidt on AI's Role in a World of Misinformation",
+              timestamp: "Watch ~1.5 minutes starting at 1:19:20",
+              embedUrl: "https://www.youtube.com/embed/qaPHK1fJL5s?start=4760",
+            }}
+          />
+          <div className="mention-content">
+            <div className="conversation-format">
+              <div className="exchange">
+                <h4>Attention Management as Your Future "Full-Time Job"</h4>
+                <p>
+                  <strong>Eric Schmidt:</strong> Predicts that simply "managing the world around you" - filtering through constant calls, texts, emails, and
+                  notifications from deceptive actors - will become a purposeful, full-time occupation. The volume of communication attempting to manipulate
+                  your attention and money will require dedicated effort to manage.
+                </p>
+              </div>
+              <div className="exchange">
+                <h4>AI Won't Eliminate Human Deception - It Amplifies It</h4>
+                <p>
+                  Schmidt dismisses utopian visions where AI solves all problems, arguing instead that technology changes but human nature doesn't. There will
+                  always be "evil people" using AI to create more sophisticated calls and texts, and "good people" trying to protect against them. The arms race
+                  accelerates, but the fundamental conflict remains.
+                </p>
+              </div>
+              <div className="exchange">
+                <h4>KarmaCall: Automating Your Attention Defense</h4>
+                <p>
+                  Schmidt's "full-time job" of attention management is precisely what KarmaCall automates for phone calls and texts. Instead of you personally
+                  filtering every incoming communication, KarmaCall's economic barrier does it automatically. Legitimate callers prove their importance through
+                  refundable deposits, while "evil people" are economically blocked from reaching you. You get paid for your protected attention instead of it
+                  being stolen for free.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* NEW SECTION: Media Manipulation and Communication Trust */}
+        <section className="mention-section" id="media-manipulation-unreliable-narrators">
+          <h2>On Communication Trust and Consensual Contact</h2>
+          <VideoTrigger
+            videoData={{
+              title: "Balaji Srinivasan on Media as Unreliable Narrators",
+              timestamp: "Watch ~2.5 minutes starting at 16:53",
+              embedUrl: "https://www.youtube.com/embed/cBFbXRjTVLc?start=1013",
+            }}
+          />
+          <div className="mention-content">
+            <div className="conversation-format">
+              <div className="exchange">
+                <h4>Communication as "Non-Consensual Invasion"</h4>
+                <p>
+                  <strong>Balaji Srinivasan:</strong> Describes unwanted contact as <strong>"non-consensual invasion of privacy for profit."</strong> He argues
+                  that people can't opt out of being targeted by calls, texts, and messages from parties with ulterior motives - equating these communication
+                  tactics with spam, stalking, and scamming behaviors that would be illegal in physical contexts.
+                </p>
+              </div>
+              <div className="exchange">
+                <h4>Trust Collapse in Digital Communication</h4>
+                <p>
+                  Srinivasan describes manipulative communicators as "con men" who feign trust and goodwill to extract information or money, then "stab you"
+                  with the results. This dynamic has destroyed trust in phone calls and text messages - people now assume unknown communication is malicious
+                  until proven otherwise.
+                </p>
+              </div>
+              <div className="exchange">
+                <h4>KarmaCall: Restoring Consent Through Economics</h4>
+                <p>
+                  Inspired by Balaji's own company Earn.com (which pioneered paid communication), KarmaCall restores consent and trust to phone calls and texts.
+                  By requiring refundable financial stakes to initiate contact, KarmaCall provides an objective economic signal of communication importance.
+                  Legitimate callers can afford small deposits, while the "stalkers, spammers, and scammers" Balaji describes cannot afford to pay everyone they
+                  want to target. You get paid for your time and attention, making all communication consensual.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Link: https://fyncom.com/mentions#ai-agents-automated-calling */}
         <section className="mention-section" id="ai-agents-automated-calling">
           <h2>On AI Agents and Automated Calling</h2>
