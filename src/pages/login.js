@@ -62,8 +62,7 @@ const Login = () => {
         getCallingCode()
       }, 0)
 
-      // Configure RevenueCat Web SDK
-      configureRevenueCat()
+      // RevenueCat will be configured when user logs in
     }
   }, [])
 

@@ -18,7 +18,7 @@ let isConfigured = false
  * Configure RevenueCat with API key
  * Should be called once during app initialization
  */
-export const configureRevenueCat = () => {
+export const configureRevenueCat = (userId = null) => {
   try {
     if (isConfigured) {
       console.log("revenuecat already configured")
@@ -37,7 +37,21 @@ export const configureRevenueCat = () => {
     console.log("configuring revenuecat web sdk with purchases object:", typeof Purchases)
     console.log("purchases configure function exists:", typeof Purchases.configure)
 
-    Purchases.configure(apiKey)
+    if (userId) {
+      // Configure with specific user ID
+      console.log("configuring revenuecat with user id:", String(userId))
+      Purchases.configure({
+        apiKey: apiKey,
+        appUserId: String(userId),
+      })
+    } else {
+      // Configure without user ID - RevenueCat will generate anonymous ID
+      console.log("configuring revenuecat without user id (anonymous)")
+      Purchases.configure({
+        apiKey: apiKey,
+      })
+    }
+
     isConfigured = true
     console.log("revenuecat web sdk configured successfully")
   } catch (error) {
@@ -54,11 +68,28 @@ export const configureRevenueCat = () => {
 export const loginRevenueCatUser = async userId => {
   try {
     if (!isConfigured) {
-      console.log("revenuecat not configured, attempting to configure")
-      configureRevenueCat()
+      console.log("revenuecat not configured, configuring with user id")
+      configureRevenueCat(userId)
       if (!isConfigured) {
         throw new Error("revenuecat configuration failed")
       }
+      // If we configured with user ID, we don't need to call logIn
+      console.log("revenuecat configured with user id, skipping login call")
+
+      // Store in localStorage that RevenueCat user is set
+      if (typeof window !== "undefined") {
+        localStorage.setItem("revenuecat_user_set", "true")
+      }
+
+      // Get customer info to return
+      const customerInfo = await Purchases.getCustomerInfo()
+      console.log("revenuecat user configured successfully:", {
+        userId: String(userId),
+        hasCustomerInfo: !!customerInfo,
+        entitlements: customerInfo?.entitlements ? Object.keys(customerInfo.entitlements.active) : [],
+      })
+
+      return customerInfo
     }
 
     if (!userId) {
@@ -66,14 +97,16 @@ export const loginRevenueCatUser = async userId => {
       return
     }
 
-    console.log(`logging in user ${userId} to revenuecat`)
+    // Ensure userId is a string (RevenueCat requires string user IDs)
+    const userIdString = String(userId)
+    console.log(`logging in user ${userIdString} to revenuecat`)
 
     // Use the same user ID format as the mobile app
     // Mobile app uses user.value.id directly, so we'll use the userId from backend
-    const customerInfo = await Purchases.logIn(userId.toString())
+    const customerInfo = await Purchases.logIn(userIdString)
 
     console.log("revenuecat user logged in successfully:", {
-      userId: userId,
+      userId: userIdString,
       hasCustomerInfo: !!customerInfo,
       entitlements: customerInfo?.entitlements ? Object.keys(customerInfo.entitlements.active) : [],
     })
