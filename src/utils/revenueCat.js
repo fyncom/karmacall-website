@@ -1,4 +1,4 @@
-import Purchases from "@revenuecat/purchases-js"
+import { Purchases } from "@revenuecat/purchases-js"
 
 /**
  * RevenueCat Web SDK utility functions for KarmaCall
@@ -28,15 +28,21 @@ export const configureRevenueCat = () => {
     const apiKey = process.env.GATSBY_REVENUECAT_API_KEY
     if (!apiKey) {
       console.error("revenuecat api key not found in environment variables")
+      console.error("make sure you have GATSBY_REVENUECAT_API_KEY set in your .env file")
       return
     }
 
-    console.log("configuring revenuecat web sdk")
+    console.log("revenuecat api key found:", apiKey ? `${apiKey.substring(0, 10)}...` : "undefined")
+
+    console.log("configuring revenuecat web sdk with purchases object:", typeof Purchases)
+    console.log("purchases configure function exists:", typeof Purchases.configure)
+
     Purchases.configure(apiKey)
     isConfigured = true
     console.log("revenuecat web sdk configured successfully")
   } catch (error) {
     console.error("failed to configure revenuecat:", error)
+    console.error("purchases object:", Purchases)
   }
 }
 
