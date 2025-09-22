@@ -8,6 +8,7 @@ import { navigate } from "gatsby" // or useNavigate from react-router-dom
 import { useLocation } from "@reach/router"
 import { isEmpty } from "lodash"
 import { getBrowserEnvironment } from "../utils/browserUtils"
+import { configureRevenueCat, loginRevenueCatUser, isRevenueCatUserSet } from "../utils/revenueCat"
 import "../components/login.css" // Import the login-specific CSS
 import CookieConsentEEA from "../components/CookieConsentEEA"
 import ClientOnly from "../components/ClientOnly"
@@ -53,13 +54,16 @@ const Login = () => {
       console.log("found referral code %s", referralCodeFromUrl)
       setReferralCode(referralCodeFromUrl)
     }
-    
-    // Auto-detect country code only on client-side, wrapped in a setTimeout 
+
+    // Auto-detect country code only on client-side, wrapped in a setTimeout
     // to ensure it runs after initial hydration is complete
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setTimeout(() => {
         getCallingCode()
       }, 0)
+
+      // Configure RevenueCat Web SDK
+      configureRevenueCat()
     }
   }, [])
 
@@ -151,12 +155,12 @@ const Login = () => {
       browser: getBrowserName(),
       environment: environment,
     })
-    
+
     try {
       console.log("[DEBUG] handleOtpSubmit - Calling verifyConfirm")
       const response = await verifyConfirm(submittedOtp)
       console.log("[DEBUG] handleOtpSubmit - verifyConfirm response:", response)
-      
+
       if (response.status === 200) {
         console.log("[DEBUG] handleOtpSubmit - OTP verification successful")
         setIsOtpModalOpen(false)
@@ -194,27 +198,27 @@ const Login = () => {
       setIsOtpModalOpen(false)
     }
   }
-  
+
   // Helper function to identify browser
   const getBrowserName = () => {
-    const userAgent = navigator.userAgent;
-    let browserName;
-    
+    const userAgent = navigator.userAgent
+    let browserName
+
     if (userAgent.match(/firefox|fxios/i)) {
-      browserName = "Firefox";
+      browserName = "Firefox"
     } else if (userAgent.match(/chrome|chromium|crios/i)) {
-      browserName = "Chrome";
+      browserName = "Chrome"
     } else if (userAgent.match(/safari/i)) {
-      browserName = "Safari";
+      browserName = "Safari"
     } else if (userAgent.match(/opr\//i)) {
-      browserName = "Opera";
+      browserName = "Opera"
     } else if (userAgent.match(/edg/i)) {
-      browserName = "Edge";
+      browserName = "Edge"
     } else {
-      browserName = "Unknown";
+      browserName = "Unknown"
     }
-    
-    return browserName;
+
+    return browserName
   }
 
   const verifyConfirm = async submittedOtp => {
@@ -242,17 +246,17 @@ const Login = () => {
   // TODO: get backend to return a "new user" flag so we can redirect to app later.
   // redirectToApp parameter controls whether to redirect to app stores for new users
   const handleSignUp = async (authData = null, redirectToApp = false) => {
-    console.log("[DEBUG] handleSignUp - Starting with params:", { 
-      hasAuthData: authData !== null, 
-      redirectToApp 
+    console.log("[DEBUG] handleSignUp - Starting with params:", {
+      hasAuthData: authData !== null,
+      redirectToApp,
     })
-    
+
     try {
       const environment = getBrowserEnvironment()
       console.log("[DEBUG] handleSignUp - Environment detected:", environment)
       console.log("[DEBUG] handleSignUp - Browser:", getBrowserName())
       console.log("[DEBUG] handleSignUp - Making API call to user/register/full")
-      
+
       const signUpResponse = await fetch(baseUrlV2 + "user/register/full", {
         method: "POST",
         headers: {
@@ -264,21 +268,35 @@ const Login = () => {
           number: phoneNumber,
         }),
       })
-      
+
       console.log("[DEBUG] handleSignUp - API Response status:", signUpResponse.status)
       let signUpData = await signUpResponse.json()
       console.log("[DEBUG] handleSignUp - API Response data:", {
         // Redact sensitive info but show structure
         hasUserId: !!signUpData.userId,
         hasNanoAccount: !!signUpData.nanoAccount,
-        responseKeys: Object.keys(signUpData)
+        responseKeys: Object.keys(signUpData),
       })
-      
+
       if (signUpResponse.status === 200) {
         console.log("[DEBUG] handleSignUp - User %s successfully found with code 200", signUpData.userId)
         setUserId(signUpData.userId)
         setNanoAccount(signUpData.nanoAccount)
-        
+
+        // Set up RevenueCat user profile - mirrors mobile app's revenueCatSet() function
+        try {
+          if (!isRevenueCatUserSet()) {
+            console.log("[DEBUG] handleSignUp - setting up revenuecat user profile for user %s", signUpData.userId)
+            await loginRevenueCatUser(signUpData.userId)
+            console.log("[DEBUG] handleSignUp - revenuecat user profile set up successfully")
+          } else {
+            console.log("[DEBUG] handleSignUp - revenuecat user already set up, skipping")
+          }
+        } catch (error) {
+          console.error("[DEBUG] handleSignUp - failed to set up revenuecat user:", error)
+          // Don't block the login process if RevenueCat fails
+        }
+
         // handle referrals
         if (referralCode !== "") {
           console.log("[DEBUG] handleSignUp - Processing referral code")
@@ -290,7 +308,7 @@ const Login = () => {
             console.error("[DEBUG] handleSignUp - Referral detected, and user signed up, but tx failed")
           }
         }
-        
+
         // If redirectToApp is false or not provided, direct to cash-out page
         if (!redirectToApp) {
           console.log("[DEBUG] handleSignUp - Redirecting to /cash-out (redirectToApp=false)")
@@ -305,30 +323,30 @@ const Login = () => {
         console.log("[DEBUG] handleSignUp - Failed to sign up user with status:", signUpResponse.status)
         return false
       }
-      
+
       // This code should no longer be reachable for existing users,
       // as they should have been redirected to /cash-out above
       console.log("[DEBUG] handleSignUp - Code path for NEW USERS ONLY. If this is an existing user, this is a problem!")
-      
+
       // If we're here and redirectToApp is true, proceed with app redirection
       if (redirectToApp && authData) {
         console.log("[DEBUG] handleSignUp - Preparing app redirection for NEW user")
         const encodedData = encodeURIComponent(JSON.stringify(authData))
-        
+
         // Detect platform - safely check for browser environment
         const isBrowser = typeof window !== "undefined" && typeof navigator !== "undefined"
         const isIOS = isBrowser ? /iPhone|iPad|iPod/i.test(navigator.userAgent) : false
         console.log("[DEBUG] handleSignUp - Platform detection: isIOS=", isIOS)
-        
+
         // Construct store URLs with deep link data
         const appStoreUrl = `https://apps.apple.com/us/app/karmacall/id1574524278?referrer=${encodedData}`
         const playStoreUrl = `https://play.google.com/store/apps/details?id=com.fyncom.robocash&referrer=${encodedData}`
-        
+
         // Try opening app first
         const appUrl = `karmacall://login?data=${encodedData}`
         console.log("[DEBUG] handleSignUp - Attempting to open app with URL:", appUrl.substring(0, 20) + "...")
         window.location.href = appUrl
-        
+
         // After short delay, check if we're still on the same page
         // If so, user likely doesn't have app installed
         setTimeout(() => {
@@ -343,10 +361,10 @@ const Login = () => {
           console.log("[DEBUG] handleSignUp - Redirecting to app store:", storeUrl.substring(0, 30) + "...")
           window.location.href = storeUrl
         }, 1000)
-        
+
         return true
       }
-      
+
       console.log("[DEBUG] handleSignUp - Reached end of function with no redirection")
       return false
     } catch (error) {
@@ -383,13 +401,13 @@ const Login = () => {
     setCountryCodesOption(e.target.value)
   }
 
-    // NOTE: Things like FastForward will block this.
+  // NOTE: Things like FastForward will block this.
   // Get the user's country code on load using a geolocation API
   const getCallingCode = () => {
     // Fetch the country code based on the user's IP
     // Using a free IP geolocation API
     const url = "https://ipapi.co/json/"
-    
+
     fetch(url)
       .then(response => {
         if (!response.ok) {
@@ -413,36 +431,36 @@ const Login = () => {
   }
 
   // Set the detected country code in the dropdown
-  const setCallingCode = (detectedCountryCode) => {
+  const setCallingCode = detectedCountryCode => {
     // Only run on client-side
-    if (typeof document === 'undefined') return
-    
+    if (typeof document === "undefined") return
+
     // First find the matching country in our list
     const countryCodes = document.getElementById("countryCodes")
     if (!countryCodes) return
-    
+
     let found = false
-    
+
     // Loop through all options to find the matching country code
     for (let i = 0; i < countryCodes.options.length; i++) {
       const option = countryCodes.options[i]
       const countryCode = option.dataset.countryCode
-      
+
       if (countryCode === detectedCountryCode) {
         // Found the matching country
         const value = option.value
         setCountryCodesOption(value)
-        
+
         // Extract the dial code for our state
         const [code, dialCode] = value.split("-")
         setCountryCode(code)
-        
+
         console.log(`Auto-detected country: ${detectedCountryCode} with dial code ${dialCode}`)
         found = true
         break
       }
     }
-    
+
     if (!found) {
       // Default to US if country not found in our list
       for (let i = 0; i < countryCodes.options.length; i++) {
@@ -450,10 +468,10 @@ const Login = () => {
         if (option.dataset.countryCode === "US") {
           const value = option.value
           setCountryCodesOption(value)
-          
+
           const [code, dialCode] = value.split("-")
           setCountryCode(code)
-          
+
           console.log(`Defaulting to US with dial code +1`)
           break
         }
