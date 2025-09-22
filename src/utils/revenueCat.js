@@ -82,7 +82,8 @@ export const loginRevenueCatUser = async userId => {
       }
 
       // Get customer info to return
-      const customerInfo = await Purchases.getCustomerInfo()
+      const purchasesInstance = Purchases.getSharedInstance()
+      const customerInfo = await purchasesInstance.getCustomerInfo()
       console.log("revenuecat user configured successfully:", {
         userId: String(userId),
         hasCustomerInfo: !!customerInfo,
@@ -103,7 +104,8 @@ export const loginRevenueCatUser = async userId => {
 
     // Use the same user ID format as the mobile app
     // Mobile app uses user.value.id directly, so we'll use the userId from backend
-    const customerInfo = await Purchases.logIn(userIdString)
+    const purchasesInstance = Purchases.getSharedInstance()
+    const customerInfo = await purchasesInstance.changeUser(userIdString)
 
     console.log("revenuecat user logged in successfully:", {
       userId: userIdString,
@@ -133,7 +135,8 @@ export const getCustomerInfo = async () => {
       return null
     }
 
-    const customerInfo = await Purchases.getCustomerInfo()
+    const purchasesInstance = Purchases.getSharedInstance()
+    const customerInfo = await purchasesInstance.getCustomerInfo()
     console.log("revenuecat customer info retrieved:", {
       hasCustomerInfo: !!customerInfo,
       entitlements: customerInfo?.entitlements ? Object.keys(customerInfo.entitlements.active) : [],
@@ -158,7 +161,11 @@ export const logoutRevenueCatUser = async () => {
     }
 
     console.log("logging out revenuecat user")
-    const customerInfo = await Purchases.logOut()
+    const purchasesInstance = Purchases.getSharedInstance()
+
+    // RevenueCat Web SDK doesn't have a logOut method like mobile SDKs
+    // Instead, we'll change to a new anonymous user
+    const customerInfo = await purchasesInstance.changeUser(null)
 
     // Clear localStorage flag
     if (typeof window !== "undefined") {
