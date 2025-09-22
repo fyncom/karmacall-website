@@ -24,19 +24,7 @@ export const configureRevenueCat = (userId = null) => {
       console.log("revenuecat already configured")
       return
     }
-
     const apiKey = process.env.GATSBY_REVENUECAT_API_KEY
-    if (!apiKey) {
-      console.error("revenuecat api key not found in environment variables")
-      console.error("make sure you have GATSBY_REVENUECAT_API_KEY set in your .env file")
-      return
-    }
-
-    console.log("revenuecat api key found:", apiKey ? `${apiKey.substring(0, 10)}...` : "undefined")
-
-    console.log("configuring revenuecat web sdk with purchases object:", typeof Purchases)
-    console.log("purchases configure function exists:", typeof Purchases.configure)
-
     if (userId) {
       // Configure with specific user ID
       console.log("configuring revenuecat with user id:", String(userId))
