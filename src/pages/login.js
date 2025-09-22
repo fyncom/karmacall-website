@@ -282,22 +282,33 @@ const Login = () => {
         setUserId(signUpData.userId)
         setNanoAccount(signUpData.nanoAccount)
 
-        // Set up RevenueCat user profile - mirrors mobile app's revenueCatSet() function
+        // Set up RevenueCat user profile FIRST - critical for referral attribution
+        // This must happen before referral processing to ensure proper attribution
+        let revenueCatSetupSuccess = false
         try {
           if (!isRevenueCatUserSet()) {
             console.log("[DEBUG] handleSignUp - setting up revenuecat user profile for user %s", signUpData.userId)
             await loginRevenueCatUser(signUpData.userId)
             console.log("[DEBUG] handleSignUp - revenuecat user profile set up successfully")
+            revenueCatSetupSuccess = true
           } else {
             console.log("[DEBUG] handleSignUp - revenuecat user already set up, skipping")
+            revenueCatSetupSuccess = true
           }
         } catch (error) {
           console.error("[DEBUG] handleSignUp - failed to set up revenuecat user:", error)
-          // Don't block the login process if RevenueCat fails
+          // Don't block the login process if RevenueCat fails, but log the issue
+          console.warn("[DEBUG] handleSignUp - proceeding without revenuecat setup")
         }
 
-        // handle referrals
+        // handle referrals - only after RevenueCat setup attempt
         if (referralCode !== "") {
+          if (revenueCatSetupSuccess) {
+            console.log("[DEBUG] handleSignUp - processing referral code with revenuecat user configured")
+          } else {
+            console.warn("[DEBUG] handleSignUp - processing referral code but revenuecat setup failed")
+          }
+
           console.log("[DEBUG] handleSignUp - Processing referral code")
           const refTx = await recordReferral(signUpData.userId)
           if (refTx.data.referralResponse != null) {

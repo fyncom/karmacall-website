@@ -64,21 +64,27 @@ export const loginRevenueCatUser = async userId => {
       // If we configured with user ID, we don't need to call logIn
       console.log("revenuecat configured with user id, skipping login call")
 
-      // Store in localStorage that RevenueCat user is set
+      // Store in localStorage that RevenueCat user is set IMMEDIATELY for referral safety
       if (typeof window !== "undefined") {
         localStorage.setItem("revenuecat_user_set", "true")
       }
 
-      // Get customer info to return
-      const purchasesInstance = Purchases.getSharedInstance()
-      const customerInfo = await purchasesInstance.getCustomerInfo()
-      console.log("revenuecat user configured successfully:", {
-        userId: String(userId),
-        hasCustomerInfo: !!customerInfo,
-        entitlements: customerInfo?.entitlements ? Object.keys(customerInfo.entitlements.active) : [],
-      })
-
-      return customerInfo
+      // Get customer info to verify setup (non-blocking for referrals)
+      try {
+        const purchasesInstance = Purchases.getSharedInstance()
+        const customerInfo = await purchasesInstance.getCustomerInfo()
+        console.log("revenuecat user configured successfully:", {
+          userId: String(userId),
+          hasCustomerInfo: !!customerInfo,
+          entitlements: customerInfo?.entitlements ? Object.keys(customerInfo.entitlements.active) : [],
+        })
+        return customerInfo
+      } catch (customerInfoError) {
+        console.warn("revenuecat configured but customer info fetch failed:", customerInfoError)
+        console.log("revenuecat user id is set, proceeding with referrals")
+        // Return a minimal object so referrals can proceed
+        return { userId: String(userId) }
+      }
     }
 
     if (!userId) {
