@@ -1,6 +1,8 @@
 // Unified Analytics Tracking Utility
 // Sends events to both Google Analytics (gtag) and PostHog
 
+import posthog from "posthog-js"
+
 /**
  * Track events to both Google Analytics and PostHog
  * @param {string} eventName - Name of the event
@@ -14,22 +16,28 @@ export const trackEvent = (eventName, properties = {}, options = {}) => {
   if (window.gtag && !options.skipGA) {
     // Convert PostHog-style event names to GA-friendly format
     const gaEventName = convertEventNameForGA(eventName)
-    
+
     // Prepare GA-compatible parameters
     const gaParams = {
-      event_category: properties.category || 'engagement',
+      event_category: properties.category || "engagement",
       event_label: properties.label || properties.article_title || properties.platform,
       value: properties.value || 1,
-      ...properties
+      ...properties,
     }
 
     // Remove PostHog-specific properties that GA doesn't need
     delete gaParams.article_path
     delete gaParams.article_title
     delete gaParams.platform
-    
-    window.gtag('event', gaEventName, gaParams)
+
+    window.gtag("event", gaEventName, gaParams)
     console.log(`📊 GA Event: ${gaEventName}`, gaParams)
+  }
+
+  // Track with PostHog
+  if (!options.skipPostHog && posthog.__loaded) {
+    posthog.capture(eventName, properties)
+    console.log(`📊 PostHog Event: ${eventName}`, properties)
   }
 }
 
@@ -38,15 +46,15 @@ export const trackEvent = (eventName, properties = {}, options = {}) => {
  * @param {string} eventName - PostHog event name
  * @returns {string} GA-friendly event name
  */
-const convertEventNameForGA = (eventName) => {
+const convertEventNameForGA = eventName => {
   const eventMap = {
-    'blog_post_viewed': 'page_view',
-    'blog_post_shared': 'share',
-    'comment_posted': 'comment',
-    'link_copied': 'share'
+    blog_post_viewed: "page_view",
+    blog_post_shared: "share",
+    comment_posted: "comment",
+    link_copied: "share",
   }
-  
-  return eventMap[eventName] || eventName.replace(/_/g, '_')
+
+  return eventMap[eventName] || eventName.replace(/_/g, "_")
 }
 
 /**
@@ -60,12 +68,21 @@ export const trackPageView = (path, title, additionalProps = {}) => {
 
   // Google Analytics pageview (handled in gatsby-browser.js via ReactGA)
   // But we can send additional custom events for blog posts
-  if (path.startsWith('/blog/') && window.gtag) {
-    window.gtag('event', 'blog_view', {
-      event_category: 'blog',
+  if (path.startsWith("/blog/") && window.gtag) {
+    window.gtag("event", "blog_view", {
+      event_category: "blog",
       event_label: title,
       page_path: path,
-      ...additionalProps
+      ...additionalProps,
+    })
+  }
+
+  // PostHog page view (automatic via PostHogProvider, but we can send custom properties for blog posts)
+  if (path.startsWith("/blog/") && posthog.__loaded) {
+    posthog.capture("blog_post_viewed", {
+      article_title: title,
+      article_path: path,
+      ...additionalProps,
     })
   }
 }
@@ -77,23 +94,23 @@ export const trackPageView = (path, title, additionalProps = {}) => {
  * @param {string} articleTitle - Article title
  */
 export const trackShare = (platform, articlePath, articleTitle) => {
-  trackEvent('blog_post_shared', {
+  trackEvent("blog_post_shared", {
     platform: platform,
     article_path: articlePath,
     article_title: articleTitle,
-    category: 'social',
-    label: `${platform}_share`
+    category: "social",
+    label: `${platform}_share`,
   })
 
   // Additional GA-specific share event
   if (window.gtag) {
-    window.gtag('event', 'share', {
+    window.gtag("event", "share", {
       method: platform,
-      content_type: 'blog_post',
+      content_type: "blog_post",
       item_id: articlePath,
       content_id: articlePath,
-      event_category: 'social_sharing',
-      event_label: articleTitle
+      event_category: "social_sharing",
+      event_label: articleTitle,
     })
   }
 }
@@ -105,12 +122,12 @@ export const trackShare = (platform, articlePath, articleTitle) => {
  * @param {string} articleTitle - Article title
  */
 export const trackComment = (action, articlePath, articleTitle) => {
-  trackEvent('comment_interaction', {
+  trackEvent("comment_interaction", {
     action: action,
     article_path: articlePath,
     article_title: articleTitle,
-    category: 'engagement',
-    label: `comment_${action}`
+    category: "engagement",
+    label: `comment_${action}`,
   })
 }
 
@@ -120,12 +137,12 @@ export const trackComment = (action, articlePath, articleTitle) => {
  * @param {string} articleTitle - Article title
  */
 export const trackLinkCopy = (articlePath, articleTitle) => {
-  trackEvent('link_copied', {
+  trackEvent("link_copied", {
     article_path: articlePath,
     article_title: articleTitle,
-    platform: 'copy_link',
-    category: 'social',
-    label: 'link_copy'
+    platform: "copy_link",
+    category: "social",
+    label: "link_copy",
   })
 }
 
@@ -135,12 +152,12 @@ export const trackLinkCopy = (articlePath, articleTitle) => {
  * @param {string} articleTitle - Article title
  */
 export const trackEmailShare = (articlePath, articleTitle) => {
-  trackEvent('blog_post_shared', {
-    platform: 'email',
+  trackEvent("blog_post_shared", {
+    platform: "email",
     article_path: articlePath,
     article_title: articleTitle,
-    category: 'social',
-    label: 'email_share'
+    category: "social",
+    label: "email_share",
   })
 }
 
@@ -150,10 +167,10 @@ export const trackEmailShare = (articlePath, articleTitle) => {
  * @param {object} properties - Engagement properties
  */
 export const trackEngagement = (engagementType, properties = {}) => {
-  trackEvent('user_engagement', {
+  trackEvent("user_engagement", {
     engagement_type: engagementType,
-    category: 'engagement',
-    ...properties
+    category: "engagement",
+    ...properties,
   })
 }
 
@@ -161,15 +178,24 @@ export const trackEngagement = (engagementType, properties = {}) => {
  * Initialize tracking consent for both platforms
  * @param {boolean} hasConsent - Whether user has given consent
  */
-export const setTrackingConsent = (hasConsent) => {
+export const setTrackingConsent = hasConsent => {
   if (typeof window === "undefined") return
 
   // Google Analytics consent
   if (window.gtag) {
-    window.gtag('consent', 'update', {
-      analytics_storage: hasConsent ? 'granted' : 'denied',
-      ad_storage: hasConsent ? 'granted' : 'denied'
+    window.gtag("consent", "update", {
+      analytics_storage: hasConsent ? "granted" : "denied",
+      ad_storage: hasConsent ? "granted" : "denied",
     })
+  }
+
+  // PostHog consent (opt out if consent not given)
+  if (posthog.__loaded) {
+    if (hasConsent) {
+      posthog.opt_in_capturing()
+    } else {
+      posthog.opt_out_capturing()
+    }
   }
 }
 

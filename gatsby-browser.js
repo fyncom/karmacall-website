@@ -7,7 +7,6 @@
 import ReactGA from "react-ga4"
 import React from "react"
 import CookieConsentEEA from "./src/components/CookieConsentEEA"
-import posthog from "posthog-js"
 import { PostHogProvider } from "posthog-js/react"
 
 // Import proper font definitions with font-display: swap
@@ -16,7 +15,15 @@ import "./src/components/fonts.css"
 // Wrap the root element with PostHogProvider and our cookie consent component
 export const wrapRootElement = ({ element }) => {
   return (
-    <PostHogProvider client={posthog}>
+    <PostHogProvider
+      apiKey={process.env.GATSBY_POSTHOG_API_KEY}
+      options={{
+        api_host: (typeof window !== "undefined" ? window.location.origin : "") + "/ph",
+        defaults: "2025-05-24",
+        capture_exceptions: true,
+        debug: process.env.NODE_ENV === "development",
+      }}
+    >
       <>
         {element}
         <CookieConsentEEA />
@@ -38,16 +45,6 @@ export const onClientEntry = () => {
     })
   }
 
-  // Initialize PostHog (use first‑party proxy in production to reduce blocking)
-  if (typeof window !== "undefined") {
-    const apiHost = process.env.NODE_ENV === "production" ? "https://www.karmacall.com/ph" : process.env.GATSBY_POSTHOG_API_HOST
-    posthog.init(process.env.GATSBY_POSTHOG_API_KEY, {
-      api_host: apiHost,
-      defaults: "2025-05-24",
-      capture_exceptions: true,
-      debug: process.env.NODE_ENV === "development",
-    })
-  }
 
   // Add preload links for critical fonts to improve loading performance
   if (typeof document !== "undefined") {
