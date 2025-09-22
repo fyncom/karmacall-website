@@ -1,8 +1,6 @@
 // Unified Analytics Tracking Utility
 // Sends events to both Google Analytics (gtag) and PostHog
 
-import posthog from "posthog-js"
-
 /**
  * Track events to both Google Analytics and PostHog
  * @param {string} eventName - Name of the event
@@ -32,12 +30,6 @@ export const trackEvent = (eventName, properties = {}, options = {}) => {
 
     window.gtag("event", gaEventName, gaParams)
     console.log(`📊 GA Event: ${gaEventName}`, gaParams)
-  }
-
-  // Track with PostHog
-  if (!options.skipPostHog && posthog.__loaded) {
-    posthog.capture(eventName, properties)
-    console.log(`📊 PostHog Event: ${eventName}`, properties)
   }
 }
 
@@ -73,15 +65,6 @@ export const trackPageView = (path, title, additionalProps = {}) => {
       event_category: "blog",
       event_label: title,
       page_path: path,
-      ...additionalProps,
-    })
-  }
-
-  // PostHog page view (automatic via PostHogProvider, but we can send custom properties for blog posts)
-  if (path.startsWith("/blog/") && posthog.__loaded) {
-    posthog.capture("blog_post_viewed", {
-      article_title: title,
-      article_path: path,
       ...additionalProps,
     })
   }
@@ -188,15 +171,6 @@ export const setTrackingConsent = hasConsent => {
       ad_storage: hasConsent ? "granted" : "denied",
     })
   }
-
-  // PostHog consent (opt out if consent not given)
-  if (posthog.__loaded) {
-    if (hasConsent) {
-      posthog.opt_in_capturing()
-    } else {
-      posthog.opt_out_capturing()
-    }
-  }
 }
 
 export default {
@@ -207,5 +181,5 @@ export default {
   trackLinkCopy,
   trackEmailShare,
   trackEngagement,
-  setTrackingConsent
+  setTrackingConsent,
 }
