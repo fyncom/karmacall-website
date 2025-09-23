@@ -82,6 +82,9 @@ const Header = () => {
               <Link to="/about">About</Link>
             </li>
             <li className="mobile-menu-item">
+              <Link to="/pricing">Pricing</Link>
+            </li>
+            <li className="mobile-menu-item">
               <Link to="/faq">FAQ</Link>
             </li>
             <li className="mobile-menu-item">
@@ -111,6 +114,9 @@ const Header = () => {
         <ul className="nav-links">
           <li>
             <Link to="/about">About</Link>
+          </li>
+          <li>
+            <Link to="/pricing">Pricing</Link>
           </li>
           <li>
             <Link to="/faq">FAQ</Link>
