@@ -67,6 +67,12 @@ const PricingPage = () => {
             </div>
           </div>
 
+          <div className="feature-notes">
+            <p className="feature-description">
+              <b>Important:</b> <em>Purchases available through iOS and Android app only. Web browser purchases coming soon.</em>
+            </p>
+          </div>
+
           <div className="billing-toggle">
             <span className={billingPeriod === "monthly" ? "active" : ""}>Monthly</span>
             <button className="toggle-switch" onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "annual" : "monthly")}>
