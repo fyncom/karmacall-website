@@ -148,20 +148,9 @@ const Login = () => {
 
   // OTP value gets set in the Modal - cannot use states here..
   const handleOtpSubmit = async submittedOtp => {
-    console.log("[DEBUG] handleOtpSubmit - Starting OTP verification with code", submittedOtp ? "[REDACTED]" : "null")
-    console.log("[DEBUG] Browser info:", {
-      userAgent: navigator.userAgent,
-      browser: getBrowserName(),
-      environment: environment,
-    })
-
     try {
-      console.log("[DEBUG] handleOtpSubmit - Calling verifyConfirm")
       const response = await verifyConfirm(submittedOtp)
-      console.log("[DEBUG] handleOtpSubmit - verifyConfirm response:", response)
-
       if (response.status === 200) {
-        console.log("[DEBUG] handleOtpSubmit - OTP verification successful")
         setIsOtpModalOpen(false)
         setOtp(response.data.opt)
 
@@ -172,15 +161,12 @@ const Login = () => {
           phoneNumber: phoneNumber,
           countryCode: countryCode,
         }
-        console.log("[DEBUG] handleOtpSubmit - Authentication data prepared (phoneNumber & countryCode redacted)")
 
         // Use the existing handleSignUp function to check if user exists
         // and handle appropriate redirection
         // If user exists, it will redirect to cash-out page
         // If user doesn't exist, it will redirect to app stores
-        console.log("[DEBUG] handleOtpSubmit - Calling handleSignUp with redirectToApp=true")
         const result = await handleSignUp(authData, true)
-        console.log("[DEBUG] handleOtpSubmit - handleSignUp result:", result)
         return
       } else if (response.status === 500) {
         console.log("[DEBUG] handleOtpSubmit - Server error (500)")
@@ -245,17 +231,8 @@ const Login = () => {
   // TODO: get backend to return a "new user" flag so we can redirect to app later.
   // redirectToApp parameter controls whether to redirect to app stores for new users
   const handleSignUp = async (authData = null, redirectToApp = false) => {
-    console.log("[DEBUG] handleSignUp - Starting with params:", {
-      hasAuthData: authData !== null,
-      redirectToApp,
-    })
-
     try {
       const environment = getBrowserEnvironment()
-      console.log("[DEBUG] handleSignUp - Environment detected:", environment)
-      console.log("[DEBUG] handleSignUp - Browser:", getBrowserName())
-      console.log("[DEBUG] handleSignUp - Making API call to user/register/full")
-
       const signUpResponse = await fetch(baseUrlV2 + "user/register/full", {
         method: "POST",
         headers: {
@@ -268,17 +245,9 @@ const Login = () => {
         }),
       })
 
-      console.log("[DEBUG] handleSignUp - API Response status:", signUpResponse.status)
       let signUpData = await signUpResponse.json()
-      console.log("[DEBUG] handleSignUp - API Response data:", {
-        // Redact sensitive info but show structure
-        hasUserId: !!signUpData.userId,
-        hasNanoAccount: !!signUpData.nanoAccount,
-        responseKeys: Object.keys(signUpData),
-      })
 
       if (signUpResponse.status === 200) {
-        console.log("[DEBUG] handleSignUp - User %s successfully found with code 200", signUpData.userId)
         setUserId(signUpData.userId)
         setNanoAccount(signUpData.nanoAccount)
 
@@ -287,29 +256,19 @@ const Login = () => {
         let revenueCatSetupSuccess = false
         try {
           if (!isRevenueCatUserSet()) {
-            console.log("[DEBUG] handleSignUp - setting up revenuecat user profile for user %s", signUpData.userId)
             await loginRevenueCatUser(signUpData.userId)
-            console.log("[DEBUG] handleSignUp - revenuecat user profile set up successfully")
             revenueCatSetupSuccess = true
           } else {
             console.log("[DEBUG] handleSignUp - revenuecat user already set up, skipping")
             revenueCatSetupSuccess = true
           }
         } catch (error) {
-          console.error("[DEBUG] handleSignUp - failed to set up revenuecat user:", error)
           // Don't block the login process if RevenueCat fails, but log the issue
-          console.warn("[DEBUG] handleSignUp - proceeding without revenuecat setup")
+          console.error("[DEBUG] handleSignUp - failed to set up revenuecat user:", error)
         }
 
         // handle referrals - only after RevenueCat setup attempt
         if (referralCode !== "") {
-          if (revenueCatSetupSuccess) {
-            console.log("[DEBUG] handleSignUp - processing referral code with revenuecat user configured")
-          } else {
-            console.warn("[DEBUG] handleSignUp - processing referral code but revenuecat setup failed")
-          }
-
-          console.log("[DEBUG] handleSignUp - Processing referral code")
           const refTx = await recordReferral(signUpData.userId)
           if (refTx.data.referralResponse != null) {
             console.log("[DEBUG] handleSignUp - The Referral was successfully recorded!")

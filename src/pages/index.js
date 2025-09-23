@@ -15,11 +15,6 @@ const Footer = lazy(() => import("../components/footer"))
 const isBrowser = typeof window !== "undefined" && typeof navigator !== "undefined"
 const isIOS = isBrowser ? /iPhone|iPad|iPod/i.test(navigator.userAgent) : false
 
-if (isBrowser) {
-  console.log("isIOS", isIOS)
-  console.log("navigator.userAgent", navigator.userAgent)
-}
-
 const BlockSpamEarnCash = () => {
   const {
     heroKarmaCallImage,

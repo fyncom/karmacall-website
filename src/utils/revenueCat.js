@@ -41,7 +41,6 @@ export const configureRevenueCat = (userId = null) => {
     }
 
     isConfigured = true
-    console.log("revenuecat web sdk configured successfully")
   } catch (error) {
     console.error("failed to configure revenuecat:", error)
     console.error("purchases object:", Purchases)
@@ -56,13 +55,10 @@ export const configureRevenueCat = (userId = null) => {
 export const loginRevenueCatUser = async userId => {
   try {
     if (!isConfigured) {
-      console.log("revenuecat not configured, configuring with user id")
       configureRevenueCat(userId)
       if (!isConfigured) {
         throw new Error("revenuecat configuration failed")
       }
-      // If we configured with user ID, we don't need to call logIn
-      console.log("revenuecat configured with user id, skipping login call")
 
       // Store in localStorage that RevenueCat user is set IMMEDIATELY for referral safety
       if (typeof window !== "undefined") {
@@ -73,11 +69,12 @@ export const loginRevenueCatUser = async userId => {
       try {
         const purchasesInstance = Purchases.getSharedInstance()
         const customerInfo = await purchasesInstance.getCustomerInfo()
-        console.log("revenuecat user configured successfully:", {
+        // nice way to show product entitlements for this user
+        /*         console.log("revenuecat user configured successfully:", {
           userId: String(userId),
           hasCustomerInfo: !!customerInfo,
           entitlements: customerInfo?.entitlements ? Object.keys(customerInfo.entitlements.active) : [],
-        })
+        }) */
         return customerInfo
       } catch (customerInfoError) {
         console.warn("revenuecat configured but customer info fetch failed:", customerInfoError)
@@ -94,18 +91,8 @@ export const loginRevenueCatUser = async userId => {
 
     // Ensure userId is a string (RevenueCat requires string user IDs)
     const userIdString = String(userId)
-    console.log(`logging in user ${userIdString} to revenuecat`)
-
-    // Use the same user ID format as the mobile app
-    // Mobile app uses user.value.id directly, so we'll use the userId from backend
     const purchasesInstance = Purchases.getSharedInstance()
     const customerInfo = await purchasesInstance.changeUser(userIdString)
-
-    console.log("revenuecat user logged in successfully:", {
-      userId: userIdString,
-      hasCustomerInfo: !!customerInfo,
-      entitlements: customerInfo?.entitlements ? Object.keys(customerInfo.entitlements.active) : [],
-    })
 
     // Store in localStorage that RevenueCat user is set (mirrors mobile app behavior)
     if (typeof window !== "undefined") {
@@ -119,23 +106,15 @@ export const loginRevenueCatUser = async userId => {
   }
 }
 
-/**
- * Get current customer info from RevenueCat
- */
+/** * Get current customer info from RevenueCat */
 export const getCustomerInfo = async () => {
   try {
     if (!isConfigured) {
       console.log("revenuecat not configured")
       return null
     }
-
     const purchasesInstance = Purchases.getSharedInstance()
     const customerInfo = await purchasesInstance.getCustomerInfo()
-    console.log("revenuecat customer info retrieved:", {
-      hasCustomerInfo: !!customerInfo,
-      entitlements: customerInfo?.entitlements ? Object.keys(customerInfo.entitlements.active) : [],
-    })
-
     return customerInfo
   } catch (error) {
     console.error("failed to get revenuecat customer info:", error)
