@@ -269,6 +269,13 @@ const Login = () => {
 
         // handle referrals - only after RevenueCat setup attempt
         if (referralCode !== "") {
+          if (revenueCatSetupSuccess) {
+            console.log("[DEBUG] handleSignUp - processing referral code with revenuecat user configured")
+          } else {
+            console.warn("[DEBUG] handleSignUp - processing referral code but revenuecat setup failed")
+          }
+
+          console.log("[DEBUG] handleSignUp - Processing referral code")
           const refTx = await recordReferral(signUpData.userId)
           if (refTx.data.referralResponse != null) {
             console.log("[DEBUG] handleSignUp - The Referral was successfully recorded!")
