@@ -289,6 +289,56 @@ const PricingPage = () => {
                 <h3>📱 Works Everywhere</h3>
                 <p>Seamless across all your devices and platforms (iOS, Android, Web)</p>
               </div>
+
+              <div className="feature-highlight">
+                <h3>🎛️ Advanced Controls Coming</h3>
+                <p>Future updates will include a "toggle share" button for even more granular control over who can access your protection</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="faq-section">
+            <h2 className="section-title">Frequently Asked Questions</h2>
+
+            <div className="faq-grid">
+              <div className="faq-item">
+                <h3>How does license sharing work?</h3>
+                <p>
+                  Simply share your unique referral code with family members or team members. When they use your code, they automatically get access to your
+                  subscription protection - no additional setup required!
+                </p>
+              </div>
+
+              <div className="faq-item">
+                <h3>How do I find my referral code?</h3>
+                <p>Your referral code is available in the KarmaCall app after you subscribe. Look for the referral page in the app.</p>
+              </div>
+
+              <div className="faq-item">
+                <h3>Can I control who has access?</h3>
+                <p>
+                  Currently, anyone with your referral code gets automatic access (up to your plan limits). Future updates will include a "toggle share" button
+                  for more granular control.
+                </p>
+              </div>
+
+              <div className="faq-item">
+                <h3>What happens if I reach my sharing limit?</h3>
+                <p>
+                  If you've already shared with the maximum number of people (2 for Premium, 6 for Supreme), additional referral code uses won't grant access
+                  until a spot opens up.
+                </p>
+              </div>
+
+              <div className="faq-item">
+                <h3>Can I change my plan anytime?</h3>
+                <p>Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate any differences.</p>
+              </div>
+
+              <div className="faq-item">
+                <h3>How many devices can I use?</h3>
+                <p>All premium plans work seamlessly across unlimited devices - iOS, Android, and Web platforms.</p>
+              </div>
             </div>
           </div>
 
@@ -304,6 +354,55 @@ const PricingPage = () => {
               </button>
             </div>
             <p className="cta-note">🔒 30-day money-back guarantee • Cancel anytime • No setup fees</p>
+          </div>
+          <div className="sharing-instructions">
+            <h2 className="section-title">📱 How License Sharing Works</h2>
+
+            <div className="instructions-grid">
+              <div className="instruction-step">
+                <div className="step-number">1</div>
+                <h3>Subscribe to Premium or Supreme</h3>
+                <p>Choose your plan and complete your subscription through the iOS or Android app.</p>
+              </div>
+
+              <div className="instruction-step">
+                <div className="step-number">2</div>
+                <h3>Share Your Referral Code</h3>
+                <p>Find your unique referral code in the app and share it with family members or teammates via text, email, or any messaging app.</p>
+              </div>
+
+              <div className="instruction-step">
+                <div className="step-number">3</div>
+                <h3>Automatic License Grant</h3>
+                <p>
+                  <strong>When someone uses your referral code, they automatically get access to your protection!</strong> No additional setup required.
+                </p>
+              </div>
+
+              <div className="instruction-step">
+                <div className="step-number">4</div>
+                <h3>Manage Your Family/Team</h3>
+                <p>View and manage all connected users in your app. Future updates will include a "toggle share" button for more control.</p>
+              </div>
+            </div>
+
+            <div className="sharing-highlight">
+              <h3>🎯 Key Points:</h3>
+              <ul>
+                <li>
+                  <strong>Instant Access:</strong> Referral codes grant immediate protection when used
+                </li>
+                <li>
+                  <strong>No Limits:</strong> Share with up to 2 (Premium) or 6 (Supreme) additional people
+                </li>
+                <li>
+                  <strong>Email Flexibility:</strong> Account holders can use unlimited emails, shared users get 10 each
+                </li>
+                <li>
+                  <strong>Easy Management:</strong> All sharing happens through your referral code - no complex setup
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>

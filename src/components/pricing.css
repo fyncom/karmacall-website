@@ -299,6 +299,108 @@
   background: linear-gradient(135deg, var(--karmacall-gold, #ff8c00), var(--karmacall-green, #008080));
 }
 
+/* Sharing Instructions Section */
+.sharing-instructions {
+  margin: 4rem 0;
+  background: var(--color-background-alt, white);
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border: 2px solid var(--karmacall-green, #008080);
+}
+
+.instructions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.instruction-step {
+  text-align: center;
+  position: relative;
+}
+
+.step-number {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--karmacall-green, #008080), var(--karmacall-gold, #ff8c00));
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 0 auto 1rem;
+  box-shadow: 0 4px 12px rgba(0, 128, 128, 0.3);
+}
+
+.instruction-step h3 {
+  color: var(--karmacall-green, #008080);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.instruction-step p {
+  color: var(--color-text-secondary, #374151);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.sharing-highlight {
+  background: linear-gradient(135deg, rgba(0, 128, 128, 0.05), rgba(255, 140, 0, 0.05));
+  border-radius: 12px;
+  padding: 2rem;
+  margin-top: 2rem;
+  border-left: 4px solid var(--karmacall-gold, #ff8c00);
+}
+
+.sharing-highlight h3 {
+  color: var(--karmacall-green, #008080);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.sharing-highlight ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sharing-highlight li {
+  padding: 0.5rem 0;
+  color: var(--color-text-secondary, #374151);
+  line-height: 1.6;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.sharing-highlight li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--karmacall-green, #008080);
+  font-weight: bold;
+}
+
+.feature-notes {
+  text-align: center;
+  margin: 2rem 0;
+  padding: 1rem;
+  background: rgba(255, 140, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid var(--karmacall-gold, #ff8c00);
+}
+
+.feature-notes .feature-description {
+  margin: 0;
+  color: var(--color-text, #1e293b);
+  max-width: none !important;
+  width: auto;
+  white-space: nowrap;
+}
+
 /* Use Cases Section */
 .use-cases-section {
   margin: 4rem 0;
@@ -370,8 +472,8 @@
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
   margin-top: 2rem;
 }
 
@@ -397,6 +499,45 @@
 }
 
 .feature-highlight p {
+  color: var(--color-text-secondary, #374151);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* FAQ Section */
+.faq-section {
+  margin: 4rem 0;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.faq-item {
+  background: var(--color-background-alt, white);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid var(--border-color, #f1f5f9);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.faq-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border-color: var(--karmacall-green, #008080);
+}
+
+.faq-item h3 {
+  color: var(--karmacall-green, #008080);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.faq-item p {
   color: var(--color-text-secondary, #374151);
   line-height: 1.6;
   margin: 0;
@@ -432,28 +573,70 @@
   margin-bottom: 2rem;
 }
 
-.cta-button {
-  padding: 1rem 2rem;
-  border: 2px solid white;
+.pricing-page .cta-button {
+  padding: 1rem 2rem !important;
+  border: 2px solid transparent;
   border-radius: 12px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.85rem !important;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: transparent;
-  color: white;
-  min-width: 200px;
+  background: white !important;
+  color: var(--karmacall-green, #008080);
+  min-width: 260px;
+  max-width: 320px !important;
+  width: auto;
+  white-space: nowrap;
+  text-align: center;
+  box-sizing: border-box;
+  display: inline-block !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.cta-button:hover {
-  background: white;
-  color: var(--karmacall-green, #008080);
+.pricing-page .cta-button:hover {
+  background: var(--karmacall-green, #008080) !important;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 128, 128, 0.3);
+}
+
+.pricing-page .cta-button.cta-premium {
+  background: var(--karmacall-gold, #ff8c00) !important;
+  color: white;
+}
+
+.pricing-page .cta-button.cta-premium:hover {
+  background: var(--karmacall-gold, #ff8c00) !important;
+  color: white;
+  box-shadow: 0 6px 20px rgba(255, 140, 0, 0.3);
+}
+
+.pricing-page .cta-button.cta-supreme {
+  background: linear-gradient(135deg, var(--karmacall-green, #008080), var(--fyncom-red, #ff5a5f)) !important;
+  /* background: linear-gradient(135deg, var(--karmacall-green, #008080), var(--karmacall-gold, #ff8c00)) !important; */
+  color: white;
+}
+
+.pricing-page .cta-button.cta-supreme:hover {
+  background: var(--fyncom-red, #ff5a5f) !important;
+  /* background: linear-gradient(135deg, var(--karmacall-gold, #ff8c00), var(--karmacall-green, #008080)) !important; */
+  color: white;
+  box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
 }
 
 .cta-note {
   font-size: 0.9rem;
   opacity: 0.8;
   margin: 0;
+}
+
+/* Medium to Large Screens */
+@media (min-width: 769px) {
+  .pricing-page .cta-button {
+    min-width: 280px !important;
+    padding: 1rem 3rem !important;
+    font-size: 0.9rem !important;
+  }
 }
 
 /* Responsive Design */
@@ -493,9 +676,38 @@
     align-items: center;
   }
 
-  .cta-button {
-    width: 100%;
-    max-width: 300px;
+  .pricing-page .cta-button {
+    width: 100% !important;
+    max-width: 250px !important;
+    font-size: 0.8rem !important;
+    padding: 0.875rem 1rem !important;
+    min-width: auto !important;
+  }
+
+  .sharing-instructions {
+    padding: 2rem 1rem;
+  }
+
+  .instructions-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .sharing-highlight {
+    padding: 1.5rem;
+  }
+
+  .faq-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .faq-item {
+    padding: 1.5rem;
+  }
+
+  .feature-notes .feature-description {
+    white-space: normal;
   }
 }
 
