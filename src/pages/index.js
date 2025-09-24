@@ -37,14 +37,27 @@ const BlockSpamEarnCash = () => {
   const toggleModal = () => {
     setModalOpen(!isModalOpen)
   }
-  const nanoAccount = "nano_3rcpayu3g39njpq3mkizuepfr5rh1nwuz4xypwsmubkoiww88wubff8d719t"
-  // const [dynamicMessage, setDynamicMessage] = useState(
-  // `<span className="payments-counter">108,777 instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanoblockexplorer.com/explorer/account/${nanoAccount}/history">See these payments happening in real-time!</a>`
-  // )
+  // Nano accounts for different blocking types
+  const nanoAccounts = {
+    calls: "nano_3rcpayu3g39njpq3mkizuepfr5rh1nwuz4xypwsmubkoiww88wubff8d719t",
+    texts: "nano_3kctxtpayjc43ythwmcj7w7nhxtgyy9rfgamrny4xp9cp1mz4doadd3a3bzf", // BlockTechMessage account
+    emails: "nano_3kctxtpayjc43ythwmcj7w7nhxtgyy9rfgamrny4xp9cp1mz4doadd3a3bzf", // Placeholder - update when you have the email account
+  }
+
+  // State for individual counters
+  const [blockCounts, setBlockCounts] = useState({
+    calls: 487660, // Default fallback
+    texts: 3780,
+    emails: 38935,
+  })
+
+  // Calculate total for main message
+  const totalBlocks = blockCounts.calls + blockCounts.texts + blockCounts.emails
   const [dynamicMessage, setDynamicMessage] = useState(
-    `<span className="payments-counter">108,777 instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanexplorer.com/nano/account/${nanoAccount}">See these payments happening in real-time!</a>`
+    `<span className="payments-counter">${totalBlocks.toLocaleString()} instant payments</span> have been made for blocked calls, texts, and emails. What are you waiting for? Download the app and get paid! <a href="https://nanexplorer.com/nano/account/${
+      nanoAccounts.calls
+    }">See these payments happening in real-time!</a>`
   )
-  const [nanoBlockCount, setNanoBlockCount] = useState("")
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
   const handleThumbnailClick = () => {
     setIsVideoLoaded(true)
@@ -79,30 +92,69 @@ const BlockSpamEarnCash = () => {
   }, [karmacallImage, karmacallImageDark, disruptionBanking, disruptionBankingDark, oneMillionCups, oneMillionCupsDark, evonexusDark, evonexus])
 
   useEffect(() => {
-    const getBlockCount = async () => {
+    const getBlockCounts = async () => {
+      const newBlockCounts = {
+        calls: 108777, // Default fallback
+        texts: 0,
+        emails: 0,
+      }
+      let hasUpdates = false
+
+      // Fetch block counts for calls and texts (nano accounts)
+      for (const [type, account] of Object.entries(nanoAccounts)) {
+        if (type === "emails") continue // Skip emails, handle separately
+
+        try {
+          const response = await fetch(`${baseUrl}nano/accountBlockCount`, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify({
+              destinationAddress: account,
+            }),
+          })
+          if (response.ok) {
+            const data = await response.json()
+            if (data.accountBlockCount > 0) {
+              newBlockCounts[type] = data.accountBlockCount
+              hasUpdates = true
+            }
+          }
+        } catch (error) {
+          console.error(`error fetching ${type} block count:`, error)
+        }
+      }
+
+      // Fetch blocked email count from different endpoint
       try {
-        const response = await fetch(`${baseUrl}nano/accountBlockCount`, {
-          method: "POST",
+        const response = await fetch(`${baseUrl}v2/api/blocked-email-count`, {
+          method: "GET",
           headers: headers,
-          body: JSON.stringify({
-            destinationAddress: nanoAccount,
-          }),
         })
         if (response.ok) {
           const data = await response.json()
-          if (data.accountBlockCount > 0) {
-            setNanoBlockCount(data.accountBlockCount)
-            const numberWithCommas = data.accountBlockCount.toLocaleString()
-            // const newMessage = `<span class="payments-counter">${numberWithCommas} instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanoblockexplorer.com/explorer/account/${nanoAccount}/history">See these payments happening in real-time!</a>`
-            const newMessage = `<span class="payments-counter">${numberWithCommas} instant payments</span> have been made for blocked calls so far. What are you waiting for? Download the app and get paid! <a href="https://nanexplorer.com/nano/account/${nanoAccount}">See these payments happening in real-time!</a>`
-            setDynamicMessage(newMessage)
+          if (data && typeof data === "number" && data > 0) {
+            newBlockCounts.emails = data
+            hasUpdates = true
+          } else if (data && data.count && data.count > 0) {
+            newBlockCounts.emails = data.count
+            hasUpdates = true
           }
         }
       } catch (error) {
-        console.error("ERROR", error)
+        console.error(`error fetching email block count:`, error)
+      }
+
+      // Update state if we have new data
+      if (hasUpdates) {
+        setBlockCounts(newBlockCounts)
+        const total = newBlockCounts.calls + newBlockCounts.texts + newBlockCounts.emails
+        const newMessage = `<span class="payments-counter">${total.toLocaleString()} instant payments</span> have been made for blocked calls, texts, and emails. What are you waiting for? Download the app and get paid! <a href="https://nanexplorer.com/nano/account/${
+          nanoAccounts.calls
+        }">See these payments happening in real-time!</a>`
+        setDynamicMessage(newMessage)
       }
     }
-    getBlockCount()
+    getBlockCounts()
   }, [])
 
   return (
@@ -206,6 +258,29 @@ const BlockSpamEarnCash = () => {
           </p>
         </div>
 
+        {/* Individual Counter Cards */}
+        <div className="counter-cards-container">
+          <div className="counter-card">
+            <a href={`https://nanexplorer.com/nano/account/${nanoAccounts.calls}`} target="_blank" rel="noopener noreferrer" className="counter-icon-link">
+              <div className="counter-icon clickable">📞</div>
+            </a>
+            <div className="counter-number">{blockCounts.calls.toLocaleString()}</div>
+            <div className="counter-label">Blocked Calls</div>
+          </div>
+          <div className="counter-card">
+            <a href={`https://nanexplorer.com/nano/account/${nanoAccounts.texts}`} target="_blank" rel="noopener noreferrer" className="counter-icon-link">
+              <div className="counter-icon clickable">💬</div>
+            </a>
+            <div className="counter-number">{blockCounts.texts.toLocaleString()}</div>
+            <div className="counter-label">Blocked Texts</div>
+          </div>
+          <div className="counter-card">
+            <div className="counter-icon">📧</div>
+            <div className="counter-number">{blockCounts.emails.toLocaleString()}</div>
+            <div className="counter-label">Blocked Emails</div>
+          </div>
+        </div>
+
         {/* Features Section Row */}
         <div>
           <h2 className="centered">
@@ -219,10 +294,10 @@ const BlockSpamEarnCash = () => {
         </div>
         <div className="use-cases-sales-marketing-container">
           <div className="use-case">
-            <GatsbyImage 
-              image={smugLady} 
-              loading="lazy" 
-              alt="The most common kind of KarmaCall interaction. Unknown calls get blocked and you get instant cash-back!" 
+            <GatsbyImage
+              image={smugLady}
+              loading="lazy"
+              alt="The most common kind of KarmaCall interaction. Unknown calls get blocked and you get instant cash-back!"
             />
             <h2>Blocked</h2>
             <sub className="sub-features">Instant CashBack!</sub>
