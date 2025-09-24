@@ -1,7 +1,7 @@
 import React from "react"
 import Header from "../components/header"
 import Footer from "../components/footer"
-import { FaRobot, FaLightbulb, FaChartLine, FaUsers, FaCog, FaRocket } from "react-icons/fa"
+import { FaLightbulb, FaChartLine, FaUsers, FaCog, FaRocket } from "react-icons/fa"
 import Seo from "../components/seo"
 import "../components/ai-collaboration.css"
 

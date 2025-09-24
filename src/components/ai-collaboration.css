@@ -2,6 +2,8 @@
 
 .ai-collaboration-page {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--color-background, #fff);
+  color: var(--color-text, #333);
 }
 
 .ai-hero {
@@ -53,7 +55,7 @@
 /* Philosophy Section */
 .philosophy-section {
   padding: 4rem 0;
-  background: #f8fafc;
+  background: var(--color-background-alt, #f8fafc);
 }
 
 .section-title {
@@ -61,7 +63,7 @@
   font-weight: 700;
   text-align: center;
   margin-bottom: 3rem;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
 }
 
 .philosophy-grid {
@@ -72,12 +74,12 @@
 }
 
 .philosophy-card {
-  background: white;
+  background: var(--color-background, white);
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
   text-align: center;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color, #e2e8f0);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -96,11 +98,11 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
 }
 
 .philosophy-card p {
-  color: #4a5568;
+  color: var(--color-text-secondary, #4a5568);
   line-height: 1.6;
 }
 
@@ -110,11 +112,11 @@
 }
 
 .project-card {
-  background: white;
+  background: var(--color-background, white);
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color, #e2e8f0);
 }
 
 .featured-project {
@@ -164,7 +166,7 @@
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 2rem;
-  color: #4a5568;
+  color: var(--color-text-secondary, #4a5568);
 }
 
 .strategy-overview {
@@ -175,7 +177,7 @@
   font-size: 1.4rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
 }
 
 .strategy-points {
@@ -194,18 +196,18 @@
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
 }
 
 .strategy-point p {
-  color: #4a5568;
+  color: var(--color-text-secondary, #4a5568);
   line-height: 1.5;
   margin: 0;
 }
 
 .strategy-point ul {
   margin: 0.5rem 0 0 1rem;
-  color: #4a5568;
+  color: var(--color-text-secondary, #4a5568);
 }
 
 .strategy-point li {
@@ -221,7 +223,7 @@
   font-size: 1.4rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
 }
 
 .timeline-items {
@@ -260,24 +262,24 @@
   font-size: 1.4rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
 }
 
 .key-insights blockquote {
-  background: #edf2f7;
+  background: var(--color-background-alt, #edf2f7);
   border-left: 4px solid #667eea;
   padding: 1.5rem;
   margin: 0;
   border-radius: 0 8px 8px 0;
   font-style: italic;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
   line-height: 1.6;
 }
 
 /* Tools Section */
 .collaboration-tools-section {
   padding: 4rem 0;
-  background: #f8fafc;
+  background: var(--color-background-alt, #f8fafc);
 }
 
 .tools-grid {
@@ -287,23 +289,23 @@
 }
 
 .tool-card {
-  background: white;
+  background: var(--color-background, white);
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color, #e2e8f0);
 }
 
 .tool-card h3 {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
 }
 
 .tool-card p {
   margin-bottom: 0.5rem;
-  color: #4a5568;
+  color: var(--color-text-secondary, #4a5568);
   line-height: 1.5;
 }
 
@@ -316,13 +318,13 @@
   font-size: 1.75rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
 }
 
 .transparency-content p {
   font-size: 1.1rem;
   line-height: 1.6;
-  color: #4a5568;
+  color: var(--color-text-secondary, #4a5568);
   margin-bottom: 1.5rem;
 }
 
@@ -334,8 +336,8 @@
 
 .transparency-content li {
   padding: 0.5rem 0;
-  color: #4a5568;
-  border-bottom: 1px solid #e2e8f0;
+  color: var(--color-text-secondary, #4a5568);
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
 }
 
 .principles-grid {
@@ -360,18 +362,18 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
 }
 
 .principle p {
-  color: #4a5568;
+  color: var(--color-text-secondary, #4a5568);
   line-height: 1.5;
 }
 
 /* Future Projects */
 .future-projects-section {
   padding: 4rem 0;
-  background: #f8fafc;
+  background: var(--color-background-alt, #f8fafc);
 }
 
 .future-projects-grid {
@@ -381,11 +383,11 @@
 }
 
 .future-project {
-  background: white;
+  background: var(--color-background, white);
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color, #e2e8f0);
   border-top: 4px solid #667eea;
 }
 
@@ -393,11 +395,11 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #2d3748;
+  color: var(--color-text, #2d3748);
 }
 
 .future-project p {
-  color: #4a5568;
+  color: var(--color-text-secondary, #4a5568);
   line-height: 1.6;
 }
 
@@ -458,6 +460,86 @@
 .cta-button.secondary:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
+}
+
+/* Dark Mode Specific Overrides */
+@media (prefers-color-scheme: dark) {
+  .philosophy-card,
+  .project-card,
+  .tool-card,
+  .future-project {
+    background: var(--fyncom-darkest-cyan, #003554);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .philosophy-card:hover,
+  .tool-card:hover,
+  .future-project:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .strategy-point {
+    background: var(--color-background-alt, #2c2c2c);
+  }
+
+  .timeline-item {
+    background: var(--color-background-alt, #2c2c2c);
+  }
+
+  .timeline-item.completed {
+    background: var(--fyncom-darkest-cyan, #003554);
+  }
+
+  .timeline-item.in-progress {
+    background: var(--color-background-alt, #2c2c2c);
+  }
+
+  .timeline-item.pending {
+    background: var(--color-background-alt, #2c2c2c);
+  }
+
+  .key-insights blockquote {
+    background: var(--color-background-alt, #2c2c2c);
+  }
+}
+
+/* Manual Dark Mode Support */
+:root[data-theme="dark"] .philosophy-card,
+:root[data-theme="dark"] .project-card,
+:root[data-theme="dark"] .tool-card,
+:root[data-theme="dark"] .future-project {
+  background: var(--fyncom-darkest-cyan, #003554);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .philosophy-card:hover,
+:root[data-theme="dark"] .tool-card:hover,
+:root[data-theme="dark"] .future-project:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="dark"] .strategy-point {
+  background: var(--color-background-alt, #2c2c2c);
+}
+
+:root[data-theme="dark"] .timeline-item {
+  background: var(--color-background-alt, #2c2c2c);
+}
+
+:root[data-theme="dark"] .timeline-item.completed {
+  background: var(--fyncom-darkest-cyan, #003554);
+}
+
+:root[data-theme="dark"] .timeline-item.in-progress {
+  background: var(--color-background-alt, #2c2c2c);
+}
+
+:root[data-theme="dark"] .timeline-item.pending {
+  background: var(--color-background-alt, #2c2c2c);
+}
+
+:root[data-theme="dark"] .key-insights blockquote {
+  background: var(--color-background-alt, #2c2c2c);
 }
 
 /* Responsive Design */
