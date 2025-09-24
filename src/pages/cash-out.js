@@ -41,6 +41,8 @@ const CashOut = () => {
   const [isNanoOverBalanceModalOpen, setIsNanoOverBalanceModalOpen] = useState(false)
   const [isGiftCardModalOpen, setIsGiftCardModalOpen] = useState(false)
   const [isReferralModalOpen, setIsReferralModalOpen] = useState(false)
+  const [referralCode, setReferralCode] = useState("")
+  const [referralShareText, setReferralShareText] = useState("")
   const openNanoSentModal = () => {
     setIsNanoSentModalOpen(true)
   }
@@ -71,6 +73,37 @@ const CashOut = () => {
       localStorage.removeItem("pendingReferralCode")
     }
   }, [sessionId])
+
+  const fetchReferralCode = async () => {
+    try {
+      const userId = localStorage.getItem("userId")
+      if (!userId) {
+        console.error("no userId found")
+        return
+      }
+
+      const response = await fetch(`${baseUrl}v2/referral/fetch`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+          userId: userId,
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const referralCodeValue = data.referralCode || ""
+        setReferralCode(referralCodeValue)
+        const inviteLink = `https://www.karmacall.com/login?_referralCode=${referralCodeValue}`
+        const shareText = `I get paid to block phone spam calls with KarmaCall! Sign up here and we will both get paid extra when you block your first call.\n${inviteLink}`
+        setReferralShareText(shareText)
+      } else {
+        console.error("failed to fetch referral code")
+      }
+    } catch (error) {
+      console.error("error fetching referral code:", error)
+    }
+  }
 
   // todo rate-limit the balance check by last time checked.
   const getNanoBalanceAndUpdateMessage = async (nanoAccount, fiatType) => {
@@ -161,6 +194,23 @@ const CashOut = () => {
     })
   }
 
+  const copyReferralToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(referralShareText)
+      alert("referral text copied to clipboard!")
+    } catch (err) {
+      console.error("failed to copy text: ", err)
+      // fallback for older browsers
+      const textArea = document.createElement("textarea")
+      textArea.value = referralShareText
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand("copy")
+      document.body.removeChild(textArea)
+      alert("referral text copied to clipboard!")
+    }
+  }
+
   // todo move this into a helper method later.
   function isBlank(str) {
     return !str || /^\s*$/.test(str)
@@ -210,7 +260,37 @@ const CashOut = () => {
           <form method="post" id="giftCardCashOut" onSubmit={handleGiftCardWithdraw}>
             <button className="submit-btn"> Cash Out To Gift Cards </button>
           </form>
-          
+
+          {/* Referral sharing section */}
+          <div className="referral-section" style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "20px" }}>
+            <h3>Share Your Referral Code</h3>
+            <p>Earn extra money by referring friends to KarmaCall!</p>
+            {!referralCode ? (
+              <button className="learn-more-btn" onClick={fetchReferralCode}>
+                Get My Referral Code
+              </button>
+            ) : (
+              <div className="referral-content">
+                <div
+                  className="referral-text-box"
+                  style={{
+                    backgroundColor: "var(--color-background-alt, #f5f5f5)",
+                    color: "var(--color-text, #1e293b)",
+                    padding: "15px",
+                    borderRadius: "5px",
+                    marginBottom: "10px",
+                    border: "1px solid var(--border-color, #ddd)",
+                  }}
+                >
+                  <p style={{ margin: "0", fontSize: "14px", lineHeight: "1.4", color: "inherit" }}>{referralShareText}</p>
+                </div>
+                <button className="learn-more-btn" onClick={copyReferralToClipboard}>
+                  Copy Referral Text
+                </button>
+              </div>
+            )}
+          </div>
+
           {/* App download section with platform-specific button */}
           <div className="app-download-container" style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "20px" }}>
             <AppDownloadButton />
