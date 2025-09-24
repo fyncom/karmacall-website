@@ -105,6 +105,11 @@
   border-bottom: 1px solid var(--border-color, #f1f5f9);
 }
 
+/* color here doesn't work - but lets it get set to default colors regardless of what's set here. odd. */
+.before-after-card p {
+  color: var(--dropdown-text-color, #ff5a5f) !important;
+}
+
 /* Billing Toggle */
 .billing-toggle {
   display: flex;

@@ -54,13 +54,13 @@ const PricingPage = () => {
                 <h3>After: Family/Team Protection</h3>
                 <ul>
                   <li>
-                    <strong>1 Premium = 3 phone numbers + 30 email addresses protected</strong>
+                    <strong>Premium = 3 phone numbers + 30 email addresses protected</strong>
                   </li>
                   <li>
-                    <strong>1 Supreme = 7 phone numbers + 70 email addresses protected</strong>
+                    <strong>Supreme = 7 phone numbers + 70 email addresses protected</strong>
                   </li>
                 </ul>
-                <p style={{ marginTop: "1rem", fontSize: "0.9rem", color: "var(--karmacall-green)" }}>
+                <p style={{ marginTop: "1rem", fontSize: "0.9rem" }}>
                   Share your subscription power! Invite family members, teammates, or friends to join your protection umbrella through our smart referral
                   system.
                 </p>
