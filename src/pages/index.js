@@ -160,9 +160,22 @@ const BlockSpamEarnCash = () => {
   return (
     <div>
       <Seo
-        title="KarmaCall"
-        description="Get paid to block spam calls with KarmaCall - the app that turns unwanted calls into cash. Download today and start earning money while fighting scammers."
-        keywords={["spam blocker", "spam call blocker", "block spam calls", "get paid to block calls", "spam calls", "stop spam calling", "stop robocalls"]}
+        title="KarmaCall - Block Spam Calls, Texts & Emails for Cash"
+        description="Get paid to block spam calls, texts, and emails with KarmaCall. Complete digital protection that turns unwanted communications into cash rewards. Download today!"
+        keywords={[
+          "spam blocker",
+          "spam call blocker",
+          "text spam blocker",
+          "email spam blocker",
+          "block spam calls",
+          "block spam texts",
+          "get paid to block calls",
+          "digital protection",
+          "stop spam calling",
+          "stop robocalls",
+          "SMS filtering",
+          "Gmail protection",
+        ]}
       />
       <Header />
       <section>
@@ -175,12 +188,12 @@ const BlockSpamEarnCash = () => {
                 </div>
               </div>
               <div className="text-block">
-                <h1>Get Paid to Block Scam Calls.</h1>
-                <h2>Cash out with no limits</h2>
+                <h1>Get Paid to Block Spam Calls, Texts & Emails.</h1>
+                <h2>Complete digital protection with cash rewards</h2>
                 {
                   <p>
-                    If you like "do not disturb" mode on your phone, you'll love the KarmaCall mobile app's "cash-back" strategy to fix the spam call problem.
-                    Download the app today to find out more.{" "}
+                    If you like "do not disturb" mode on your phone, you'll love KarmaCall's comprehensive "cash-back" strategy. Block unwanted calls, texts,
+                    and emails while earning money. Download the app today to protect all your communications.{" "}
                   </p>
                 }
                 {/* <p>
@@ -223,10 +236,10 @@ const BlockSpamEarnCash = () => {
                     <FaRobot />
                   </div>
                   <div className="text-container">
-                    <h4>End AI Scams</h4>
+                    <h4>End AI Scams Everywhere</h4>
                     <p>
-                      Scammers depend on the statistics of people answering calls. As long as your phone number works, you will get scam calls. We can stop
-                      that.
+                      Scammers target you through calls, texts, and emails. They depend on people responding to at least one channel. KarmaCall protects them
+                      all, making your digital presence truly spam-free.
                     </p>
                   </div>
                 </div>
@@ -236,10 +249,10 @@ const BlockSpamEarnCash = () => {
                     <FaDollarSign />
                   </div>
                   <div className="text-container">
-                    <h4>Get Paid!</h4>
+                    <h4>Get Paid for Protection!</h4>
                     <p>
-                      Hang up on scam phone call and take the caller's deposit! Get immediate financial revenge against scammers who waste your time. Join us in
-                      the fight against malicious phone spammers by downloading KarmaCall today.
+                      Earn money for every spam call, text, and email you block. Turn digital harassment into cash rewards! Get immediate financial revenge
+                      against scammers across all communication channels.
                     </p>
                   </div>
                 </div>
@@ -278,6 +291,36 @@ const BlockSpamEarnCash = () => {
             <div className="counter-icon">📧</div>
             <div className="counter-number">{blockCounts.emails.toLocaleString()}</div>
             <div className="counter-label">Blocked Emails</div>
+          </div>
+        </div>
+
+        {/* Multi-Channel Protection Section */}
+        <div className="AppText">
+          <div className="social-media-container">
+            <div className="text-block-centered">
+              <h2 className="text-wrapper-5">Complete Digital Protection</h2>
+              <p className="values-container-sub">
+                KarmaCall now protects all your communication channels. Block spam calls with instant payouts, filter unwanted texts natively in the app, and
+                introducing Gmail spam protection with Fyncom technology - all while earning cash rewards.
+              </p>
+              <div className="protection-features">
+                <div className="protection-item">
+                  <span className="protection-icon">📞</span>
+                  <h4>Spam Call Blocking</h4>
+                  <p>Proven technology with instant crypto payouts</p>
+                </div>
+                <div className="protection-item">
+                  <span className="protection-icon">💬</span>
+                  <h4>Native Text Filtering</h4>
+                  <p>Built-in SMS spam protection directly in the app</p>
+                </div>
+                <div className="protection-item">
+                  <span className="protection-icon">📧</span>
+                  <h4>Gmail Protection</h4>
+                  <p>Powered by Fyncom's advanced email filtering (coming soon)</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
