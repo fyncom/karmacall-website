@@ -9,31 +9,31 @@ const About = () => {
   return (
     <div>
       <Seo
-        title="About Us"
-        description="Spam has plauged communications for decades. AI will accelerate that trend. Discover the FynCom solution to protect
-       your mental clarity, help you stand out, and get people paid!"
+        title="About KarmaCall - Complete Digital Protection"
+        description="Spam has plagued communications for decades across calls, texts, and emails. AI will accelerate that trend. Discover the FynCom solution to protect your mental clarity and get paid for blocking spam across all channels!"
       />
       <Header />
       <section className="mission-section">
         <h1>About Us</h1>
-        <sub>KarmaCall's mission is to disrupt the scam economy and get people paid to block spam.</sub>
+        <sub>KarmaCall's mission is to disrupt the scam economy and get people paid to block spam calls, texts, and emails.</sub>
         <div className="AppText">
           <div className="story-text">
             <h2>Our Story</h2>
             <p>
               KarmaCall is the first application built from FynCom's Rewards technology (<Link to="/white-paper-original-scam-calls">Read more here</Link>).
-              KarmaCall serves as a consumer empowerment tool and is using the phone call to debut its unique algorithm, driven by deposits and
-              responses/engagement.
+              KarmaCall serves as a comprehensive consumer empowerment tool, starting with phone calls and expanding to text messages and email protection. Our
+              unique algorithm is driven by deposits and responses/engagement across all communication channels.
             </p>
             <h2>Our Logic</h2>
             <p>
-              Monetary incentives is the biggest driver of spam calls, so we focus SPECIFICALLY on bringing money into the phone call. KarmaCall logic works
-              simlarly to a bank's microdeposits transactions which help banks verify you own a bank account. The BIGGEST difference is we do not require a bank
-              account. The biggest difference from KarmaCall and our friends in the industry, is...
+              Monetary incentives drive spam across all communication channels - calls, texts, and emails. We focus on bringing economic consequences to
+              unwanted communications. KarmaCall logic works similarly to a bank's microdeposit transactions which help banks verify you own a bank account. The
+              BIGGEST difference is we do not require a bank account. The biggest difference from KarmaCall and our competitors in the industry is:
               <ol>
-                <li>We operate PRIMARILY on a whiltelist based on your contacts list. </li>
-                <li>We allow non-contacts to deposit money into your KarmaCall account and get it back if a call lasts more than 25 seconds.</li>
-                <li>We let paid KarmaCallers set their own minimum deposit and rewards limits. </li>
+                <li>We operate PRIMARILY on a whitelist based on your contacts list across all communication types.</li>
+                <li>We allow non-contacts to deposit money into your KarmaCall account and get it back if the interaction meets legitimacy criteria.</li>
+                <li>We let paid users set their own minimum deposit and rewards limits for comprehensive protection.</li>
+                <li>We protect calls natively, texts through in-app filtering, and emails through Fyncom integration.</li>
               </ol>
             </p>
           </div>

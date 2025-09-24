@@ -42,24 +42,24 @@ const CompareIndex = () => {
   return (
     <div>
       <Seo
-        title="Compare KarmaCall vs Other Spam Blockers - Get Paid to Block Spam"
-        description="See how KarmaCall compares to Truecaller, RoboKiller, Hiya, and other spam call blockers. Learn why KarmaCall's unique approach of paying users to block spam calls makes it the best choice."
+        title="Compare KarmaCall vs Other Spam Blockers - Complete Digital Protection"
+        description="See how KarmaCall compares to Truecaller, RoboKiller, Hiya, and other spam blockers. Learn why KarmaCall's comprehensive protection for calls, texts, and emails - plus earning money - makes it the best choice."
       />
       <Header />
 
       <div className="comparison-container">
         <div className="comparison-header">
           <h1>Compare KarmaCall with Other Spam Blockers</h1>
-          <p className="comparison-subtitle">Find the best solution for unwanted calls</p>
+          <p className="comparison-subtitle">Find the best solution for unwanted calls, texts, and emails</p>
         </div>
 
         <div className="comparison-summary">
           <p>
-            See how KarmaCall stacks up against other spam call blocking solutions. Unlike traditional apps, KarmaCall{" "}
+            See how KarmaCall stacks up against other spam blocking solutions. Unlike traditional apps that only focus on calls, KarmaCall{" "}
             <Link to="#" className="pays-you-text">
-              pays you to block spam calls
+              pays you to block spam calls, texts, and emails
             </Link>{" "}
-            while providing superior protection.
+            while providing comprehensive digital protection.
           </p>
         </div>
 
@@ -229,7 +229,8 @@ const CompareIndex = () => {
             <h3>How does KarmaCall compare to subscription-based blockers?</h3>
             <p>
               While other apps just charge you monthly fees, KarmaCall's premium plans ($4.99-$9.99/month) come with increasing rewards for blocked calls.
-              Android users can start with a free basic plan (no premium features), while iOS users must choose a paid plan. All users can access advanced features like custom deposit requirements and verification timers with premium plans. There's also a one-time lifetime package available for $99.
+              Android users can start with a free basic plan (no premium features), while iOS users must choose a paid plan. All users can access advanced
+              features like custom deposit requirements and verification timers with premium plans. There's also a one-time lifetime package available for $99.
             </p>
           </div>
 

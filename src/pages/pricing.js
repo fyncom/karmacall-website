@@ -14,9 +14,9 @@ const PricingPage = () => {
   return (
     <div>
       <Seo
-        title="KarmaCall Pricing - Family & Team Protection Plans"
-        description="Protect your whole family or team with KarmaCall's revolutionary license sharing system."
-        keywords={["pricing", "family protection", "team licenses", "spam blocker"]}
+        title="KarmaCall Pricing - Complete Digital Protection for Families & Teams"
+        description="Protect your whole family or team from spam calls, texts, and emails with KarmaCall's revolutionary license sharing system."
+        keywords={["pricing", "family protection", "team licenses", "spam blocker", "comprehensive protection", "call text email blocking"]}
       />
       <Header />
 
@@ -31,7 +31,8 @@ const PricingPage = () => {
               <span className="underline-karma">Whole Family Protected.</span>
             </h1>
             <p className="pricing-hero-subtitle">
-              Share your premium spam protection with up to 3 (Premium) or 7 (Supreme) family members and teammates. Same great protection, multiplied impact.
+              Share your comprehensive digital protection with up to 3 (Premium) or 7 (Supreme) family members and teammates. Block spam calls, texts, and
+              emails together - same great protection, multiplied impact.
             </p>
           </div>
         </div>
