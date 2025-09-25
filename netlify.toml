@@ -16,7 +16,7 @@
     Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
 
 # Reverse proxy for PostHog to reduce ad-blocker interference
 [[redirects]]

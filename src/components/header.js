@@ -19,13 +19,19 @@ const Header = () => {
     setHeaderModalOpen(!isHeaderModalOpen)
   }
   const { fyncomProductLogoLight, fyncomProductLogoDark, karmacallLogoNoTaglineLight, karmacallLogoNoTaglineDark } = useCombinedQuery()
-  // State to hold which logo to show
+  // State to hold which logo to show - initialized with light mode as default
   const [logoData, setLogoData] = useState(fyncomProductLogoLight)
   const [karmacallLogoData, setKarmacallLogoData] = useState(karmacallLogoNoTaglineLight)
+  const [isClient, setIsClient] = useState(false)
+
+  // Effect to mark when we're on the client side
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   // Effect for setting the logo based on the system color scheme
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (isClient && typeof window !== "undefined") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
       const handleChange = e => {
         setLogoData(e.matches ? fyncomProductLogoDark : fyncomProductLogoLight)
@@ -35,7 +41,7 @@ const Header = () => {
       mediaQuery.addListener(handleChange) // Listen for changes
       return () => mediaQuery.removeListener(handleChange)
     }
-  }, [fyncomProductLogoLight, fyncomProductLogoDark, karmacallLogoNoTaglineDark, karmacallLogoNoTaglineLight])
+  }, [isClient, fyncomProductLogoLight, fyncomProductLogoDark, karmacallLogoNoTaglineDark, karmacallLogoNoTaglineLight])
 
   useEffect(() => {
     const closeMenu = event => {

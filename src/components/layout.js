@@ -40,6 +40,7 @@ const Layout = ({ children }) => {
           }}
         >
           © {new Date().getFullYear()} &middot; Built with
+          {/* © 2025 &middot; Built with */}
           {` `}
           <a href="https://www.karmacall.com">KarmaCall</a>
         </footer>

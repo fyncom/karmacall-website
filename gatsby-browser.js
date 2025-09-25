@@ -83,3 +83,14 @@ export const onRouteUpdate = ({ location }) => {
     // PostHog pageviews are handled automatically via capture_pageview: true
   }
 }
+
+// Implement replaceHydrateFunction to use React 18's createRoot API
+// This helps resolve hydration issues by using React's concurrent rendering
+import ReactDOM from "react-dom/client"
+
+export const replaceHydrateFunction = () => {
+  return (element, container) => {
+    const root = ReactDOM.createRoot(container)
+    root.render(element)
+  }
+}
