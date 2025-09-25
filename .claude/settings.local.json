@@ -4,6 +4,7 @@
       "Bash(mkdir:*)",
       "Bash(node:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }
