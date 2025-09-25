@@ -1,0 +1,15 @@
+.quote-container {
+  border-left: 4px solid var(--karmacall-green);
+  margin: 2rem 1rem;
+  padding: 1rem 1.5rem;
+  background-color: #f3f3f3;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .quote-container {
+    margin: 1.5rem 0;
+  }
+}
