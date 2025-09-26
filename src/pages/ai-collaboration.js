@@ -4,6 +4,7 @@ import Footer from "../components/footer"
 import { FaLightbulb, FaChartLine, FaUsers, FaCog, FaRocket } from "react-icons/fa"
 import Seo from "../components/seo"
 import "../components/ai-collaboration.css"
+import { Link } from "gatsby"
 
 const AiCollaborationPage = () => {
   return (
@@ -53,6 +54,73 @@ const AiCollaborationPage = () => {
                 <FaChartLine className="philosophy-icon" />
                 <h3>Measurable Results</h3>
                 <p>Every AI-assisted strategy comes with clear metrics and success indicators. We track what works and iterate based on real outcomes.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* when this gets long, make it collapsible */}
+          <div className="recent-sessions-section">
+            <h2 className="section-title">📝 Recent AI Collaboration Sessions</h2>
+
+            <div className="session-card latest-session">
+              <div className="session-header">
+                <h3>
+                  <FaRocket className="project-icon" /> Implementing Modal Functionality in MDX Blog Posts
+                </h3>
+                <span className="session-date">September 25, 2025</span>
+              </div>
+              <div className="session-content">
+                <div className="initial-prompt">
+                  <h4>🎯 My Initial Request:</h4>
+                  <blockquote>
+                    "Help me make a new blog that takes a few different videos from our mentions (maybe 3 videos). Then expand on the topics and start to
+                    describe the effects that this can have. Maybe talk about the Cambodia Prisoners thing that was the concept of Mariana Van Zeller's
+                    Trafficked series, S05E02 "Scam City". and how by using KarmaCall to make scams unprofitable, we can help solve this human trafficking /
+                    human rights problem. IDK, trhat's kind of a heavy topic, but I want to make the blog interesting and I don't want to just rehash what
+                    everyone already talks about. Maybe we can use a line from our white paper on how "human based" scams operators "labor" can overwhelm tech
+                    defenses for scams - especially when they're using AI too. Maybe this can be the blog title. Everything start with a Connection. -> Eric
+                    Schmidt world around you. "Managing the world around you" Digital Vs Human Hackers "Ezra Klein" - Are we entering into a world around AI
+                    hackers just overwhelm digital hackers? I really don't know! I'm a"
+                  </blockquote>
+                </div>
+
+                <div className="user-notes">
+                  <h4>📋 Developer Notes:</h4>
+                  <ul>
+                    <li>Notes: Had huge writer's block today + the topic was kind of heavy for</li>
+                    <li>Goal: Get new blog post up for KC and FC</li>
+                    <li>Requirement: Maintain consistency with existing comparison page modals</li>
+                  </ul>
+                </div>
+
+                <div className="ai-solution">
+                  <h4>🤖 AI Solution Implemented:</h4>
+                  Was pleasantly surprised at Gemini 2.5 Pro's output, but needed Claude Code to structure it. Still had a lot of manual edits to do. Not the
+                  best session. Social posts next, so am curious how that'll come out.
+                  {/* <div className="solution-steps">
+                    <div className="solution-step">
+                      <h5>1. Enhanced Markdown Wrapper</h5>
+                      <p>Modified the Markdown-Wrapper component to include modal state management and the KarmacallAppStoreModal component.</p>
+                    </div>
+                    <div className="solution-step">
+                      <h5>2. React Context Implementation</h5>
+                      <p>Created ModalContext and useModal hook to share modal functionality between the wrapper and MDX content.</p>
+                    </div>
+                    <div className="solution-step">
+                      <h5>3. Reusable Component Creation</h5>
+                      <p>Built DownloadKarmacallButton component that can be imported and used in any MDX file with consistent styling.</p>
+                    </div>
+                    <div className="solution-step">
+                      <h5>4. Blog Post Integration</h5>
+                      <p>Updated the target blog post to import and use the new component, replacing static links with interactive modal triggers.</p>
+                    </div>
+                  </div> */}
+                </div>
+
+                <div className="session-outcome">
+                  <h4>✅ Outcome:</h4>
+                  <Link to="/blog/everything-starts-with-connection">Everything Starts With a Connection</Link>
+                </div>
               </div>
             </div>
           </div>

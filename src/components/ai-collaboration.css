@@ -106,6 +106,159 @@
   line-height: 1.6;
 }
 
+/* Recent Sessions Section */
+.recent-sessions-section {
+  padding: 4rem 0;
+}
+
+.session-card {
+  background: var(--color-background, white);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid var(--border-color, #e2e8f0);
+  margin-bottom: 2rem;
+}
+
+.latest-session {
+  border-left: 5px solid #10b981;
+}
+
+.session-header {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.session-header h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.session-date {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+}
+
+.session-content {
+  padding: 2rem;
+}
+
+.initial-prompt {
+  margin-bottom: 2rem;
+}
+
+.initial-prompt h4 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text, #2d3748);
+}
+
+.initial-prompt blockquote {
+  background: var(--color-background-alt, #edf2f7);
+  border-left: 4px solid #10b981;
+  padding: 1.5rem;
+  margin: 0;
+  border-radius: 0 8px 8px 0;
+  font-family: 'Courier New', monospace;
+  color: var(--color-text, #2d3748);
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.user-notes {
+  margin-bottom: 2rem;
+}
+
+.user-notes h4 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text, #2d3748);
+}
+
+.user-notes ul {
+  list-style: none;
+  padding: 0;
+}
+
+.user-notes li {
+  background: #f0fdf4;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  border-left: 3px solid #10b981;
+  color: var(--color-text-secondary, #4a5568);
+}
+
+.ai-solution {
+  margin-bottom: 2rem;
+}
+
+.ai-solution h4 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text, #2d3748);
+}
+
+.solution-steps {
+  display: grid;
+  gap: 1rem;
+}
+
+.solution-step {
+  background: #f7fafc;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #10b981;
+}
+
+.solution-step h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--color-text, #2d3748);
+}
+
+.solution-step p {
+  color: var(--color-text-secondary, #4a5568);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.session-outcome {
+  background: #f0fdf4;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #10b981;
+}
+
+.session-outcome h4 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text, #2d3748);
+}
+
+.session-outcome p {
+  color: var(--color-text-secondary, #4a5568);
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* Current Projects Section */
 .current-projects-section {
   padding: 4rem 0;
@@ -466,6 +619,7 @@
 @media (prefers-color-scheme: dark) {
   .philosophy-card,
   .project-card,
+  .session-card,
   .tool-card,
   .future-project {
     background: var(--fyncom-darkest-cyan, #003554);
@@ -478,7 +632,17 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
 
-  .strategy-point {
+  .strategy-point,
+  .solution-step {
+    background: var(--color-background-alt, #2c2c2c);
+  }
+
+  .user-notes li,
+  .session-outcome {
+    background: var(--fyncom-darkest-cyan, #003554);
+  }
+
+  .initial-prompt blockquote {
     background: var(--color-background-alt, #2c2c2c);
   }
 
@@ -506,6 +670,7 @@
 /* Manual Dark Mode Support */
 :root[data-theme="dark"] .philosophy-card,
 :root[data-theme="dark"] .project-card,
+:root[data-theme="dark"] .session-card,
 :root[data-theme="dark"] .tool-card,
 :root[data-theme="dark"] .future-project {
   background: var(--fyncom-darkest-cyan, #003554);
@@ -518,7 +683,17 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-:root[data-theme="dark"] .strategy-point {
+:root[data-theme="dark"] .strategy-point,
+:root[data-theme="dark"] .solution-step {
+  background: var(--color-background-alt, #2c2c2c);
+}
+
+:root[data-theme="dark"] .user-notes li,
+:root[data-theme="dark"] .session-outcome {
+  background: var(--fyncom-darkest-cyan, #003554);
+}
+
+:root[data-theme="dark"] .initial-prompt blockquote {
   background: var(--color-background-alt, #2c2c2c);
 }
 
@@ -556,7 +731,8 @@
     font-size: 2rem;
   }
 
-  .project-header {
+  .project-header,
+  .session-header {
     flex-direction: column;
     gap: 1rem;
     text-align: center;
