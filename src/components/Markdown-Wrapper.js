@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef, createContext, useContext } from "react"
 import "../components/markdown.css"
 import Header from "./header"
 import Footer from "./footer"
@@ -13,12 +13,37 @@ import ScrollToTop from "../components/blog/ScrollToTop"
 import TextSizeControl from "../components/blog/TextSizeControl"
 import FeaturedImage from "../components/blog/FeaturedImage"
 import { trackPageView } from "../utils/analytics"
+import { KarmacallAppStoreModal } from "./Modal"
+
+// Create context for modal functionality
+export const ModalContext = createContext()
+
+// Hook to use modal context
+export const useModal = () => {
+  const context = useContext(ModalContext)
+  if (!context) {
+    throw new Error("useModal must be used within a ModalProvider")
+  }
+  return context
+}
+
+// Component for use in MDX files
+export const DownloadKarmacallButton = ({ className = "learn-more-btn cash centered", children = "Download KarmaCall Today →" }) => {
+  const { toggleModal } = useModal()
+
+  return (
+    <button onClick={toggleModal} className={className} style={{ textDecoration: "none" }}>
+      {children}
+    </button>
+  )
+}
 
 export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents, hideRelatedArticles, hideTextSizeControl }) => {
   const [textSize, setTextSize] = useState("medium")
   const textSizeStyles = generateTextSizeStyles()
   const [currentPath, setCurrentPath] = useState("")
   const hasTrackedRef = useRef(false)
+  const [isModalOpen, setModalOpen] = useState(false)
   const imageQuery = useStaticQuery(graphql`
     query WrapperAllImagesQuery {
       allFile(filter: { sourceInstanceName: { eq: "images" } }) {
@@ -47,6 +72,10 @@ export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents,
     if (typeof window !== "undefined") {
       localStorage.setItem("textSize", newSize)
     }
+  }
+
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen)
   }
 
   // restore saved text size preference and current path on mount
@@ -117,13 +146,14 @@ export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents,
                 <TextSizeControl currentSize={textSize} onSizeChange={handleTextSizeChange} />
               </div>
             )}
-            {children}
+            <ModalContext.Provider value={{ toggleModal, isModalOpen }}>{children}</ModalContext.Provider>
             {!hideRelatedArticles && <RelatedArticles currentArticleSlug={seo?.pathname || seo?.slug || currentPath} keywords={seo?.keywords || []} />}
           </div>
           {!hideTableOfContents && <TableOfContents />}
         </div>
         <ScrollToTop />
       </div>
+      {isModalOpen && <KarmacallAppStoreModal onClose={toggleModal} />}
       <Footer />
     </div>
   )

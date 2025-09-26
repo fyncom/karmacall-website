@@ -21,8 +21,7 @@ imageDescription: "Person at a computer protected by glowing shield icons with c
 imageCredit: "KarmaCall Design Team"
 ---
 
-import { Link } from "gatsby"
-import { Wrapper } from "../../components/Markdown-Wrapper"
+import { Wrapper, DownloadKarmacallButton } from "../../components/Markdown-Wrapper"
 
 export const meta = {
   title: "A $500,000 Scam and How to Stop the Next One",
@@ -104,10 +103,8 @@ We believe that future doesn't have to exist. With KarmaCall and FynCom's expand
 That's how we win. By making sure scams no longer pay.
 
 {/* prettier-ignore */}
-<div className="button-container">
-  <a className="learn-more-btn cash centered" href="/">
-    Download KarmaCall today →
-  </a>
+<div className="button-container" style={{ marginTop: "1.5rem" }}>
+  <DownloadKarmacallButton />
 </div>
 <br />
 

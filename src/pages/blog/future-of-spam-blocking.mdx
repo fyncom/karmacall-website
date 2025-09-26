@@ -8,10 +8,8 @@ imageDescription: "Illustration showing global transactions and communication te
 imageCredit: "KarmaCall Design Team"
 ---
 
-import { Link } from "gatsby"
-import { Wrapper } from "../../components/Markdown-Wrapper"
-import futureRewards from "../../images/blog/interactive-rewards-blog-social-graphic.jpg"
-import incentive from "../../images/blog/incentive-federation-graph-hi-res.png"
+import { Wrapper, DownloadKarmacallButton } from "../../components/Markdown-Wrapper"
+
 
 export const meta = {
   title:
@@ -29,11 +27,13 @@ export const meta = {
 
 # KarmaCall 4.0: Get Cash Back for Blocking Spam Calls
 
-**It's here! KarmaCall 4.0 is out, with a fresh new UI and infinitely long call blocking capability.** You'll need to sign up to our Beta in the Google Play Store.
+**It's here! KarmaCall 4.0 is out, with a fresh new UI and infinitely long call blocking capability.**
 
 { /* prettier-ignore */}
-<div className="button-container"><a className="learn-more-btn cash centered" href="https://play.google.com/store/apps/details?id=com.fyncom.robocash">Sign up for the beta today!</a></div>
-<br/>
+<div className="button-container" style={{ marginTop: "1.5rem" }}>
+  <DownloadKarmacallButton />
+</div>
+<br />
 
 The two biggest additions are:
 
@@ -81,9 +81,9 @@ Long-term, we're looking towards disrupting micro-distractions in general. They 
 The more people that join us on this journey, the sooner we'll get answers to these kinds of questions. I hope you'll join me for this journey as we convert unsolicited communications into something that works for us. Let me know what you think of the app, if you find yourself not wanting to download it, I'd love to hear your feedback on why that is.
 
 {/* prettier-ignore */}
-<div className="button-container"><a className="learn-more-btn cash centered" href="https://play.google.com/store/apps/details?id=com.fyncom.robocash">Try KarmaCall today!</a></div>
-<br/>
-
+<div className="button-container" style={{ marginTop: "1.5rem" }}>
+  <DownloadKarmacallButton />
+</div>
 
 
 </Wrapper>

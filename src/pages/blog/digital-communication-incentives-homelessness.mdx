@@ -10,7 +10,7 @@ imageCredit: "KarmaCall Design Team"
 ---
 
 import { Link } from "gatsby"
-import { Wrapper } from "../../components/Markdown-Wrapper"
+import { Wrapper, DownloadKarmacallButton } from "../../components/Markdown-Wrapper"
 import compositeComic from "../../images/blog/Digital Incentives for Homelessness Solutions.png"
 import panel1 from "../../images/blog/digital-alchemy-panel-1.jpg"
 import panel2 from "../../images/blog/digital-alchemy-panel-2.jpg"
@@ -124,13 +124,9 @@ Spam won’t save the world—but reversing its economics just might.
   {/* <img src="/images/blog/digital-alchemy-4up.jpg" alt="Four-panel composite for social" style={{ gridColumn: "1 / -1", width: "100%", height: "auto", borderRadius: "6px" }} /> */}
 </div>
 
-{/* Call to action */}
 {/* prettier-ignore */}
-
-<div className="button-container">
-  <a className="learn-more-btn cash centered" href="/make-a-deposit">
-    Learn how deposits flip spam →
-  </a>
+<div className="button-container" style={{ marginTop: "1.5rem" }}>
+  <DownloadKarmacallButton />
 </div>
 <br />
 
