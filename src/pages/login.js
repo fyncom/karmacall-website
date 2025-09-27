@@ -238,6 +238,7 @@ const Login = () => {
         headers: {
           ...headers,
           "device-os": environment,
+          "referral-code": referralCode,
         },
         body: JSON.stringify({
           countryCode: countryCode,
