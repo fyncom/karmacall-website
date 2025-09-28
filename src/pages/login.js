@@ -118,7 +118,11 @@ const Login = () => {
       try {
         const response = await fetch(baseUrl + "verification/trigger", {
           method: "POST",
-          headers: headers,
+          headers: {
+            ...headers,
+            "device-os": environment,
+            "referral-code": referralCode,
+          },
           body: JSON.stringify({
             countryCode: countryCode,
             number: phoneNumber,
@@ -232,7 +236,6 @@ const Login = () => {
   // redirectToApp parameter controls whether to redirect to app stores for new users
   const handleSignUp = async (authData = null, redirectToApp = false) => {
     try {
-      const environment = getBrowserEnvironment()
       const signUpResponse = await fetch(baseUrlV2 + "user/register/full", {
         method: "POST",
         headers: {
