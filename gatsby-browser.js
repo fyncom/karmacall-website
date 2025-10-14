@@ -8,6 +8,9 @@ import ReactGA from "react-ga4"
 import React from "react"
 import CookieConsentEEA from "./src/components/CookieConsentEEA"
 import { PostHogProvider } from "posthog-js/react"
+// Implement replaceHydrateFunction to use React 18's createRoot API
+// This helps resolve hydration issues by using React's concurrent rendering
+import ReactDOM from "react-dom/client"
 
 // Import proper font definitions with font-display: swap
 import "./src/components/fonts.css"
@@ -83,10 +86,6 @@ export const onRouteUpdate = ({ location }) => {
     // PostHog pageviews are handled automatically via capture_pageview: true
   }
 }
-
-// Implement replaceHydrateFunction to use React 18's createRoot API
-// This helps resolve hydration issues by using React's concurrent rendering
-import ReactDOM from "react-dom/client"
 
 export const replaceHydrateFunction = () => {
   return (element, container) => {
