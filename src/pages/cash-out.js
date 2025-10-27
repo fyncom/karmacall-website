@@ -5,6 +5,7 @@ import "../components/sales-and-marketing-use-cases.css"
 import Seo from "../components/seo"
 import { GiftCardModal, NanoNotEnoughModal, NanoSentModal, ReferralAppDownloadModal } from "../components/Modal"
 import AppDownloadButton from "../components/AppDownloadButton"
+import SolanaWalletConnect from "../components/SolanaWalletConnect"
 import ReactGA from "react-ga4"
 
 const CashOut = () => {
@@ -52,6 +53,9 @@ const CashOut = () => {
   const openGiftCardModal = () => {
     setIsGiftCardModalOpen(true)
   }
+  const [showSolanaConnect, setShowSolanaConnect] = useState(false)
+  const userId = isBrowser ? localStorage.getItem("userId") : null
+
   let baseUrl = `${process.env.GATSBY_API_URL_BASE}`
   let headers = {
     "Content-Type": "application/json",
@@ -76,7 +80,6 @@ const CashOut = () => {
 
   const fetchReferralCode = async () => {
     try {
-      const userId = localStorage.getItem("userId")
       if (!userId) {
         console.error("no userId found")
         return
@@ -261,6 +264,42 @@ const CashOut = () => {
             <button className="submit-btn"> Cash Out To Gift Cards </button>
           </form>
 
+          {/* SOalana wallet connector */}
+          <div style={{ marginTop: "24px" }}>
+            <button
+              onClick={() => setShowSolanaConnect(true)}
+              style={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                color: "white",
+                border: "none",
+                padding: "12px 24px",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+                marginRight: "12px",
+              }}
+            >
+              Connect Solana Wallet
+            </button>
+            <button
+              onClick={() => window.close()}
+              style={{
+                background: "white",
+                color: "#667eea",
+                border: "2px solid #667eea",
+                padding: "10px 24px",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              Close
+            </button>
+          </div>
+          <p style={{ marginTop: "16px", fontSize: "14px", color: "#6b7280" }}>Connect your Solana wallet to enable KarmaCall protection with crypto escrow.</p>
+
           {/* Referral sharing section */}
           <div className="referral-section" style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "20px" }}>
             <h3>Share Your Referral Code</h3>
@@ -301,6 +340,8 @@ const CashOut = () => {
       <NanoNotEnoughModal isOpen={isNanoOverBalanceModalOpen} onClose={handleCloseModal} />
       <GiftCardModal isOpen={isGiftCardModalOpen} onClose={handleCloseModal} />
       <ReferralAppDownloadModal isOpen={isReferralModalOpen} onClose={() => setIsReferralModalOpen(false)} />
+
+      {showSolanaConnect && userId && <SolanaWalletConnect userId={userId} onClose={() => setShowSolanaConnect(false)} />}
       <Footer />
     </div>
   )
