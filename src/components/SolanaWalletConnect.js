@@ -9,7 +9,7 @@ const SolanaWalletConnect = ({ userId, onClose }) => {
   const [error, setError] = useState("")
   const [showDepositInfo, setShowDepositInfo] = useState(false)
 
-  const baseUrl = process.env.GATSBY_API_URL || process.env.GATSBY_API_URL_BASE
+  let baseUrlV2 = `${process.env.GATSBY_API_URL}`
 
   useEffect(() => {
     // Check if user already has a Solana wallet connected
@@ -23,8 +23,7 @@ const SolanaWalletConnect = ({ userId, onClose }) => {
     }
     try {
       console.log("checking existing wallet for userId:", userId)
-      console.log("using API URL:", baseUrl)
-      const response = await fetch(`${baseUrl}api/v1/solana/balance?auth0Id=${userId}`, {
+      const response = await fetch(`${baseUrlV2}api/solana/balance?userId=${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +78,7 @@ const SolanaWalletConnect = ({ userId, onClose }) => {
       const publicKey = response.publicKey.toString()
 
       // Step 1: Get challenge from backend
-      const challengeResponse = await fetch(`${baseUrl}api/v1/solana/generateChallenge?publicKey=${publicKey}`)
+      const challengeResponse = await fetch(`${baseUrlV2}api/solana/generateChallenge?publicKey=${publicKey}`)
 
       if (!challengeResponse.ok) {
         throw new Error("Failed to generate challenge")
@@ -95,13 +94,13 @@ const SolanaWalletConnect = ({ userId, onClose }) => {
       const signatureBase64 = btoa(String.fromCharCode(...signedMessage.signature))
 
       // Step 3: Send to backend for verification
-      const connectResponse = await fetch(`${baseUrl}api/v1/solana/connectWallet`, {
+      const connectResponse = await fetch(`${baseUrlV2}api/solana/connectWallet`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          auth0Id: userId,
+          userId: userId,
           publicKey: publicKey,
           signature: signatureBase64,
           message: message,
@@ -147,14 +146,13 @@ const SolanaWalletConnect = ({ userId, onClose }) => {
 
     try {
       console.log("connecting wallet manually:", address)
-      console.log("using API URL:", baseUrl)
-      const response = await fetch(`${baseUrl}api/v1/solana/connectWallet`, {
+      const response = await fetch(`${baseUrlV2}api/solana/connectWallet`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          auth0Id: userId,
+          userId: userId,
           publicKey: address,
           signature: "manual_entry", // Backend should handle this specially
           message: "Manual wallet entry",
@@ -294,3 +292,4 @@ const SolanaWalletConnect = ({ userId, onClose }) => {
 }
 
 export default SolanaWalletConnect
+

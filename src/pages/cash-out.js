@@ -54,6 +54,15 @@ const CashOut = () => {
     setIsGiftCardModalOpen(true)
   }
   const [showSolanaConnect, setShowSolanaConnect] = useState(false)
+  const [showSolanaDeposit, setShowSolanaDeposit] = useState(false)
+  const [solanaWalletAddress, setSolanaWalletAddress] = useState("")
+  const [solanaBalance, setSolanaBalance] = useState(null)
+  const [customAmount, setCustomAmount] = useState("")
+  const [customMonths, setCustomMonths] = useState(1)
+  const [depositLoading, setDepositLoading] = useState(false)
+  const [depositError, setDepositError] = useState("")
+  const [depositSuccess, setDepositSuccess] = useState("")
+  const [solUsdRate, setSolUsdRate] = useState(null)
   const userId = isBrowser ? localStorage.getItem("userId") : null
 
   let baseUrl = `${process.env.GATSBY_API_URL_BASE}`
@@ -76,7 +85,29 @@ const CashOut = () => {
       // Clear the saved code once we've shown the modal
       localStorage.removeItem("pendingReferralCode")
     }
+
+    // check for existing solana wallet
+    checkSolanaWallet()
   }, [sessionId])
+
+  const checkSolanaWallet = async () => {
+    if (!userId) return
+    try {
+      const response = await fetch(`${baseUrl}v2/api/solana/balance?userId=${userId}`, {
+        method: "GET",
+        headers: headers,
+      })
+      if (response.ok) {
+        const data = await response.json()
+        if (data.hasWallet) {
+          setSolanaWalletAddress(data.walletAddress)
+          setSolanaBalance(data.availableBalance)
+        }
+      }
+    } catch (err) {
+      console.error("error checking solana wallet:", err)
+    }
+  }
 
   const fetchReferralCode = async () => {
     try {
@@ -129,6 +160,9 @@ const CashOut = () => {
         updateNanoBalanceInFiat(data.accountBalanceInFiat)
         updateFiatType(data.currencyType)
         setNanoRate(data.rate)
+        if (data.rateSolUsd) {
+          setSolUsdRate(data.rateSolUsd)
+        }
       } else {
         throw new Error("Failed to fetch user details")
       }
@@ -214,6 +248,93 @@ const CashOut = () => {
     }
   }
 
+  const handleSolanaDeposit = async (amount, planName) => {
+    if (!solanaWalletAddress) {
+      setDepositError("please connect your solana wallet first")
+      return
+    }
+
+    setDepositLoading(true)
+    setDepositError("")
+    setDepositSuccess("")
+
+    try {
+      const wallet = window.solana || window.solflare
+      if (!wallet) {
+        setDepositError("no solana wallet detected. please install phantom or solflare.")
+        setDepositLoading(false)
+        return
+      }
+
+      // request transaction signature from user's wallet
+      const transactionSignature = prompt(`please send ${amount} SOL to the escrow address and paste your transaction signature here:`)
+      if (!transactionSignature) {
+        setDepositLoading(false)
+        return
+      }
+
+      const response = await fetch(`${baseUrl}v2/api/solana/depositEscrow`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+          userId: userId,
+          transactionSignature: transactionSignature.trim(),
+          amount: parseFloat(amount),
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setDepositSuccess(`successfully deposited ${amount} SOL for ${planName}!`)
+        await checkSolanaWallet()
+        ReactGA.event({
+          category: "solana",
+          action: "deposit_escrow",
+          label: planName,
+          value: parseFloat(amount),
+        })
+      } else {
+        const errorData = await response.json()
+        setDepositError(errorData.message || "failed to process deposit")
+      }
+    } catch (err) {
+      console.error("error processing solana deposit:", err)
+      setDepositError(`error: ${err.message}`)
+    } finally {
+      setDepositLoading(false)
+    }
+  }
+
+  const handleCustomDeposit = async () => {
+    const amount = parseFloat(customAmount)
+    if (!amount || amount <= 0) {
+      setDepositError("please enter a valid amount")
+      return
+    }
+    if (customMonths < 1) {
+      setDepositError("please enter at least 1 month")
+      return
+    }
+    const monthsText = customMonths === 1 ? "1 month" : `${customMonths} months`
+    await handleSolanaDeposit(amount, `custom plan (${monthsText})`)
+  }
+
+  const calculateMonthsFromAmount = amount => {
+    const monthlyRate = 5.99
+    return Math.floor(amount / monthlyRate)
+  }
+
+  const calculateSolAmount = usdAmount => {
+    if (!solUsdRate || solUsdRate === 0) return null
+    const solAmount = usdAmount / solUsdRate
+    return solAmount
+  }
+
+  const formatSolAmount = solAmount => {
+    if (solAmount === null) return "..."
+    return solAmount.toFixed(5)
+  }
+
   // todo move this into a helper method later.
   function isBlank(str) {
     return !str || /^\s*$/.test(str)
@@ -264,41 +385,257 @@ const CashOut = () => {
             <button className="submit-btn"> Cash Out To Gift Cards </button>
           </form>
 
-          {/* SOalana wallet connector */}
-          <div style={{ marginTop: "24px" }}>
-            <button
-              onClick={() => setShowSolanaConnect(true)}
-              style={{
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                color: "white",
-                border: "none",
-                padding: "12px 24px",
-                borderRadius: "8px",
-                fontSize: "16px",
-                fontWeight: "600",
-                cursor: "pointer",
-                marginRight: "12px",
-              }}
-            >
-              Connect Solana Wallet
-            </button>
-            <button
-              onClick={() => window.close()}
-              style={{
-                background: "white",
-                color: "#667eea",
-                border: "2px solid #667eea",
-                padding: "10px 24px",
-                borderRadius: "8px",
-                fontSize: "16px",
-                fontWeight: "600",
-                cursor: "pointer",
-              }}
-            >
-              Close
-            </button>
+          {/* solana wallet connector */}
+          <div style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "20px" }}>
+            <h2>Solana Wallet & Subscriptions</h2>
+            {!solanaWalletAddress ? (
+              <>
+                <p>connect your solana wallet to deposit SOL for your KarmaCall subscription.</p>
+                <button
+                  onClick={() => setShowSolanaConnect(true)}
+                  style={{
+                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    color: "white",
+                    border: "none",
+                    padding: "12px 24px",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    marginTop: "12px",
+                  }}
+                >
+                  Connect Solana Wallet
+                </button>
+              </>
+            ) : (
+              <>
+                <div style={{ backgroundColor: "#f0fdf4", padding: "16px", borderRadius: "8px", marginBottom: "20px" }}>
+                  <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#166534" }}>
+                    <strong>wallet connected:</strong> {solanaWalletAddress.slice(0, 4)}...{solanaWalletAddress.slice(-4)}
+                  </p>
+                  <p style={{ margin: "0", fontSize: "14px", color: "#166534" }}>
+                    <strong>escrow balance:</strong> {solanaBalance !== null ? `${solanaBalance} SOL` : "loading..."}
+                  </p>
+                  <button
+                    onClick={checkSolanaWallet}
+                    style={{
+                      background: "#10b981",
+                      color: "white",
+                      border: "none",
+                      padding: "6px 12px",
+                      borderRadius: "4px",
+                      fontSize: "12px",
+                      cursor: "pointer",
+                      marginTop: "8px",
+                    }}
+                  >
+                    refresh balance
+                  </button>
+                </div>
+
+                {depositError && (
+                  <div style={{ backgroundColor: "#fef2f2", color: "#991b1b", padding: "12px", borderRadius: "6px", marginBottom: "16px" }}>{depositError}</div>
+                )}
+
+                {depositSuccess && (
+                  <div style={{ backgroundColor: "#f0fdf4", color: "#166534", padding: "12px", borderRadius: "6px", marginBottom: "16px" }}>
+                    {depositSuccess}
+                  </div>
+                )}
+
+                <h3 style={{ marginBottom: "16px" }}>subscription plans</h3>
+                {solUsdRate && <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "12px" }}>current rate: 1 SOL = ${solUsdRate.toFixed(2)} USD</p>}
+
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "24px" }}>
+                  {/* free plan */}
+                  <div style={{ border: "2px solid #e5e7eb", borderRadius: "8px", padding: "16px", backgroundColor: "#f9fafb" }}>
+                    <h4 style={{ margin: "0 0 8px 0", color: "#1f2937" }}>free</h4>
+                    <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#1f2937" }}>$0/mo</p>
+                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>android only - basic spam blocking</p>
+                    <a href="https://play.google.com/store/apps/details?id=com.karmacall" target="_blank" rel="noopener noreferrer">
+                      <button
+                        style={{
+                          width: "100%",
+                          background: "#6b7280",
+                          color: "white",
+                          border: "none",
+                          padding: "10px",
+                          borderRadius: "6px",
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          cursor: "pointer",
+                        }}
+                      >
+                        download android
+                      </button>
+                    </a>
+                  </div>
+
+                  {/* ios basic */}
+                  <div style={{ border: "2px solid #dbeafe", borderRadius: "8px", padding: "16px", backgroundColor: "#eff6ff" }}>
+                    <h4 style={{ margin: "0 0 8px 0", color: "#1e40af" }}>iOS basic</h4>
+                    <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#1e40af" }}>$2/mo</p>
+                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>basic spam protection for iOS users</p>
+                    <button
+                      onClick={() => {
+                        const amount = calculateSolAmount(2)
+                        if (amount) handleSolanaDeposit(amount.toString(), "iOS basic (1 month)")
+                      }}
+                      disabled={depositLoading || !solUsdRate}
+                      style={{
+                        width: "100%",
+                        background: "#3b82f6",
+                        color: "white",
+                        border: "none",
+                        padding: "10px",
+                        borderRadius: "6px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        cursor: depositLoading || !solUsdRate ? "not-allowed" : "pointer",
+                        opacity: depositLoading || !solUsdRate ? 0.6 : 1,
+                      }}
+                    >
+                      {depositLoading ? "processing..." : solUsdRate ? `deposit ${formatSolAmount(calculateSolAmount(1.99))} SOL` : "loading..."}
+                    </button>
+                  </div>
+
+                  {/* premium */}
+                  <div style={{ border: "2px solid #ddd4f4", borderRadius: "8px", padding: "16px", backgroundColor: "#f5f3ff" }}>
+                    <h4 style={{ margin: "0 0 8px 0", color: "#6b21a8" }}>premium</h4>
+                    <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#6b21a8" }}>$5.99/mo</p>
+                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>advanced spam blocking + rewards</p>
+                    <button
+                      onClick={() => {
+                        const amount = calculateSolAmount(5.99)
+                        if (amount) handleSolanaDeposit(amount.toString(), "premium (1 month)")
+                      }}
+                      disabled={depositLoading || !solUsdRate}
+                      style={{
+                        width: "100%",
+                        background: "#9333ea",
+                        color: "white",
+                        border: "none",
+                        padding: "10px",
+                        borderRadius: "6px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        cursor: depositLoading || !solUsdRate ? "not-allowed" : "pointer",
+                        opacity: depositLoading || !solUsdRate ? 0.6 : 1,
+                      }}
+                    >
+                      {depositLoading ? "processing..." : solUsdRate ? `deposit ${formatSolAmount(calculateSolAmount(5.99))} SOL` : "loading..."}
+                    </button>
+                  </div>
+
+                  {/* supreme */}
+                  <div style={{ border: "2px solid #fef3c7", borderRadius: "8px", padding: "16px", backgroundColor: "#fffbeb" }}>
+                    <h4 style={{ margin: "0 0 8px 0", color: "#92400e" }}>supreme</h4>
+                    <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#92400e" }}>$9.99/mo</p>
+                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>premium + priority support</p>
+                    <button
+                      onClick={() => {
+                        const amount = calculateSolAmount(9.99)
+                        if (amount) handleSolanaDeposit(amount.toString(), "supreme (1 month)")
+                      }}
+                      disabled={depositLoading || !solUsdRate}
+                      style={{
+                        width: "100%",
+                        background: "#f59e0b",
+                        color: "white",
+                        border: "none",
+                        padding: "10px",
+                        borderRadius: "6px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        cursor: depositLoading || !solUsdRate ? "not-allowed" : "pointer",
+                        opacity: depositLoading || !solUsdRate ? 0.6 : 1,
+                      }}
+                    >
+                      {depositLoading ? "processing..." : solUsdRate ? `deposit ${formatSolAmount(calculateSolAmount(9.99))} SOL` : "loading..."}
+                    </button>
+                  </div>
+                </div>
+
+                {/* custom deposit */}
+                <div style={{ border: "2px solid #e5e7eb", borderRadius: "8px", padding: "20px", backgroundColor: "white" }}>
+                  <h3 style={{ marginTop: "0", marginBottom: "12px" }}>custom deposit</h3>
+                  <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "16px" }}>deposit any amount for multiple months or custom plans</p>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", fontWeight: "600", marginBottom: "6px", color: "#374151" }}>amount (SOL)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        placeholder="0.00"
+                        value={customAmount}
+                        onChange={e => setCustomAmount(e.target.value)}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          border: "1px solid #d1d5db",
+                          borderRadius: "6px",
+                          fontSize: "14px",
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "14px", fontWeight: "600", marginBottom: "6px", color: "#374151" }}>months</label>
+                      <input
+                        type="number"
+                        min="1"
+                        placeholder="1"
+                        value={customMonths}
+                        onChange={e => setCustomMonths(parseInt(e.target.value) || 1)}
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          border: "1px solid #d1d5db",
+                          borderRadius: "6px",
+                          fontSize: "14px",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {customAmount && parseFloat(customAmount) > 0 && solUsdRate && (
+                    <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "12px" }}>
+                      at $5.99/month, {parseFloat(customAmount).toFixed(5)} SOL (≈ ${(parseFloat(customAmount) * solUsdRate).toFixed(4)} USD) ≈{" "}
+                      {calculateMonthsFromAmount(parseFloat(customAmount) * solUsdRate)} months
+                    </p>
+                  )}
+
+                  <button
+                    onClick={handleCustomDeposit}
+                    disabled={depositLoading || !customAmount || parseFloat(customAmount) <= 0}
+                    style={{
+                      width: "100%",
+                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      color: "white",
+                      border: "none",
+                      padding: "12px",
+                      borderRadius: "6px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      cursor: depositLoading || !customAmount || parseFloat(customAmount) <= 0 ? "not-allowed" : "pointer",
+                      opacity: depositLoading || !customAmount || parseFloat(customAmount) <= 0 ? 0.6 : 1,
+                    }}
+                  >
+                    {depositLoading ? "processing..." : "deposit custom amount"}
+                  </button>
+                </div>
+
+                <div style={{ marginTop: "16px", padding: "12px", backgroundColor: "#eff6ff", borderRadius: "6px" }}>
+                  <p style={{ margin: "0", fontSize: "13px", color: "#1e40af" }}>
+                    <strong>note:</strong> send SOL from your wallet to the escrow address first, then paste your transaction signature when prompted. deposits
+                    are confirmed within 30-60 seconds.
+                  </p>
+                </div>
+              </>
+            )}
           </div>
-          <p style={{ marginTop: "16px", fontSize: "14px", color: "#6b7280" }}>Connect your Solana wallet to enable KarmaCall protection with crypto escrow.</p>
 
           {/* Referral sharing section */}
           <div className="referral-section" style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "20px" }}>
