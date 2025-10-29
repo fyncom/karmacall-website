@@ -86,7 +86,6 @@ const CashOut = () => {
       localStorage.removeItem("pendingReferralCode")
     }
 
-    // check for existing solana wallet
     checkSolanaWallet()
   }, [sessionId])
 
@@ -152,9 +151,8 @@ const CashOut = () => {
         // TODO - get the currency type from the country code or user preferences
         // TODO - setup the Currency denominator to match the currency type
         // TODO - limit the sig figs of each
-        const newMessage = `<p>Your USD balance is $<span class="emphasis">${data.accountBalanceInFiat.toFixed(
-          5
-        )}</span></p> <p>Your nano balance is Ӿ<span class="emphasis">${data.accountBalanceInNano.toFixed(5)}</span></p>`
+        const newMessage = `<p>Your USD balance is $<span class="emphasis">${data.accountBalanceInFiat.toFixed(5)}</span></p> 
+        <p>Your nano balance is Ӿ<span class="emphasis">${data.accountBalanceInNano.toFixed(5)}</span></p>`
         setDynamicMessage(newMessage)
         updateNanoBalance(data.accountBalanceInNano)
         updateNanoBalanceInFiat(data.accountBalanceInFiat)
@@ -430,7 +428,7 @@ const CashOut = () => {
                       marginTop: "8px",
                     }}
                   >
-                    refresh balance
+                    Refresh Balance
                   </button>
                 </div>
 
@@ -445,14 +443,14 @@ const CashOut = () => {
                 )}
 
                 <h3 style={{ marginBottom: "16px" }}>subscription plans</h3>
-                {solUsdRate && <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "12px" }}>current rate: 1 SOL = ${solUsdRate.toFixed(2)} USD</p>}
+                {solUsdRate && <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "12px" }}>Current Rate: 1 SOL = ${solUsdRate.toFixed(2)} USD</p>}
 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "24px" }}>
                   {/* free plan */}
                   <div style={{ border: "2px solid #e5e7eb", borderRadius: "8px", padding: "16px", backgroundColor: "#f9fafb" }}>
-                    <h4 style={{ margin: "0 0 8px 0", color: "#1f2937" }}>free</h4>
+                    <h4 style={{ margin: "0 0 8px 0", color: "#1f2937" }}>Free</h4>
                     <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#1f2937" }}>$0/mo</p>
-                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>android only - basic spam blocking</p>
+                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>Android Only - Basic Spam Blocking</p>
                     <a href="https://play.google.com/store/apps/details?id=com.karmacall" target="_blank" rel="noopener noreferrer">
                       <button
                         style={{
@@ -474,9 +472,9 @@ const CashOut = () => {
 
                   {/* ios basic */}
                   <div style={{ border: "2px solid #dbeafe", borderRadius: "8px", padding: "16px", backgroundColor: "#eff6ff" }}>
-                    <h4 style={{ margin: "0 0 8px 0", color: "#1e40af" }}>iOS basic</h4>
+                    <h4 style={{ margin: "0 0 8px 0", color: "#1e40af" }}>iOS Basic</h4>
                     <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#1e40af" }}>$2/mo</p>
-                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>basic spam protection for iOS users</p>
+                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>Basic Spam Protection for iOS Users</p>
                     <button
                       onClick={() => {
                         const amount = calculateSolAmount(2)
@@ -502,9 +500,9 @@ const CashOut = () => {
 
                   {/* premium */}
                   <div style={{ border: "2px solid #ddd4f4", borderRadius: "8px", padding: "16px", backgroundColor: "#f5f3ff" }}>
-                    <h4 style={{ margin: "0 0 8px 0", color: "#6b21a8" }}>premium</h4>
+                    <h4 style={{ margin: "0 0 8px 0", color: "#6b21a8" }}>Premium</h4>
                     <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#6b21a8" }}>$5.99/mo</p>
-                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>advanced spam blocking + rewards</p>
+                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>Advanced Spam Blocking + Rewards</p>
                     <button
                       onClick={() => {
                         const amount = calculateSolAmount(5.99)
@@ -530,9 +528,9 @@ const CashOut = () => {
 
                   {/* supreme */}
                   <div style={{ border: "2px solid #fef3c7", borderRadius: "8px", padding: "16px", backgroundColor: "#fffbeb" }}>
-                    <h4 style={{ margin: "0 0 8px 0", color: "#92400e" }}>supreme</h4>
+                    <h4 style={{ margin: "0 0 8px 0", color: "#92400e" }}>Supreme</h4>
                     <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#92400e" }}>$9.99/mo</p>
-                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>premium + priority support</p>
+                    <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>Premium + Priority Support</p>
                     <button
                       onClick={() => {
                         const amount = calculateSolAmount(9.99)
@@ -559,8 +557,8 @@ const CashOut = () => {
 
                 {/* custom deposit */}
                 <div style={{ border: "2px solid #e5e7eb", borderRadius: "8px", padding: "20px", backgroundColor: "white" }}>
-                  <h3 style={{ marginTop: "0", marginBottom: "12px" }}>custom deposit</h3>
-                  <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "16px" }}>deposit any amount for multiple months or custom plans</p>
+                  <h3 style={{ marginTop: "0", marginBottom: "12px" }}>Custom Deposit</h3>
+                  <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "16px" }}>Deposit Any Amount for Multiple Months or Custom Plans</p>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
                     <div>
@@ -623,14 +621,13 @@ const CashOut = () => {
                       opacity: depositLoading || !customAmount || parseFloat(customAmount) <= 0 ? 0.6 : 1,
                     }}
                   >
-                    {depositLoading ? "processing..." : "deposit custom amount"}
+                    {depositLoading ? "Processing..." : "Deposit Custom Amount"}
                   </button>
                 </div>
 
                 <div style={{ marginTop: "16px", padding: "12px", backgroundColor: "#eff6ff", borderRadius: "6px" }}>
                   <p style={{ margin: "0", fontSize: "13px", color: "#1e40af" }}>
-                    <strong>note:</strong> send SOL from your wallet to the escrow address first, then paste your transaction signature when prompted. deposits
-                    are confirmed within 30-60 seconds.
+                    <strong>note:</strong> Send SOL from your wallet to the escrow address first, then paste your transaction signature when prompted.
                   </p>
                 </div>
               </>
