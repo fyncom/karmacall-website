@@ -57,10 +57,10 @@ const AppDownloadButton = ({ className = "", style = {} }) => {
   if (!isClient) {
     return (
       <div className={`app-download-section ${className}`} style={style}>
-        <h3>Download our app for a better experience</h3>
+        <h3>Download Our App for a Better Experience</h3>
         <div className="app-store-row">
           {/* Render both buttons in a hidden state during SSR to match DOM structure */}
-          <div style={{ visibility: 'hidden' }}>
+          <div style={{ visibility: "hidden" }}>
             <a className="store-button">
               <div className="app-img-index gatsby-image-wrapper"></div>
             </a>
@@ -70,41 +70,25 @@ const AppDownloadButton = ({ className = "", style = {} }) => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Client-side render with platform detection
   return (
     <div className={`app-download-section ${className}`} style={style}>
-      <h3>Download our app for a better experience</h3>
+      <h3>Download Our App for a Better Experience</h3>
       <div className="app-store-row">
         {/* If we can't determine the platform or it's Android, show Play Store */}
         {(isAndroid || (!isIOS && !isAndroid)) && (
-          <a 
-            href="https://play.google.com/store/apps/details?id=com.fyncom.robocash"
-            onClick={handleAndroidClick}
-            className="store-button"
-          >
-            <GatsbyImage 
-              className="app-img-index" 
-              image={googlePlayBadge} 
-              alt="Get KarmaCall on Google Play" 
-            />
+          <a href="https://play.google.com/store/apps/details?id=com.fyncom.robocash" onClick={handleAndroidClick} className="store-button">
+            <GatsbyImage className="app-img-index" image={googlePlayBadge} alt="Get KarmaCall on Google Play" />
           </a>
         )}
-        
+
         {/* If we can't determine the platform or it's iOS, show App Store */}
         {(isIOS || (!isIOS && !isAndroid)) && (
-          <a 
-            href="https://apps.apple.com/us/app/karmacall/id1574524278"
-            onClick={handleIOSClick}
-            className="store-button"
-          >
-            <GatsbyImage 
-              className="app-img-index" 
-              image={appStoreBadge} 
-              alt="Download KarmaCall on the App Store" 
-            />
+          <a href="https://apps.apple.com/us/app/karmacall/id1574524278" onClick={handleIOSClick} className="store-button">
+            <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" />
           </a>
         )}
       </div>

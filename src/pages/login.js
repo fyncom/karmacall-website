@@ -40,7 +40,7 @@ const Login = () => {
   }
 
   let baseUrl = `${process.env.GATSBY_API_URL_BASE}`
-  let baseUrlV2 = `${process.env.GATSBY_API_URL}`
+  let newUrl = `${process.env.GATSBY_API_URL}`
   let headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -236,7 +236,7 @@ const Login = () => {
   // redirectToApp parameter controls whether to redirect to app stores for new users
   const handleSignUp = async (authData = null, redirectToApp = false) => {
     try {
-      const signUpResponse = await fetch(baseUrlV2 + "user/register/full", {
+      const signUpResponse = await fetch(newUrl + "user/register/full", {
         method: "POST",
         headers: {
           ...headers,
@@ -356,7 +356,7 @@ const Login = () => {
   // referral api
   const recordReferral = async userId => {
     try {
-      const response = await fetch(baseUrlV2 + "referral/record", {
+      const response = await fetch(newUrl + "referral/record", {
         method: "POST",
         headers: headers,
         body: JSON.stringify({

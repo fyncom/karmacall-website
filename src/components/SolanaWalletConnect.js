@@ -17,7 +17,11 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("")
   const [qrAmount, setQrAmount] = useState(0)
 
-  let baseUrlV2 = `${process.env.GATSBY_API_URL}`
+  let newUrl = `${process.env.GATSBY_API_URL}`
+  let headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  }
 
   useEffect(() => {
     // Check if user already has a Solana wallet connected
@@ -39,11 +43,9 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
     }
     try {
       console.log("checking existing wallet for userId:", userId)
-      const response = await fetch(`${baseUrlV2}api/solana/balance?userId=${userId}`, {
+      const response = await fetch(`${newUrl}api/solana/balance?userId=${userId}`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: headers,
       })
       console.log("balance check response status:", response.status)
 
@@ -93,7 +95,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
       const publicKey = response.publicKey.toString()
 
       // Step 1: Get challenge from backend
-      const challengeResponse = await fetch(`${baseUrlV2}api/solana/generateChallenge?publicKey=${publicKey}`)
+      const challengeResponse = await fetch(`${newUrl}api/solana/generateChallenge?publicKey=${publicKey}`)
 
       if (!challengeResponse.ok) {
         throw new Error("Failed to generate challenge")
@@ -109,11 +111,9 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
       const signatureBase64 = btoa(String.fromCharCode(...signedMessage.signature))
 
       // Step 3: Send to backend for verification
-      const connectResponse = await fetch(`${baseUrlV2}api/solana/connectWallet`, {
+      const connectResponse = await fetch(`${newUrl}api/solana/connectWallet`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: headers,
         body: JSON.stringify({
           userId: userId,
           publicKey: publicKey,
@@ -161,11 +161,9 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
 
     try {
       console.log("connecting wallet manually:", address)
-      const response = await fetch(`${baseUrlV2}api/solana/connectWallet`, {
+      const response = await fetch(`${newUrl}api/solana/connectWallet`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: headers,
         body: JSON.stringify({
           userId: userId,
           publicKey: address,
@@ -223,11 +221,9 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
       }
 
       // Step 1: Get prepared transaction from backend
-      const initiateResponse = await fetch(`${baseUrlV2}api/solana/initiateDeposit`, {
+      const initiateResponse = await fetch(`${newUrl}api/solana/initiateDeposit`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: headers,
         body: JSON.stringify({
           userId: userId,
           amount: amount,
@@ -254,20 +250,10 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
         recentBlockhash: transactionData.recentBlockhash,
       })
 
-      console.log("8888888888888888888888888888888888888888888")
       // Step 2: Deserialize the transaction from backend (contains dummy signature)
       // Use browser-compatible base64 decoding
       const transactionBytes = Uint8Array.from(atob(transactionData.transactionData), c => c.charCodeAt(0))
       const transaction = Transaction.from(transactionBytes)
-      console.log("Transaction deserialized successfully, fee payer:", transaction.feePayer?.toString())
-      console.log("Transaction instructions:", transaction.instructions.length)
-      console.log("Transaction recent blockhash:", transaction.recentBlockhash)
-
-      // Step 3: Ensure wallet is connected
-      console.log("Requesting wallet signature and send...")
-      console.log("Wallet object:", wallet)
-      console.log("Wallet isConnected:", wallet.isConnected)
-      console.log("Wallet publicKey:", wallet.publicKey?.toString())
 
       // Ensure wallet is connected
       if (!wallet.isConnected) {
@@ -276,20 +262,16 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
       }
 
       // Use signAndSendTransaction (recommended by Phantom docs)
-      console.log("Using signAndSendTransaction...")
       const { signature } = await wallet.signAndSendTransaction(transaction)
-      console.log("Transaction signed and sent by wallet, signature:", signature)
 
       // Wait a moment for the transaction to propagate
       await new Promise(resolve => setTimeout(resolve, 2000))
 
       // Step 5: Confirm the transaction with backend
       console.log("Confirming transaction with backend...")
-      const confirmResponse = await fetch(`${baseUrlV2}api/solana/confirmDeposit`, {
+      const confirmResponse = await fetch(`${newUrl}api/solana/confirmDeposit`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: headers,
         body: JSON.stringify({
           userId: userId,
           amount: amount,
@@ -494,6 +476,11 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
 
 // Standalone function for sending Solana using backend-prepared transactions
 export const sendSolanaTransaction = async (fromAddress, amount, userId, planName = "deposit") => {
+  let newUrl = `${process.env.GATSBY_API_URL}`
+  let headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  }
   if (!fromAddress || !amount || amount <= 0) {
     throw new Error("Invalid sender address or amount")
   }
@@ -508,14 +495,10 @@ export const sendSolanaTransaction = async (fromAddress, amount, userId, planNam
     throw new Error("No Solana wallet detected. Please install Phantom or Solflare.")
   }
 
-  const baseUrlV2 = `${process.env.GATSBY_API_URL}`
-
   // Step 1: Get prepared transaction from backend
-  const initiateResponse = await fetch(`${baseUrlV2}api/solana/initiateDeposit`, {
+  const initiateResponse = await fetch(`${newUrl}api/solana/initiateDeposit`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: headers,
     body: JSON.stringify({
       userId: userId,
       amount: amount,
@@ -573,11 +556,9 @@ export const sendSolanaTransaction = async (fromAddress, amount, userId, planNam
   await new Promise(resolve => setTimeout(resolve, 2000))
 
   // Step 5: Confirm the transaction with backend
-  const confirmResponse = await fetch(`${baseUrlV2}api/solana/confirmDeposit`, {
+  const confirmResponse = await fetch(`${newUrl}api/solana/confirmDeposit`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: headers,
     body: JSON.stringify({
       userId: userId,
       amount: amount,
