@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react"
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js"
 import QRCode from "qrcode"
 import "./solana-wallet.css"
+import bs58 from "bs58"
 
 const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
   const [walletAddress, setWalletAddress] = useState("")
@@ -16,6 +17,14 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
   const [showQRFallback, setShowQRFallback] = useState(false)
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("")
   const [qrAmount, setQrAmount] = useState(0)
+  const [view, setView] = useState("main") // main, qrConnect
+  const [qrConnectSessionId, setQrConnectSessionId] = useState(null)
+  const [qrConnectError, setQrConnectError] = useState("")
+  const [isPolling, setIsPolling] = useState(false)
+  const [qrSignAddress, setQrSignAddress] = useState("")
+  const [qrSignMessage, setQrSignMessage] = useState("")
+  const [qrSignSignature, setQrSignSignature] = useState("")
+  const [qrSignError, setQrSignError] = useState("")
 
   let solanaPublicKey = process.env.GATSBY_SOLANA_ADDRESS
   let newUrl = `${process.env.GATSBY_API_URL}`
@@ -136,6 +145,162 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
     } catch (err) {
       console.error("Error connecting wallet:", err)
       setError(err.message || "Failed to connect wallet. Please try again.")
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
+  const startQrConnect = async () => {
+    setView("qrConnect")
+    setIsConnecting(true)
+    setQrConnectError("")
+    try {
+      // Step 1: Initiate the QR connection session with the backend
+      const response = await fetch(`${newUrl}api/solana/qr-init`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({ userId }),
+      })
+      if (!response.ok) {
+        throw new Error("could not start QR session")
+      }
+      const { sessionId } = await response.json()
+      setQrConnectSessionId(sessionId)
+
+      // Step 2: Generate QR code pointing to the mobile signing page
+      const mobileSignUrl = `https://www.karmacall.com/mobile-sign/${sessionId}`
+      const qrDataUrl = await QRCode.toDataURL(mobileSignUrl)
+      setQrCodeDataUrl(qrDataUrl)
+
+      // Step 3: Start polling for status updates
+      startPolling(sessionId)
+    } catch (err) {
+      console.error("error starting QR connect:", err)
+      setQrConnectError("failed to start QR connection. please try again.")
+      setView("main")
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
+  const startPolling = sessionId => {
+    if (!sessionId) return
+    setIsPolling(true)
+
+    const intervalId = setInterval(async () => {
+      try {
+        const response = await fetch(`${newUrl}api/solana/qr-status?sessionId=${sessionId}`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.status === "confirmed") {
+            setIsPolling(false)
+            clearInterval(intervalId)
+            setQrConnectSessionId(null)
+            setQrCodeDataUrl("")
+            // Wallet is connected, refresh UI
+            setIsConnected(true)
+            setWalletAddress(data.publicKey)
+            await checkExistingWallet()
+          } else if (data.status === "expired" || data.status === "failed") {
+            setIsPolling(false)
+            clearInterval(intervalId)
+            setQrConnectError("connection failed or timed out. please try again.")
+            setView("main")
+          }
+        }
+      } catch (err) {
+        // Don't stop polling on network errors, just log them
+        console.error("polling error:", err)
+      }
+    }, 3000) // Poll every 3 seconds
+
+    // Stop polling after 3 minutes
+    const timeoutId = setTimeout(() => {
+      if (isPolling) {
+        clearInterval(intervalId)
+        setIsPolling(false)
+        setQrConnectError("connection timed out. please try again.")
+        setView("main")
+      }
+    }, 180000)
+
+    // Cleanup function
+    return () => {
+      clearInterval(intervalId)
+      clearTimeout(timeoutId)
+    }
+  }
+
+  const cancelQrConnect = () => {
+    setIsPolling(false)
+    setQrConnectSessionId(null) // This will trigger cleanup in polling effect
+    setView("main")
+    setQrCodeDataUrl("")
+    setQrConnectError("")
+  }
+
+  const handleQrSignRequest = async () => {
+    if (!isValidSolanaAddress(qrSignAddress)) {
+      setQrSignError("invalid Solana address format.")
+      return
+    }
+    setQrSignError("")
+    setIsConnecting(true)
+    try {
+      const challengeResponse = await fetch(`${newUrl}api/solana/generateChallenge?publicKey=${qrSignAddress}`)
+      if (!challengeResponse.ok) {
+        throw new Error("failed to generate challenge")
+      }
+      const { message } = await challengeResponse.json()
+      setQrSignMessage(message)
+      const qrDataUrl = await QRCode.toDataURL(message)
+      setQrCodeDataUrl(qrDataUrl)
+      setView("qrSignStep2")
+    } catch (err) {
+      console.error("error in QR sign request:", err)
+      setQrSignError(err.message || "failed to generate QR code.")
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
+  const handleQrSignVerify = async () => {
+    setIsConnecting(true)
+    setQrSignError("")
+    try {
+      let signatureBytes
+      try {
+        signatureBytes = bs58.decode(qrSignSignature)
+      } catch (e) {
+        throw new Error("invalid signature format. please provide a Base58 signature.")
+      }
+
+      const signatureBase64 = btoa(String.fromCharCode(...signatureBytes))
+
+      const connectResponse = await fetch(`${newUrl}api/solana/connectWallet`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+          userId: userId,
+          publicKey: qrSignAddress,
+          signature: signatureBase64,
+          message: qrSignMessage,
+        }),
+      })
+
+      const result = await connectResponse.json()
+
+      if (result.success) {
+        setIsConnected(true)
+        setWalletAddress(qrSignAddress)
+        setShowDepositInfo(true)
+        await checkExistingWallet()
+      } else {
+        throw new Error(result.message || "failed to connect wallet")
+      }
+    } catch (err) {
+      console.error("error verifying QR signature:", err)
+      setQrSignError(err.message || "failed to verify signature. please try again.")
     } finally {
       setIsConnecting(false)
     }
@@ -338,33 +503,117 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
 
         {!isConnected ? (
           <>
-            <p className="description">
-              Connect your Solana wallet to deposit funds for KarmaCall protection. When spam calls are blocked, the caller gets paid from your escrow balance.
-            </p>
+            {view === "main" && (
+              <>
+                <p className="description">
+                  Connect your Solana wallet to deposit funds for KarmaCall protection. When spam calls are blocked, the caller gets paid from your escrow
+                  balance.
+                </p>
 
-            {error && <div className="error-message">{error}</div>}
+                {error && <div className="error-message">{error}</div>}
 
-            <div className="button-group">
-              <button className="primary-button" onClick={connectWallet} disabled={isConnecting}>
-                {isConnecting ? "Connecting..." : "Connect Wallet"}
-              </button>
+                <div className="button-group">
+                  <button className="primary-button" onClick={connectWallet} disabled={isConnecting}>
+                    {isConnecting ? "Connecting..." : "Connect with Browser"}
+                  </button>
 
-              <button className="secondary-button" onClick={connectManually} disabled={isConnecting}>
-                Enter Address Manually
-              </button>
-            </div>
+                  <button className="secondary-button" onClick={startQrConnect} disabled={isConnecting}>
+                    Sign with Mobile (QR)
+                  </button>
 
-            <div className="wallet-info">
-              <p className="info-text">
-                <strong>Supported Wallets:</strong>
-              </p>
-              <ul>
-                <li>Phantom (Browser Extension)</li>
-                <li>Solflare (Browser Extension)</li>
-                <li>Cake Wallet (Manual Entry)</li>
-                <li>Any Solana Wallet (Manual Entry)</li>
-              </ul>
-            </div>
+                  <button className="secondary-button" onClick={connectManually} disabled={isConnecting}>
+                    Enter Address Manually
+                  </button>
+                </div>
+
+                <div className="wallet-info">
+                  <p className="info-text">
+                    <strong>Supported Wallets:</strong>
+                  </p>
+                  <ul>
+                    <li>Phantom (Browser Extension)</li>
+                    <li>Solflare (Browser Extension)</li>
+                    <li>Any Solana Wallet (Sign with Mobile or Manual Entry)</li>
+                  </ul>
+                </div>
+              </>
+            )}
+
+            {view === "qrConnect" && (
+              <div className="qr-sign-flow">
+                <h3>Sign with Mobile Wallet</h3>
+                <p>Scan the QR code with your phone's camera to sign in with your mobile wallet.</p>
+                {qrConnectError && <div className="error-message">{qrConnectError}</div>}
+
+                {isConnecting ? (
+                  <p>Generating secure QR code...</p>
+                ) : (
+                  <div className="qr-code-container" style={{ textAlign: "center", margin: "20px 0" }}>
+                    <img src={qrCodeDataUrl} alt="Connect with mobile wallet" />
+                  </div>
+                )}
+                <p className="info-text" style={{ wordBreak: "break-all" }}>
+                  {isPolling ? "Waiting for you to sign on your mobile device..." : "Scan the code to continue."}
+                </p>
+                <div className="button-group">
+                  <button className="secondary-button" onClick={cancelQrConnect}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {view === "qrSignStep1" && (
+              <div className="qr-sign-flow">
+                <h3>Sign with Mobile Wallet - Step 1 of 2</h3>
+                <p>Enter your Solana wallet address to generate a secure sign-in message.</p>
+                {qrSignError && <div className="error-message">{qrSignError}</div>}
+                <input
+                  type="text"
+                  placeholder="Your Solana Wallet Address"
+                  value={qrSignAddress}
+                  onChange={e => setQrSignAddress(e.target.value)}
+                  className="solana-input"
+                />
+                <div className="button-group">
+                  <button className="primary-button" onClick={handleQrSignRequest} disabled={isConnecting}>
+                    {isConnecting ? "Generating..." : "Next"}
+                  </button>
+                  <button className="secondary-button" onClick={() => setView("main")}>
+                    Back
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {view === "qrSignStep2" && (
+              <div className="qr-sign-flow">
+                <h3>Sign with Mobile Wallet - Step 2 of 2</h3>
+                <p>Scan the QR code with your wallet, sign the message, and paste the signature below.</p>
+                <div className="qr-code-container" style={{ textAlign: "center", margin: "20px 0" }}>
+                  <img src={qrCodeDataUrl} alt="Message to sign" />
+                </div>
+                <p className="info-text" style={{ wordBreak: "break-all" }}>
+                  <strong>Message:</strong> {qrSignMessage}
+                </p>
+                {qrSignError && <div className="error-message">{qrSignError}</div>}
+                <input
+                  type="text"
+                  placeholder="Paste signature here"
+                  value={qrSignSignature}
+                  onChange={e => setQrSignSignature(e.target.value)}
+                  className="solana-input"
+                />
+                <div className="button-group">
+                  <button className="primary-button" onClick={handleQrSignVerify} disabled={isConnecting}>
+                    {isConnecting ? "Verifying..." : "Verify & Connect"}
+                  </button>
+                  <button className="secondary-button" onClick={() => setView("qrSignStep1")}>
+                    Back
+                  </button>
+                </div>
+              </div>
+            )}
           </>
         ) : (
           <>
