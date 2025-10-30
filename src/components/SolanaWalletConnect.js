@@ -545,8 +545,12 @@ export const sendSolanaTransaction = async (fromAddress, amount, userId, planNam
   // Step 2: Deserialize the transaction from backend (contains dummy signature)
   // Use browser-compatible base64 decoding
   const transactionBytes = Uint8Array.from(atob(transactionData.transactionData), c => c.charCodeAt(0))
-  const transaction = Transaction.from(transactionBytes)
-  console.log("Standalone - Transaction deserialized successfully, fee payer:", transaction.feePayer?.toString())
+  const originalTransaction = Transaction.from(transactionBytes)
+  console.log("Standalone - Transaction deserialized successfully, fee payer:", originalTransaction.feePayer?.toString())
+
+  // Re-create the transaction from the message to ensure it's unsigned and in the right format for the wallet.
+  // This strips the dummy signature from the backend.
+  const transaction = Transaction.populate(originalTransaction.compileMessage())
 
   // Step 3: Ensure wallet is connected
   console.log("Standalone - Requesting wallet signature and send...")
