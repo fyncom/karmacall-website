@@ -65,6 +65,11 @@ export const onClientEntry = () => {
       link.crossOrigin = "anonymous"
       document.head.appendChild(link)
     })
+    const solanaScript = document.createElement("script")
+    solanaScript.src = "https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"
+    solanaScript.crossOrigin = "anonymous"
+    solanaScript.async = true
+    document.head.appendChild(solanaScript)
   }
 }
 

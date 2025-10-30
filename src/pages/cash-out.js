@@ -5,7 +5,7 @@ import "../components/sales-and-marketing-use-cases.css"
 import Seo from "../components/seo"
 import { GiftCardModal, NanoNotEnoughModal, NanoSentModal, ReferralAppDownloadModal } from "../components/Modal"
 import AppDownloadButton from "../components/AppDownloadButton"
-import SolanaWalletConnect from "../components/SolanaWalletConnect"
+import SolanaWalletConnect, { sendSolanaTransaction } from "../components/SolanaWalletConnect"
 import ReactGA from "react-ga4"
 
 const CashOut = () => {
@@ -251,38 +251,68 @@ const CashOut = () => {
       setDepositError("please connect your solana wallet first")
       return
     }
+    console.log("starting deposit")
 
     setDepositLoading(true)
     setDepositError("")
     setDepositSuccess("")
 
     try {
-      const wallet = window.solana || window.solflare
-      if (!wallet) {
-        setDepositError("no solana wallet detected. please install phantom or solflare.")
-        setDepositLoading(false)
-        return
+      let transactionSignature = null
+
+      // Use the standalone function directly (more reliable)
+      console.log("Using standalone sendSolanaTransaction function")
+      try {
+        transactionSignature = await sendSolanaTransaction(solanaWalletAddress, parseFloat(amount), userId, planName)
+      } catch (standaloneError) {
+        console.log("Standalone transaction failed, requesting manual signature:", standaloneError)
+
+        // Final fallback to manual entry
+        const manualSignature = prompt(`Please send ${amount} SOL to the escrow address and paste your transaction signature here:`)
+        if (!manualSignature) {
+          setDepositLoading(false)
+          return
+        }
+        transactionSignature = manualSignature.trim()
       }
 
-      // request transaction signature from user's wallet
-      const transactionSignature = prompt(`please send ${amount} SOL to the escrow address and paste your transaction signature here:`)
       if (!transactionSignature) {
+        setDepositError("transaction was cancelled or failed")
         setDepositLoading(false)
         return
       }
 
-      const response = await fetch(`${baseUrl}v2/api/solana/depositEscrow`, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify({
-          userId: userId,
-          transactionSignature: transactionSignature.trim(),
-          amount: parseFloat(amount),
-        }),
-      })
+      // For the new backend flow, the transaction is already confirmed
+      // Only call the old API for manual signature fallback
+      if (transactionSignature.length === 64 && !transactionSignature.includes(" ")) {
+        console.log("in notwhevere")
+        // This looks like a manual signature, use old API
+        const response = await fetch(`${baseUrl}v2/api/solana/depositEscrow`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({
+            userId: userId,
+            transactionSignature: transactionSignature,
+            amount: parseFloat(amount),
+          }),
+        })
 
-      if (response.ok) {
-        const data = await response.json()
+        if (response.ok) {
+          const data = await response.json()
+          setDepositSuccess(`successfully deposited ${amount} SOL for ${planName}!`)
+          await checkSolanaWallet()
+          ReactGA.event({
+            category: "solana",
+            action: "deposit_escrow",
+            label: planName,
+            value: parseFloat(amount),
+          })
+        } else {
+          const errorData = await response.json()
+          setDepositError(errorData.message || "failed to process deposit")
+        }
+      } else {
+        // New backend flow already handled everything
         setDepositSuccess(`successfully deposited ${amount} SOL for ${planName}!`)
         await checkSolanaWallet()
         ReactGA.event({
@@ -291,9 +321,6 @@ const CashOut = () => {
           label: planName,
           value: parseFloat(amount),
         })
-      } else {
-        const errorData = await response.json()
-        setDepositError(errorData.message || "failed to process deposit")
       }
     } catch (err) {
       console.error("error processing solana deposit:", err)
