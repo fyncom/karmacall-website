@@ -298,7 +298,7 @@ const BlockSpamEarnCash = () => {
         <div className="AppText">
           <div className="social-media-container">
             <div className="text-block-centered">
-              <h2 className="text-wrapper-5">Complete Digital Protection</h2>
+              <h2 className="text-wrapper-6">Complete Digital Protection</h2>
               <p className="values-container-sub">
                 KarmaCall now protects all your communication channels. Block spam calls with instant payouts, filter unwanted texts natively in the app, and
                 introducing Gmail spam protection with Fyncom technology - all while earning cash rewards.
@@ -330,7 +330,7 @@ const BlockSpamEarnCash = () => {
             What kind of calls will I get with <span className="semi-barlow-extra-bold">Karma</span>
             <span className="semi-barlow-extra-light">Call</span>?
           </h2>
-          <p className="values-container-sub">
+          <p className="values-container-sub-addition">
             In addition to getting normal uninterrupted calls from your contact, you'll get these 3 unique kinds of calls. Starting from most likely to least
             likely.
           </p>

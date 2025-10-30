@@ -192,7 +192,7 @@
     margin-bottom: 1rem;
     font-size: 36px;
 }
-.text-wrapper-5 {
+.text-wrapper-5, .text-wrapper-6 {
     color: var(--karmacall-green-variable);
     margin-bottom: 1rem;
     font-size: 36px;
@@ -332,14 +332,34 @@
   h3 { font-size: larger !important; }
   sub { font-size: large !important; }
   p { font-size: medium !important; }
-   .values-container-sub {
-      font-weight: 400;
-      font-size: medium !important;
-    }
-  .use-case sub {
-      margin-top: -0.2rem;
-      margin-bottom: 10px;
+  .values-container-sub {
+    font-weight: 400;
+    font-size: medium !important;
   }
+  .values-container-sub-addition {
+    font-weight: 400;
+    font-size: medium !important;
+    padding: 0rem 0.5rem;
+    gap: 5px;
+  }
+  .use-case sub {
+    margin-top: -0.2rem;
+    margin-bottom: 10px;
+  }
+  .why-fyncom {
+    padding: 0.5rem;
+    gap: 5px;
+  }
+  .social-media-container {
+    max-height: 700px;
+    min-height: auto;
+  }
+  .text-wrapper-6 {
+    color: var(--karmacall-green-variable);
+    margin-top: 4rem;
+    margin-bottom: 1rem;
+    font-size: 36px;
+}
 
   /* Container Adjustments */
   .AppText, .video-row-container {
@@ -366,7 +386,7 @@
     max-width: 100%; /* Full width */
     text-align: center; /* Center text */
   }
-   .text-container p {
+  .text-container p {
     text-align: left !important; /*Override*/
   }
 
@@ -390,28 +410,26 @@
     align-items: center;
     gap: 1rem; /*Consistent spacing*/
   }
-  /*App store row - make sure this works as expected */
-   .app-store-row {
-      flex-direction: row;
-      /* gap: 0 2rem 2rem 2rem; */
-      gap: 1rem;
+  .app-store-row {
+    flex-direction: row;
+    padding: 0rem 1rem 2rem 1rem;
+    gap: 1rem;
   }
   .app-img-index{
-      max-width: fit-content; /*Prevents images from being cut-off*/
+    max-width: fit-content; /*Prevents images from being cut-off*/
   }
   .html-dynamic {
-      padding: 3rem 0rem 0rem 0rem;
-      /* gap: 5rem; */
+    padding: 3rem 0rem 0rem 0rem;
   }
-    /* Make elements take full width */
-    .text-block,.text-block-left,.logo-container,.bottom-logo{
-        flex-direction: column;
-        align-items: center;  /*Center align items*/
-        text-align: center;  /*Center the text */
-        max-width: 100%;  /*Override max-width*/
-    }
+  /* Make elements take full width */
+  .text-block,.text-block-left,.logo-container,.bottom-logo{
+      flex-direction: column;
+      align-items: center;  /*Center align items*/
+      text-align: center;  /*Center the text */
+      max-width: 100%;  /*Override max-width*/
+  }
     /*Consistent spacing*/
-    .text-block, .text-block-left {
+  .text-block, .text-block-left {
     margin: 1rem 0;  /*Spacing */
     padding: 0 1rem;  /*Add padding to ensure text doesn't touch the edges */
   }
@@ -441,8 +459,9 @@
   /* Protection features responsive styles */
   .protection-features {
     flex-direction: column;
-    gap: 2rem;
+    gap: 0.1rem;
     margin-top: 1.5rem;
+    margin-bottom: 2rem;
   }
   .protection-item {
     max-width: 100%;
