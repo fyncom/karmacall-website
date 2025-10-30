@@ -304,7 +304,7 @@ const CashOut = () => {
 
         if (response.ok) {
           const data = await response.json()
-          setDepositSuccess(`successfully deposited ${amount} SOL for ${planName}!`)
+          setDepositSuccess(`Successfully deposited ${amount} SOL for ${planName}!`)
           await checkSolanaWallet()
           ReactGA.event({
             category: "solana",
@@ -318,7 +318,7 @@ const CashOut = () => {
         }
       } else {
         // New backend flow already handled everything
-        setDepositSuccess(`successfully deposited ${amount} SOL for ${planName}!`)
+        setDepositSuccess(`Successfully deposited ${amount} SOL for ${planName}!`)
         await checkSolanaWallet()
         ReactGA.event({
           category: "solana",
@@ -343,7 +343,7 @@ const CashOut = () => {
     }
     const selectedPlanDetails = subscriptionPlans[customPlan]
     const calculatedMonths = calculateMonthsFromAmount(parseFloat(customAmount) * solUsdRate, selectedPlanDetails.price)
-    const monthsText = calculatedMonths === 1 ? `~1 month` : `~${calculatedMonths} months`
+    const monthsText = calculatedMonths === 1 ? `1 month` : `${calculatedMonths} months`
     await handleSolanaDeposit(amount, `Custom ${selectedPlanDetails.name} (${monthsText})`)
   }
 

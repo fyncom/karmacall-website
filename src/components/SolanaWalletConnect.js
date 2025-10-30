@@ -17,6 +17,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("")
   const [qrAmount, setQrAmount] = useState(0)
 
+  let solanaPublicKey = process.env.GATSBY_SOLANA_ADDRESS
   let newUrl = `${process.env.GATSBY_API_URL}`
   let headers = {
     "Content-Type": "application/json",
@@ -215,7 +216,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
 
       if (!wallet) {
         // Show QR code fallback
-        await generateQRFallback(fromAddress, process.env.GATSBY_SOLANA_MASTER_ADDRESS, amount)
+        await generateQRFallback(fromAddress, solanaPublicKey, amount)
         setIsSending(false)
         return null
       }
@@ -300,7 +301,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
       setSendError(`Failed to send transaction: ${err.message}`)
 
       // Show QR code fallback on error
-      await generateQRFallback(fromAddress, process.env.GATSBY_SOLANA_MASTER_ADDRESS, amount)
+      await generateQRFallback(fromAddress, solanaPublicKey, amount)
 
       return null
     } finally {
@@ -398,7 +399,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
                 <ol>
                   <li>Open your Solana wallet (Cake Wallet, Phantom, etc.)</li>
                   <li>
-                    Send SOL to: <code className="master-address">{process.env.GATSBY_SOLANA_MASTER_ADDRESS || "Loading..."}</code>
+                    Send SOL to: <code className="master-address">{solanaPublicKey || "Loading..."}</code>
                   </li>
                   <li>Wait 30-60 seconds for confirmation</li>
                   <li>
@@ -447,7 +448,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
                 )}
                 <div style={{ fontSize: "14px", lineHeight: "1.5" }}>
                   <p>
-                    <strong>Recipient:</strong> <code>{process.env.GATSBY_SOLANA_MASTER_ADDRESS}</code>
+                    <strong>Recipient:</strong> <code>{solanaPublicKey}</code>
                   </p>
                   <p>
                     <strong>Amount:</strong> {qrAmount} SOL
