@@ -16,6 +16,11 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
   const [showQRFallback, setShowQRFallback] = useState(false)
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("")
   const [qrAmount, setQrAmount] = useState(0)
+  const [connectMode, setConnectMode] = useState("extension")
+  const [connectQrDataUrl, setConnectQrDataUrl] = useState("")
+  const [connectQrLink, setConnectQrLink] = useState("")
+  const [connectQrError, setConnectQrError] = useState("")
+  const [connectQrMessage, setConnectQrMessage] = useState("")
 
   let solanaPublicKey = process.env.GATSBY_SOLANA_ADDRESS
   let newUrl = `${process.env.GATSBY_API_URL}`
@@ -66,6 +71,46 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
     }
   }
 
+  const generateMobileConnectQr = useCallback(async () => {
+    if (typeof window === "undefined") {
+      return
+    }
+
+    try {
+      const origin = window.location?.origin || "https://app.karmacall.com"
+      const link = `${origin}/cash-out?source=solana-qr`
+      setConnectQrError("")
+      setConnectQrMessage("")
+      setConnectQrDataUrl("")
+      setConnectQrLink(link)
+      const qr = await QRCode.toDataURL(link)
+      setConnectQrDataUrl(qr)
+    } catch (err) {
+      console.error("error generating mobile connect qr:", err)
+      setConnectQrDataUrl("")
+      setConnectQrError("Failed to generate the QR link. Copy the URL below into your mobile wallet browser.")
+    }
+  }, [])
+
+  const copyConnectLink = async () => {
+    if (!connectQrLink) return
+    try {
+      await navigator.clipboard.writeText(connectQrLink)
+      setConnectQrMessage("Link copied to clipboard.")
+      setConnectQrError("")
+    } catch (err) {
+      console.error("error copying solana connect link:", err)
+      setConnectQrError("Unable to copy automatically. Select the link below to copy it.")
+      setConnectQrMessage("")
+    }
+  }
+
+  useEffect(() => {
+    if (connectMode === "qr") {
+      generateMobileConnectQr()
+    }
+  }, [connectMode, generateMobileConnectQr])
+
   const detectWallet = () => {
     // Check for Phantom wallet
     if (window.solana && window.solana.isPhantom) {
@@ -86,7 +131,10 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
       const wallet = detectWallet()
 
       if (!wallet) {
-        setError("No Solana wallet detected. Please install Phantom or enter your address manually.")
+        setError("")
+        setConnectMode("qr")
+        setConnectQrError("")
+        setConnectQrMessage("No browser wallet detected. Use this QR to continue from your mobile wallet.")
         setIsConnecting(false)
         return
       }
@@ -311,10 +359,22 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
 
   const generateQRFallback = async (fromAddress, toAddress, amount) => {
     try {
-      const solanaUrl = `solana:${toAddress}?amount=${amount}&label=KarmaCall Payment`
+      const numericAmount = typeof amount === "number" ? amount : parseFloat(amount)
+      if (!numericAmount || Number.isNaN(numericAmount)) {
+        throw new Error("Invalid amount for QR fallback")
+      }
+
+      const params = new URLSearchParams()
+      params.set("amount", numericAmount.toFixed(6))
+      params.set("label", "KarmaCall Payment")
+      if (userId) {
+        params.set("memo", `user:${userId}`)
+      }
+
+      const solanaUrl = `solana:${toAddress}?${params.toString()}`
       const qrDataUrl = await QRCode.toDataURL(solanaUrl)
       setQrCodeDataUrl(qrDataUrl)
-      setQrAmount(amount)
+      setQrAmount(numericAmount)
       setShowQRFallback(true)
     } catch (err) {
       console.error("Error generating QR code:", err)
@@ -338,33 +398,112 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
 
         {!isConnected ? (
           <>
-            <p className="description">
-              Connect your Solana wallet to deposit funds for KarmaCall protection. When spam calls are blocked, the caller gets paid from your escrow balance.
-            </p>
-
-            {error && <div className="error-message">{error}</div>}
-
-            <div className="button-group">
-              <button className="primary-button" onClick={connectWallet} disabled={isConnecting}>
-                {isConnecting ? "Connecting..." : "Connect Wallet"}
+            <div className="mode-toggle">
+              <button
+                type="button"
+                className={`mode-button ${connectMode === "extension" ? "active" : ""}`}
+                onClick={() => setConnectMode("extension")}
+                disabled={isConnecting}
+              >
+                Browser Extension
               </button>
-
-              <button className="secondary-button" onClick={connectManually} disabled={isConnecting}>
-                Enter Address Manually
+              <button
+                type="button"
+                className={`mode-button ${connectMode === "qr" ? "active" : ""}`}
+                onClick={() => setConnectMode("qr")}
+              >
+                Mobile QR
               </button>
             </div>
 
-            <div className="wallet-info">
-              <p className="info-text">
-                <strong>Supported Wallets:</strong>
-              </p>
-              <ul>
-                <li>Phantom (Browser Extension)</li>
-                <li>Solflare (Browser Extension)</li>
-                <li>Cake Wallet (Manual Entry)</li>
-                <li>Any Solana Wallet (Manual Entry)</li>
-              </ul>
-            </div>
+            {connectMode === "extension" ? (
+              <>
+                <p className="description">
+                  Connect your Solana wallet to deposit funds for KarmaCall protection. When spam calls are blocked, the caller gets paid from your escrow balance.
+                </p>
+
+                {error && <div className="error-message">{error}</div>}
+
+                <div className="button-group">
+                  <button className="primary-button" onClick={connectWallet} disabled={isConnecting}>
+                    {isConnecting ? "Connecting..." : "Connect Wallet"}
+                  </button>
+
+                  <button className="secondary-button" onClick={connectManually} disabled={isConnecting}>
+                    Enter Address Manually
+                  </button>
+                </div>
+
+                <div className="wallet-info">
+                  <p className="info-text">
+                    <strong>Supported Wallets:</strong>
+                  </p>
+                  <ul>
+                    <li>Phantom (Browser Extension)</li>
+                    <li>Solflare (Browser Extension)</li>
+                    <li>Mobile wallets via QR (Phantom, Solflare, Backpack, etc.)</li>
+                    <li>Any Solana Wallet (Manual Entry)</li>
+                  </ul>
+                </div>
+              </>
+            ) : (
+              <div className="qr-mode-panel">
+                <p>
+                  Scan this QR code with your mobile Solana wallet to open the KarmaCall cash-out page in the wallet browser. From there you can connect and sign the
+                  message directly on your phone.
+                </p>
+
+                {connectQrError && <div className="error-message">{connectQrError}</div>}
+                {connectQrMessage && (
+                  <div
+                    style={{
+                      backgroundColor: "#ecfdf5",
+                      color: "#047857",
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      marginBottom: "12px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {connectQrMessage}
+                  </div>
+                )}
+
+                {connectQrDataUrl ? (
+                  <div className="qr-wrapper">
+                    <img src={connectQrDataUrl} alt="Open KarmaCall cash out on mobile" />
+                  </div>
+                ) : (
+                  <p style={{ textAlign: "center", marginBottom: "16px" }}>Generating QR...</p>
+                )}
+
+                {connectQrLink && (
+                  <div className="qr-link">
+                    <p style={{ marginBottom: "8px" }}>Open link directly:</p>
+                    <a href={connectQrLink} target="_blank" rel="noreferrer">
+                      <code>{connectQrLink}</code>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={copyConnectLink}
+                      style={{
+                        marginTop: "12px",
+                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        color: "white",
+                        border: "none",
+                        padding: "10px 16px",
+                        borderRadius: "6px",
+                        fontSize: "14px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Copy Link
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </>
         ) : (
           <>
@@ -397,19 +536,13 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
               <div className="deposit-info">
                 <h4>How to Deposit:</h4>
                 <ol>
-                  <li>Open your Solana wallet (Cake Wallet, Phantom, etc.)</li>
+                  <li>Open your Solana wallet (browser extension or mobile).</li>
                   <li>
                     Send SOL to: <code className="master-address">{solanaPublicKey || "Loading..."}</code>
                   </li>
-                  <li>Wait 30-60 seconds for confirmation</li>
-                  <li>
-                    Submit your transaction signature{" "}
-                    <a href="/deposit-solana" className="link">
-                      here
-                    </a>
-                  </li>
+                  <li>Wait about a minute, then click <strong>Refresh Balance</strong> above.</li>
                 </ol>
-                <p className="note">Minimum deposit: 0.01 SOL (~$2)</p>
+                <p className="note">Tip: You can also switch to the Mobile QR tab to generate a Solana Pay link instantly.</p>
               </div>
             )}
 

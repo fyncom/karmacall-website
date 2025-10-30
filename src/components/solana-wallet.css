@@ -279,6 +279,83 @@
   color: #764ba2;
 }
 
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.mode-button {
+  flex: 1;
+  border: 1px solid #dbeafe;
+  background: #ffffff;
+  color: #4338ca;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 8px 15px -8px rgba(102, 126, 234, 0.6);
+}
+
+.mode-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.qr-mode-panel {
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.qr-mode-panel p {
+  margin-bottom: 12px;
+  color: #5b21b6;
+  font-size: 14px;
+}
+
+.qr-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 16px 0;
+}
+
+.qr-wrapper img {
+  max-width: 220px;
+  width: 100%;
+}
+
+.qr-link {
+  background: #ede9fe;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+  color: #4338ca;
+  word-break: break-word;
+}
+
+.qr-link code {
+  display: block;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+
 @media (max-width: 640px) {
   .solana-wallet-content {
     padding: 24px;
