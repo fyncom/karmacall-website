@@ -16,6 +16,10 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
   const [showQRFallback, setShowQRFallback] = useState(false)
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("")
   const [qrAmount, setQrAmount] = useState(0)
+  const [connectionMethod, setConnectionMethod] = useState("browser") // "browser" or "qr"
+  const [qrSessionId, setQrSessionId] = useState(null)
+  const [qrSessionExpiry, setQrSessionExpiry] = useState(null)
+  const [qrPollingInterval, setQrPollingInterval] = useState(null)
 
   let solanaPublicKey = process.env.GATSBY_SOLANA_ADDRESS
   let newUrl = `${process.env.GATSBY_API_URL}`
@@ -28,6 +32,15 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
     // Check if user already has a Solana wallet connected
     checkExistingWallet()
   }, [userId])
+
+  useEffect(() => {
+    // Cleanup polling interval on unmount
+    return () => {
+      if (qrPollingInterval) {
+        clearInterval(qrPollingInterval)
+      }
+    }
+  }, [qrPollingInterval])
 
   useEffect(() => {
     // Expose sendSolana method to parent component after component mounts
@@ -327,6 +340,142 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`
   }
 
+  const initQrSession = async () => {
+    try {
+      const response = await fetch(`${newUrl}api/solana/qr-init`, {
+        method: "POST",
+        headers: headers,
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to initialize QR session")
+      }
+
+      const data = await response.json()
+      if (data.success) {
+        setQrSessionId(data.sessionId)
+        setQrSessionExpiry(data.expiresAt)
+        return data.sessionId
+      } else {
+        throw new Error(data.message || "Failed to initialize session")
+      }
+    } catch (err) {
+      console.error("Error initializing QR session:", err)
+      throw err
+    }
+  }
+
+  const checkQrStatus = async sessionId => {
+    try {
+      const response = await fetch(`${newUrl}api/solana/qr-status?sessionId=${sessionId}`, {
+        method: "GET",
+        headers: headers,
+      })
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return { status: "not_found" }
+        }
+        throw new Error("Failed to check QR session status")
+      }
+
+      const data = await response.json()
+      return data
+    } catch (err) {
+      console.error("Error checking QR status:", err)
+      return { status: "error", message: err.message }
+    }
+  }
+
+  const startQrStatusPolling = sessionId => {
+    const interval = setInterval(async () => {
+      const status = await checkQrStatus(sessionId)
+
+      if (status.status === "confirmed" && status.publicKey) {
+        clearInterval(interval)
+        setQrPollingInterval(null)
+
+        // Wallet connected successfully via QR
+        setIsConnected(true)
+        setWalletAddress(status.publicKey)
+        setShowDepositInfo(true)
+        setIsConnecting(false)
+
+        // Save wallet to backend (manual entry style since signature already verified)
+        try {
+          const response = await fetch(`${newUrl}api/solana/connectWallet`, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify({
+              userId: userId,
+              publicKey: status.publicKey,
+              signature: "qr_verified",
+              message: "QR code wallet verification",
+            }),
+          })
+
+          const result = await response.json()
+          if (result.success) {
+            await checkExistingWallet()
+          }
+        } catch (err) {
+          console.error("Error saving QR wallet:", err)
+        }
+      } else if (status.status === "expired" || status.status === "failed" || status.status === "not_found") {
+        clearInterval(interval)
+        setQrPollingInterval(null)
+        setIsConnecting(false)
+        setError(status.message || "QR session expired or failed")
+      }
+    }, 2000) // Poll every 2 seconds
+
+    setQrPollingInterval(interval)
+  }
+
+  const connectViaQr = async () => {
+    setIsConnecting(true)
+    setError("")
+
+    try {
+      // Step 1: Initialize session
+      const sessionId = await initQrSession()
+
+      // Step 2: Generate QR code with mobile URL
+      const isBrowser = typeof window !== "undefined"
+      const baseUrl = isBrowser ? window.location.origin : "https://www.karmacall.com"
+      const mobileUrl = `${baseUrl}/solana-qr?sessionId=${sessionId}`
+
+      const qrDataUrl = await QRCode.toDataURL(mobileUrl, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: "#000000",
+          light: "#ffffff",
+        },
+      })
+
+      setQrCodeDataUrl(qrDataUrl)
+      setShowQRFallback(true)
+
+      // Step 3: Start polling for status
+      startQrStatusPolling(sessionId)
+    } catch (err) {
+      console.error("Error connecting via QR:", err)
+      setError(err.message || "Failed to generate QR code. Please try again.")
+      setIsConnecting(false)
+    }
+  }
+
+  const handleConnectionMethodChange = method => {
+    setConnectionMethod(method)
+    setError("")
+    setShowQRFallback(false)
+    if (qrPollingInterval) {
+      clearInterval(qrPollingInterval)
+      setQrPollingInterval(null)
+    }
+  }
+
   return (
     <div className="solana-wallet-modal">
       <div className="solana-wallet-content">
@@ -344,27 +493,114 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
 
             {error && <div className="error-message">{error}</div>}
 
-            <div className="button-group">
-              <button className="primary-button" onClick={connectWallet} disabled={isConnecting}>
-                {isConnecting ? "Connecting..." : "Connect Wallet"}
+            {/* Connection method toggle */}
+            <div style={{ marginBottom: "20px", display: "flex", gap: "10px", justifyContent: "center" }}>
+              <button
+                onClick={() => handleConnectionMethodChange("browser")}
+                style={{
+                  padding: "10px 20px",
+                  border: connectionMethod === "browser" ? "2px solid #667eea" : "1px solid #ddd",
+                  borderRadius: "8px",
+                  background: connectionMethod === "browser" ? "#f0f0ff" : "white",
+                  cursor: "pointer",
+                  fontWeight: connectionMethod === "browser" ? "600" : "400",
+                }}
+              >
+                Browser Extension
               </button>
-
-              <button className="secondary-button" onClick={connectManually} disabled={isConnecting}>
-                Enter Address Manually
+              <button
+                onClick={() => handleConnectionMethodChange("qr")}
+                style={{
+                  padding: "10px 20px",
+                  border: connectionMethod === "qr" ? "2px solid #667eea" : "1px solid #ddd",
+                  borderRadius: "8px",
+                  background: connectionMethod === "qr" ? "#f0f0ff" : "white",
+                  cursor: "pointer",
+                  fontWeight: connectionMethod === "qr" ? "600" : "400",
+                }}
+              >
+                QR Code (Mobile)
               </button>
             </div>
 
-            <div className="wallet-info">
-              <p className="info-text">
-                <strong>Supported Wallets:</strong>
-              </p>
-              <ul>
-                <li>Phantom (Browser Extension)</li>
-                <li>Solflare (Browser Extension)</li>
-                <li>Cake Wallet (Manual Entry)</li>
-                <li>Any Solana Wallet (Manual Entry)</li>
-              </ul>
-            </div>
+            {connectionMethod === "browser" ? (
+              <>
+                <div className="button-group">
+                  <button className="primary-button" onClick={connectWallet} disabled={isConnecting}>
+                    {isConnecting ? "Connecting..." : "Connect Wallet"}
+                  </button>
+
+                  <button className="secondary-button" onClick={connectManually} disabled={isConnecting}>
+                    Enter Address Manually
+                  </button>
+                </div>
+
+                <div className="wallet-info">
+                  <p className="info-text">
+                    <strong>Supported Wallets:</strong>
+                  </p>
+                  <ul>
+                    <li>Phantom (Browser Extension)</li>
+                    <li>Solflare (Browser Extension)</li>
+                    <li>Cake Wallet (Manual Entry)</li>
+                    <li>Any Solana Wallet (Manual Entry)</li>
+                  </ul>
+                </div>
+              </>
+            ) : (
+              <>
+                {!showQRFallback ? (
+                  <div style={{ textAlign: "center" }}>
+                    <p>Scan a QR code with your mobile Solana wallet to connect.</p>
+                    <button className="primary-button" onClick={connectViaQr} disabled={isConnecting}>
+                      {isConnecting ? "Generating QR Code..." : "Generate QR Code"}
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ textAlign: "center", padding: "20px" }}>
+                    <h3>Scan with Your Mobile Wallet</h3>
+                    <p>Open your Solana mobile wallet app and scan this QR code to connect.</p>
+                    {qrCodeDataUrl && (
+                      <div style={{ margin: "20px auto", maxWidth: "300px" }}>
+                        <img src={qrCodeDataUrl} alt="Solana Wallet Connect QR Code" style={{ width: "100%", borderRadius: "8px" }} />
+                      </div>
+                    )}
+                    <p style={{ fontSize: "14px", color: "#666", marginTop: "16px" }}>
+                      {isConnecting ? "Waiting for wallet connection..." : "QR code ready to scan"}
+                    </p>
+                    {qrSessionExpiry && (
+                      <p style={{ fontSize: "12px", color: "#999" }}>Session expires in {Math.floor((qrSessionExpiry - Date.now()) / 1000)} seconds</p>
+                    )}
+                    <button
+                      className="secondary-button"
+                      onClick={() => {
+                        setShowQRFallback(false)
+                        if (qrPollingInterval) {
+                          clearInterval(qrPollingInterval)
+                          setQrPollingInterval(null)
+                        }
+                        setIsConnecting(false)
+                      }}
+                      style={{ marginTop: "16px" }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+
+                <div className="wallet-info" style={{ marginTop: "20px" }}>
+                  <p className="info-text">
+                    <strong>Supported Mobile Wallets:</strong>
+                  </p>
+                  <ul>
+                    <li>Phantom Mobile</li>
+                    <li>Solflare Mobile</li>
+                    <li>Cake Wallet</li>
+                    <li>Any Solana-compatible mobile wallet</li>
+                  </ul>
+                </div>
+              </>
+            )}
           </>
         ) : (
           <>
