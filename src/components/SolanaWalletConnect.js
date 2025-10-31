@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react"
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js"
+import QRCode from "qrcode"
 import "./solana-wallet.css"
 
 const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
@@ -309,10 +310,9 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
   }
 
   const generateQRFallback = async (fromAddress, toAddress, amount) => {
+    if (typeof window === "undefined") return
     try {
       const solanaUrl = `solana:${toAddress}?amount=${amount}&label=KarmaCall Payment`
-      // Dynamically import QRCode only on client-side
-      const QRCode = (await import("qrcode")).default
       const qrDataUrl = await QRCode.toDataURL(solanaUrl)
       setQrCodeDataUrl(qrDataUrl)
       setQrAmount(amount)
