@@ -257,6 +257,40 @@ const CashOut = () => {
     }
   }
 
+  const detectWallet = () => {
+    // Check for Phantom wallet
+    if (typeof window !== "undefined" && window.solana && window.solana.isPhantom) {
+      return window.solana
+    }
+    // Check for Solflare
+    if (typeof window !== "undefined" && window.solflare && window.solflare.isSolflare) {
+      return window.solflare
+    }
+    return null
+  }
+
+  const attemptWalletConnect = async () => {
+    try {
+      const wallet = detectWallet()
+      if (!wallet) {
+        return null
+      }
+
+      // Try to connect the wallet
+      const response = await wallet.connect()
+      const publicKey = response.publicKey.toString()
+
+      // Update wallet address in state
+      setSolanaWalletAddress(publicKey)
+      await checkSolanaWallet()
+
+      return publicKey
+    } catch (err) {
+      console.error("Error auto-connecting wallet:", err)
+      return null
+    }
+  }
+
   const generateQrCodeForDeposit = async (amount, planName) => {
     try {
       const escrowAddress = process.env.GATSBY_SOLANA_ADDRESS
@@ -315,17 +349,25 @@ const CashOut = () => {
       return
     }
 
-    // Extension mode - need connected wallet
+    // Extension mode - try to connect wallet if not connected
     if (!solanaWalletAddress) {
-      await generateQrCodeForDeposit(normalizedAmount, planName)
-      ReactGA.event({
-        category: "solana",
-        action: "deposit_qr_auto",
-        label: planName,
-        value: normalizedAmount,
-      })
-      setDepositLoading(false)
-      return
+      console.log("No wallet connected, attempting auto-connect...")
+      const connectedAddress = await attemptWalletConnect()
+
+      if (!connectedAddress) {
+        // No wallet detected, fallback to QR mode
+        console.log("No wallet detected, falling back to QR mode")
+        setSolanaDepositMode("qr")
+        await generateQrCodeForDeposit(normalizedAmount, planName)
+        ReactGA.event({
+          category: "solana",
+          action: "deposit_qr_auto_fallback",
+          label: planName,
+          value: normalizedAmount,
+        })
+        setDepositLoading(false)
+        return
+      }
     }
 
     try {
@@ -646,7 +688,7 @@ const CashOut = () => {
                     const amount = calculateSolAmount(4.99)
                     if (amount) handleSolanaDeposit(amount, "premium (1 month)")
                   }}
-                  disabled={depositLoading || !solUsdRate || (solanaDepositMode === "extension" && !solanaWalletAddress)}
+                  disabled={depositLoading || !solUsdRate}
                   style={{
                     width: "100%",
                     background: solanaDepositMode === "qr" ? "#7c3aed" : "#3b82f6",
@@ -656,8 +698,8 @@ const CashOut = () => {
                     borderRadius: "6px",
                     fontSize: "14px",
                     fontWeight: "600",
-                    cursor: depositLoading || !solUsdRate || (solanaDepositMode === "extension" && !solanaWalletAddress) ? "not-allowed" : "pointer",
-                    opacity: depositLoading || !solUsdRate || (solanaDepositMode === "extension" && !solanaWalletAddress) ? 0.6 : 1,
+                    cursor: depositLoading || !solUsdRate ? "not-allowed" : "pointer",
+                    opacity: depositLoading || !solUsdRate ? 0.6 : 1,
                   }}
                 >
                   {depositLoading
@@ -682,7 +724,7 @@ const CashOut = () => {
                     const amount = calculateSolAmount(9.99)
                     if (amount) handleSolanaDeposit(amount, "supreme (1 month)")
                   }}
-                  disabled={depositLoading || !solUsdRate || (solanaDepositMode === "extension" && !solanaWalletAddress)}
+                  disabled={depositLoading || !solUsdRate}
                   style={{
                     width: "100%",
                     background: solanaDepositMode === "qr" ? "#7c3aed" : "#f59e0b",
@@ -692,8 +734,8 @@ const CashOut = () => {
                     borderRadius: "6px",
                     fontSize: "14px",
                     fontWeight: "600",
-                    cursor: depositLoading || !solUsdRate || (solanaDepositMode === "extension" && !solanaWalletAddress) ? "not-allowed" : "pointer",
-                    opacity: depositLoading || !solUsdRate || (solanaDepositMode === "extension" && !solanaWalletAddress) ? 0.6 : 1,
+                    cursor: depositLoading || !solUsdRate ? "not-allowed" : "pointer",
+                    opacity: depositLoading || !solUsdRate ? 0.6 : 1,
                   }}
                 >
                   {depositLoading
@@ -771,7 +813,7 @@ const CashOut = () => {
 
               <button
                 onClick={handleCustomDeposit}
-                disabled={depositLoading || !customAmount || parseFloat(customAmount) <= 0 || (solanaDepositMode === "extension" && !solanaWalletAddress)}
+                disabled={depositLoading || !customAmount || parseFloat(customAmount) <= 0}
                 style={{
                   width: "100%",
                   background:
@@ -782,12 +824,8 @@ const CashOut = () => {
                   borderRadius: "6px",
                   fontSize: "16px",
                   fontWeight: "600",
-                  cursor:
-                    depositLoading || !customAmount || parseFloat(customAmount) <= 0 || (solanaDepositMode === "extension" && !solanaWalletAddress)
-                      ? "not-allowed"
-                      : "pointer",
-                  opacity:
-                    depositLoading || !customAmount || parseFloat(customAmount) <= 0 || (solanaDepositMode === "extension" && !solanaWalletAddress) ? 0.6 : 1,
+                  cursor: depositLoading || !customAmount || parseFloat(customAmount) <= 0 ? "not-allowed" : "pointer",
+                  opacity: depositLoading || !customAmount || parseFloat(customAmount) <= 0 ? 0.6 : 1,
                 }}
               >
                 {depositLoading
@@ -800,32 +838,6 @@ const CashOut = () => {
               </button>
             </div>
 
-            {/* QR Code Display */}
-            {showQrCode && qrCodeUrl && (
-              <div style={{ marginTop: "24px", border: "1px solid #dbeafe", borderRadius: "12px", padding: "20px", backgroundColor: "#f8fafc" }}>
-                <h3 style={{ marginTop: 0 }}>Mobile Deposit QR</h3>
-                <p style={{ marginBottom: "12px" }}>Scan with your mobile wallet to complete the deposit.</p>
-                <div style={{ textAlign: "center", marginBottom: "12px" }}>
-                  <img src={qrCodeUrl} alt="Solana Pay QR code" style={{ maxWidth: "220px", width: "100%" }} />
-                </div>
-                <button
-                  onClick={() => {
-                    setShowQrCode(false)
-                    setQrCodeUrl("")
-                  }}
-                  style={{
-                    background: "transparent",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "6px",
-                    padding: "8px 14px",
-                    fontSize: "14px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Hide QR
-                </button>
-              </div>
-            )}
 
             <div style={{ marginTop: "16px", padding: "12px", backgroundColor: "#eff6ff", borderRadius: "6px" }}>
               <p style={{ margin: "0", fontSize: "13px", color: "#1e40af" }}>
@@ -841,6 +853,107 @@ const CashOut = () => {
       <ReferralAppDownloadModal isOpen={isReferralModalOpen} onClose={() => setIsReferralModalOpen(false)} />
 
       {showSolanaConnect && userId && <SolanaWalletConnect userId={userId} onClose={() => setShowSolanaConnect(false)} />}
+
+      {/* QR Code Modal - Center Screen */}
+      {showQrCode && qrCodeUrl && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => {
+            setShowQrCode(false)
+            setQrCodeUrl("")
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              padding: "32px",
+              maxWidth: "400px",
+              width: "90%",
+              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+              position: "relative",
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => {
+                setShowQrCode(false)
+                setQrCodeUrl("")
+              }}
+              style={{
+                position: "absolute",
+                top: "16px",
+                right: "16px",
+                background: "transparent",
+                border: "none",
+                fontSize: "24px",
+                cursor: "pointer",
+                color: "#6b7280",
+                lineHeight: 1,
+              }}
+            >
+              ×
+            </button>
+
+            <h3 style={{ marginTop: 0, marginBottom: "16px", color: "#5b21b6", textAlign: "center" }}>Scan to Pay</h3>
+
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+              <img src={qrCodeUrl} alt="Solana Pay QR code" style={{ maxWidth: "280px", width: "100%", borderRadius: "12px" }} />
+            </div>
+
+            <div
+              style={{
+                backgroundColor: "#f5f3ff",
+                padding: "16px",
+                borderRadius: "8px",
+                marginBottom: "16px",
+                border: "1px solid #ddd6fe",
+              }}
+            >
+              <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#4c1d95", fontWeight: "600" }}>Instructions:</p>
+              <ol style={{ margin: "0", paddingLeft: "20px", fontSize: "14px", color: "#4c1d95", lineHeight: "1.6" }}>
+                <li>Open your Solana mobile wallet (Phantom, Solflare, etc.)</li>
+                <li>Tap "Scan" or "Send"</li>
+                <li>Scan this QR code</li>
+                <li>Confirm the transaction</li>
+                <li>Return here and click "Refresh Balance"</li>
+              </ol>
+            </div>
+
+            <button
+              onClick={() => {
+                setShowQrCode(false)
+                setQrCodeUrl("")
+              }}
+              style={{
+                width: "100%",
+                background: "linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%)",
+                color: "white",
+                border: "none",
+                padding: "12px",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   )
