@@ -8,7 +8,6 @@ import AppDownloadButton from "../components/AppDownloadButton"
 import SolanaWalletConnect, { sendSolanaTransaction } from "../components/SolanaWalletConnect"
 import ReactGA from "react-ga4"
 import { Link } from "gatsby"
-import QRCode from "qrcode"
 
 const CashOut = () => {
   const isBrowser = typeof window !== "undefined"
@@ -428,6 +427,9 @@ const CashOut = () => {
       params.set("memo", encryptedMemo)
 
       const solanaPayUrl = `solana:${escrowAddress}?${params.toString()}`
+
+      // Dynamically import QRCode only on client-side
+      const QRCode = (await import("qrcode")).default
       const qrDataUrl = await QRCode.toDataURL(solanaPayUrl, {
         width: 300,
         margin: 2,
