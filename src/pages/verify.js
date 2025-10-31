@@ -20,7 +20,7 @@ const Verify = () => {
     setIsErrorModalOpen(true)
   }
 
-  let baseUrlV2 = `${process.env.GATSBY_API_URL}`
+  let newUrl = `${process.env.GATSBY_API_URL}`
   let headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -67,7 +67,7 @@ const Verify = () => {
     try {
       console.log("Sending verification request with data:", data)
 
-      const verifyResponse = await fetch(baseUrlV2 + "user/verify/email/magic-link/confirm", {
+      const verifyResponse = await fetch(newUrl + "user/verify/email/magic-link/confirm", {
         method: "POST",
         headers: headers,
         body: JSON.stringify({

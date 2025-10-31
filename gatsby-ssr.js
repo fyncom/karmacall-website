@@ -19,6 +19,7 @@ exports.wrapRootElement = ({ element }) => {
 /**
  * @type {import('gatsby').GatsbySSR['onRenderBody']}
  */
-exports.onRenderBody = ({ setHtmlAttributes }) => {
+exports.onRenderBody = ({ setHtmlAttributes, setHeadComponents }) => {
   setHtmlAttributes({ lang: `en` })
+  setHeadComponents([<script key="solana-web3" src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js" crossOrigin="anonymous" />])
 }

@@ -37,19 +37,13 @@ export const KarmacallAppStoreModal = ({ onClose }) => {
         <span className="close" onClick={onClose}>
           &times;
         </span>
-        <h2>Ready for something new?</h2>
+        <h2>Ready for Something New?</h2>
         <p>Download KarmaCall today!</p>
         <div className={"app-store-row"} id="app-store-row">
-          <a 
-            href="https://play.google.com/store/apps/details?id=com.fyncom.robocash"
-            onClick={handleAndroidClick}
-          >
+          <a href="https://play.google.com/store/apps/details?id=com.fyncom.robocash" onClick={handleAndroidClick}>
             <GatsbyImage className="app-img-index" image={googlePlayBadge} alt="Get KarmaCall on Google Play" />
           </a>
-          <a 
-            href="https://apps.apple.com/us/app/karmacall/id1574524278"
-            onClick={handleIOSClick}
-          >
+          <a href="https://apps.apple.com/us/app/karmacall/id1574524278" onClick={handleIOSClick}>
             <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" />
           </a>
         </div>
