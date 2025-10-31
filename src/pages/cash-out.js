@@ -5,10 +5,20 @@ import "../components/sales-and-marketing-use-cases.css"
 import Seo from "../components/seo"
 import { GiftCardModal, NanoNotEnoughModal, NanoSentModal, ReferralAppDownloadModal } from "../components/Modal"
 import AppDownloadButton from "../components/AppDownloadButton"
-import SolanaWalletConnect, { sendSolanaTransaction } from "../components/SolanaWalletConnect"
+// Defer importing Solana wallet code to the browser to avoid SSR bundling Node-only deps
+let SolanaWalletConnect
+let sendSolanaTransaction
+if (typeof window !== "undefined") {
+  const mod = require("../components/SolanaWalletConnect")
+  SolanaWalletConnect = mod.default
+  sendSolanaTransaction = mod.sendSolanaTransaction
+}
 import ReactGA from "react-ga4"
 import { Link } from "gatsby"
-import QRCode from "qrcode"
+let QRCode
+if (typeof window !== "undefined") {
+  QRCode = require("qrcode")
+}
 
 const CashOut = () => {
   const isBrowser = typeof window !== "undefined"
