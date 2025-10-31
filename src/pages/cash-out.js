@@ -69,6 +69,7 @@ const CashOut = () => {
   const [paymentMethod, setPaymentMethod] = useState("auto") // "auto", "extension", or "qr"
   const [qrCodeUrl, setQrCodeUrl] = useState("")
   const [showQrForDeposit, setShowQrForDeposit] = useState(false)
+  const [useQrOnly, setUseQrOnly] = useState(false) // For mobile users who skip wallet connection
 
   const subscriptionPlans = {
     premium: { name: "Premium", price: 4.99 },
@@ -282,8 +283,9 @@ const CashOut = () => {
   }
 
   const handleSolanaDeposit = async (amount, planName) => {
-    if (!solanaWalletAddress) {
-      setDepositError("please connect your solana wallet first")
+    // For QR-only mode or QR payment method, we don't need a connected wallet
+    if (!solanaWalletAddress && !useQrOnly && paymentMethod !== "qr") {
+      setDepositError("please connect your solana wallet first or use QR code mode")
       return
     }
 
@@ -292,8 +294,8 @@ const CashOut = () => {
     setDepositSuccess("")
     setShowQrForDeposit(false)
 
-    // If user explicitly chose QR method, show QR code
-    if (paymentMethod === "qr") {
+    // If user explicitly chose QR method or is in QR-only mode, show QR code
+    if (paymentMethod === "qr" || useQrOnly || !solanaWalletAddress) {
       await generateQrCodeForDeposit(amount, planName)
       setDepositLoading(false)
       return
@@ -486,7 +488,7 @@ const CashOut = () => {
           {/* solana wallet connector */}
           <div style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "20px" }}>
             <h2>Solana Wallet & Subscriptions</h2>
-            {!solanaWalletAddress ? (
+            {!solanaWalletAddress && !useQrOnly ? (
               <>
                 <p>connect your solana wallet to deposit SOL for your KarmaCall subscription.</p>
                 <button
@@ -508,29 +510,58 @@ const CashOut = () => {
               </>
             ) : (
               <>
-                <div style={{ backgroundColor: "#f0fdf4", padding: "16px", borderRadius: "8px", marginBottom: "20px" }}>
-                  <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#166534" }}>
-                    <strong>Wallet Connected:</strong> {solanaWalletAddress.slice(0, 4)}...{solanaWalletAddress.slice(-4)}
-                  </p>
-                  <p style={{ margin: "0", fontSize: "14px", color: "#166534" }}>
-                    <strong>Escrow Balance:</strong> {solanaBalance !== null ? `${solanaBalance} SOL` : "loading..."}
-                  </p>
-                  <button
-                    onClick={checkSolanaWallet}
-                    style={{
-                      background: "#10b981",
-                      color: "white",
-                      border: "none",
-                      padding: "6px 12px",
-                      borderRadius: "4px",
-                      fontSize: "12px",
-                      cursor: "pointer",
-                      marginTop: "8px",
-                    }}
-                  >
-                    Refresh Balance
-                  </button>
-                </div>
+                {solanaWalletAddress ? (
+                  <div style={{ backgroundColor: "#f0fdf4", padding: "16px", borderRadius: "8px", marginBottom: "20px" }}>
+                    <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#166534" }}>
+                      <strong>Wallet Connected:</strong> {solanaWalletAddress.slice(0, 4)}...{solanaWalletAddress.slice(-4)}
+                    </p>
+                    <p style={{ margin: "0", fontSize: "14px", color: "#166534" }}>
+                      <strong>Escrow Balance:</strong> {solanaBalance !== null ? `${solanaBalance} SOL` : "loading..."}
+                    </p>
+                    <button
+                      onClick={checkSolanaWallet}
+                      style={{
+                        background: "#10b981",
+                        color: "white",
+                        border: "none",
+                        padding: "6px 12px",
+                        borderRadius: "4px",
+                        fontSize: "12px",
+                        cursor: "pointer",
+                        marginTop: "8px",
+                      }}
+                    >
+                      Refresh Balance
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ backgroundColor: "#eff6ff", padding: "16px", borderRadius: "8px", marginBottom: "20px" }}>
+                    <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#1e40af" }}>
+                      <strong>QR Code Mode:</strong> Using mobile wallet for deposits
+                    </p>
+                    <p style={{ margin: "0", fontSize: "12px", color: "#1e40af" }}>
+                      You'll scan QR codes with your mobile wallet to make deposits. No wallet connection needed!
+                    </p>
+                    <button
+                      onClick={() => {
+                        setUseQrOnly(false)
+                        setShowSolanaConnect(true)
+                      }}
+                      style={{
+                        background: "#3b82f6",
+                        color: "white",
+                        border: "none",
+                        padding: "6px 12px",
+                        borderRadius: "4px",
+                        fontSize: "12px",
+                        cursor: "pointer",
+                        marginTop: "8px",
+                      }}
+                    >
+                      Connect Wallet Instead
+                    </button>
+                  </div>
+                )}
 
                 {depositError && (
                   <div style={{ backgroundColor: "#fef2f2", color: "#991b1b", padding: "12px", borderRadius: "6px", marginBottom: "16px" }}>{depositError}</div>
@@ -543,58 +574,60 @@ const CashOut = () => {
                 )}
 
                 {/* Payment method toggle */}
-                <div style={{ marginBottom: "24px", padding: "16px", backgroundColor: "#f9fafb", borderRadius: "8px" }}>
-                  <h4 style={{ marginTop: "0", marginBottom: "12px" }}>Payment Method:</h4>
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    <button
-                      onClick={() => setPaymentMethod("auto")}
-                      style={{
-                        padding: "8px 16px",
-                        border: paymentMethod === "auto" ? "2px solid #667eea" : "1px solid #ddd",
-                        borderRadius: "6px",
-                        background: paymentMethod === "auto" ? "#f0f0ff" : "white",
-                        cursor: "pointer",
-                        fontWeight: paymentMethod === "auto" ? "600" : "400",
-                        fontSize: "14px",
-                      }}
-                    >
-                      Auto (Try Extension, Fallback to QR)
-                    </button>
-                    <button
-                      onClick={() => setPaymentMethod("extension")}
-                      style={{
-                        padding: "8px 16px",
-                        border: paymentMethod === "extension" ? "2px solid #667eea" : "1px solid #ddd",
-                        borderRadius: "6px",
-                        background: paymentMethod === "extension" ? "#f0f0ff" : "white",
-                        cursor: "pointer",
-                        fontWeight: paymentMethod === "extension" ? "600" : "400",
-                        fontSize: "14px",
-                      }}
-                    >
-                      Browser Extension Only
-                    </button>
-                    <button
-                      onClick={() => setPaymentMethod("qr")}
-                      style={{
-                        padding: "8px 16px",
-                        border: paymentMethod === "qr" ? "2px solid #667eea" : "1px solid #ddd",
-                        borderRadius: "6px",
-                        background: paymentMethod === "qr" ? "#f0f0ff" : "white",
-                        cursor: "pointer",
-                        fontWeight: paymentMethod === "qr" ? "600" : "400",
-                        fontSize: "14px",
-                      }}
-                    >
-                      QR Code (Mobile)
-                    </button>
+                {!useQrOnly && (
+                  <div style={{ marginBottom: "24px", padding: "16px", backgroundColor: "#f9fafb", borderRadius: "8px" }}>
+                    <h4 style={{ marginTop: "0", marginBottom: "12px" }}>Payment Method:</h4>
+                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                      <button
+                        onClick={() => setPaymentMethod("auto")}
+                        style={{
+                          padding: "8px 16px",
+                          border: paymentMethod === "auto" ? "2px solid #667eea" : "1px solid #ddd",
+                          borderRadius: "6px",
+                          background: paymentMethod === "auto" ? "#f0f0ff" : "white",
+                          cursor: "pointer",
+                          fontWeight: paymentMethod === "auto" ? "600" : "400",
+                          fontSize: "14px",
+                        }}
+                      >
+                        Auto (Try Extension, Fallback to QR)
+                      </button>
+                      <button
+                        onClick={() => setPaymentMethod("extension")}
+                        style={{
+                          padding: "8px 16px",
+                          border: paymentMethod === "extension" ? "2px solid #667eea" : "1px solid #ddd",
+                          borderRadius: "6px",
+                          background: paymentMethod === "extension" ? "#f0f0ff" : "white",
+                          cursor: "pointer",
+                          fontWeight: paymentMethod === "extension" ? "600" : "400",
+                          fontSize: "14px",
+                        }}
+                      >
+                        Browser Extension Only
+                      </button>
+                      <button
+                        onClick={() => setPaymentMethod("qr")}
+                        style={{
+                          padding: "8px 16px",
+                          border: paymentMethod === "qr" ? "2px solid #667eea" : "1px solid #ddd",
+                          borderRadius: "6px",
+                          background: paymentMethod === "qr" ? "#f0f0ff" : "white",
+                          cursor: "pointer",
+                          fontWeight: paymentMethod === "qr" ? "600" : "400",
+                          fontSize: "14px",
+                        }}
+                      >
+                        QR Code (Mobile)
+                      </button>
+                    </div>
+                    <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "8px", marginBottom: "0" }}>
+                      {paymentMethod === "auto" && "Recommended: Automatically tries browser extension, shows QR code if unavailable"}
+                      {paymentMethod === "extension" && "Use your browser wallet extension (Phantom, Solflare, etc.)"}
+                      {paymentMethod === "qr" && "Scan a QR code with your mobile Solana wallet app"}
+                    </p>
                   </div>
-                  <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "8px", marginBottom: "0" }}>
-                    {paymentMethod === "auto" && "Recommended: Automatically tries browser extension, shows QR code if unavailable"}
-                    {paymentMethod === "extension" && "Use your browser wallet extension (Phantom, Solflare, etc.)"}
-                    {paymentMethod === "qr" && "Scan a QR code with your mobile Solana wallet app"}
-                  </p>
-                </div>
+                )}
 
                 {/* QR Code Display */}
                 {showQrForDeposit && qrCodeUrl && (
@@ -818,7 +851,16 @@ const CashOut = () => {
       <GiftCardModal isOpen={isGiftCardModalOpen} onClose={handleCloseModal} />
       <ReferralAppDownloadModal isOpen={isReferralModalOpen} onClose={() => setIsReferralModalOpen(false)} />
 
-      {showSolanaConnect && userId && <SolanaWalletConnect userId={userId} onClose={() => setShowSolanaConnect(false)} />}
+      {showSolanaConnect && userId && (
+        <SolanaWalletConnect
+          userId={userId}
+          onClose={() => setShowSolanaConnect(false)}
+          onSkipToQr={() => {
+            setUseQrOnly(true)
+            setPaymentMethod("qr")
+          }}
+        />
+      )}
       <Footer />
     </div>
   )

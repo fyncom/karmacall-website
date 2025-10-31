@@ -3,7 +3,7 @@ import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } f
 import QRCode from "qrcode"
 import "./solana-wallet.css"
 
-const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
+const SolanaWalletConnect = ({ userId, onClose, onSendSolana, onSkipToQr }) => {
   const [walletAddress, setWalletAddress] = useState("")
   const [isConnecting, setIsConnecting] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
@@ -353,7 +353,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
 
             <div className="button-group">
               <button className="primary-button" onClick={connectWallet} disabled={isConnecting}>
-                {isConnecting ? "Connecting..." : "Connect Wallet"}
+                {isConnecting ? "Connecting..." : "Connect Browser Wallet"}
               </button>
 
               <button className="secondary-button" onClick={connectManually} disabled={isConnecting}>
@@ -361,9 +361,28 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
               </button>
             </div>
 
+            <div style={{ margin: "20px 0", textAlign: "center", borderTop: "1px solid #e5e7eb", paddingTop: "20px" }}>
+              <p style={{ marginBottom: "12px", fontSize: "14px", color: "#6b7280" }}>Using a mobile wallet?</p>
+              <button
+                className="secondary-button"
+                onClick={() => {
+                  if (onSkipToQr) {
+                    onSkipToQr()
+                  }
+                  onClose()
+                }}
+                style={{
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  color: "white",
+                }}
+              >
+                Skip - Use QR Code for Deposits
+              </button>
+            </div>
+
             <div className="wallet-info">
               <p className="info-text">
-                <strong>Supported Wallets:</strong>
+                <strong>Desktop Wallets:</strong>
               </p>
               <ul>
                 <li>Phantom (Browser Extension)</li>
@@ -371,7 +390,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
                 <li>Manual Entry (Any Wallet)</li>
               </ul>
               <p className="info-text" style={{ marginTop: "12px", fontSize: "14px", color: "#666" }}>
-                <strong>Mobile Payments:</strong> QR codes will be available when making deposits if browser extension is not available.
+                <strong>Note:</strong> Mobile users should use the "Skip - Use QR Code" option above to make deposits directly.
               </p>
             </div>
           </>
