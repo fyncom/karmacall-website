@@ -69,6 +69,8 @@ const CashOut = () => {
   const [solanaDepositMode, setSolanaDepositMode] = useState("extension") // "extension" or "qr"
   const [qrCodeUrl, setQrCodeUrl] = useState("")
   const [showQrCode, setShowQrCode] = useState(false)
+  const [qrSessionId, setQrSessionId] = useState(null)
+  const [pollingInterval, setPollingInterval] = useState(null)
 
   const subscriptionPlans = {
     premium: { name: "Premium", price: 4.99 },
@@ -98,6 +100,11 @@ const CashOut = () => {
     }
 
     checkSolanaWallet()
+
+    // Cleanup polling on unmount
+    return () => {
+      stopPollingPaymentStatus()
+    }
   }, [sessionId])
 
   const checkSolanaWallet = async () => {
@@ -291,6 +298,98 @@ const CashOut = () => {
     }
   }
 
+  const stopPollingPaymentStatus = () => {
+    if (pollingInterval) {
+      clearInterval(pollingInterval)
+      setPollingInterval(null)
+    }
+  }
+
+  const closeQrModal = () => {
+    setShowQrCode(false)
+    setQrCodeUrl("")
+    setQrSessionId(null)
+    stopPollingPaymentStatus()
+  }
+
+  const startPollingPaymentStatus = sessionId => {
+    let attemptCount = 0
+    const maxAttempts = 9 // 9 attempts × 20 seconds = 180 seconds (3 minutes)
+
+    // Clear any existing polling
+    stopPollingPaymentStatus()
+
+    const checkPaymentStatus = async () => {
+      attemptCount++
+      console.log(`Polling payment status (attempt ${attemptCount}/${maxAttempts})...`)
+
+      try {
+        const response = await fetch(`${newUrl}api/solana/qr-payment-status?sessionId=${sessionId}`, {
+          method: "GET",
+          headers: headers,
+        })
+
+        if (!response.ok) {
+          console.error("Failed to check payment status")
+          return
+        }
+
+        const data = await response.json()
+        console.log("Payment status:", data)
+
+        if (data.status === "confirmed") {
+          // Payment successful!
+          stopPollingPaymentStatus()
+          setShowQrCode(false)
+          setQrCodeUrl("")
+          setQrSessionId(null)
+          setDepositSuccess(`Payment confirmed! Transaction: ${data.transactionSignature}`)
+
+          // Update balance with new balance from backend
+          if (data.newBalance !== undefined) {
+            setSolanaBalance(data.newBalance)
+          }
+
+          // Refresh wallet info
+          await checkSolanaWallet()
+
+          ReactGA.event({
+            category: "solana",
+            action: "qr_payment_confirmed",
+            label: sessionId,
+          })
+        } else if (data.status === "expired" || data.status === "failed") {
+          // Session expired or failed
+          stopPollingPaymentStatus()
+          setDepositError(data.message || `Payment ${data.status}. Please try again.`)
+          setShowQrCode(false)
+          setQrCodeUrl("")
+          setQrSessionId(null)
+        } else if (data.status === "pending") {
+          // Still waiting, check if we've exceeded max attempts
+          if (attemptCount >= maxAttempts) {
+            stopPollingPaymentStatus()
+            setDepositError("Payment timeout. If you sent the transaction, it may still be processing. Check back in a minute or contact support.")
+          }
+          // Otherwise, continue polling
+        }
+      } catch (err) {
+        console.error("Error checking payment status:", err)
+        // Don't stop polling on network errors, just continue
+        if (attemptCount >= maxAttempts) {
+          stopPollingPaymentStatus()
+        }
+      }
+    }
+
+    // Do first check immediately
+    checkPaymentStatus()
+
+    // Then poll every 20 seconds
+    const interval = setInterval(checkPaymentStatus, 20000)
+    setPollingInterval(interval)
+  }
+
   const generateQrCodeForDeposit = async (amount, planName) => {
     try {
       const escrowAddress = process.env.GATSBY_SOLANA_ADDRESS
@@ -298,13 +397,35 @@ const CashOut = () => {
         throw new Error("Escrow address is not configured")
       }
 
+      if (!userId) {
+        throw new Error("User ID is required for QR deposit")
+      }
+
+      // Call backend to initialize QR session and get encrypted memo
+      const initResponse = await fetch(
+        `${newUrl}api/solana/qr-init?userId=${userId}&amount=${parseFloat(amount).toFixed(6)}&planName=${encodeURIComponent(planName)}`,
+        {
+          method: "POST",
+          headers: headers,
+        }
+      )
+
+      if (!initResponse.ok) {
+        const errorData = await initResponse.json()
+        throw new Error(errorData.message || "Failed to initialize QR session")
+      }
+
+      const { encryptedMemo, sessionId } = await initResponse.json()
+
+      // Store session ID for polling
+      setQrSessionId(sessionId)
+
+      // Construct Solana Pay URL with encrypted memo
       const params = new URLSearchParams()
       params.set("amount", parseFloat(amount).toFixed(6))
       params.set("label", "KarmaCall Escrow")
       params.set("message", `Deposit for ${planName}`)
-      if (userId) {
-        params.set("memo", `user:${userId}`)
-      }
+      params.set("memo", encryptedMemo)
 
       const solanaPayUrl = `solana:${escrowAddress}?${params.toString()}`
       const qrDataUrl = await QRCode.toDataURL(solanaPayUrl, {
@@ -315,8 +436,13 @@ const CashOut = () => {
       setQrCodeUrl(qrDataUrl)
       setShowQrCode(true)
       setDepositSuccess(
-        `Scan the QR code below with your mobile wallet to deposit ${formatSolAmount(parseFloat(amount))} SOL for ${planName}. After sending, tap Refresh Balance.`
+        `Scan the QR code with your mobile wallet to deposit ${formatSolAmount(
+          parseFloat(amount)
+        )} SOL for ${planName}. The payment will be detected automatically within 60 seconds.`
       )
+
+      // Start polling for payment status
+      startPollingPaymentStatus(sessionId)
     } catch (err) {
       console.error("Error generating QR code:", err)
       setDepositError(`Unable to generate QR code: ${err.message}`)
@@ -641,9 +767,7 @@ const CashOut = () => {
             )}
 
             {depositSuccess && (
-              <div style={{ backgroundColor: "#f0fdf4", color: "#166534", padding: "12px", borderRadius: "6px", marginBottom: "16px" }}>
-                {depositSuccess}
-              </div>
+              <div style={{ backgroundColor: "#f0fdf4", color: "#166534", padding: "12px", borderRadius: "6px", marginBottom: "16px" }}>{depositSuccess}</div>
             )}
 
             <h3 style={{ marginBottom: "16px" }}>Subscription Plans</h3>
@@ -838,7 +962,6 @@ const CashOut = () => {
               </button>
             </div>
 
-
             <div style={{ marginTop: "16px", padding: "12px", backgroundColor: "#eff6ff", borderRadius: "6px" }}>
               <p style={{ margin: "0", fontSize: "13px", color: "#1e40af" }}>
                 <strong>Tip:</strong> After depositing from any device, click <em>Refresh Balance</em> above to sync your escrow.
@@ -869,10 +992,7 @@ const CashOut = () => {
             justifyContent: "center",
             zIndex: 1000,
           }}
-          onClick={() => {
-            setShowQrCode(false)
-            setQrCodeUrl("")
-          }}
+          onClick={closeQrModal}
         >
           <div
             style={{
@@ -887,10 +1007,7 @@ const CashOut = () => {
             onClick={e => e.stopPropagation()}
           >
             <button
-              onClick={() => {
-                setShowQrCode(false)
-                setQrCodeUrl("")
-              }}
+              onClick={closeQrModal}
               style={{
                 position: "absolute",
                 top: "16px",
@@ -926,16 +1043,13 @@ const CashOut = () => {
                 <li>Open your Solana mobile wallet (Phantom, Solflare, etc.)</li>
                 <li>Tap "Scan" or "Send"</li>
                 <li>Scan this QR code</li>
-                <li>Confirm the transaction</li>
-                <li>Return here and click "Refresh Balance"</li>
+                <li>Review and confirm the transaction</li>
+                <li>Payment will be detected automatically within 60 seconds</li>
               </ol>
             </div>
 
             <button
-              onClick={() => {
-                setShowQrCode(false)
-                setQrCodeUrl("")
-              }}
+              onClick={closeQrModal}
               style={{
                 width: "100%",
                 background: "linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%)",
