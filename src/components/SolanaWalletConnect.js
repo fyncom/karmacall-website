@@ -1,24 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react"
-// Import Solana SDK only in the browser to avoid SSR issues
-let Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL
-if (typeof window !== "undefined") {
-  const sol = require("@solana/web3.js")
-  Connection = sol.Connection
-  PublicKey = sol.PublicKey
-  Transaction = sol.Transaction
-  SystemProgram = sol.SystemProgram
-  LAMPORTS_PER_SOL = sol.LAMPORTS_PER_SOL
-}
-let QRCode
-if (typeof window !== "undefined") {
-  QRCode = require("qrcode")
-}
+import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js"
+import QRCode from "qrcode"
 import "./solana-wallet.css"
 
 const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
-  if (typeof window === "undefined") {
-    return null
-  }
   const [walletAddress, setWalletAddress] = useState("")
   const [isConnecting, setIsConnecting] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
