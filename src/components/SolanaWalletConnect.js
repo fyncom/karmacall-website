@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js"
-import QRCode from "qrcode"
 import "./solana-wallet.css"
+
+// Solana will be imported dynamically to avoid SSR issues
+let Transaction, PublicKey
 
 const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
   const [walletAddress, setWalletAddress] = useState("")
@@ -23,6 +24,16 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
     "Content-Type": "application/json",
     Accept: "application/json",
   }
+
+  useEffect(() => {
+    // Dynamically import Solana Web3.js on client side only
+    if (typeof window !== "undefined" && !Transaction) {
+      import("@solana/web3.js").then(module => {
+        Transaction = module.Transaction
+        PublicKey = module.PublicKey
+      })
+    }
+  }, [])
 
   useEffect(() => {
     // Check if user already has a Solana wallet connected
@@ -312,6 +323,8 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
   const generateQRFallback = async (fromAddress, toAddress, amount) => {
     if (typeof window === "undefined") return
     try {
+      // Dynamically import QRCode only in browser
+      const QRCode = (await import("qrcode")).default
       const solanaUrl = `solana:${toAddress}?amount=${amount}&label=KarmaCall Payment`
       const qrDataUrl = await QRCode.toDataURL(solanaUrl)
       setQrCodeDataUrl(qrDataUrl)
@@ -478,6 +491,9 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
 
 // Standalone function for sending Solana using backend-prepared transactions
 export const sendSolanaTransaction = async (fromAddress, amount, userId, planName = "deposit") => {
+  // Dynamically import Solana Web3.js to avoid SSR issues
+  const { Transaction } = await import("@solana/web3.js")
+
   let newUrl = `${process.env.GATSBY_API_URL}`
   let headers = {
     "Content-Type": "application/json",

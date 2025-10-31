@@ -9,8 +9,8 @@ const path = require("path");
 const axios = require("axios");
 const { createFilePath } = require("gatsby-source-filesystem")
 
-exports.onCreateWebpackConfig = ({ actions }) => {
-  actions.setWebpackConfig({
+exports.onCreateWebpackConfig = ({ actions, stage }) => {
+  const config = {
     module: {
       rules: [
         {
@@ -23,7 +23,28 @@ exports.onCreateWebpackConfig = ({ actions }) => {
     cache: {
       type: "filesystem",
     },
-  })
+    resolve: {
+      fallback: {
+        crypto: require.resolve("crypto-browserify"),
+        stream: require.resolve("stream-browserify"),
+        buffer: require.resolve("buffer/"),
+      },
+      alias: {
+        // Map node: protocol imports to regular module names for webpack
+        "node:crypto": "crypto-browserify",
+        "node:url": "url",
+        "node:buffer": "buffer",
+        "node:stream": "stream-browserify",
+      },
+    },
+  }
+
+  // Mark Solana and QRCode as external for SSR to prevent node:crypto/node:url errors
+  if (stage === "build-html" || stage === "develop-html") {
+    config.externals = ["@solana/web3.js", "qrcode"]
+  }
+
+  actions.setWebpackConfig(config)
 }
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
