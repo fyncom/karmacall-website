@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import Header from "../components/header"
 import Footer from "../components/footer"
 import "../components/sales-and-marketing-use-cases.css"
@@ -65,6 +65,8 @@ const CashOut = () => {
   const [depositSuccess, setDepositSuccess] = useState("")
   const [solanaDepositMode, setSolanaDepositMode] = useState("extension")
   const [depositQrData, setDepositQrData] = useState(null)
+  const [qrCountdown, setQrCountdown] = useState("")
+  const qrStatusPollRef = useRef(null)
   const [solUsdRate, setSolUsdRate] = useState(null)
   const userId = isBrowser ? localStorage.getItem("userId") : null
 
@@ -105,6 +107,44 @@ const CashOut = () => {
     }
   }, [])
 
+  useEffect(() => {
+    return () => {
+      stopQrStatusPolling()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (solanaDepositMode !== "qr") {
+      stopQrStatusPolling()
+    }
+  }, [solanaDepositMode])
+
+  useEffect(() => {
+    if (!depositQrData?.expiresAt || ["confirmed", "expired", "failed"].includes(depositQrData?.status)) {
+      if (depositQrData?.status === "expired") {
+        setQrCountdown("Expired")
+      } else {
+        setQrCountdown("")
+      }
+      return
+    }
+
+    const updateCountdown = () => {
+      const remaining = depositQrData.expiresAt - Date.now()
+      if (remaining <= 0) {
+        setQrCountdown("Expired")
+        return
+      }
+      const minutes = Math.floor(remaining / 60000)
+      const seconds = Math.floor((remaining % 60000) / 1000)
+      setQrCountdown(`${minutes}:${seconds.toString().padStart(2, "0")}`)
+    }
+
+    updateCountdown()
+    const intervalId = setInterval(updateCountdown, 1000)
+    return () => clearInterval(intervalId)
+  }, [depositQrData?.expiresAt, depositQrData?.status])
+
   const checkSolanaWallet = async () => {
     if (!userId) return
     try {
@@ -122,6 +162,100 @@ const CashOut = () => {
     } catch (err) {
       console.error("error checking solana wallet:", err)
     }
+  }
+
+  const stopQrStatusPolling = () => {
+    if (qrStatusPollRef.current) {
+      clearInterval(qrStatusPollRef.current)
+      qrStatusPollRef.current = null
+    }
+  }
+
+  const handleQrStatusUpdate = statusData => {
+    if (!statusData) return
+
+    setDepositQrData(prev => {
+      if (!prev) return prev
+      return {
+        ...prev,
+        status: statusData.status || prev.status,
+        statusMessage: statusData.message || prev.statusMessage,
+        publicKey: statusData.publicKey || prev.publicKey,
+      }
+    })
+
+    if (statusData.status === "pending") {
+      setDepositError("")
+    }
+
+    if (statusData.status === "confirmed") {
+      const message =
+        statusData.message || "Wallet connected successfully. Complete the SOL transfer from your mobile wallet."
+      setDepositError("")
+      setDepositSuccess(message)
+      if (statusData.publicKey) {
+        setSolanaWalletAddress(statusData.publicKey)
+      }
+      stopQrStatusPolling()
+      checkSolanaWallet()
+    } else if (statusData.status === "expired") {
+      const message = statusData.message || "QR session expired. Generate a new QR code to try again."
+      setDepositError(message)
+      setDepositSuccess("")
+      stopQrStatusPolling()
+    } else if (statusData.status === "failed") {
+      const message = statusData.message || "Wallet verification failed. Please try again."
+      setDepositError(message)
+      setDepositSuccess("")
+      stopQrStatusPolling()
+    }
+  }
+
+  const pollQrStatus = sessionId => {
+    if (!sessionId || !isBrowser) return
+
+    stopQrStatusPolling()
+
+    const checkStatus = async () => {
+      try {
+        const response = await fetch(`${newUrl}api/solana/qr-status?sessionId=${encodeURIComponent(sessionId)}`, {
+          method: "GET",
+          headers,
+        })
+
+        if (response.status === 404) {
+          stopQrStatusPolling()
+          setDepositError("QR session not found. Generate a new QR code to try again.")
+          setDepositSuccess("")
+          setDepositQrData(prev =>
+            prev
+              ? {
+                  ...prev,
+                  status: "not_found",
+                  statusMessage: "session not found",
+                }
+              : prev
+          )
+          return
+        }
+
+        if (!response.ok) {
+          throw new Error(`status ${response.status}`)
+        }
+
+        const data = await response.json()
+        handleQrStatusUpdate(data)
+
+        if (["confirmed", "expired", "failed"].includes(data.status)) {
+          stopQrStatusPolling()
+        }
+      } catch (err) {
+        console.error("error polling solana qr status:", err)
+      }
+    }
+
+    checkStatus()
+    qrStatusPollRef.current = setInterval(checkStatus, 4000)
   }
 
   const fetchReferralCode = async () => {
@@ -284,26 +418,80 @@ const CashOut = () => {
     return { solanaUrl: `solana:${escrowAddress}?${params.toString()}`, normalizedAmount }
   }
 
+
   const showDepositQr = async (amount, planName, note = "") => {
     try {
       const { solanaUrl, normalizedAmount } = buildSolanaPaymentUrl(amount, planName)
       setDepositError("")
-      const qrDataUrl = await QRCode.toDataURL(solanaUrl)
+      stopQrStatusPolling()
+
+      const initResponse = await fetch(`${newUrl}api/solana/qr-init`, {
+        method: "POST",
+        headers,
+      })
+
+      if (!initResponse.ok) {
+        throw new Error(`unable to initialize QR session (${initResponse.status})`)
+      }
+
+      const initData = await initResponse.json()
+      if (!initData.success || !initData.sessionId) {
+        throw new Error(initData.message || "missing sessionId from QR init response")
+      }
+
+      let challengeMessage = null
+      try {
+        const challengeResponse = await fetch(
+          `${newUrl}api/solana/qr-challenge?sessionId=${encodeURIComponent(initData.sessionId)}`,
+          {
+            method: "GET",
+            headers,
+          }
+        )
+
+        if (challengeResponse.ok) {
+          const challengeData = await challengeResponse.json()
+          if (challengeData.success !== false && challengeData.challenge) {
+            challengeMessage = challengeData.challenge
+          }
+        }
+      } catch (innerErr) {
+        console.warn("unable to fetch solana qr challenge:", innerErr)
+      }
+
+      const trimmedNote = note ? note.trim() : ""
+      const solanaLinkBody = solanaUrl.replace('solana:', '')
+      const [solanaAddress, solanaQuery = ''] = solanaLinkBody.split('?')
+      const solanaParams = new URLSearchParams(solanaQuery)
+      solanaParams.set('reference', initData.sessionId)
+      const solanaQrUrl = `solana:${solanaAddress}?${solanaParams.toString()}`
+
+      const qrDataUrl = await QRCode.toDataURL(solanaQrUrl)
       setDepositQrData({
         amount: normalizedAmount,
         planName,
-        solanaUrl,
+        solanaUrl: solanaQrUrl,
         qrDataUrl,
         note,
+        sessionId: initData.sessionId,
+        expiresAt: initData.expiresAt,
+        challenge: challengeMessage,
+        status: "pending",
+        statusMessage: "Awaiting wallet scan and approval.",
+        publicKey: null,
       })
 
-      const baseMessage = `Scan the QR code below to deposit ${formatSolAmount(normalizedAmount)} SOL for ${planName}. After sending, tap Refresh Balance.`
-      const trimmedNote = note ? note.trim() : ""
+      const baseMessage = `Scan the QR code below to connect your wallet and deposit ${formatSolAmount(
+        normalizedAmount
+      )} SOL for ${planName}. This session expires in about 3 minutes. After sending, tap Refresh Balance.`
       const composedMessage = trimmedNote ? `${trimmedNote} ${baseMessage}` : baseMessage
       setDepositSuccess(composedMessage.trim())
+      pollQrStatus(initData.sessionId)
     } catch (err) {
       console.error("error generating solana deposit qr:", err)
+      stopQrStatusPolling()
       setDepositQrData(null)
+      setQrCountdown("")
       setDepositSuccess("")
       setDepositError(`Unable to generate QR code: ${err.message}`)
     }
@@ -402,6 +590,13 @@ const CashOut = () => {
   const formatSolAmount = solAmount => {
     if (solAmount === null) return "..."
     return solAmount.toFixed(5)
+  }
+
+  const clearDepositQr = () => {
+    stopQrStatusPolling()
+    setDepositQrData(null)
+    setDepositSuccess("")
+    setQrCountdown("")
   }
 
   const handleCloseModal = () => {
@@ -828,6 +1023,44 @@ const CashOut = () => {
                 <p style={{ marginBottom: "12px" }}>
                   Scan with your mobile wallet to send {formatSolAmount(depositQrData.amount)} SOL for {depositQrData.planName}.
                 </p>
+                <div style={{ background: "#ede9fe", padding: "12px", borderRadius: "8px", marginBottom: "12px" }}>
+                  {depositQrData.sessionId && (
+                    <p style={{ margin: "0 0 6px 0", fontSize: "13px", wordBreak: "break-all", color: "#4c1d95" }}>
+                      <strong>Session:</strong> <code>{depositQrData.sessionId}</code>
+                    </p>
+                  )}
+                  {qrCountdown && depositQrData.status !== "confirmed" && (
+                    <p style={{ margin: "0 0 6px 0", fontSize: "13px", color: "#4c1d95" }}>
+                      <strong>Expires in:</strong> {qrCountdown}
+                    </p>
+                  )}
+                  {depositQrData.status && (
+                    <p
+                      style={{
+                        margin: "0 0 6px 0",
+                        fontSize: "13px",
+                        color:
+                          depositQrData.status === "confirmed"
+                            ? "#166534"
+                            : depositQrData.status === "expired"
+                            ? "#b91c1c"
+                            : depositQrData.status === "failed"
+                            ? "#b45309"
+                            : "#4c1d95",
+                      }}
+                    >
+                      <strong>Status:</strong> {depositQrData.status}
+                    </p>
+                  )}
+                  {depositQrData.statusMessage && (
+                    <p style={{ margin: "0", fontSize: "13px", color: "#4c1d95" }}>{depositQrData.statusMessage}</p>
+                  )}
+                  {depositQrData.publicKey && (
+                    <p style={{ margin: "6px 0 0 0", fontSize: "13px", color: "#166534", wordBreak: "break-all" }}>
+                      <strong>Wallet:</strong> <code>{depositQrData.publicKey}</code>
+                    </p>
+                  )}
+                </div>
                 {depositQrData.note && <p style={{ marginTop: 0, marginBottom: "12px", color: "#4c1d95", fontSize: "14px" }}>{depositQrData.note}</p>}
                 {depositQrData.qrDataUrl && (
                   <div style={{ textAlign: "center", marginBottom: "12px" }}>
@@ -841,7 +1074,7 @@ const CashOut = () => {
                   </a>
                 </p>
                 <button
-                  onClick={() => setDepositQrData(null)}
+                  onClick={clearDepositQr}
                   style={{
                     background: "transparent",
                     border: "1px solid #d1d5db",
@@ -872,3 +1105,4 @@ const CashOut = () => {
 }
 
 export default CashOut
+

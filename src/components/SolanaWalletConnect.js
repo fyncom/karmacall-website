@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js"
 import QRCode from "qrcode"
 import "./solana-wallet.css"
@@ -18,21 +18,24 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
   const [qrAmount, setQrAmount] = useState(0)
   const [connectMode, setConnectMode] = useState("extension")
   const [connectQrDataUrl, setConnectQrDataUrl] = useState("")
-  const [connectQrLink, setConnectQrLink] = useState("")
   const [connectQrError, setConnectQrError] = useState("")
   const [connectQrMessage, setConnectQrMessage] = useState("")
+  const [connectQrStatus, setConnectQrStatus] = useState("idle")
+  const [connectQrStatusMessage, setConnectQrStatusMessage] = useState("")
+  const [connectQrCountdown, setConnectQrCountdown] = useState("")
+  const [connectQrSession, setConnectQrSession] = useState(null)
+  const [connectQrPayload, setConnectQrPayload] = useState(null)
+  const connectQrPollRef = useRef(null)
 
-  let solanaPublicKey = process.env.GATSBY_SOLANA_ADDRESS
-  let newUrl = `${process.env.GATSBY_API_URL}`
-  let headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  }
-
-  useEffect(() => {
-    // Check if user already has a Solana wallet connected
-    checkExistingWallet()
-  }, [userId])
+  const solanaPublicKey = process.env.GATSBY_SOLANA_ADDRESS
+  const newUrl = `${process.env.GATSBY_API_URL}`
+  const headers = useMemo(
+    () => ({
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    }),
+    []
+  )
 
   useEffect(() => {
     // Expose sendSolana method to parent component after component mounts
@@ -42,7 +45,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
     }
   }, [onSendSolana]) // Note: sendSolana not in deps to avoid infinite loop
 
-  const checkExistingWallet = async () => {
+  const checkExistingWallet = useCallback(async () => {
     if (!userId) {
       console.log("no userId provided, skipping wallet check")
       return
@@ -69,47 +72,231 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
     } catch (err) {
       console.error("error checking existing wallet:", err)
     }
-  }
+  }, [headers, newUrl, userId])
 
-  const generateMobileConnectQr = useCallback(async () => {
+  useEffect(() => {
+    // Check if user already has a Solana wallet connected
+    checkExistingWallet()
+  }, [checkExistingWallet])
+
+  const stopConnectQrPolling = useCallback(() => {
+    if (connectQrPollRef && connectQrPollRef.current) {
+      clearInterval(connectQrPollRef.current)
+      connectQrPollRef.current = null
+    }
+  }, [])
+
+  const handleConnectQrStatusUpdate = useCallback(
+    statusData => {
+      if (!statusData) return
+
+      setConnectQrStatus(statusData.status || "pending")
+      setConnectQrStatusMessage(statusData.message || "")
+
+      if (statusData.status === "pending") {
+        setConnectQrError("")
+      }
+
+      if (statusData.status === "confirmed") {
+        setConnectQrMessage("Wallet connected via mobile QR.")
+        setConnectQrError("")
+        stopConnectQrPolling()
+        if (statusData.publicKey) {
+          setWalletAddress(statusData.publicKey)
+        }
+        setIsConnected(true)
+        setShowDepositInfo(true)
+        checkExistingWallet()
+      } else if (statusData.status === "expired") {
+        setConnectQrError(statusData.message || "QR session expired. Generate a new QR code to try again.")
+        stopConnectQrPolling()
+      } else if (statusData.status === "failed") {
+        setConnectQrError(statusData.message || "Wallet verification failed. Please try again.")
+        stopConnectQrPolling()
+      }
+    },
+    [checkExistingWallet, stopConnectQrPolling]
+  )
+
+  const pollConnectQrStatus = useCallback(
+    sessionId => {
+      if (!sessionId) return
+
+      stopConnectQrPolling()
+
+      const checkStatus = async () => {
+        try {
+          const response = await fetch(`${newUrl}api/solana/qr-status?sessionId=${encodeURIComponent(sessionId)}`, {
+            method: "GET",
+            headers,
+          })
+
+          if (response.status === 404) {
+            stopConnectQrPolling()
+            setConnectQrError("QR session not found. Generate a new QR code to try again.")
+            setConnectQrStatus("not_found")
+            setConnectQrStatusMessage("session not found")
+            return
+          }
+
+          if (!response.ok) {
+            throw new Error(`status ${response.status}`)
+          }
+
+          const data = await response.json()
+          handleConnectQrStatusUpdate(data)
+
+          if (["confirmed", "expired", "failed"].includes(data.status)) {
+            stopConnectQrPolling()
+          }
+        } catch (err) {
+          console.error("error polling solana connect qr status:", err)
+        }
+      }
+
+      checkStatus()
+      connectQrPollRef.current = setInterval(checkStatus, 4000)
+    },
+    [handleConnectQrStatusUpdate, headers, newUrl, stopConnectQrPolling]
+  )
+
+  const startMobileConnectQrSession = useCallback(async () => {
     if (typeof window === "undefined") {
       return
     }
 
     try {
-      const origin = window.location?.origin || "https://app.karmacall.com"
-      const link = `${origin}/cash-out?source=solana-qr`
       setConnectQrError("")
       setConnectQrMessage("")
       setConnectQrDataUrl("")
-      setConnectQrLink(link)
-      const qr = await QRCode.toDataURL(link)
-      setConnectQrDataUrl(qr)
+      setConnectQrStatus("pending")
+      setConnectQrStatusMessage("Awaiting wallet scan...")
+      setConnectQrCountdown("")
+      setConnectQrSession(null)
+      setConnectQrPayload(null)
+
+      const initResponse = await fetch(`${newUrl}api/solana/qr-init`, {
+        method: "POST",
+        headers,
+      })
+
+      if (!initResponse.ok) {
+        throw new Error(`Failed to initialize QR session (${initResponse.status})`)
+      }
+
+      const initData = await initResponse.json()
+      if (!initData.success || !initData.sessionId) {
+        throw new Error(initData.message || "Missing sessionId from QR init response")
+      }
+
+      let challengeMessage = null
+      try {
+        const challengeResponse = await fetch(`${newUrl}api/solana/qr-challenge?sessionId=${encodeURIComponent(initData.sessionId)}`, {
+          method: "GET",
+          headers,
+        })
+
+        if (challengeResponse.ok) {
+          const challengeData = await challengeResponse.json()
+          if (challengeData.success !== false && challengeData.challenge) {
+            challengeMessage = challengeData.challenge
+          }
+        }
+      } catch (innerErr) {
+        console.warn("unable to fetch solana connect challenge:", innerErr)
+      }
+
+      const origin = window.location?.origin || "https://app.karmacall.com"
+      const payload = {
+        type: "karmacall_solana_wallet_connect",
+        version: "1.0",
+        sessionId: initData.sessionId,
+        expiresAt: initData.expiresAt,
+        endpoints: {
+          status: `${newUrl}api/solana/qr-status`,
+          challenge: `${newUrl}api/solana/qr-challenge`,
+          verify: `${newUrl}api/solana/qr-verify`,
+        },
+        challenge: challengeMessage,
+        metadata: {
+          userId,
+          origin,
+        },
+      }
+
+      const qrImage = await QRCode.toDataURL(JSON.stringify(payload))
+
+      setConnectQrDataUrl(qrImage)
+      setConnectQrPayload(payload)
+      setConnectQrSession({ sessionId: initData.sessionId, expiresAt: initData.expiresAt })
+      setConnectQrMessage("Scan with your mobile wallet to link it to KarmaCall.")
+      pollConnectQrStatus(initData.sessionId)
     } catch (err) {
       console.error("error generating mobile connect qr:", err)
       setConnectQrDataUrl("")
-      setConnectQrError("Failed to generate the QR link. Copy the URL below into your mobile wallet browser.")
+      setConnectQrStatus("error")
+      setConnectQrError(err.message || "Failed to generate the QR details. Try again or copy the session payload below.")
+      stopConnectQrPolling()
     }
-  }, [])
+  }, [headers, newUrl, pollConnectQrStatus, stopConnectQrPolling, userId])
 
   const copyConnectLink = async () => {
-    if (!connectQrLink) return
+    if (!connectQrPayload) return
     try {
-      await navigator.clipboard.writeText(connectQrLink)
-      setConnectQrMessage("Link copied to clipboard.")
+      await navigator.clipboard.writeText(JSON.stringify(connectQrPayload))
+      setConnectQrMessage("Session payload copied to clipboard.")
       setConnectQrError("")
     } catch (err) {
-      console.error("error copying solana connect link:", err)
-      setConnectQrError("Unable to copy automatically. Select the link below to copy it.")
+      console.error("error copying solana connect payload:", err)
+      setConnectQrError("Unable to copy automatically. Select and copy the session details below.")
       setConnectQrMessage("")
     }
   }
 
   useEffect(() => {
-    if (connectMode === "qr") {
-      generateMobileConnectQr()
+    if (connectMode !== "qr") {
+      stopConnectQrPolling()
+      return
     }
-  }, [connectMode, generateMobileConnectQr])
+
+    startMobileConnectQrSession()
+
+    return () => {
+      stopConnectQrPolling()
+    }
+  }, [connectMode, startMobileConnectQrSession, stopConnectQrPolling])
+
+  useEffect(() => {
+    if (!connectQrSession?.expiresAt || ["confirmed", "expired", "failed"].includes(connectQrStatus)) {
+      if (connectQrStatus === "expired") {
+        setConnectQrCountdown("Expired")
+      } else {
+        setConnectQrCountdown("")
+      }
+      return
+    }
+
+    const updateCountdown = () => {
+      const remaining = connectQrSession.expiresAt - Date.now()
+      if (remaining <= 0) {
+        setConnectQrCountdown("Expired")
+        return
+      }
+      const minutes = Math.floor(remaining / 60000)
+      const seconds = Math.floor((remaining % 60000) / 1000)
+      setConnectQrCountdown(`${minutes}:${seconds.toString().padStart(2, "0")}`)
+    }
+
+    updateCountdown()
+    const intervalId = setInterval(updateCountdown, 1000)
+    return () => clearInterval(intervalId)
+  }, [connectQrSession?.expiresAt, connectQrStatus])
+
+  useEffect(() => {
+    return () => {
+      stopConnectQrPolling()
+    }
+  }, [stopConnectQrPolling])
 
   const detectWallet = () => {
     // Check for Phantom wallet
@@ -407,11 +594,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
               >
                 Browser Extension
               </button>
-              <button
-                type="button"
-                className={`mode-button ${connectMode === "qr" ? "active" : ""}`}
-                onClick={() => setConnectMode("qr")}
-              >
+              <button type="button" className={`mode-button ${connectMode === "qr" ? "active" : ""}`} onClick={() => setConnectMode("qr")}>
                 Mobile QR
               </button>
             </div>
@@ -419,7 +602,8 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
             {connectMode === "extension" ? (
               <>
                 <p className="description">
-                  Connect your Solana wallet to deposit funds for KarmaCall protection. When spam calls are blocked, the caller gets paid from your escrow balance.
+                  Connect your Solana wallet to deposit funds for KarmaCall protection. When spam calls are blocked, the caller gets paid from your escrow
+                  balance.
                 </p>
 
                 {error && <div className="error-message">{error}</div>}
@@ -448,10 +632,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
               </>
             ) : (
               <div className="qr-mode-panel">
-                <p>
-                  Scan this QR code with your mobile Solana wallet to open the KarmaCall cash-out page in the wallet browser. From there you can connect and sign the
-                  message directly on your phone.
-                </p>
+                <p>Scan this QR code with your mobile Solana wallet to approve the connection and finish linking your wallet to KarmaCall.</p>
 
                 {connectQrError && <div className="error-message">{connectQrError}</div>}
                 {connectQrMessage && (
@@ -472,23 +653,59 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
 
                 {connectQrDataUrl ? (
                   <div className="qr-wrapper">
-                    <img src={connectQrDataUrl} alt="Open KarmaCall cash out on mobile" />
+                    <img src={connectQrDataUrl} alt="Connect KarmaCall wallet from mobile" />
                   </div>
                 ) : (
-                  <p style={{ textAlign: "center", marginBottom: "16px" }}>Generating QR...</p>
+                  <p style={{ textAlign: "center", marginBottom: "16px" }}>Preparing QR...</p>
                 )}
 
-                {connectQrLink && (
+                <div
+                  style={{
+                    backgroundColor: "#ede9fe",
+                    padding: "12px",
+                    borderRadius: "8px",
+                    fontSize: "13px",
+                    lineHeight: 1.5,
+                    marginBottom: "12px",
+                  }}
+                >
+                  {connectQrSession?.sessionId && (
+                    <p style={{ margin: "0 0 6px 0", wordBreak: "break-all", color: "#4c1d95" }}>
+                      <strong>Session:</strong> <code>{connectQrSession.sessionId}</code>
+                    </p>
+                  )}
+                  {connectQrCountdown && connectQrStatus !== "confirmed" && (
+                    <p style={{ margin: "0 0 6px 0", color: "#4c1d95" }}>
+                      <strong>Expires in:</strong> {connectQrCountdown}
+                    </p>
+                  )}
+                  {connectQrStatus && connectQrStatus !== "idle" && (
+                    <p
+                      style={{
+                        margin: "0 0 6px 0",
+                        color:
+                          connectQrStatus === "confirmed"
+                            ? "#166534"
+                            : connectQrStatus === "expired"
+                            ? "#b91c1c"
+                            : connectQrStatus === "failed"
+                            ? "#b45309"
+                            : "#4c1d95",
+                      }}
+                    >
+                      <strong>Status:</strong> {connectQrStatus}
+                    </p>
+                  )}
+                  {connectQrStatusMessage && <p style={{ margin: "0", color: "#4c1d95" }}>{connectQrStatusMessage}</p>}
+                </div>
+
+                {connectQrPayload && (
                   <div className="qr-link">
-                    <p style={{ marginBottom: "8px" }}>Open link directly:</p>
-                    <a href={connectQrLink} target="_blank" rel="noreferrer">
-                      <code>{connectQrLink}</code>
-                    </a>
+                    <p style={{ marginBottom: "8px" }}>Share with wallet app if needed:</p>
                     <button
                       type="button"
                       onClick={copyConnectLink}
                       style={{
-                        marginTop: "12px",
                         background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                         color: "white",
                         border: "none",
@@ -498,7 +715,7 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
                         cursor: "pointer",
                       }}
                     >
-                      Copy Link
+                      Copy Session Payload
                     </button>
                   </div>
                 )}
@@ -540,7 +757,9 @@ const SolanaWalletConnect = ({ userId, onClose, onSendSolana }) => {
                   <li>
                     Send SOL to: <code className="master-address">{solanaPublicKey || "Loading..."}</code>
                   </li>
-                  <li>Wait about a minute, then click <strong>Refresh Balance</strong> above.</li>
+                  <li>
+                    Wait about a minute, then click <strong>Refresh Balance</strong> above.
+                  </li>
                 </ol>
                 <p className="note">Tip: You can also switch to the Mobile QR tab to generate a Solana Pay link instantly.</p>
               </div>
