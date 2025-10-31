@@ -8,6 +8,7 @@ import AppDownloadButton from "../components/AppDownloadButton"
 import SolanaWalletConnect, { sendSolanaTransaction } from "../components/SolanaWalletConnect"
 import ReactGA from "react-ga4"
 import { Link } from "gatsby"
+import QRCode from "qrcode"
 
 const CashOut = () => {
   const isBrowser = typeof window !== "undefined"
@@ -65,6 +66,9 @@ const CashOut = () => {
   const [depositSuccess, setDepositSuccess] = useState("")
   const [solUsdRate, setSolUsdRate] = useState(null)
   const userId = isBrowser ? localStorage.getItem("userId") : null
+  const [paymentMethod, setPaymentMethod] = useState("auto") // "auto", "extension", or "qr"
+  const [qrCodeUrl, setQrCodeUrl] = useState("")
+  const [showQrForDeposit, setShowQrForDeposit] = useState(false)
 
   const subscriptionPlans = {
     premium: { name: "Premium", price: 4.99 },
@@ -253,6 +257,30 @@ const CashOut = () => {
     }
   }
 
+  const generateQrCodeForDeposit = async (amount, planName) => {
+    try {
+      const escrowAddress = process.env.GATSBY_SOLANA_ADDRESS
+      // Create Solana Pay URL with memo containing userId and planName
+      const memo = encodeURIComponent(`${userId}_${planName}`)
+      const solanaPayUrl = `solana:${escrowAddress}?amount=${amount}&label=${encodeURIComponent("KarmaCall Deposit")}&memo=${memo}`
+
+      const qrDataUrl = await QRCode.toDataURL(solanaPayUrl, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: "#000000",
+          light: "#ffffff",
+        },
+      })
+
+      setQrCodeUrl(qrDataUrl)
+      setShowQrForDeposit(true)
+    } catch (err) {
+      console.error("Error generating QR code:", err)
+      setDepositError("Failed to generate QR code")
+    }
+  }
+
   const handleSolanaDeposit = async (amount, planName) => {
     if (!solanaWalletAddress) {
       setDepositError("please connect your solana wallet first")
@@ -262,24 +290,36 @@ const CashOut = () => {
     setDepositLoading(true)
     setDepositError("")
     setDepositSuccess("")
+    setShowQrForDeposit(false)
+
+    // If user explicitly chose QR method, show QR code
+    if (paymentMethod === "qr") {
+      await generateQrCodeForDeposit(amount, planName)
+      setDepositLoading(false)
+      return
+    }
 
     try {
       let transactionSignature = null
 
-      // Use the standalone function directly (more reliable)
-      console.log("Using standalone sendSolanaTransaction function")
-      try {
-        transactionSignature = await sendSolanaTransaction(solanaWalletAddress, parseFloat(amount), userId, planName)
-      } catch (standaloneError) {
-        console.log("Standalone transaction failed, requesting manual signature:", standaloneError)
+      // If auto or extension mode, try browser extension
+      if (paymentMethod === "auto" || paymentMethod === "extension") {
+        console.log("Using standalone sendSolanaTransaction function")
+        try {
+          transactionSignature = await sendSolanaTransaction(solanaWalletAddress, parseFloat(amount), userId, planName)
+        } catch (standaloneError) {
+          console.log("Standalone transaction failed:", standaloneError)
 
-        // Final fallback to manual entry
-        const manualSignature = prompt(`Please send ${amount} SOL to the escrow address and paste your transaction signature here:`)
-        if (!manualSignature) {
+          // If explicitly extension mode, don't fallback
+          if (paymentMethod === "extension") {
+            throw standaloneError
+          }
+
+          // Auto mode: fallback to QR code
+          await generateQrCodeForDeposit(amount, planName)
           setDepositLoading(false)
           return
         }
-        transactionSignature = manualSignature.trim()
       }
 
       if (!transactionSignature) {
@@ -499,6 +539,98 @@ const CashOut = () => {
                 {depositSuccess && (
                   <div style={{ backgroundColor: "#f0fdf4", color: "#166534", padding: "12px", borderRadius: "6px", marginBottom: "16px" }}>
                     {depositSuccess}
+                  </div>
+                )}
+
+                {/* Payment method toggle */}
+                <div style={{ marginBottom: "24px", padding: "16px", backgroundColor: "#f9fafb", borderRadius: "8px" }}>
+                  <h4 style={{ marginTop: "0", marginBottom: "12px" }}>Payment Method:</h4>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    <button
+                      onClick={() => setPaymentMethod("auto")}
+                      style={{
+                        padding: "8px 16px",
+                        border: paymentMethod === "auto" ? "2px solid #667eea" : "1px solid #ddd",
+                        borderRadius: "6px",
+                        background: paymentMethod === "auto" ? "#f0f0ff" : "white",
+                        cursor: "pointer",
+                        fontWeight: paymentMethod === "auto" ? "600" : "400",
+                        fontSize: "14px",
+                      }}
+                    >
+                      Auto (Try Extension, Fallback to QR)
+                    </button>
+                    <button
+                      onClick={() => setPaymentMethod("extension")}
+                      style={{
+                        padding: "8px 16px",
+                        border: paymentMethod === "extension" ? "2px solid #667eea" : "1px solid #ddd",
+                        borderRadius: "6px",
+                        background: paymentMethod === "extension" ? "#f0f0ff" : "white",
+                        cursor: "pointer",
+                        fontWeight: paymentMethod === "extension" ? "600" : "400",
+                        fontSize: "14px",
+                      }}
+                    >
+                      Browser Extension Only
+                    </button>
+                    <button
+                      onClick={() => setPaymentMethod("qr")}
+                      style={{
+                        padding: "8px 16px",
+                        border: paymentMethod === "qr" ? "2px solid #667eea" : "1px solid #ddd",
+                        borderRadius: "6px",
+                        background: paymentMethod === "qr" ? "#f0f0ff" : "white",
+                        cursor: "pointer",
+                        fontWeight: paymentMethod === "qr" ? "600" : "400",
+                        fontSize: "14px",
+                      }}
+                    >
+                      QR Code (Mobile)
+                    </button>
+                  </div>
+                  <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "8px", marginBottom: "0" }}>
+                    {paymentMethod === "auto" && "Recommended: Automatically tries browser extension, shows QR code if unavailable"}
+                    {paymentMethod === "extension" && "Use your browser wallet extension (Phantom, Solflare, etc.)"}
+                    {paymentMethod === "qr" && "Scan a QR code with your mobile Solana wallet app"}
+                  </p>
+                </div>
+
+                {/* QR Code Display */}
+                {showQrForDeposit && qrCodeUrl && (
+                  <div style={{ marginBottom: "24px", padding: "20px", backgroundColor: "#f9fafb", borderRadius: "8px", border: "2px solid #667eea" }}>
+                    <h3 style={{ marginTop: "0", marginBottom: "16px", textAlign: "center" }}>Scan to Pay with Mobile Wallet</h3>
+                    <div style={{ textAlign: "center", marginBottom: "16px" }}>
+                      <img src={qrCodeUrl} alt="Solana Payment QR Code" style={{ maxWidth: "300px", width: "100%", borderRadius: "8px" }} />
+                    </div>
+                    <div style={{ fontSize: "14px", lineHeight: "1.6" }}>
+                      <p style={{ fontWeight: "600", marginBottom: "8px" }}>Instructions:</p>
+                      <ol style={{ paddingLeft: "20px", margin: "0" }}>
+                        <li>Open your Solana mobile wallet app (Phantom, Solflare, etc.)</li>
+                        <li>Tap "Send" or scan QR code</li>
+                        <li>Confirm the transaction in your wallet</li>
+                        <li>Wait for confirmation (usually 30-60 seconds)</li>
+                      </ol>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setShowQrForDeposit(false)
+                        setQrCodeUrl("")
+                      }}
+                      style={{
+                        width: "100%",
+                        marginTop: "16px",
+                        padding: "10px",
+                        background: "#6b7280",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                      }}
+                    >
+                      Close QR Code
+                    </button>
                   </div>
                 )}
 
