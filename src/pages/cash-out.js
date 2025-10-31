@@ -67,6 +67,7 @@ const CashOut = () => {
   const userId = isBrowser ? localStorage.getItem("userId") : null
   const [solanaDepositMode, setSolanaDepositMode] = useState("extension") // "extension" or "qr"
   const [qrCodeUrl, setQrCodeUrl] = useState("")
+  const [solanaPayUrl, setSolanaPayUrl] = useState("")
   const [showQrCode, setShowQrCode] = useState(false)
   const [qrSessionId, setQrSessionId] = useState(null)
   const [pollingInterval, setPollingInterval] = useState(null)
@@ -307,6 +308,7 @@ const CashOut = () => {
   const closeQrModal = () => {
     setShowQrCode(false)
     setQrCodeUrl("")
+    setSolanaPayUrl("")
     setQrSessionId(null)
     stopPollingPaymentStatus()
   }
@@ -438,6 +440,7 @@ const CashOut = () => {
         })
       }
       setQrCodeUrl(qrDataUrl)
+      setSolanaPayUrl(solanaPayUrl)
       setShowQrCode(true)
       setDepositSuccess(
         `Scan the QR code with your mobile wallet to deposit ${formatSolAmount(
@@ -1030,7 +1033,12 @@ const CashOut = () => {
             <h3 style={{ marginTop: 0, marginBottom: "16px", color: "#5b21b6", textAlign: "center" }}>Scan to Pay</h3>
 
             <div style={{ textAlign: "center", marginBottom: "20px" }}>
-              <img src={qrCodeUrl} alt="Solana Pay QR code" style={{ maxWidth: "280px", width: "100%", borderRadius: "12px" }} />
+              <a href={solanaPayUrl} style={{ display: "inline-block", cursor: "pointer" }}>
+                <img src={qrCodeUrl} alt="Solana Pay QR code (click to open wallet)" style={{ maxWidth: "280px", width: "100%", borderRadius: "12px" }} />
+              </a>
+              <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "8px", marginBottom: "0" }}>
+                💡 On mobile? Tap the QR code to open your wallet directly
+              </p>
             </div>
 
             <div
@@ -1044,9 +1052,8 @@ const CashOut = () => {
             >
               <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#4c1d95", fontWeight: "600" }}>Instructions:</p>
               <ol style={{ margin: "0", paddingLeft: "20px", fontSize: "14px", color: "#4c1d95", lineHeight: "1.6" }}>
-                <li>Open your Solana mobile wallet (Phantom, Solflare, etc.)</li>
-                <li>Tap "Scan" or "Send"</li>
-                <li>Scan this QR code</li>
+                <li><strong>Option 1:</strong> Tap the QR code above to open your wallet directly (mobile/tablet)</li>
+                <li><strong>Option 2:</strong> Open your Solana wallet, tap "Scan" or "Send", and scan the QR code</li>
                 <li>Review and confirm the transaction</li>
                 <li>Payment will be detected automatically within 60 seconds</li>
               </ol>
