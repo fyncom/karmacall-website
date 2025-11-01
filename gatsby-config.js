@@ -15,17 +15,6 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: "gatsby-plugin-sharp",
-      options: {
-        defaults: {
-          formats: ["auto", "webp"],
-          placeholder: "dominantColor",
-          quality: 70,
-          breakpoints: [360, 640, 768, 1024, 1366, 1600],
-        },
-      },
-    },
-    {
       resolve: "gatsby-plugin-robots-txt",
       options: {
         host: "https://www.karmacall.com",
@@ -33,28 +22,10 @@ module.exports = {
         policy: [{ userAgent: "*", allow: "/" }],
       },
     },
-    `gatsby-plugin-sitemap`,
     {
-      resolve: `gatsby-plugin-manifest`,
+      resolve: `gatsby-plugin-sitemap`,
       options: {
-        name: `KarmaCall - Get Paid to Block Spam Calls`,
-        short_name: `KarmaCall`,
-        start_url: `/`,
-        background_color: `#ffffff`,
-        theme_color: `#008080`,
-        display: `standalone`,
-        icon: `src/images/favicon.ico`,
-        description: `Block spam calls and get paid for each one. KarmaCall makes blocking unwanted calls profitable.`,
-        lang: `en`,
-        localize: [
-          {
-            start_url: `/`,
-            lang: `en`,
-            name: `KarmaCall - Get Paid to Block Spam Calls`,
-            short_name: `KarmaCall`,
-            description: `Block spam calls and get paid for each one. KarmaCall makes blocking unwanted calls profitable.`,
-          },
-        ],
+        output: "/",
       },
     },
     {
@@ -79,6 +50,33 @@ module.exports = {
     },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
+    {
+      resolve: "gatsby-plugin-sharp",
+      options: {
+        defaults: {
+          formats: ["auto", "webp"],
+          placeholder: "dominantColor",
+          quality: 70,
+          breakpoints: [360, 640, 768, 1024, 1366, 1600],
+        },
+      },
+    },
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        name: `KarmaCall | Get Paid to Block Spam Calls`,
+        short_name: `KarmaCall`,
+        start_url: `/`,
+        background_color: `#ffffff`,
+        theme_color: `#008080`,
+        display: `standalone`,
+        icon: `src/images/favicon.ico`,
+        icon_options: {
+          purpose: `any maskable`,
+        },
+      },
+    },
+    `gatsby-plugin-offline`,
     {
       resolve: "gatsby-plugin-google-gtag",
       options: {

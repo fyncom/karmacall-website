@@ -58,6 +58,9 @@ const Footer = () => {
               <Link to="/terms-of-service">Terms of Service</Link>
             </li>
             <li>
+              <Link to="/sitemap-index.xml">Sitemap</Link>
+            </li>
+            <li>
               <Link to="/privacy-policy">Privacy Policy</Link>
             </li>
           </ul>
