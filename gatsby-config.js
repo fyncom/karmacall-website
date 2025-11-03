@@ -94,16 +94,6 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-plugin-hotjar`,
-      options: {
-        includeInDevelopment: true,
-        id: process.env.GATSBY_HOTJAR_ID,
-        sv: 6,
-        // Hotjar will be initialized immediately for all users
-        // Our consent management will only disable it if an EEA user rejects consent
-      },
-    },
-    {
       resolve: `gatsby-plugin-facebook-pixel`,
       options: {
         pixelId: process.env.GATSBY_FACEBOOK_PIXEL,

@@ -57,10 +57,6 @@ const disableTracking = () => {
     'wait_for_update': 500
   });
   
-  // Disable Hotjar recording if it exists
-  if (window._hjSettings && window.hj) {
-    window.hj('config', window._hjSettings.hjid, { session_recording: false });
-  }
   
   // Disable Facebook Pixel
   if (window.fbq) {
@@ -104,12 +100,6 @@ const CookieConsentEEA = () => {
       'region': EEA_COUNTRIES  // Scope these defaults only to EEA countries
     });
 
-    // Initialize Hotjar immediately for all users
-    // This ensures we capture user interactions from the start
-    if (window._hjSettings) {
-      window.hj = window.hj || function(){(window.hj.q = window.hj.q || []).push(arguments)};
-      window.hj('config', window._hjSettings.hjid, { session_recording: true });
-    }
 
     // Check if consent already given
     const consentStatus = localStorage.getItem("cookie_consent_eea");
@@ -119,7 +109,7 @@ const CookieConsentEEA = () => {
       if (consentStatus === "accepted" || consentStatus === "non_eea_user") {
         initializeTracking();
       } else if (consentStatus === "rejected") {
-        // If previously rejected, disable all tracking including Hotjar recording
+        // If previously rejected, disable all tracking
         disableTracking();
       }
       setLoading(false);

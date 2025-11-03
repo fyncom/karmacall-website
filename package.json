@@ -20,7 +20,6 @@
     "gatsby-plugin-facebook-pixel": "^1.0.8",
     "gatsby-plugin-google-fonts": "^1.0.1",
     "gatsby-plugin-google-gtag": "^5.12.3",
-    "gatsby-plugin-hotjar": "^1.1.1",
     "gatsby-plugin-image": "^3.12.0",
     "gatsby-plugin-manifest": "^5.12.0",
     "gatsby-plugin-mdx": "^5.12.3",
