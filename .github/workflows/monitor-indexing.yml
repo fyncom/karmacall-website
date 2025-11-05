@@ -1,0 +1,32 @@
+name: Monitor Google Indexing
+
+on:
+  schedule:
+    # Run daily at 9 AM UTC (adjust to your timezone)
+    - cron: "0 9 * * *"
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  check-indexing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client requests
+
+      - name: Run indexing monitor
+        env:
+          GSC_CREDENTIALS: ${{ secrets.GSC_CREDENTIALS }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          THRESHOLD_PERCENT: 10
+        run: python .github/scripts/monitor-indexing.py
