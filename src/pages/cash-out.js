@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import Header from "../components/header"
 import Footer from "../components/footer"
 import "../components/sales-and-marketing-use-cases.css"
+import "./cash-out.css"
 import Seo from "../components/seo"
 import { GiftCardModal, NanoNotEnoughModal, NanoSentModal, ReferralAppDownloadModal } from "../components/Modal"
 import AppDownloadButton from "../components/AppDownloadButton"
@@ -602,7 +603,7 @@ const CashOut = () => {
           </form>
 
           {/* Referral sharing section */}
-          <div className="referral-section" style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "20px" }}>
+          <div className="referral-section cash-out-section">
             <h3>Share Your Referral Code</h3>
             <p>Earn extra money by referring friends to KarmaCall!</p>
             {!referralCode ? (
@@ -611,18 +612,8 @@ const CashOut = () => {
               </button>
             ) : (
               <div className="referral-content">
-                <div
-                  className="referral-text-box"
-                  style={{
-                    backgroundColor: "var(--color-background-alt, #f5f5f5)",
-                    color: "var(--color-text, #1e293b)",
-                    padding: "15px",
-                    borderRadius: "5px",
-                    marginBottom: "10px",
-                    border: "1px solid var(--border-color, #ddd)",
-                  }}
-                >
-                  <p style={{ margin: "0", fontSize: "14px", lineHeight: "1.4", color: "inherit" }}>{referralShareText}</p>
+                <div className="referral-text-box">
+                  <p>{referralShareText}</p>
                 </div>
                 <button className="learn-more-btn" onClick={copyReferralToClipboard}>
                   Copy Referral Text
@@ -632,48 +623,26 @@ const CashOut = () => {
           </div>
 
           {/* App download section with platform-specific button */}
-          <div className="app-download-container" style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "20px" }}>
+          <div className="app-download-container cash-out-section">
             <AppDownloadButton />
           </div>
 
           {/* solana wallet connector */}
-          <div style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "20px" }}>
+          <div className="cash-out-section">
             <h2>Solana Wallet & Subscriptions</h2>
             <p>Deposit SOL for your KarmaCall subscription using a browser extension wallet or by scanning a Solana Pay QR code with your mobile wallet.</p>
 
             {/* Beautiful Mode Toggle */}
-            <div style={{ display: "flex", gap: "12px", margin: "16px 0" }}>
+            <div className="mode-toggle-container">
               <button
                 onClick={() => setSolanaDepositMode("extension")}
-                style={{
-                  flex: 1,
-                  padding: "10px 16px",
-                  borderRadius: "8px",
-                  border: "1px solid #c7d2fe",
-                  background: solanaDepositMode === "extension" ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" : "white",
-                  color: solanaDepositMode === "extension" ? "white" : "#3730a3",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  boxShadow: solanaDepositMode === "extension" ? "0 6px 12px -4px rgba(102, 126, 234, 0.55)" : "none",
-                  transition: "all 0.2s",
-                }}
+                className={`mode-toggle-btn extension ${solanaDepositMode === "extension" ? "active" : ""}`}
               >
                 Browser Wallet
               </button>
               <button
                 onClick={() => setSolanaDepositMode("qr")}
-                style={{
-                  flex: 1,
-                  padding: "10px 16px",
-                  borderRadius: "8px",
-                  border: "1px solid #c4b5fd",
-                  background: solanaDepositMode === "qr" ? "linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%)" : "white",
-                  color: solanaDepositMode === "qr" ? "white" : "#5b21b6",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  boxShadow: solanaDepositMode === "qr" ? "0 6px 12px -4px rgba(123, 58, 237, 0.55)" : "none",
-                  transition: "all 0.2s",
-                }}
+                className={`mode-toggle-btn qr ${solanaDepositMode === "qr" ? "active" : ""}`}
               >
                 Mobile QR
               </button>
@@ -682,156 +651,92 @@ const CashOut = () => {
             {/* Extension Mode Info */}
             {solanaDepositMode === "extension" ? (
               solanaWalletAddress ? (
-                <div style={{ backgroundColor: "#f0fdf4", padding: "16px", borderRadius: "8px", marginBottom: "20px" }}>
-                  <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#166534" }}>
+                <div className="info-box success">
+                  <p className="wallet-info">
                     <strong>Wallet Connected:</strong> {solanaWalletAddress.slice(0, 4)}...{solanaWalletAddress.slice(-4)}
                   </p>
-                  <p style={{ margin: "0", fontSize: "14px", color: "#166534" }}>
+                  <p className="wallet-info">
                     <strong>Escrow Balance:</strong> {solanaBalance !== null ? `${solanaBalance} SOL` : "loading..."}
                   </p>
-                  <button
-                    onClick={checkSolanaWallet}
-                    style={{
-                      background: "#10b981",
-                      color: "white",
-                      border: "none",
-                      padding: "6px 12px",
-                      borderRadius: "4px",
-                      fontSize: "12px",
-                      cursor: "pointer",
-                      marginTop: "8px",
-                    }}
-                  >
+                  <button onClick={checkSolanaWallet} className="refresh-balance-btn">
                     Refresh Balance
                   </button>
                 </div>
               ) : (
-                <div style={{ backgroundColor: "#fef3c7", borderRadius: "8px", padding: "16px", marginBottom: "20px", border: "1px solid #fcd34d" }}>
-                  <p style={{ margin: "0 0 12px 0", fontSize: "14px", color: "#92400e" }}>
+                <div className="info-box warning">
+                  <p>
                     We couldn't detect a Solana browser wallet on this device. If you have Phantom or Solflare installed, click below to connect.
                   </p>
-                  <button
-                    onClick={() => setShowSolanaConnect(true)}
-                    style={{
-                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                      color: "white",
-                      border: "none",
-                      padding: "12px 24px",
-                      borderRadius: "8px",
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                    }}
-                  >
+                  <button onClick={() => setShowSolanaConnect(true)} className="connect-wallet-btn">
                     Connect Solana Wallet
                   </button>
-                  <p style={{ margin: "12px 0 0 0", fontSize: "13px", color: "#92400e" }}>
+                  <p className="text-small margin-top-12">
                     Prefer to deposit from your phone? Switch to <strong>Mobile QR</strong> above.
                   </p>
                 </div>
               )
             ) : (
-              <div style={{ backgroundColor: "#f5f3ff", borderRadius: "8px", padding: "16px", marginBottom: "20px", border: "1px solid #ddd6fe" }}>
-                <h3 style={{ margin: "0 0 12px 0", color: "#5b21b6" }}>Mobile Wallet Deposits</h3>
-                <p style={{ margin: "0 0 12px 0", fontSize: "14px", color: "#4c1d95" }}>
+              <div className="info-box info">
+                <h3>Mobile Wallet Deposits</h3>
+                <p>
                   Pick a plan below and click <strong>Get QR</strong> to generate a Solana Pay request. Scan it with any Solana wallet on your phone (Phantom,
                   Solflare, etc.) to send SOL. After sending the funds, tap <strong>Refresh Balance</strong> to see your updated escrow.
                 </p>
-                <p style={{ margin: "0", fontSize: "13px", color: "#4c1d95" }}>
-                  Escrow address: <code style={{ wordBreak: "break-all" }}>{process.env.GATSBY_SOLANA_ADDRESS || "Loading..."}</code>
+                <p className="text-small no-margin">
+                  Escrow address: <code>{process.env.GATSBY_SOLANA_ADDRESS || "Loading..."}</code>
                 </p>
               </div>
             )}
 
             {/* Show green connected indicator in QR mode if wallet is connected on desktop */}
             {solanaDepositMode === "qr" && solanaWalletAddress && (
-              <div style={{ backgroundColor: "#ecfdf5", padding: "12px 16px", borderRadius: "8px", marginBottom: "20px", fontSize: "13px", color: "#047857" }}>
-                <strong>Connected on desktop:</strong> {solanaWalletAddress.slice(0, 4)}...{solanaWalletAddress.slice(-4)} � you can still refresh your balance
+              <div className="info-box info-green">
+                <strong>Connected on desktop:</strong> {solanaWalletAddress.slice(0, 4)}...{solanaWalletAddress.slice(-4)} – you can still refresh your balance
                 after sending from mobile.
-                <button
-                  onClick={checkSolanaWallet}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginLeft: "12px",
-                    background: "#10b981",
-                    color: "white",
-                    border: "none",
-                    padding: "4px 10px",
-                    borderRadius: "4px",
-                    fontSize: "12px",
-                    cursor: "pointer",
-                  }}
-                >
+                <button onClick={checkSolanaWallet} className="refresh-balance-inline">
                   Refresh Balance
                 </button>
               </div>
             )}
 
             {depositError && (
-              <div style={{ backgroundColor: "#fef2f2", color: "#991b1b", padding: "12px", borderRadius: "6px", marginBottom: "16px" }}>{depositError}</div>
+              <div className="alert error">{depositError}</div>
             )}
 
             {depositSuccess && (
-              <div style={{ backgroundColor: "#f0fdf4", color: "#166534", padding: "12px", borderRadius: "6px", marginBottom: "16px" }}>{depositSuccess}</div>
+              <div className="alert success">{depositSuccess}</div>
             )}
 
-            <h3 style={{ marginBottom: "16px" }}>Subscription Plans</h3>
+            <h3 className="margin-bottom-16">Subscription Plans</h3>
             {solUsdRate && <p>Current rate: 1 SOL = ${solUsdRate.toFixed(2)} USD</p>}
 
-            <h4 style={{ marginBottom: "16px" }}>
+            <h4 className="margin-bottom-16">
               For more pricing info, see our <Link to="/pricing">Pricing Page</Link>
             </h4>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "24px" }}>
+            <div className="subscription-plans-grid">
               {/* free plan */}
-              <div style={{ border: "2px solid #e5e7eb", borderRadius: "8px", padding: "16px", backgroundColor: "#f9fafb" }}>
-                <h4 style={{ margin: "0 0 8px 0", color: "#1f2937" }}>Free</h4>
-                <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#1f2937" }}>$0/mo</p>
-                <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>Free on Android Only. For iOS, use Premium or Supreme plan</p>
+              <div className="plan-card free">
+                <h4>Free</h4>
+                <p className="price">$0/mo</p>
+                <p className="description">Free on Android Only. For iOS, use Premium or Supreme plan</p>
                 <a href="https://play.google.com/store/apps/details?id=com.fyncom.robocash" target="_blank">
-                  <button
-                    style={{
-                      width: "100%",
-                      background: "#6b7280",
-                      color: "white",
-                      border: "none",
-                      padding: "10px",
-                      borderRadius: "6px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Download Android
-                  </button>
+                  <button>Download Android</button>
                 </a>
               </div>
 
               {/* premium plan */}
-              <div style={{ border: "2px solid #dbeafe", borderRadius: "8px", padding: "16px", backgroundColor: "#eff6ff" }}>
-                <h4 style={{ margin: "0 0 8px 0", color: "#1e40af" }}>Premium</h4>
-                <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#1e40af" }}>$4.99/mo</p>
-                <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>Get 2 Licenses to Share + Set Own Rates + 10x Rewards</p>
+              <div className="plan-card premium">
+                <h4>Premium</h4>
+                <p className="price">$4.99/mo</p>
+                <p className="description">Get 2 Licenses to Share + Set Own Rates + 10x Rewards</p>
                 <button
                   onClick={() => {
                     const amount = calculateSolAmount(4.99)
                     if (amount) handleSolanaDeposit(amount, "premium (1 month)")
                   }}
                   disabled={depositLoading || !solUsdRate}
-                  style={{
-                    width: "100%",
-                    background: solanaDepositMode === "qr" ? "#7c3aed" : "#3b82f6",
-                    color: "white",
-                    border: "none",
-                    padding: "10px",
-                    borderRadius: "6px",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    cursor: depositLoading || !solUsdRate ? "not-allowed" : "pointer",
-                    opacity: depositLoading || !solUsdRate ? 0.6 : 1,
-                  }}
+                  className={solanaDepositMode === "qr" ? "qr-mode" : ""}
                 >
                   {depositLoading
                     ? solanaDepositMode === "qr"
@@ -846,28 +751,17 @@ const CashOut = () => {
               </div>
 
               {/* supreme plan */}
-              <div style={{ border: "2px solid #fef3c7", borderRadius: "8px", padding: "16px", backgroundColor: "#fffbeb" }}>
-                <h4 style={{ margin: "0 0 8px 0", color: "#92400e" }}>Supreme</h4>
-                <p style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 8px 0", color: "#92400e" }}>$9.99/mo</p>
-                <p style={{ fontSize: "14px", color: "#6b7280", marginBottom: "12px" }}>Get 6 Licenses to Share + Priority Support + 100x Rewards</p>
+              <div className="plan-card supreme">
+                <h4>Supreme</h4>
+                <p className="price">$9.99/mo</p>
+                <p className="description">Get 6 Licenses to Share + Priority Support + 100x Rewards</p>
                 <button
                   onClick={() => {
                     const amount = calculateSolAmount(9.99)
                     if (amount) handleSolanaDeposit(amount, "supreme (1 month)")
                   }}
                   disabled={depositLoading || !solUsdRate}
-                  style={{
-                    width: "100%",
-                    background: solanaDepositMode === "qr" ? "#7c3aed" : "#f59e0b",
-                    color: "white",
-                    border: "none",
-                    padding: "10px",
-                    borderRadius: "6px",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    cursor: depositLoading || !solUsdRate ? "not-allowed" : "pointer",
-                    opacity: depositLoading || !solUsdRate ? 0.6 : 1,
-                  }}
+                  className={solanaDepositMode === "qr" ? "qr-mode" : ""}
                 >
                   {depositLoading
                     ? solanaDepositMode === "qr"
@@ -883,40 +777,38 @@ const CashOut = () => {
             </div>
 
             {/* custom deposit */}
-            <div style={{ border: "2px solid #e5e7eb", borderRadius: "8px", padding: "20px" }}>
-              <h3 style={{ marginTop: "0", marginBottom: "12px" }}>Custom Deposit</h3>
+            <div className="custom-deposit-box">
+              <h3>Custom Deposit</h3>
               <p>Deposit a custom SOL amount towards your preferred plan.</p>
 
-              <div style={{ marginBottom: "16px" }}>
+              <div className="form-group">
                 <label>1. Select Plan</label>
-                <div style={{ display: "flex", gap: "16px" }}>
-                  <label style={{ display: "flex", alignItems: "center", cursor: "pointer", fontSize: "14px" }}>
+                <div className="radio-group">
+                  <label className="radio-label">
                     <input
                       type="radio"
                       name="customPlan"
                       value="premium"
                       checked={customPlan === "premium"}
                       onChange={() => setCustomPlan("premium")}
-                      style={{ marginRight: "8px", width: "16px", height: "16px" }}
                     />
                     Premium (${subscriptionPlans.premium.price}/mo)
                   </label>
-                  <label style={{ display: "flex", alignItems: "center", cursor: "pointer", fontSize: "14px" }}>
+                  <label className="radio-label">
                     <input
                       type="radio"
                       name="customPlan"
                       value="supreme"
                       checked={customPlan === "supreme"}
                       onChange={() => setCustomPlan("supreme")}
-                      style={{ marginRight: "8px", width: "16px", height: "16px" }}
                     />
                     Supreme (${subscriptionPlans.supreme.price}/mo)
                   </label>
                 </div>
               </div>
 
-              <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block" }}>2. Enter Amount (SOL)</label>
+              <div className="form-group">
+                <label>2. Enter Amount (SOL)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -924,13 +816,6 @@ const CashOut = () => {
                   placeholder="0.00"
                   value={customAmount}
                   onChange={e => setCustomAmount(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "6px",
-                    fontSize: "14px",
-                  }}
                 />
               </div>
 
@@ -945,19 +830,7 @@ const CashOut = () => {
               <button
                 onClick={handleCustomDeposit}
                 disabled={depositLoading || !customAmount || parseFloat(customAmount) <= 0}
-                style={{
-                  width: "100%",
-                  background:
-                    solanaDepositMode === "qr" ? "linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%)" : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  color: "white",
-                  border: "none",
-                  padding: "12px",
-                  borderRadius: "6px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  cursor: depositLoading || !customAmount || parseFloat(customAmount) <= 0 ? "not-allowed" : "pointer",
-                  opacity: depositLoading || !customAmount || parseFloat(customAmount) <= 0 ? 0.6 : 1,
-                }}
+                className={`custom-deposit-btn ${solanaDepositMode === "qr" ? "qr-mode" : "extension-mode"}`}
               >
                 {depositLoading
                   ? solanaDepositMode === "qr"
@@ -969,8 +842,8 @@ const CashOut = () => {
               </button>
             </div>
 
-            <div style={{ marginTop: "16px", padding: "12px", backgroundColor: "#eff6ff", borderRadius: "6px" }}>
-              <p style={{ margin: "0", fontSize: "13px", color: "#1e40af" }}>
+            <div className="info-box tip">
+              <p>
                 <strong>Tip:</strong> After depositing from any device, click <em>Refresh Balance</em> above to sync your escrow.
               </p>
             </div>
@@ -986,72 +859,26 @@ const CashOut = () => {
 
       {/* QR Code Modal - Center Screen */}
       {showQrCode && qrCodeUrl && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-          onClick={closeQrModal}
-        >
-          <div
-            style={{
-              backgroundColor: "white",
-              borderRadius: "16px",
-              padding: "32px",
-              maxWidth: "400px",
-              width: "90%",
-              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-              position: "relative",
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={closeQrModal}
-              style={{
-                position: "absolute",
-                top: "16px",
-                right: "16px",
-                background: "transparent",
-                border: "none",
-                fontSize: "24px",
-                cursor: "pointer",
-                color: "#6b7280",
-                lineHeight: 1,
-              }}
-            >
+        <div className="qr-modal-overlay" onClick={closeQrModal}>
+          <div className="qr-modal-content" onClick={e => e.stopPropagation()}>
+            <button onClick={closeQrModal} className="qr-modal-close">
               ×
             </button>
 
-            <h3 style={{ marginTop: 0, marginBottom: "16px", color: "#5b21b6", textAlign: "center" }}>Scan to Pay</h3>
+            <h3>Scan to Pay</h3>
 
-            <div style={{ textAlign: "center", marginBottom: "20px" }}>
-              <a href={solanaPayUrl} style={{ display: "inline-block", cursor: "pointer" }}>
-                <img src={qrCodeUrl} alt="Solana Pay QR code (click to open wallet)" style={{ maxWidth: "280px", width: "100%", borderRadius: "12px" }} />
+            <div className="qr-code-container">
+              <a href={solanaPayUrl}>
+                <img src={qrCodeUrl} alt="Solana Pay QR code (click to open wallet)" />
               </a>
-              <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "8px", marginBottom: "0" }}>
+              <p className="qr-code-hint">
                 💡 On mobile? Tap the QR code to open your wallet directly
               </p>
             </div>
 
-            <div
-              style={{
-                backgroundColor: "#f5f3ff",
-                padding: "16px",
-                borderRadius: "8px",
-                marginBottom: "16px",
-                border: "1px solid #ddd6fe",
-              }}
-            >
-              <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#4c1d95", fontWeight: "600" }}>Instructions:</p>
-              <ol style={{ margin: "0", paddingLeft: "20px", fontSize: "14px", color: "#4c1d95", lineHeight: "1.6" }}>
+            <div className="qr-instructions-box">
+              <p>Instructions:</p>
+              <ol>
                 <li><strong>Option 1:</strong> Tap the QR code above to open your wallet directly (mobile/tablet)</li>
                 <li><strong>Option 2:</strong> Open your Solana wallet, tap "Scan" or "Send", and scan the QR code</li>
                 <li>Review and confirm the transaction</li>
@@ -1059,20 +886,7 @@ const CashOut = () => {
               </ol>
             </div>
 
-            <button
-              onClick={closeQrModal}
-              style={{
-                width: "100%",
-                background: "linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%)",
-                color: "white",
-                border: "none",
-                padding: "12px",
-                borderRadius: "8px",
-                fontSize: "16px",
-                fontWeight: "600",
-                cursor: "pointer",
-              }}
-            >
+            <button onClick={closeQrModal} className="qr-modal-close-btn">
               Close
             </button>
           </div>
