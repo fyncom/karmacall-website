@@ -7,16 +7,22 @@ Checks indexed pages daily and alerts if there's a significant drop
 import os
 import json
 import sys
+import smtplib
 from datetime import datetime, timedelta
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import requests
 
 # Configuration
-SITE_URL = os.environ.get('SITE_URL', 'https://www.karmacall.com')
+SITE_URL = 'https://www.karmacall.com'
 THRESHOLD_PERCENT = int(os.environ.get('THRESHOLD_PERCENT', 10))
-ALERT_EMAIL = os.environ.get('ALERT_EMAIL')
-SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+ALERT_EMAIL = 'support@karmacall.com'
+SMTP_EMAIL = 'support@karmacall.com'
+SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD')
+SMTP_SERVER = os.environ.get('SMTP_SERVER', 'echo.mxrouting.net')
+SMTP_PORT = int(os.environ.get('SMTP_PORT', 465))
 SLACK_WEBHOOK_URL = os.environ.get('SLACK_WEBHOOK_URL')
 
 # File to store historical data
@@ -71,34 +77,25 @@ def save_history(history):
         json.dump(history, f, indent=2)
 
 def send_email_alert(subject, message):
-    """Send email alert via SendGrid"""
-    if not SENDGRID_API_KEY or not ALERT_EMAIL:
-        print("email alert not configured, skipping email notification")
+    """Send email alert via SMTP"""
+    if not SMTP_PASSWORD:
+        print("smtp password not configured, skipping email notification")
         return
     
-    url = "https://api.sendgrid.com/v3/mail/send"
-    headers = {
-        "Authorization": f"Bearer {SENDGRID_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    
-    data = {
-        "personalizations": [{
-            "to": [{"email": ALERT_EMAIL}],
-            "subject": subject
-        }],
-        "from": {"email": ALERT_EMAIL},
-        "content": [{
-            "type": "text/plain",
-            "value": message
-        }]
-    }
-    
-    response = requests.post(url, headers=headers, json=data)
-    if response.status_code == 202:
-        print(f"email sent successfully to {ALERT_EMAIL}")
-    else:
-        print(f"failed to send email: {response.status_code} - {response.text}")
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = SMTP_EMAIL
+        msg['To'] = ALERT_EMAIL
+        msg['Subject'] = subject
+        msg.attach(MIMEText(message, 'plain'))
+        
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
+            server.login(SMTP_EMAIL, SMTP_PASSWORD)
+            server.send_message(msg)
+        
+        print(f"email sent successfully to {ALERT_EMAIL} from {SMTP_EMAIL}")
+    except Exception as e:
+        print(f"failed to send email: {str(e)}")
 
 def send_slack_alert(message):
     """Send alert to Slack"""
@@ -157,8 +154,48 @@ def main():
         # Keep only last 90 days
         records = records[-90:]
         
-        # Check for significant drop
-        if len(records) >= 2:
+        # CRITICAL: Check if pages are zero or critically low (always alert)
+        CRITICAL_THRESHOLD = 5  # Alert if pages drop below this number
+        
+        if current_count <= CRITICAL_THRESHOLD:
+            # CRITICAL ALERT - send every day until fixed
+            message = f"""
+🚨 CRITICAL: SITE DEINDEXED OR CRITICALLY LOW PAGES
+
+Site: {SITE_URL}
+Current indexed pages: {current_count}
+Date: {today}
+
+⚠️ YOUR SITE IS NOT APPEARING IN GOOGLE SEARCH! ⚠️
+
+This alert will be sent DAILY until the issue is resolved.
+
+Immediate actions required:
+1. Check Cloudflare Bot Fight Mode (must be OFF)
+2. Verify robots.txt is not blocking: {SITE_URL}/robots.txt
+3. Check Google Search Console for errors: https://search.google.com/search-console
+4. Verify sitemap is accessible: {SITE_URL}/sitemap-index.xml
+5. Check for manual actions or penalties in GSC
+6. Verify site is not down or returning errors
+
+Common causes:
+- Cloudflare Bot Fight Mode enabled (most common!)
+- robots.txt blocking all crawlers
+- Entire site has noindex tags
+- Server/hosting issues
+- DNS or SSL problems
+- Manual penalty from Google
+
+View full report: https://search.google.com/search-console?resource_id={SITE_URL}
+"""
+            send_alert(
+                f"🚨 CRITICAL: KarmaCall has {current_count} indexed pages (DAILY ALERT)",
+                message
+            )
+            print(f"🚨 CRITICAL ALERT SENT: Only {current_count} pages indexed!")
+        
+        # Check for significant drop (normal monitoring)
+        elif len(records) >= 2:
             previous_count = records[-2]['count']
             previous_date = records[-2]['date']
             

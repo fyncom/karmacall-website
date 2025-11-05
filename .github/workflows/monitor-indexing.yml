@@ -26,9 +26,7 @@ jobs:
       - name: Run indexing monitor
         env:
           GSC_CREDENTIALS: ${{ secrets.GSC_CREDENTIALS }}
-          SITE_URL: ${{ secrets.SITE_URL }}
-          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           THRESHOLD_PERCENT: 10
         run: python .github/scripts/monitor-indexing.py

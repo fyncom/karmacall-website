@@ -60,30 +60,45 @@ Add these secrets:
    - Copy the entire contents
    - Paste it as the secret value
 
-2. **SITE_URL** (Required)
+2. **SMTP_EMAIL** (Optional - for email alerts)
 
-   - Value: `https://www.karmacall.com`
-   - Or: `sc-domain:karmacall.com` (if using domain property)
+   - Your MX Route email: `support@karmacall.com`
+   - This is the account that will send and receive alerts
 
-3. **ALERT_EMAIL** (Optional - for email alerts)
+3. **SMTP_PASSWORD** (Optional - for email alerts)
 
-   - Your email address to receive alerts
+   - Your MX Route email password
+   - See "Setting Up MX Route SMTP" section below
 
-4. **SENDGRID_API_KEY** (Optional - for email alerts)
-
-   - Sign up at [SendGrid](https://sendgrid.com/) (free tier: 100 emails/day)
-   - Create an API key with "Mail Send" permissions
-   - Paste the API key here
-
-5. **SLACK_WEBHOOK_URL** (Optional - for Slack alerts)
+4. **SLACK_WEBHOOK_URL** (Optional - for Slack alerts)
 
    - Go to your Slack workspace
    - Create an Incoming Webhook: https://api.slack.com/messaging/webhooks
    - Paste the webhook URL here
 
-6. **THRESHOLD_PERCENT** (Optional)
+5. **THRESHOLD_PERCENT** (Optional)
    - Default: `10` (alerts if pages drop by 10% or more)
    - Adjust as needed (e.g., `5` for more sensitive, `20` for less sensitive)
+
+### Setting Up MX Route SMTP (for email alerts)
+
+To send alerts from `support@karmacall.com`:
+
+1. **Get Your MX Route Credentials**:
+   - SMTP Server: `echo.mxrouting.net`
+   - Port: `465` (SSL) or `587` (TLS)
+   - Username: `support@karmacall.com` (your full email address)
+   - Password: Your MX Route email password
+
+2. **Add GitHub Secrets**:
+   - Go to your GitHub repository → Settings → Secrets and variables → Actions
+   - Add these secrets:
+     - `SMTP_EMAIL`: `support@karmacall.com`
+     - `SMTP_PASSWORD`: Your MX Route email password
+
+**Note**: 
+- Alerts are sent to `support@karmacall.com` (hardcoded). To change this, edit `.github/scripts/monitor-indexing.py` line 21.
+- Default SMTP server is `echo.mxrouting.net` on port `465` (SSL). To use a different server or port, set `SMTP_SERVER` and `SMTP_PORT` environment variables in the workflow file.
 
 ### Step 3: Enable GitHub Actions
 
@@ -134,16 +149,19 @@ You should see output like:
 
 You'll receive an alert if:
 
-- Indexed pages drop by 10% or more (configurable)
-- The monitoring script encounters an error
+- **CRITICAL (daily alerts)**: Indexed pages are 5 or fewer - you'll get an alert EVERY DAY until fixed
+- **WARNING**: Indexed pages drop by 10% or more (configurable)
+- **ERROR**: The monitoring script encounters an error
 
 The alert includes:
 
 - Current vs. previous indexed page count
-- Percentage change
+- Percentage change (if applicable)
 - Possible causes (Cloudflare, robots.txt, etc.)
 - Action items to investigate
 - Direct link to Google Search Console
+
+**Important**: If your site is completely deindexed (0 pages) or critically low (≤5 pages), you'll receive a CRITICAL alert every single day until the issue is resolved. This ensures you never miss a catastrophic indexing failure.
 
 ## Troubleshooting
 
@@ -164,9 +182,12 @@ The alert includes:
 
 ### Email not sending
 
-- Verify SENDGRID_API_KEY and ALERT_EMAIL are set
-- Check SendGrid dashboard for errors
-- Make sure you verified your sender email in SendGrid
+- Verify SMTP_EMAIL and SMTP_PASSWORD are set correctly
+- Make sure you're using your MX Route email password
+- Verify the SMTP server is correct: `echo.mxrouting.net`
+- Try port `587` instead of `465` if you get SSL errors (add `SMTP_PORT: 587` to workflow env)
+- Check MX Route webmail to ensure the account is active
+- Test by triggering the workflow manually and checking GitHub Actions logs
 
 ### Slack not working
 
@@ -210,7 +231,7 @@ You can view this file to see your indexing trends over time.
 
 - **GitHub Actions**: Free (2,000 minutes/month on free plan)
 - **Google Search Console API**: Free (unlimited)
-- **SendGrid**: Free tier (100 emails/day)
+- **MX Route SMTP**: Included with your MX Route hosting
 - **Slack**: Free
 
 **Total cost: $0/month** 🎉
