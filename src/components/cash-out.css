@@ -93,6 +93,7 @@
 .info-box.success {
   background-color: #f0fdf4;
   color: #166534;
+  margin: 0 0 8px 0;
 }
 
 .info-box.warning {
