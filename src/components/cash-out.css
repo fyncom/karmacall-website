@@ -12,19 +12,6 @@
   margin-bottom: 16px;
 }
 
-.text-small {
-  font-size: 13px;
-}
-
-.margin-top-12 {
-  margin-top: 12px;
-  margin-bottom: 0;
-}
-
-.no-margin {
-  margin: 0;
-}
-
 /* Referral Section */
 .referral-text-box {
   background-color: var(--color-background-alt, #f5f5f5);
@@ -90,18 +77,43 @@
   margin-bottom: 20px;
 }
 
+/* Success Box - Wallet Connected */
 .info-box.success {
   background-color: #f0fdf4;
+}
+
+.info-box.success p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
   color: #166534;
   margin: 0 0 8px 0;
 }
 
+.info-box.success p:last-of-type {
+  margin: 0;
+}
+
+/* Warning Box - No Wallet Detected */
 .info-box.warning {
   background-color: #fef3c7;
   border: 1px solid #fcd34d;
+}
+
+.info-box.warning p {
+  font-size: 14px;
   color: #92400e;
 }
 
+.info-box.warning p:first-of-type {
+  margin: 0 0 12px 0;
+}
+
+.info-box.warning p:last-of-type {
+  margin: 12px 0 0 0;
+  font-size: 13px;
+}
+
+/* Info Box - Mobile Wallet Deposits */
 .info-box.info {
   background-color: #f5f3ff;
   border: 1px solid #ddd6fe;
@@ -112,40 +124,43 @@
   color: #5b21b6;
 }
 
+.info-box.info p {
+  font-size: 14px;
+  color: #4c1d95;
+}
+
+.info-box.info p:first-of-type {
+  margin: 0 0 12px 0;
+}
+
+.info-box.info p:last-of-type {
+  margin: 0;
+  font-size: 13px;
+}
+
+.info-box.info code {
+  word-break: break-all;
+}
+
+/* Info Box - Green Desktop Connected in QR Mode */
 .info-box.info-green {
   background-color: #ecfdf5;
+  padding: 12px 16px;
   font-size: 13px;
   color: #047857;
 }
 
+/* Tip Box */
 .info-box.tip {
   background-color: #eff6ff;
   margin-top: 16px;
+  padding: 12px;
 }
 
 .info-box.tip p {
   margin: 0;
   font-size: 13px;
   color: #1e40af;
-}
-
-.info-box p {
-  margin: 0 0 12px 0;
-  font-size: 14px;
-}
-
-.info-box p:last-child {
-  margin-bottom: 0;
-}
-
-.info-box code {
-  word-break: break-all;
-}
-
-/* Wallet Info Display */
-.wallet-info {
-  margin: 0 0 8px 0;
-  font-size: 14px;
 }
 
 /* Buttons */

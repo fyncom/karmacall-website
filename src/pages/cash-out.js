@@ -652,10 +652,10 @@ const CashOut = () => {
             {solanaDepositMode === "extension" ? (
               solanaWalletAddress ? (
                 <div className="info-box success">
-                  <p className="wallet-info">
+                  <p>
                     <strong>Wallet Connected:</strong> {solanaWalletAddress.slice(0, 4)}...{solanaWalletAddress.slice(-4)}
                   </p>
-                  <p className="wallet-info">
+                  <p>
                     <strong>Escrow Balance:</strong> {solanaBalance !== null ? `${solanaBalance} SOL` : "loading..."}
                   </p>
                   <button onClick={checkSolanaWallet} className="refresh-balance-btn">
@@ -670,7 +670,7 @@ const CashOut = () => {
                   <button onClick={() => setShowSolanaConnect(true)} className="connect-wallet-btn">
                     Connect Solana Wallet
                   </button>
-                  <p className="text-small margin-top-12">
+                  <p>
                     Prefer to deposit from your phone? Switch to <strong>Mobile QR</strong> above.
                   </p>
                 </div>
@@ -682,7 +682,7 @@ const CashOut = () => {
                   Pick a plan below and click <strong>Get QR</strong> to generate a Solana Pay request. Scan it with any Solana wallet on your phone (Phantom,
                   Solflare, etc.) to send SOL. After sending the funds, tap <strong>Refresh Balance</strong> to see your updated escrow.
                 </p>
-                <p className="text-small no-margin">
+                <p>
                   Escrow address: <code>{process.env.GATSBY_SOLANA_ADDRESS || "Loading..."}</code>
                 </p>
               </div>
