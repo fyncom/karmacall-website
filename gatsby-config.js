@@ -70,7 +70,7 @@ module.exports = {
         background_color: `#ffffff`,
         theme_color: `#008080`,
         display: `standalone`,
-        icon: `src/images/favicon.ico`,
+        icon: `src/images/karmacall-favicon.png`,
         icon_options: {
           purpose: `any maskable`,
         },
