@@ -17,28 +17,28 @@ const DownloadApk = () => {
         <div className="download-hero">
           <FaAndroid className="android-icon" />
           <h1>Download KarmaCall APK</h1>
-          <p className="subtitle">get the latest version with critical updates</p>
+          <p className="subtitle">Get the latest version with critical updates</p>
         </div>
         <div className="situation-notice">
           <div className="notice-header">
             <FaExclamationTriangle className="warning-icon" />
-            <h2>why we're offering direct downloads</h2>
+            <h2>Why We're Offering Direct Downloads</h2>
           </div>
           <p>
-            our google play app update has been in review for <strong>140 days</strong>. this is highly abnormal, and we're actively working with google to
+            Our google play app update has been in review for <strong>140 days</strong>. This is highly abnormal, and we're actively working with google to
             resolve this issue.
           </p>
           <p>
-            the current version in the google play store has a critical bug: <strong>it blocks texts from everyone</strong>, not just unknown senders. this
+            The current version in the google play store has a critical bug: <strong>it blocks texts from everyone</strong>, not just unknown senders. This
             makes the app frustrating to use for text messaging.
           </p>
           <p>
-            we've fixed this issue and added several important features in the versions below. rather than wait indefinitely, we're making these updates
+            We've fixed this issue and added several important features in the versions below. Rather than wait indefinitely, we're making these updates
             available for direct download so you can enjoy the app as it was meant to be.
           </p>
         </div>
         <div className="updates-container">
-          <h2>what's new in these updates</h2>
+          <h2>What's New in These Updates</h2>
           <div className="version-updates">
             <div className="version-card">
               <div className="version-header">
@@ -46,7 +46,7 @@ const DownloadApk = () => {
               </div>
               <div className="version-content">
                 <FaCheckCircle className="check-icon" />
-                <p>fixing issue for contacts texts notifications. works as expected now.</p>
+                <p>Fixed issue for contacts texts notifications. Works as expected now.</p>
               </div>
             </div>
             <div className="version-card">
@@ -55,7 +55,7 @@ const DownloadApk = () => {
               </div>
               <div className="version-content">
                 <FaCheckCircle className="check-icon" />
-                <p>added sounds to blocked notifications & localized some notification strings</p>
+                <p>Added sounds to blocked notifications & localized some notification strings</p>
               </div>
             </div>
             <div className="version-card featured-version">
@@ -66,83 +66,83 @@ const DownloadApk = () => {
               <div className="version-content">
                 <FaCheckCircle className="check-icon" />
                 <p>
-                  added new graylisting features, which is default "on". now, people you call, who are not contacts or karmacallers can call you back without
+                  Added new graylisting features, which is default "on". Now, people you call, who are not contacts or KarmaCallers can call you back without
                   being blocked.
                 </p>
                 <p>
-                  <strong>android 11 and lower:</strong> fix bug that caused active call to be ended when an incoming blocked call arrives. added a "protect
-                  active call" setting.
+                  <strong>Android 11 and lower:</strong> Fixed bug that caused active call to be ended when an incoming blocked call arrives. Added a "Protect
+                  Active Call" setting.
                 </p>
               </div>
             </div>
           </div>
         </div>
         <div className="download-section">
-          <h2>download the apk</h2>
+          <h2>Download the APK</h2>
           <p className="download-instructions">
-            click the button below to download the latest version of karmacall. you'll need to enable installation from unknown sources in your android
+            Click the button below to download the latest version of KarmaCall. You'll need to enable installation from unknown sources in your Android
             settings.
           </p>
           <a href="https://github.com/FynCom/KarmaCall-android/releases/latest/download/app-release.apk" className="download-button" download>
             <FaDownload className="download-icon" />
-            download karmacall v4.9.71
+            Download KarmaCall v4.9.71
           </a>
-          <p className="file-info">apk file • android 6.0 or higher required</p>
+          <p className="file-info">APK file • Android 10 or higher required</p>
         </div>
         <div className="installation-guide">
-          <h2>how to install</h2>
+          <h2>How to Install</h2>
           <ol className="install-steps">
             <li>
-              <strong>download the apk</strong>
-              <p>tap the download button above to save the apk file to your device</p>
+              <strong>Download the APK</strong>
+              <p>Tap the download button above to save the APK file to your device</p>
             </li>
             <li>
-              <strong>enable unknown sources</strong>
-              <p>go to settings → security → enable "install unknown apps" for your browser or file manager</p>
+              <strong>Enable Unknown Sources</strong>
+              <p>Go to Settings → Security → Enable "Install Unknown Apps" for your browser or file manager</p>
             </li>
             <li>
-              <strong>install the app</strong>
-              <p>open the downloaded apk file and follow the installation prompts</p>
+              <strong>Install the App</strong>
+              <p>Open the downloaded APK file and follow the installation prompts</p>
             </li>
             <li>
-              <strong>grant permissions</strong>
-              <p>allow the necessary permissions for karmacall to block spam calls and texts</p>
+              <strong>Grant Permissions</strong>
+              <p>Allow the necessary permissions for KarmaCall to block spam calls and texts</p>
             </li>
           </ol>
         </div>
         <div className="faq-section">
-          <h2>common questions</h2>
+          <h2>Common Questions</h2>
           <div className="faq-item">
-            <h3>is this safe?</h3>
+            <h3>Is This Safe?</h3>
             <p>
-              yes! this is the official karmacall apk, signed with our developer certificate. it's the exact same app that will eventually be on the google play
-              store once the review is complete.
+              Yes! This is the official KarmaCall APK, signed with our developer certificate. It's the exact same app that will eventually be on the Google Play
+              Store once the review is complete.
             </p>
           </div>
           <div className="faq-item">
-            <h3>will i get automatic updates?</h3>
+            <h3>Will I Get Automatic Updates?</h3>
             <p>
-              no, sideloaded apps don't update automatically. you'll need to check back here or follow our social media for new versions. once the google play
-              store version is updated, you can switch back to that for automatic updates.
+              No, sideloaded apps don't update automatically. You'll need to check back here or follow our social media for new versions. Once the Google Play
+              Store version is updated, you can switch back to that for automatic updates.
             </p>
           </div>
           <div className="faq-item">
-            <h3>can i install this over the play store version?</h3>
+            <h3>Can I Install This Over the Play Store Version?</h3>
             <p>
-              yes! since this is signed with the same certificate, you can install it directly over your existing karmacall installation without losing your
+              Yes! Since this is signed with the same certificate, you can install it directly over your existing KarmaCall installation without losing your
               data or settings.
             </p>
           </div>
           <div className="faq-item">
-            <h3>when will the play store be updated?</h3>
-            <p>we're working with google to resolve the review delay. we'll announce on our website and social media as soon as the update is approved.</p>
+            <h3>When Will the Play Store Be Updated?</h3>
+            <p>We're working with Google to resolve the review delay. We'll announce on our website and social media as soon as the update is approved.</p>
           </div>
         </div>
         <div className="support-section">
-          <h2>need help?</h2>
-          <p>if you have any issues with installation or the app itself, please reach out to our support team.</p>
+          <h2>Need Help?</h2>
+          <p>If you have any issues with installation or the app itself, please reach out to our support team.</p>
           <a href="/contact" className="support-link">
-            contact support
+            Contact Support
           </a>
         </div>
       </section>

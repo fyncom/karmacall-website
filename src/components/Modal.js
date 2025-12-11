@@ -50,7 +50,7 @@ export const KarmacallAppStoreModal = ({ onClose }) => {
         </div>
         <p style={{ marginTop: '20px', fontSize: '0.9rem', textAlign: 'center' }}>
           <Link to="/download-apk" style={{ color: 'var(--fyncom-blue)', textDecoration: 'underline' }}>
-            android users: download the latest apk with critical updates
+            Android Users: Download the Latest APK With Critical Updates
           </Link>
         </p>
       </div>
@@ -331,7 +331,7 @@ export const ReferralAppDownloadModal = ({ isOpen, onClose }) => {
         </div>
         <p style={{ marginTop: '20px', fontSize: '0.9rem', textAlign: 'center' }}>
           <Link to="/download-apk" style={{ color: 'var(--fyncom-blue)', textDecoration: 'underline' }}>
-            android users: download the latest apk with critical updates
+            Android Users: Download the Latest APK With Critical Updates
           </Link>
         </p>
       </div>
