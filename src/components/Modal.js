@@ -5,6 +5,7 @@ import { GatsbyImage } from "gatsby-plugin-image"
 import { FaGift, FaFileAlt, FaSearch, FaSadCry, FaBan, FaBug, FaMoneyBill, FaGifts, FaSadTear } from "react-icons/fa"
 import { useCombinedQuery } from "./useCombinedQuery"
 import ReactGA from 'react-ga4';
+import { Link } from "gatsby"
 
 export const KarmacallAppStoreModal = ({ onClose }) => {
   const { appStoreBadge, googlePlayBadge } = useCombinedQuery()
@@ -47,6 +48,11 @@ export const KarmacallAppStoreModal = ({ onClose }) => {
             <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" />
           </a>
         </div>
+        <p style={{ marginTop: '20px', fontSize: '0.9rem', textAlign: 'center' }}>
+          <Link to="/download-apk" style={{ color: 'var(--fyncom-blue)', textDecoration: 'underline' }}>
+            android users: download the latest apk with critical updates
+          </Link>
+        </p>
       </div>
     </div>
   )
@@ -323,6 +329,11 @@ export const ReferralAppDownloadModal = ({ isOpen, onClose }) => {
             <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" />
           </a>
         </div>
+        <p style={{ marginTop: '20px', fontSize: '0.9rem', textAlign: 'center' }}>
+          <Link to="/download-apk" style={{ color: 'var(--fyncom-blue)', textDecoration: 'underline' }}>
+            android users: download the latest apk with critical updates
+          </Link>
+        </p>
       </div>
     </div>
   )
