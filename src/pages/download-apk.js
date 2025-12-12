@@ -107,7 +107,7 @@ const DownloadApk = () => {
               <strong>Enable Unknown Sources</strong>
               <p>
                 Search "Install Unknown Apps" in your Android phone, select it and enable "My Files" since the downloaded APK file will be saved in your
-                "Downloads" folder.
+                "Downloads" folder - or you can enable your browser to install unknown apps - we recommend using your file manager to install the APK.
               </p>
               {/* <p>
                 Another way to enable this, is to go to Settings → Security & Privacy → More security settings → Enable "Install Unknown Apps" for your browser
