@@ -25,11 +25,14 @@ const DownloadApk = () => {
             <h2>Why We're Offering Direct Downloads</h2>
           </div>
           <p>
-            Our google play app update has been in review for <strong>140 days</strong>. This is highly abnormal, and we're actively working with google to
-            resolve this issue.
+            Our Google Play app update has been in review for <strong>140 days</strong>. We have never had this issue and are{" "}
+            <a href="https://support.google.com/googleplay/android-developer/thread/363840973" target="_blank" rel="noopener noreferrer">
+              actively working with Google
+            </a>
+            &nbsp;to resolve this issue.
           </p>
           <p>
-            The current version in the google play store has a critical bug: <strong>it blocks texts from everyone</strong>, not just unknown senders. This
+            The current version in the Google Play store has a critical bug: <strong>it blocks texts from everyone</strong>, not just unknown senders. This
             makes the app frustrating to use for text messaging.
           </p>
           <p>
@@ -83,7 +86,11 @@ const DownloadApk = () => {
             Click the button below to download the latest version of KarmaCall. You'll need to enable installation from unknown sources in your Android
             settings.
           </p>
-          <a href="https://github.com/FynCom/KarmaCall-android/releases/latest/download/app-release.apk" className="download-button" download>
+          {/* <a href="https://fyncom-static-files.s3.us-west-1.amazonaws.com/KarmaCall-v4971-308.apk" className="download-button" download>
+            <FaDownload className="download-icon" />
+            Download KarmaCall v4.9.71
+          </a> */}
+          <a href="/KarmaCall-v4971-308.apk" className="download-button" download>
             <FaDownload className="download-icon" />
             Download KarmaCall v4.9.71
           </a>
@@ -98,11 +105,28 @@ const DownloadApk = () => {
             </li>
             <li>
               <strong>Enable Unknown Sources</strong>
-              <p>Go to Settings → Security → Enable "Install Unknown Apps" for your browser or file manager</p>
+              <p>
+                Search "Install Unknown Apps" in your Android phone, select it and enable "My Files" since the downloaded APK file will be saved in your
+                "Downloads" folder.
+              </p>
+              {/* <p>
+                Another way to enable this, is to go to Settings → Security & Privacy → More security settings → Enable "Install Unknown Apps" for your browser
+                or file manager
+              </p> */}
             </li>
             <li>
-              <strong>Install the App</strong>
-              <p>Open the downloaded APK file and follow the installation prompts</p>
+              <strong>Uninstall the Google Play Version (If Installed)</strong>
+              <p>
+                Search for "KarmaCall" in your Android phone, long press on the app &* select "Uninstall". Your account data is safely stored on our servers, so
+                you won't lose anything.
+              </p>
+            </li>
+            <li>
+              <strong>Install the KarmaCall APK</strong>
+              <p>
+                Open the downloaded KarmaCall APK file and follow the installation prompts. If prompted by Google Play Protect, you can safely scan the APK - it
+                will pass verification.
+              </p>
             </li>
             <li>
               <strong>Grant Permissions</strong>
@@ -127,10 +151,10 @@ const DownloadApk = () => {
             </p>
           </div>
           <div className="faq-item">
-            <h3>Can I Install This Over the Play Store Version?</h3>
+            <h3>Do I Need to Uninstall the Play Store Version First?</h3>
             <p>
-              Yes! Since this is signed with the same certificate, you can install it directly over your existing KarmaCall installation without losing your
-              data or settings.
+              Yes, you'll need to uninstall the Google Play version before installing this APK due to package name conflicts. Don't worry - your account data
+              (balance, settings, contacts) is stored on our servers, so you won't lose anything. Just log back in after installing.
             </p>
           </div>
           <div className="faq-item">

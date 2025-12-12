@@ -243,7 +243,58 @@
     justify-content: center;
     box-sizing: border-box;
     gap: 50px;
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
+}
+.android-apk-notice {
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+    border: 2px solid #ffa726;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(255, 167, 38, 0.2);
+}
+@media (prefers-color-scheme: dark) {
+  .android-apk-notice {
+    background: linear-gradient(135deg, #4a3f00 0%, #5a4d00 100%);
+    border-color: #ffa726;
+    box-shadow: 0 2px 8px rgba(255, 167, 38, 0.3);
+  }
+}
+.android-apk-notice p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text);
+}
+.android-apk-notice strong {
+    color: #e65100;
+    font-weight: 700;
+}
+@media (prefers-color-scheme: dark) {
+  .android-apk-notice strong {
+    color: #ffb74d;
+  }
+}
+.apk-download-link {
+    color: #e65100;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    transition: color 0.2s;
+}
+.apk-download-link:hover {
+    color: #bf360c;
+    text-decoration-thickness: 2px;
+}
+@media (prefers-color-scheme: dark) {
+  .apk-download-link {
+    color: #ffb74d;
+  }
+  .apk-download-link:hover {
+    color: #ffc107;
+  }
 }
 .index-links {
   display: inline-flex; /* or 'inline-block' depending on your layout needs */
@@ -412,11 +463,18 @@
   }
   .app-store-row {
     flex-direction: row;
-    padding: 0rem 1rem 2rem 1rem;
+    padding: 0rem 1rem 1rem 1rem;
     gap: 1rem;
   }
   .app-img-index{
     max-width: fit-content; /*Prevents images from being cut-off*/
+  }
+  .android-apk-notice {
+    margin: 0 1rem 2rem 1rem;
+    padding: 14px 18px;
+  }
+  .android-apk-notice p {
+    font-size: 0.9rem;
   }
   .html-dynamic {
     padding: 3rem 0rem 0rem 0rem;
