@@ -41,6 +41,13 @@ Maintain consistent code formatting. Use Prettier or a similar tool. Your `.pret
 **Functional Components (React):** 
 Use functional components and hooks (`useState`, `useEffect`, etc.) in React code. Avoid class components unless absolutely necessary.
 
+**Capitalization Rules:**
+- **Headers and Titles (h1, h2, h3, etc.):** Use Title Case - capitalize major words (e.g., "About Us", "Our Story", "How to Install")
+- **Body Text and Paragraphs:** Use standard sentence case - capitalize first word and proper nouns (e.g., "KarmaCall", "Google Play Store", "Android")
+- **Button Labels and Links:** Use Title Case for important actions (e.g., "Download KarmaCall", "Contact Support")
+- **Logging Messages:** Keep lowercase for consistency in logs (e.g., `console.log('user clicked button')`)
+- **Product Names:** Always capitalize properly - "KarmaCall", "Android", "Google Play Store", "APK"
+
 ### Gatsby Specifics
 
 **Data Fetching:** 

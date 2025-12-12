@@ -1,0 +1,417 @@
+/* Download APK Page Styles */
+.download-apk-section {
+  margin: 40px auto;
+  max-width: 900px;
+  padding: 0 20px;
+}
+.download-hero {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 40px 20px;
+}
+.download-hero .android-icon {
+  font-size: 80px;
+  color: #3ddc84;
+  margin-bottom: 20px;
+}
+.download-hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: var(--color-text);
+}
+.download-hero .subtitle {
+  font-size: 1.2rem;
+  color: #999;
+  font-weight: 300;
+}
+@media (prefers-color-scheme: dark) {
+  .download-hero .subtitle {
+    color: #ccc;
+  }
+}
+.situation-notice {
+  background: linear-gradient(135deg, #fff3cd 0%, #fff8e1 100%);
+  border-left: 4px solid #ffc107;
+  padding: 30px;
+  margin-bottom: 50px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+@media (prefers-color-scheme: dark) {
+  .situation-notice {
+    background: linear-gradient(135deg, #4a3f00 0%, #5a4d00 100%);
+    border-left-color: #ffc107;
+  }
+}
+.situation-notice .notice-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.situation-notice .warning-icon {
+  font-size: 32px;
+  color: #ff9800;
+}
+.situation-notice h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--color-text);
+}
+.situation-notice p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 15px;
+  color: var(--color-text);
+}
+.situation-notice p:last-child {
+  margin-bottom: 0;
+}
+.situation-notice strong {
+  color: #d84315;
+  font-weight: 600;
+}
+@media (prefers-color-scheme: dark) {
+  .situation-notice strong {
+    color: #ff8a65;
+  }
+}
+.updates-container {
+  margin-bottom: 50px;
+}
+.updates-container h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: var(--color-text);
+}
+.version-updates {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.version-card {
+  background: var(--color-background);
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 25px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+@media (prefers-color-scheme: dark) {
+  .version-card {
+    background: #1e1e1e;
+    border-color: #444;
+  }
+}
+.version-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.version-card.featured-version {
+  border: 2px solid #4caf50;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(76, 175, 80, 0.1) 100%);
+}
+.version-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.version-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--color-text);
+}
+.latest-badge {
+  background: #4caf50;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.version-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.version-content .check-icon {
+  color: #4caf50;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+.version-content p {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  padding-left: 30px;
+  position: relative;
+}
+.version-content p::before {
+  content: "•";
+  position: absolute;
+  left: 10px;
+  color: #4caf50;
+  font-weight: bold;
+}
+.download-section {
+  text-align: center;
+  margin: 60px 0;
+  padding: 40px;
+  background: var(--color-background);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+}
+@media (prefers-color-scheme: dark) {
+  .download-section {
+    background: #1e1e1e;
+    border-color: #444;
+  }
+}
+.download-section h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: var(--color-text);
+}
+.download-instructions {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  color: #666;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (prefers-color-scheme: dark) {
+  .download-instructions {
+    color: #ccc;
+  }
+}
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+  padding: 18px 40px;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+.download-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+.download-button .download-icon {
+  font-size: 24px;
+}
+.file-info {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #999;
+}
+@media (prefers-color-scheme: dark) {
+  .file-info {
+    color: #ccc;
+  }
+}
+.installation-guide {
+  margin: 60px 0;
+}
+.installation-guide h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: var(--color-text);
+}
+.install-steps {
+  list-style: none;
+  padding: 0;
+  counter-reset: step-counter;
+}
+.install-steps li {
+  counter-increment: step-counter;
+  position: relative;
+  padding: 25px 25px 25px 80px;
+  margin-bottom: 20px;
+  background: var(--color-background);
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+@media (prefers-color-scheme: dark) {
+  .install-steps li {
+    background: #1e1e1e;
+    border-color: #444;
+  }
+}
+.install-steps li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 25px;
+  top: 25px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.install-steps li strong {
+  display: block;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: var(--color-text);
+}
+.install-steps li p {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
+}
+@media (prefers-color-scheme: dark) {
+  .install-steps li p {
+    color: #ccc;
+  }
+}
+.faq-section {
+  margin: 60px 0;
+}
+.faq-section h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: var(--color-text);
+}
+.faq-item {
+  margin-bottom: 30px;
+  padding: 25px;
+  background: var(--color-background);
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+@media (prefers-color-scheme: dark) {
+  .faq-item {
+    background: #1e1e1e;
+    border-color: #444;
+  }
+}
+.faq-item h3 {
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+  color: var(--color-text);
+}
+.faq-item p {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #666;
+}
+@media (prefers-color-scheme: dark) {
+  .faq-item p {
+    color: #ccc;
+  }
+}
+.support-section {
+  text-align: center;
+  margin: 60px 0;
+  padding: 40px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-radius: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  .support-section {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+  }
+}
+.support-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: var(--color-text);
+}
+.support-section p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+  color: #666;
+}
+@media (prefers-color-scheme: dark) {
+  .support-section p {
+    color: #ccc;
+  }
+}
+.support-link {
+  display: inline-block;
+  background: #2196f3;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+.support-link:hover {
+  background: #1976d2;
+  transform: translateY(-2px);
+}
+@media (max-width: 768px) {
+  .download-apk-section {
+    padding: 0 15px;
+  }
+  .download-hero h1 {
+    font-size: 2rem;
+  }
+  .download-hero .android-icon {
+    font-size: 60px;
+  }
+  .situation-notice {
+    padding: 20px;
+  }
+  .situation-notice .notice-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+  .situation-notice h2 {
+    font-size: 1.5rem;
+  }
+  .situation-notice p {
+    font-size: 1rem;
+  }
+  .updates-container h2,
+  .installation-guide h2,
+  .faq-section h2 {
+    font-size: 1.6rem;
+  }
+  .version-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .download-section {
+    padding: 25px 15px;
+  }
+  .download-button {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+  }
+  .install-steps li {
+    padding: 20px 20px 20px 70px;
+  }
+  .install-steps li::before {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+    left: 20px;
+  }
+  .install-steps li strong {
+    font-size: 1.1rem;
+  }
+}
+

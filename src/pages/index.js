@@ -211,6 +211,19 @@ const BlockSpamEarnCash = () => {
               <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" loading="eager" />
             </a>
           </div>
+          {!isIOS && (
+            <div className="android-apk-notice">
+              <p>
+                <strong>⚠️ Android users:</strong> The current Google Play version has a bug that blocks texts from your contacts. Our fix has been in review
+                for months.{" "}
+                <Link to="/download-apk" className="apk-download-link">
+                  For now, you can download the working version here
+                </Link>{" "}
+                for functional text blocking and latest features. If you don't care about text blocking, you can continue using the Google Play version for call
+                blocking.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="AppText">
