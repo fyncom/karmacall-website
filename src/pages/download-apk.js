@@ -61,10 +61,9 @@ const DownloadApk = () => {
                 <p>Added sounds to blocked notifications & localized some notification strings</p>
               </div>
             </div>
-            <div className="version-card featured-version">
+            <div className="version-card">
               <div className="version-header">
                 <h3>v4.9.71 (308)</h3>
-                <span className="latest-badge">latest</span>
               </div>
               <div className="version-content">
                 <FaCheckCircle className="check-icon" />
@@ -78,6 +77,20 @@ const DownloadApk = () => {
                 </p>
               </div>
             </div>
+            <div className="version-card featured-version">
+              <div className="version-header">
+                <h3>v4.9.72 (309)</h3>
+                <span className="latest-badge">latest</span>
+              </div>
+              <div className="version-content">
+                <FaCheckCircle className="check-icon" />
+                <p>
+                  Fixed a sneaky notification bug: if you had several text notifications from friends, then got one spam text, all your notifications would
+                  vanish. Why? Android groups notifications together. Block the group leader, and everyone goes with it.
+                </p>
+                <p>Now fixed - your real text notifications stay put while spam gets blocked.</p>
+              </div>
+            </div>
           </div>
         </div>
         <div className="download-section">
@@ -86,13 +99,9 @@ const DownloadApk = () => {
             Click the button below to download the latest version of KarmaCall. You'll need to enable installation from unknown sources in your Android
             settings.
           </p>
-          {/* <a href="https://fyncom-static-files.s3.us-west-1.amazonaws.com/KarmaCall-v4971-308.apk" className="download-button" download>
+          <a href="/KarmaCall-V4972-309.apk" className="download-button" download>
             <FaDownload className="download-icon" />
-            Download KarmaCall v4.9.71
-          </a> */}
-          <a href="/KarmaCall-v4971-308.apk" className="download-button" download>
-            <FaDownload className="download-icon" />
-            Download KarmaCall v4.9.71
+            Download KarmaCall v4.9.72
           </a>
           <p className="file-info">APK file • Android 10 or higher required</p>
         </div>
@@ -107,7 +116,7 @@ const DownloadApk = () => {
               <strong>Enable Unknown Sources</strong>
               <p>
                 Search "Install Unknown Apps" in your Android phone, select it and enable "My Files" since the downloaded APK file will be saved in your
-                "Downloads" folder.
+                "Downloads" folder. You can also enable your browser to install unknown apps - we recommend using your file manager to install the APK.
               </p>
               {/* <p>
                 Another way to enable this, is to go to Settings → Security & Privacy → More security settings → Enable "Install Unknown Apps" for your browser
