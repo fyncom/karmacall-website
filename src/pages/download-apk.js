@@ -126,8 +126,9 @@ const DownloadApk = () => {
             <li>
               <strong>Uninstall the Google Play Version (If Installed)</strong>
               <p>
-                Search for "KarmaCall" in your Android phone, long press on the app &* select "Uninstall". Your account data is safely stored on our servers, so
-                you won't lose anything.
+                If you last downloaded the Google Play version, you'll need to uninstall the KarmaCall app first. If you have already installed a KarmaCall APK
+                from our site, you don't need to do this. Search for "KarmaCall" in your Android phone, long press on the app &* select "Uninstall". Your
+                account data is safely stored on our servers, so you won't lose anything.
               </p>
             </li>
             <li>
@@ -162,8 +163,10 @@ const DownloadApk = () => {
           <div className="faq-item">
             <h3>Do I Need to Uninstall the Play Store Version First?</h3>
             <p>
-              Yes, you'll need to uninstall the Google Play version before installing this APK due to package name conflicts. Don't worry - your account data
-              (balance, settings, contacts) is stored on our servers, so you won't lose anything. Just log back in after installing.
+              Yes, but if you have already installed a KarmaCall APK from our site, you don't need to do this - you can install the next latest APK and it will
+              install right over the old one like normal. Otherwise, if you have the Google Play version, you will need to uninstall it before installing this
+              APK due to package name conflicts. Don't worry - your account data (balance, settings, contacts) is stored on our servers, so you won't lose
+              anything. Just log back in after installing.
             </p>
           </div>
           <div className="faq-item">
