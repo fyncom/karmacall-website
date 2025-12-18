@@ -14,8 +14,10 @@ import CookieConsentEEA from "../components/CookieConsentEEA"
 import ClientOnly from "../components/ClientOnly"
 
 const Login = () => {
+  const [loginMethod, setLoginMethod] = useState("phone")
   const [countryCode, setCountryCode] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
+  const [email, setEmail] = useState("")
   const [sessionId, setSessionId] = useState("")
   const [otp, setOtp] = useState("")
   const [userId, setUserId] = useState("")
@@ -73,6 +75,9 @@ const Login = () => {
     if (phoneNumber) {
       localStorage.setItem("phoneNumber", phoneNumber)
     }
+    if (email) {
+      localStorage.setItem("email", email)
+    }
     if (countryCode) {
       localStorage.setItem("countryCode", countryCode)
     }
@@ -85,7 +90,7 @@ const Login = () => {
     if (userId) {
       localStorage.setItem("userId", userId)
     }
-  }, [sessionId, phoneNumber, countryCode, otp, nanoAccount, userId])
+  }, [sessionId, phoneNumber, email, countryCode, otp, nanoAccount, userId])
 
   const handlePhoneSubmit = async event => {
     event.preventDefault()
@@ -98,6 +103,23 @@ const Login = () => {
         openOtpModal()
       } else if (result.banned) {
         return
+      } else {
+        openErrorModal()
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const handleEmailSubmit = async event => {
+    event.preventDefault()
+    try {
+      const result = await triggerEmailVerification()
+      if (result.status === 200) {
+        setSessionId(result.data.sessionId)
+        setEmail(email)
+        openOtpModal()
+      } else if (result.status === 429) {
+        openErrorModal()
       } else {
         openErrorModal()
       }
@@ -149,6 +171,40 @@ const Login = () => {
       }
     }
   }
+  const triggerEmailVerification = async () => {
+    if (process.env.GATSBY_DEBUG_MODE === "true") {
+      console.log("in debug mode")
+      return {
+        status: 200,
+        data: { sessionId: process.env.GATSBY_DEBUG_SESSION_ID },
+      }
+    } else {
+      try {
+        const response = await fetch(baseUrl + "verification/triggerEmailKarmacall", {
+          method: "POST",
+          headers: {
+            ...headers,
+            "device-os": environment,
+            "referral-code": referralCode,
+          },
+          body: JSON.stringify({
+            emailAddress: email,
+          }),
+        })
+        const data = await response.json()
+        return {
+          status: response.status,
+          data: data,
+        }
+      } catch (error) {
+        console.error("error caught in triggerEmailVerification:", error)
+        return {
+          error: true,
+          message: error.message || "an error occurred",
+        }
+      }
+    }
+  }
 
   // OTP value gets set in the Modal - cannot use states here..
   const handleOtpSubmit = async submittedOtp => {
@@ -159,12 +215,18 @@ const Login = () => {
         setOtp(response.data.opt)
 
         // Construct authentication data for potential app redirection
-        const authData = {
-          sessionId: sessionId,
-          otp: submittedOtp,
-          phoneNumber: phoneNumber,
-          countryCode: countryCode,
-        }
+        const authData = loginMethod === "email"
+          ? {
+              sessionId: sessionId,
+              otp: submittedOtp,
+              email: email,
+            }
+          : {
+              sessionId: sessionId,
+              otp: submittedOtp,
+              phoneNumber: phoneNumber,
+              countryCode: countryCode,
+            }
 
         // Use the existing handleSignUp function to check if user exists
         // and handle appropriate redirection
@@ -173,17 +235,17 @@ const Login = () => {
         const result = await handleSignUp(authData, true)
         return
       } else if (response.status === 500) {
-        console.log("[DEBUG] handleOtpSubmit - Server error (500)")
+        console.log("[DEBUG] handleOtpSubmit - server error (500)")
         openErrorModal()
       } else if (response.status === 418) {
-        console.log("[DEBUG] handleOtpSubmit - Banned number (418)")
+        console.log("[DEBUG] handleOtpSubmit - banned number (418)")
         openBannedModal()
       } else if (response.data.verificationStatus === "FAILED") {
-        console.log("[DEBUG] handleOtpSubmit - Verification failed")
+        console.log("[DEBUG] handleOtpSubmit - verification failed")
       }
       setIsOtpModalOpen(false)
     } catch (error) {
-      console.error("[DEBUG] handleOtpSubmit - Error occurred:", error)
+      console.error("[DEBUG] handleOtpSubmit - error occurred:", error)
       setIsOtpModalOpen(false)
     }
   }
@@ -212,7 +274,8 @@ const Login = () => {
 
   const verifyConfirm = async submittedOtp => {
     try {
-      const verifyResponse = await fetch(baseUrl + "verification/confirm", {
+      const endpoint = loginMethod === "email" ? "verification/confirmEmail" : "verification/confirm"
+      const verifyResponse = await fetch(baseUrl + endpoint, {
         method: "POST",
         headers: headers,
         body: JSON.stringify({
@@ -236,6 +299,9 @@ const Login = () => {
   // redirectToApp parameter controls whether to redirect to app stores for new users
   const handleSignUp = async (authData = null, redirectToApp = false) => {
     try {
+      const requestBody = loginMethod === "email" 
+        ? { email: email }
+        : { countryCode: countryCode, number: phoneNumber }
       const signUpResponse = await fetch(newUrl + "user/register/full", {
         method: "POST",
         headers: {
@@ -243,10 +309,7 @@ const Login = () => {
           "device-os": environment,
           "referral-code": referralCode,
         },
-        body: JSON.stringify({
-          countryCode: countryCode,
-          number: phoneNumber,
-        }),
+        body: JSON.stringify(requestBody),
       })
 
       let signUpData = await signUpResponse.json()
@@ -474,40 +537,81 @@ const Login = () => {
           <div id="phone-number-entry" className="network">
             <div className="container">
               <ClientOnly>
-                <form method="get" id="phoneNumberInput" onSubmit={handlePhoneSubmit}>
-                  <div>
-                    <p>
-                      <CountryCodeSelector value={countryCodesOption} onChange={handleCountryChange} />
-                    </p>
-                    <p>
-                      <input
-                        type="tel"
-                        name="phoneNumber"
-                        id="phoneNumber"
-                        placeholder="Enter Phone Number"
-                        className="form-control"
-                        value={phoneNumber}
-                        onChange={e => setPhoneNumber(e.target.value)}
-                        pattern="[0-9]*"
-                        title="Phone number should only contain digits."
-                        required
-                      />
-                    </p>
-                  </div>
-                  <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
-                    <p>
-                      <span className="input-group-btn">
-                        <button type="submit" className="user">
-                          Confirm Phone Number
-                        </button>
-                      </span>
-                    </p>
-                  </div>
-                </form>
+                <div className="login-tabs">
+                  <button
+                    className={`login-tab ${loginMethod === "phone" ? "active" : ""}`}
+                    onClick={() => setLoginMethod("phone")}
+                    type="button"
+                  >
+                    Phone
+                  </button>
+                  <button
+                    className={`login-tab ${loginMethod === "email" ? "active" : ""}`}
+                    onClick={() => setLoginMethod("email")}
+                    type="button"
+                  >
+                    Email
+                  </button>
+                </div>
+                {loginMethod === "phone" ? (
+                  <form method="get" id="phoneNumberInput" onSubmit={handlePhoneSubmit}>
+                    <div>
+                      <p>
+                        <CountryCodeSelector value={countryCodesOption} onChange={handleCountryChange} />
+                      </p>
+                      <p>
+                        <input
+                          type="tel"
+                          name="phoneNumber"
+                          id="phoneNumber"
+                          placeholder="Enter Phone Number"
+                          className="form-control"
+                          value={phoneNumber}
+                          onChange={e => setPhoneNumber(e.target.value)}
+                          pattern="[0-9]*"
+                          title="Phone number should only contain digits."
+                          required
+                        />
+                      </p>
+                    </div>
+                    <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
+                      <p>
+                        <span className="input-group-btn">
+                          <button type="submit" className="user">
+                            Confirm Phone Number
+                          </button>
+                        </span>
+                      </p>
+                    </div>
+                  </form>
+                ) : (
+                  <form method="get" id="emailInput" onSubmit={handleEmailSubmit}>
+                    <div>
+                      <p>
+                        <input
+                          type="email"
+                          name="email"
+                          id="email"
+                          placeholder="Enter Email Address"
+                          className="form-control"
+                          value={email}
+                          onChange={e => setEmail(e.target.value)}
+                          required
+                        />
+                      </p>
+                    </div>
+                    <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
+                      <p>
+                        <span className="input-group-btn">
+                          <button type="submit" className="user">
+                            Confirm Email Address
+                          </button>
+                        </span>
+                      </p>
+                    </div>
+                  </form>
+                )}
               </ClientOnly>
-              {/* <h3> */}
-              {/* <a href="/login-email">Click here to login with email</a> */}
-              {/* </h3> */}
             </div>
           </div>
           <OtpInputModal isOpen={isOtpModalOpen} onSubmit={handleOtpSubmit} onClose={() => setIsOtpModalOpen(false)} />

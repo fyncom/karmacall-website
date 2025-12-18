@@ -39,6 +39,7 @@ const CashOut = () => {
   const [destinationAccount, setDestinationAccount] = useState("")
   const sessionId = isBrowser ? localStorage.getItem("sessionId") : null
   const phoneNumber = isBrowser ? localStorage.getItem("phoneNumber") : null
+  const email = isBrowser ? localStorage.getItem("email") : null
   const countryCode = isBrowser ? localStorage.getItem("countryCode") : null
   const [isNanoSentModalOpen, setIsNanoSentModalOpen] = useState(false)
   const [isNanoOverBalanceModalOpen, setIsNanoOverBalanceModalOpen] = useState(false)
@@ -226,17 +227,23 @@ const CashOut = () => {
         setIsNanoOverBalanceModalOpen(true)
         return
       }
+      const requestBody = {
+        amount: amountToSend,
+        destinationAddress: accountToSendTo,
+        sessionId: sessionId,
+        sourceAddress: nanoAccount,
+      }
+      if (phoneNumber) {
+        requestBody.userPhoneNumber = phoneNumber
+        requestBody.countryCode = countryCode
+      }
+      if (email) {
+        requestBody.email = email
+      }
       fetch(`${baseUrl}nano/userSend`, {
         method: "POST",
         headers: headers,
-        body: JSON.stringify({
-          amount: amountToSend,
-          countryCode: countryCode,
-          destinationAddress: accountToSendTo,
-          sessionId: sessionId,
-          sourceAddress: nanoAccount,
-          userPhoneNumber: phoneNumber,
-        }),
+        body: JSON.stringify(requestBody),
       })
         .then(res => {
           return res.json()

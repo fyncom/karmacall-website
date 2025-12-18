@@ -21,6 +21,72 @@
   padding: 0;
 }
 
+/* Tab navigation styles */
+.login-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.login-tab {
+  flex: 1;
+  max-width: 200px;
+  padding: 12px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 16px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  bottom: -2px;
+}
+
+.login-tab:hover {
+  color: #008080;
+  background-color: #f0fdfa;
+}
+
+.login-tab.active {
+  color: #008080;
+  border-bottom-color: #008080;
+  background-color: #f0fdfa;
+}
+
+/* Email input styling */
+.login #email {
+  width: 100%;
+  min-width: 280px;
+  max-width: 90vw;
+  padding: 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.login #emailInput {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.login #emailInput > div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login #emailInput > div > p {
+  width: 100%;
+}
+
 /* Mobile-specific styles */
 @media (max-width: 768px) {
   /* Center all elements in the form */
@@ -72,5 +138,18 @@
     width: 100%;
     padding: 0 15px;
     box-sizing: border-box;
+  }
+  
+  /* Mobile tab styles */
+  .login-tabs {
+    width: 100%;
+    max-width: 90vw;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .login-tab {
+    font-size: 15px;
+    padding: 10px 16px;
   }
 }
