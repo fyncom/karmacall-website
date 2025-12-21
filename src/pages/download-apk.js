@@ -1,11 +1,12 @@
-import React from "react"
+import React, { useState } from "react"
 import Header from "../components/header"
 import Footer from "../components/footer"
 import "../components/download-apk.css"
 import Seo from "../components/seo"
-import { FaAndroid, FaDownload, FaExclamationTriangle, FaCheckCircle } from "react-icons/fa"
+import { FaAndroid, FaDownload, FaExclamationTriangle, FaCheckCircle, FaChevronDown, FaChevronUp } from "react-icons/fa"
 
 const DownloadApk = () => {
+  const [showOlderVersions, setShowOlderVersions] = useState(false)
   return (
     <div>
       <Seo
@@ -43,53 +44,6 @@ const DownloadApk = () => {
         <div className="updates-container">
           <h2>What's New in These Updates</h2>
           <div className="version-updates">
-            <div className="version-card">
-              <div className="version-header">
-                <h3>v4.9.69 (306)</h3>
-              </div>
-              <div className="version-content">
-                <FaCheckCircle className="check-icon" />
-                <p>Fixed issue for contacts texts notifications. Works as expected now.</p>
-              </div>
-            </div>
-            <div className="version-card">
-              <div className="version-header">
-                <h3>v4.9.70 (307)</h3>
-              </div>
-              <div className="version-content">
-                <FaCheckCircle className="check-icon" />
-                <p>Added sounds to blocked notifications & localized some notification strings</p>
-              </div>
-            </div>
-            <div className="version-card">
-              <div className="version-header">
-                <h3>v4.9.71 (308)</h3>
-              </div>
-              <div className="version-content">
-                <FaCheckCircle className="check-icon" />
-                <p>
-                  Added new graylisting features, which is default "on". Now, people you call, who are not contacts or KarmaCallers can call you back without
-                  being blocked.
-                </p>
-                <p>
-                  <strong>Android 11 and lower:</strong> Fixed bug that caused active call to be ended when an incoming blocked call arrives. Added a "Protect
-                  Active Call" setting.
-                </p>
-              </div>
-            </div>
-            <div className="version-card">
-              <div className="version-header">
-                <h3>v4.9.72 (309)</h3>
-              </div>
-              <div className="version-content">
-                <FaCheckCircle className="check-icon" />
-                <p>
-                  Fixed a sneaky notification bug: if you had several text notifications from friends, then got one spam text, all your notifications would
-                  vanish. Why? Android groups notifications together. Block the group leader, and everyone goes with it.
-                </p>
-                <p>Now fixed - your real text notifications stay put while spam gets blocked.</p>
-              </div>
-            </div>
             <div className="version-card featured-version">
               <div className="version-header">
                 <h3>v4.9.73 (310)</h3>
@@ -108,6 +62,72 @@ const DownloadApk = () => {
                 </p>
               </div>
             </div>
+            <div className="older-versions-toggle">
+              <button className="toggle-button" onClick={() => setShowOlderVersions(!showOlderVersions)} aria-expanded={showOlderVersions}>
+                {showOlderVersions ? (
+                  <>
+                    <FaChevronUp className="toggle-icon" />
+                    hide older versions
+                  </>
+                ) : (
+                  <>
+                    <FaChevronDown className="toggle-icon" />
+                    See Details for Older Versions
+                  </>
+                )}
+              </button>
+            </div>
+            {showOlderVersions && (
+              <div className="older-versions">
+                <div className="version-card">
+                  <div className="version-header">
+                    <h3>v4.9.72 (309)</h3>
+                  </div>
+                  <div className="version-content">
+                    <FaCheckCircle className="check-icon" />
+                    <p>
+                      Fixed a sneaky notification bug: if you had several text notifications from friends, then got one spam text, all your notifications would
+                      vanish. Why? Android groups notifications together. Block the group leader, and everyone goes with it.
+                    </p>
+                    <p>Now fixed - your real text notifications stay put while spam gets blocked.</p>
+                  </div>
+                </div>
+                <div className="version-card">
+                  <div className="version-header">
+                    <h3>v4.9.71 (308)</h3>
+                  </div>
+                  <div className="version-content">
+                    <FaCheckCircle className="check-icon" />
+                    <p>
+                      Added new graylisting features, which is default "on". Now, people you call, who are not contacts or KarmaCallers can call you back
+                      without being blocked.
+                    </p>
+                    <p>
+                      <strong>Android 11 and lower:</strong> Fixed bug that caused active call to be ended when an incoming blocked call arrives. Added a
+                      "Protect Active Call" setting.
+                    </p>
+                  </div>
+                </div>
+                <div className="version-card">
+                  <div className="version-header">
+                    <h3>v4.9.70 (307)</h3>
+                  </div>
+                  <div className="version-content">
+                    <FaCheckCircle className="check-icon" />
+                    <p>Added sounds to blocked notifications & localized some notification strings</p>
+                  </div>
+                </div>
+                <div className="version-card">
+                  <div className="version-header">
+                    <h3>v4.9.69 (306)</h3>
+                  </div>
+                  <div className="version-content">
+                    <FaCheckCircle className="check-icon" />
+                    <p>Fixed issue for contacts texts notifications. Works as expected now.</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="download-section">
