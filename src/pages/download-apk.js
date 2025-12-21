@@ -26,7 +26,7 @@ const DownloadApk = () => {
             <h2>Why We're Offering Direct Downloads</h2>
           </div>
           <p>
-            Our Google Play app update has been in review for <strong>140 days</strong>. We have never had this issue and are{" "}
+            Our Google Play app update has been in review for <strong>149 days</strong>. We have never had this issue and are{" "}
             <a href="https://support.google.com/googleplay/android-developer/thread/363840973" target="_blank" rel="noopener noreferrer">
               actively working with Google
             </a>
@@ -46,7 +46,7 @@ const DownloadApk = () => {
           <div className="version-updates">
             <div className="version-card featured-version">
               <div className="version-header">
-                <h3>v4.9.73 (310)</h3>
+                <h3>v4.9.74 (311)</h3>
                 <span className="latest-badge">latest</span>
               </div>
               <div className="version-content">
@@ -136,9 +136,9 @@ const DownloadApk = () => {
             Click the button below to download the latest version of KarmaCall. You'll need to enable installation from unknown sources in your Android
             settings.
           </p>
-          <a href="/KarmaCall-V4973-310.apk" className="download-button" download>
+          <a href="/KarmaCall-V4974-311.apk" className="download-button" download>
             <FaDownload className="download-icon" />
-            Download KarmaCall v4.9.73
+            Download KarmaCall v4.9.74
           </a>
           <p className="file-info">APK file • Android 10 or higher required</p>
         </div>
