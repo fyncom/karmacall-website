@@ -77,10 +77,9 @@ const DownloadApk = () => {
                 </p>
               </div>
             </div>
-            <div className="version-card featured-version">
+            <div className="version-card">
               <div className="version-header">
                 <h3>v4.9.72 (309)</h3>
-                <span className="latest-badge">latest</span>
               </div>
               <div className="version-content">
                 <FaCheckCircle className="check-icon" />
@@ -91,6 +90,24 @@ const DownloadApk = () => {
                 <p>Now fixed - your real text notifications stay put while spam gets blocked.</p>
               </div>
             </div>
+            <div className="version-card featured-version">
+              <div className="version-header">
+                <h3>v4.9.73 (310)</h3>
+                <span className="latest-badge">latest</span>
+              </div>
+              <div className="version-content">
+                <FaCheckCircle className="check-icon" />
+                <p>
+                  Added email signup and login for customers in countries where we don't send SMS one-time passwords. Users from these countries can now create
+                  accounts and sign in using email verification instead of SMS.
+                </p>
+                <p>
+                  <strong>Email signup/login now available for:</strong> Afghanistan, Algeria, Austria, Azerbaijan, Bangladesh, Egypt, Great Britain, Indonesia,
+                  Israel, Kenya, Nepal, Nigeria, Oman, Pakistan, Palestinian Territory, Panama, Papua New Guinea, Peru, Philippines, Russia, São Tomé and
+                  Príncipe, Senegal, Slovenia, Somalia, Sri Lanka, Sweden, Tajikistan, Togo, Trinidad and Tobago, Tunisia, Taiwan, and Vietnam.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
         <div className="download-section">
@@ -99,9 +116,9 @@ const DownloadApk = () => {
             Click the button below to download the latest version of KarmaCall. You'll need to enable installation from unknown sources in your Android
             settings.
           </p>
-          <a href="/KarmaCall-V4972-309.apk" className="download-button" download>
+          <a href="/KarmaCall-V4973-310.apk" className="download-button" download>
             <FaDownload className="download-icon" />
-            Download KarmaCall v4.9.72
+            Download KarmaCall v4.9.73
           </a>
           <p className="file-info">APK file • Android 10 or higher required</p>
         </div>
