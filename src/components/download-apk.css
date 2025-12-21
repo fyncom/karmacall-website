@@ -415,17 +415,18 @@
   }
 }
 .older-versions-toggle {
-  text-align: center;
   margin: 30px 0;
 }
 .toggle-button {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  width: 100%;
   background: var(--color-background);
   border: 2px solid #ddd;
-  border-radius: 25px;
-  padding: 12px 24px;
+  border-radius: 12px;
+  padding: 20px 24px;
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-text);
