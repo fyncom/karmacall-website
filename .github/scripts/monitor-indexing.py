@@ -16,7 +16,7 @@ from googleapiclient.discovery import build
 import requests
 
 # Configuration
-SITE_URL = 'sc-domain:karmacall.com
+SITE_URL = 'sc-domain:karmacall.com'
 # SITE_URL = 'https://karmacall.com'
 # non working version
 # SITE_URL = 'https://www.karmacall.com'
