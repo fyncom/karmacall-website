@@ -2,17 +2,24 @@ name: Monitor Google Indexing
 
 on:
   schedule:
-    # Run daily at 9 AM UTC (adjust to your timezone)
     - cron: "0 9 * * *"
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch:
 
 jobs:
   check-indexing:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      # Restore any previous history file from cache
+      - name: Restore indexing history
+        uses: actions/cache@v3
+        with:
+          path: .github/data/indexing-history.json
+          key: indexing-history-${{ github.ref_name }}
+          restore-keys: |
+            indexing-history-
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -30,3 +37,10 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           THRESHOLD_PERCENT: 10
         run: python .github/scripts/monitor-indexing.py
+
+      # Save the updated history back to cache for future runs
+      - name: Save indexing history
+        uses: actions/cache@v3
+        with:
+          path: .github/data/indexing-history.json
+          key: indexing-history-${{ github.run_id }}
