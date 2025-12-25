@@ -214,13 +214,11 @@ const BlockSpamEarnCash = () => {
           {!isIOS && (
             <div className="android-apk-notice">
               <p>
-                <strong>⚠️ Android users:</strong> The current Google Play version has a bug that blocks texts from your contacts. Our fix has been in review
-                for months.{" "}
+                <strong>🎉 Great news, Android users!</strong> We're back on the Google Play Store with all the latest updates and fixes! If you previously downloaded our APK,{" "}
                 <Link to="/download-apk" className="apk-download-link">
-                  For now, you can download the working version here
+                  please see these important migration instructions
                 </Link>{" "}
-                for functional text blocking and latest features. If you don't care about text blocking, you can continue using the Google Play version for call
-                blocking.
+                to switch back to the official Google Play version.
               </p>
             </div>
           )}
