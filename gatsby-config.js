@@ -129,7 +129,7 @@ module.exports = {
           cookie_expires: 0,
         },
         pluginConfig: {
-          head: true,
+          head: false,
           respectDNT: true,
           // Consent will be managed by our CookieConsentEEA component
         },

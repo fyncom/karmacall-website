@@ -5,11 +5,13 @@ import { FaRobot, FaDollarSign, FaUserShield } from "react-icons/fa"
 import "../components/index.css"
 import Seo from "../components/seo"
 import { GatsbyImage } from "gatsby-plugin-image"
-import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "../components/useCombinedQuery"
 
 // Lazy load components that are below the fold for better performance
 const Footer = lazy(() => import("../components/footer"))
+const KarmacallAppStoreModal = lazy(() =>
+  import("../components/Modal").then(module => ({ default: module.KarmacallAppStoreModal }))
+)
 
 // Detect platform - safely check for browser environment
 const isBrowser = typeof window !== "undefined" && typeof navigator !== "undefined"
@@ -415,7 +417,11 @@ const BlockSpamEarnCash = () => {
             <button className="learn-more-btn" onClick={toggleModal}>
               Download Today!
             </button>
-            {isModalOpen && <KarmacallAppStoreModal onClose={toggleModal} />}
+            {isModalOpen && (
+              <Suspense fallback={null}>
+                <KarmacallAppStoreModal onClose={toggleModal} />
+              </Suspense>
+            )}
           </p>
         </section>
       </section>

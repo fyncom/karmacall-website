@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef, lazy, Suspense } from "react"
 import "./header.css"
 import { Link } from "gatsby"
 import { FaBars } from "react-icons/fa"
 import { GatsbyImage } from "gatsby-plugin-image"
-import { KarmacallAppStoreModal } from "../components/Modal"
 import { useCombinedQuery } from "./useCombinedQuery"
+
+const KarmacallAppStoreModal = lazy(() =>
+  import("../components/Modal").then(module => ({ default: module.KarmacallAppStoreModal }))
+)
 
 const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false)
@@ -159,7 +162,11 @@ const Header = () => {
             <button className="user">Login</button>
           </Link>
         </div>
-        {isHeaderModalOpen && <KarmacallAppStoreModal onClose={toggleHeaderModal} />}
+        {isHeaderModalOpen && (
+          <Suspense fallback={null}>
+            <KarmacallAppStoreModal onClose={toggleHeaderModal} />
+          </Suspense>
+        )}
       </div>
     </header>
   )
