@@ -104,7 +104,7 @@ export const Wrapper = ({ children, seo, hideArticleHeader, hideTableOfContents,
 
   return (
     <div>
-      <Seo title={seo?.title} description={seo?.description} />
+      <Seo title={seo?.title} description={seo?.description} pathname={currentPath} />
       <Header />
       <div className="gatsby-focus-wrapper" style={textSizeStyles[textSize]}>
         <style>{`

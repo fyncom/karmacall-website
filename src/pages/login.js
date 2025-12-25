@@ -530,7 +530,7 @@ const Login = () => {
   return (
     <div className="login">
       <CookieConsentEEA />
-      <Seo title="Login KarmaCall" description="A simple login page to let you manage your account" />
+      <Seo title="Login KarmaCall" description="A simple login page to let you manage your account" pathname="/login" />
       <Header />
       <div className="AppText">
         <section>

@@ -19,13 +19,55 @@ module.exports = {
       options: {
         host: "https://www.karmacall.com",
         sitemap: "https://www.karmacall.com/sitemap-index.xml",
-        policy: [{ userAgent: "*", allow: "/" }],
+        policy: [
+          {
+            userAgent: "*",
+            allow: "/",
+            disallow: ["/login?*", "/login/?*"]
+          }
+        ],
       },
     },
     {
       resolve: `gatsby-plugin-sitemap`,
       options: {
         output: "/",
+        excludes: ["/login?*", "/login/?*"],
+        query: `
+          {
+            site {
+              siteMetadata {
+                siteUrl
+              }
+            }
+            allSitePage {
+              nodes {
+                path
+              }
+            }
+          }
+        `,
+        resolveSiteUrl: () => "https://www.karmacall.com",
+        resolvePages: ({ allSitePage: { nodes: allPages } }) => {
+          return allPages.filter(page => {
+            // Exclude login pages with query parameters
+            if (page.path.includes("login") && page.path.includes("?")) {
+              return false
+            }
+            // Exclude any page with referral codes
+            if (page.path.includes("_referralCode")) {
+              return false
+            }
+            return true
+          })
+        },
+        serialize: ({ path }) => {
+          return {
+            url: path,
+            changefreq: "daily",
+            priority: path === "/" ? 1.0 : 0.7,
+          }
+        },
       },
     },
     {
