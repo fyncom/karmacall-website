@@ -9,28 +9,28 @@ import { Link } from "gatsby"
 
 export const KarmacallAppStoreModal = ({ onClose }) => {
   const { appStoreBadge, googlePlayBadge } = useCombinedQuery()
-  
+
   const handleAndroidClick = () => {
     ReactGA.event({
-      category: 'App Store',
-      action: 'Play Store Visit',
-      label: 'Modal Play Store Button'
-    });
-  };
+      category: "App Store",
+      action: "Play Store Visit",
+      label: "Modal Play Store Button",
+    })
+  }
 
   const handleIOSClick = () => {
     ReactGA.event({
-      category: 'App Store',
-      action: 'App Store Visit',
-      label: 'Modal App Store Button'
-    });
-  };
+      category: "App Store",
+      action: "App Store Visit",
+      label: "Modal App Store Button",
+    })
+  }
 
-  const handleBackgroundClick = (e) => {
-    if (e.target.className === 'modal') {
-      onClose();
+  const handleBackgroundClick = e => {
+    if (e.target.className === "modal") {
+      onClose()
     }
-  };
+  }
 
   return (
     <div className="modal" onClick={handleBackgroundClick}>
@@ -48,11 +48,6 @@ export const KarmacallAppStoreModal = ({ onClose }) => {
             <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" />
           </a>
         </div>
-        <p style={{ marginTop: '20px', fontSize: '0.9rem', textAlign: 'center' }}>
-          <Link to="/download-apk" style={{ color: 'var(--fyncom-blue)', textDecoration: 'underline' }}>
-            Android Users: Download the Latest APK With Critical Updates
-          </Link>
-        </p>
       </div>
     </div>
   )
@@ -165,8 +160,8 @@ export const GiftCardModal = ({ isOpen, onClose }) => {
   )
 }
 
-/** BIZ MODALS FOR ORGANIZATIONAL USE **/ 
-/** BIZ MODALS FOR ORGANIZATIONAL USE **/ 
+/** BIZ MODALS FOR ORGANIZATIONAL USE **/
+/** BIZ MODALS FOR ORGANIZATIONAL USE **/
 export const SuccessModal = ({ isOpen, message, onClose }) => {
   if (!isOpen) return null
   return (
@@ -329,11 +324,6 @@ export const ReferralAppDownloadModal = ({ isOpen, onClose }) => {
             <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" />
           </a>
         </div>
-        <p style={{ marginTop: '20px', fontSize: '0.9rem', textAlign: 'center' }}>
-          <Link to="/download-apk" style={{ color: 'var(--fyncom-blue)', textDecoration: 'underline' }}>
-            Android Users: Download the Latest APK With Critical Updates
-          </Link>
-        </p>
       </div>
     </div>
   )
