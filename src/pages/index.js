@@ -186,7 +186,14 @@ const BlockSpamEarnCash = () => {
             <div className="social-media-container">
               <div className="logo-container">
                 <div className="bottom-logo">
-                  <img src={heroKarmaCallImage} className={"hero-index-image"} alt="A simple app that pays you to block scam calls." />
+                  <img
+                    src={heroKarmaCallImage}
+                    className={"hero-index-image"}
+                    alt="A simple app that pays you to block scam calls."
+                    width="1146"
+                    height="771"
+                    decoding="async"
+                  />
                 </div>
               </div>
               <div className="text-block">
@@ -273,7 +280,14 @@ const BlockSpamEarnCash = () => {
             </div>
             <div className="logo-container hero">
               <div className="bottom-logo">
-                <img src={standingKarmaCallPost} className={"hero-index-image"} alt="A simple app that pays you to block scam calls." />
+                <img
+                  src={standingKarmaCallPost}
+                  className={"hero-index-image"}
+                  alt="A simple app that pays you to block scam calls."
+                  width="1024"
+                  height="795"
+                  decoding="async"
+                />
               </div>
             </div>
           </div>
@@ -393,6 +407,8 @@ const BlockSpamEarnCash = () => {
                 src={`https://img.youtube.com/vi/VKuLB0CXzOM/hqdefault.jpg`}
                 onClick={handleThumbnailClick}
                 alt="Play Video"
+                loading="lazy"
+                decoding="async"
                 style={{ cursor: "pointer" }}
               />
             ) : (

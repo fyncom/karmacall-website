@@ -7,12 +7,9 @@
 const React = require("react")
 
 /**
- * Wrap the root element with PostHogProvider for SSR
- * This should match the browser version but without client-side specific features
+ * Wrap the root element for SSR.
  */
 exports.wrapRootElement = ({ element }) => {
-  // On SSR, we just return the element without PostHog or CookieConsent
-  // since these are client-side only components
   return element
 }
 

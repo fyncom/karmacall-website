@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CookieConsent from "react-cookie-consent";
 import ClientOnly from "./ClientOnly";
+import { scheduleAnalyticsLoad } from "../utils/analyticsLoader";
 
 // List of European Economic Area (EEA) country codes
 const EEA_COUNTRIES = [
@@ -33,6 +34,9 @@ const initializeTracking = () => {
   if (window.fbq) {
     window.fbq('consent', 'grant');
   }
+  window.__fbConsent = "grant";
+
+  scheduleAnalyticsLoad();
 };
 
 // Function to disable tracking for users who reject consent
@@ -62,6 +66,7 @@ const disableTracking = () => {
   if (window.fbq) {
     window.fbq('consent', 'revoke');
   }
+  window.__fbConsent = "revoke";
 };
 
 const CookieConsentEEA = () => {

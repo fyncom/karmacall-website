@@ -120,29 +120,6 @@ module.exports = {
     },
     `gatsby-plugin-offline`,
     {
-      resolve: "gatsby-plugin-google-gtag",
-      options: {
-        trackingIds: [process.env.GATSBY_GOOGLE_TAG_ID],
-        gtagConfig: {
-          optimize_id: "OPT_CONTAINER_ID",
-          anonymize_ip: true,
-          cookie_expires: 0,
-        },
-        pluginConfig: {
-          head: false,
-          respectDNT: true,
-          // Consent will be managed by our CookieConsentEEA component
-        },
-      },
-    },
-    {
-      resolve: `gatsby-plugin-facebook-pixel`,
-      options: {
-        pixelId: process.env.GATSBY_FACEBOOK_PIXEL,
-        // Facebook Pixel will be managed by our consent management
-      },
-    },
-    {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `blogs`,
