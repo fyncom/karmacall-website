@@ -27,26 +27,35 @@ export default function BlogIndex({ data }) {
           gap: "20px",
         }}
       >
-        {data.allMdx.nodes.map(({ id, excerpt, frontmatter, fields }) => (
-          <div className="blog-card" key={id}>
-            <Link className={"blog-link"} to={`${fields.slug}`}>
-              <div className="blog-image-container">
-                <GatsbyImage
-                  image={getImage(frontmatter.featuredImage.childImageSharp.gatsbyImageData)}
-                  className={"blog-image"}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </div>
-              <div className="blog-content">
-                <h3 className="blog-title">{frontmatter.title}</h3>
-                <div className="blog-meta">
-                  <span className="blog-author">{frontmatter.author || "KarmaCall Team"}</span>
-                  <span className="blog-date">{frontmatter.date}</span>
+        {data.allMdx.nodes.map(({ id, excerpt, frontmatter, fields }) => {
+          const image = frontmatter.featuredImage?.childImageSharp?.gatsbyImageData
+            ? getImage(frontmatter.featuredImage.childImageSharp.gatsbyImageData)
+            : null
+
+          return (
+            <div className="blog-card" key={id}>
+              <Link className={"blog-link"} to={`${fields.slug}`}>
+                {image && (
+                  <div className="blog-image-container">
+                    <GatsbyImage
+                      image={image}
+                      className={"blog-image"}
+                      style={{ width: "100%", height: "100%" }}
+                      alt={frontmatter.title}
+                    />
+                  </div>
+                )}
+                <div className="blog-content">
+                  <h3 className="blog-title">{frontmatter.title}</h3>
+                  <div className="blog-meta">
+                    <span className="blog-author">{frontmatter.author || "KarmaCall Team"}</span>
+                    <span className="blog-date">{frontmatter.date}</span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </div>
-        ))}
+              </Link>
+            </div>
+          )
+        })}
       </div>
     </Wrapper>
   )
