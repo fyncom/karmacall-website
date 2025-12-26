@@ -9,6 +9,7 @@ import { useLocation } from "@reach/router"
 import { isEmpty } from "lodash"
 import { getBrowserEnvironment } from "../utils/browserUtils"
 import { configureRevenueCat, loginRevenueCatUser, isRevenueCatUserSet } from "../utils/revenueCat"
+import { getPlatformInfo } from "../utils/platformDetection"
 import "../components/login.css" // Import the login-specific CSS
 import CookieConsentEEA from "../components/CookieConsentEEA"
 import ClientOnly from "../components/ClientOnly"
@@ -409,10 +410,15 @@ const Login = () => {
         console.log("[DEBUG] handleSignUp - Preparing app redirection for NEW user")
         const encodedData = encodeURIComponent(JSON.stringify(authData))
 
-        // Detect platform - safely check for browser environment
-        const isBrowser = typeof window !== "undefined" && typeof navigator !== "undefined"
-        const isIOS = isBrowser ? /iPhone|iPad|iPod/i.test(navigator.userAgent) : false
-        console.log("[DEBUG] handleSignUp - Platform detection: isIOS=", isIOS)
+        // Detect platform using standardized utility
+        const platform = getPlatformInfo()
+        console.log("[DEBUG] handleSignUp - Platform detection:", {
+          isApple: platform.isApple,
+          isIOS: platform.isIOS,
+          isMac: platform.isMac,
+          isAndroid: platform.isAndroid,
+          browser: platform.browser,
+        })
 
         // Construct store URLs with deep link data
         const appStoreUrl = `https://apps.apple.com/us/app/karmacall/id1574524278?referrer=${encodedData}`
@@ -433,7 +439,8 @@ const Login = () => {
             return
           }
           // Redirect to appropriate store with deep link data
-          const storeUrl = isIOS ? appStoreUrl : playStoreUrl
+          // Use isApple (iOS + Mac) instead of just isIOS to handle Mac users properly
+          const storeUrl = platform.isApple ? appStoreUrl : playStoreUrl
           console.log("[DEBUG] handleSignUp - Redirecting to app store:", storeUrl.substring(0, 30) + "...")
           window.location.href = storeUrl
         }, 1000)

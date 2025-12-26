@@ -6,16 +6,13 @@ import "../components/index.css"
 import Seo from "../components/seo"
 import { GatsbyImage } from "gatsby-plugin-image"
 import { useCombinedQuery } from "../components/useCombinedQuery"
+import { usePlatformDetection } from "../utils/platformDetection"
 
 // Lazy load components that are below the fold for better performance
 const Footer = lazy(() => import("../components/footer"))
 const KarmacallAppStoreModal = lazy(() =>
   import("../components/Modal").then(module => ({ default: module.KarmacallAppStoreModal }))
 )
-
-// Detect platform - safely check for browser environment
-const isBrowser = typeof window !== "undefined" && typeof navigator !== "undefined"
-const isIOS = isBrowser ? /iPhone|iPad|iPod/i.test(navigator.userAgent) : false
 
 const BlockSpamEarnCash = () => {
   const {
@@ -36,6 +33,7 @@ const BlockSpamEarnCash = () => {
     happyLady,
   } = useCombinedQuery()
   const [isModalOpen, setModalOpen] = useState(false)
+  const { isApple } = usePlatformDetection()
   const toggleModal = () => {
     setModalOpen(!isModalOpen)
   }
@@ -220,7 +218,7 @@ const BlockSpamEarnCash = () => {
               <GatsbyImage className="app-img-index" image={appStoreBadge} alt="Download KarmaCall on the App Store" loading="eager" />
             </a>
           </div>
-          {!isIOS && (
+          {!isApple && (
             <div className="android-apk-notice">
               <p>
                 <strong>🎉 Great news, Android users!</strong> We're back on the Google Play Store with all the latest updates and fixes! If you previously downloaded our APK,{" "}
