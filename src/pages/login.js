@@ -29,6 +29,8 @@ const Login = () => {
   const [referralCode, setReferralCode] = useState("")
   const [isPhoneSubmitting, setIsPhoneSubmitting] = useState(false)
   const [isEmailSubmitting, setIsEmailSubmitting] = useState(false)
+  const isPhoneSubmittingRef = useRef(false)
+  const isEmailSubmittingRef = useRef(false)
   const lastPhoneSubmitAt = useRef(0)
   const lastEmailSubmitAt = useRef(0)
   const location = useLocation()
@@ -100,11 +102,15 @@ const Login = () => {
   const handlePhoneSubmit = async event => {
     event.preventDefault()
     const now = Date.now()
-    if (isPhoneSubmitting || now - lastPhoneSubmitAt.current < SUBMIT_DEBOUNCE_MS) {
+    if (isPhoneSubmittingRef.current || isOtpModalOpen || now - lastPhoneSubmitAt.current < SUBMIT_DEBOUNCE_MS) {
       return
     }
+    isPhoneSubmittingRef.current = true
     lastPhoneSubmitAt.current = now
     setIsPhoneSubmitting(true)
+    if (event?.nativeEvent?.submitter) {
+      event.nativeEvent.submitter.disabled = true
+    }
     try {
       const result = await triggerVerification()
       if (result.status === 200) {
@@ -115,22 +121,27 @@ const Login = () => {
       } else if (result.banned) {
         return
       } else {
-        openErrorModal()
-      }
+      openErrorModal()
+    }
     } catch (error) {
       console.log(error)
     } finally {
+      isPhoneSubmittingRef.current = false
       setIsPhoneSubmitting(false)
     }
   }
   const handleEmailSubmit = async event => {
     event.preventDefault()
     const now = Date.now()
-    if (isEmailSubmitting || now - lastEmailSubmitAt.current < SUBMIT_DEBOUNCE_MS) {
+    if (isEmailSubmittingRef.current || isOtpModalOpen || now - lastEmailSubmitAt.current < SUBMIT_DEBOUNCE_MS) {
       return
     }
+    isEmailSubmittingRef.current = true
     lastEmailSubmitAt.current = now
     setIsEmailSubmitting(true)
+    if (event?.nativeEvent?.submitter) {
+      event.nativeEvent.submitter.disabled = true
+    }
     try {
       const result = await triggerEmailVerification()
       if (result.status === 200) {
@@ -145,6 +156,7 @@ const Login = () => {
     } catch (error) {
       console.log(error)
     } finally {
+      isEmailSubmittingRef.current = false
       setIsEmailSubmitting(false)
     }
   }
@@ -598,7 +610,7 @@ const Login = () => {
                     <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
                       <p>
                         <span className="input-group-btn">
-                          <button type="submit" className="user" disabled={isPhoneSubmitting}>
+                          <button type="submit" className="user" disabled={isPhoneSubmitting || isOtpModalOpen}>
                             Confirm Phone Number
                           </button>
                         </span>
@@ -624,7 +636,7 @@ const Login = () => {
                     <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
                       <p>
                         <span className="input-group-btn">
-                          <button type="submit" className="user" disabled={isEmailSubmitting}>
+                          <button type="submit" className="user" disabled={isEmailSubmitting || isOtpModalOpen}>
                             Confirm Email Address
                           </button>
                         </span>

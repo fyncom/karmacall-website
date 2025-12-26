@@ -21,6 +21,7 @@ const CashOutEmail = () => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
   const [nanoValue, setNanoValue] = useState("")
   const [isEmailSubmitting, setIsEmailSubmitting] = useState(false)
+  const isEmailSubmittingRef = useRef(false)
   const lastEmailSubmitAt = useRef(0)
   const location = useLocation()
   const environment = getBrowserEnvironment()
@@ -70,11 +71,15 @@ const CashOutEmail = () => {
   const handleEmailSubmit = async event => {
     event.preventDefault()
     const now = Date.now()
-    if (isEmailSubmitting || now - lastEmailSubmitAt.current < SUBMIT_DEBOUNCE_MS) {
+    if (isEmailSubmittingRef.current || isOtpModalOpen || now - lastEmailSubmitAt.current < SUBMIT_DEBOUNCE_MS) {
       return
     }
+    isEmailSubmittingRef.current = true
     lastEmailSubmitAt.current = now
     setIsEmailSubmitting(true)
+    if (event?.nativeEvent?.submitter) {
+      event.nativeEvent.submitter.disabled = true
+    }
     try {
       const result = await triggerEmailVerification()
       if (result.status === 200) {
@@ -89,6 +94,7 @@ const CashOutEmail = () => {
     } catch (error) {
       console.log(error)
     } finally {
+      isEmailSubmittingRef.current = false
       setIsEmailSubmitting(false)
     }
   }
@@ -264,7 +270,7 @@ const CashOutEmail = () => {
                       />
                     </div>
                     <div className="cash-out-email-button-container">
-                      <button type="submit" className="cash-out-email-button" disabled={isEmailSubmitting}>
+                      <button type="submit" className="cash-out-email-button" disabled={isEmailSubmitting || isOtpModalOpen}>
                         Claim your Nano
                       </button>
                     </div>
