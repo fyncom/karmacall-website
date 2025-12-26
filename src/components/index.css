@@ -311,6 +311,22 @@
   height: auto; /* Maintain aspect ratio */
   display: block; /* Make sure it behaves like a block-level element */
 }
+.hero-index-image {
+  max-width: 100%;
+  height: auto;
+  margin-left: 0;
+  display: block;
+}
+.app-img-index {
+  max-width: 100%;
+  height: auto;
+  margin-left: 0;
+}
+.use-case .gatsby-image-wrapper {
+  margin-left: 0;
+  width: 100%;
+  max-width: 280px;
+}
 .values-column {
     display: flex;
     justify-content: center;
@@ -370,6 +386,7 @@
   left: 0;
   object-fit: cover;
   margin-bottom: 0;
+  margin-left: 0;
 }
 
 /* MEDIA SIZES CSS */

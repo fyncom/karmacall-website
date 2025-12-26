@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import Header from "../components/header"
 import Footer from "../components/footer"
 import CountryCodeSelector from "../components/country-codes"
@@ -27,8 +27,13 @@ const Login = () => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
   const [isBannedModalOpen, setIsBannedModalOpen] = useState(false)
   const [referralCode, setReferralCode] = useState("")
+  const [isPhoneSubmitting, setIsPhoneSubmitting] = useState(false)
+  const [isEmailSubmitting, setIsEmailSubmitting] = useState(false)
+  const lastPhoneSubmitAt = useRef(0)
+  const lastEmailSubmitAt = useRef(0)
   const location = useLocation()
   const environment = getBrowserEnvironment()
+  const SUBMIT_DEBOUNCE_MS = 2000
 
   console.log("environment", environment)
   const openOtpModal = () => {
@@ -94,6 +99,12 @@ const Login = () => {
 
   const handlePhoneSubmit = async event => {
     event.preventDefault()
+    const now = Date.now()
+    if (isPhoneSubmitting || now - lastPhoneSubmitAt.current < SUBMIT_DEBOUNCE_MS) {
+      return
+    }
+    lastPhoneSubmitAt.current = now
+    setIsPhoneSubmitting(true)
     try {
       const result = await triggerVerification()
       if (result.status === 200) {
@@ -108,10 +119,18 @@ const Login = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsPhoneSubmitting(false)
     }
   }
   const handleEmailSubmit = async event => {
     event.preventDefault()
+    const now = Date.now()
+    if (isEmailSubmitting || now - lastEmailSubmitAt.current < SUBMIT_DEBOUNCE_MS) {
+      return
+    }
+    lastEmailSubmitAt.current = now
+    setIsEmailSubmitting(true)
     try {
       const result = await triggerEmailVerification()
       if (result.status === 200) {
@@ -125,6 +144,8 @@ const Login = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsEmailSubmitting(false)
     }
   }
 
@@ -577,7 +598,7 @@ const Login = () => {
                     <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
                       <p>
                         <span className="input-group-btn">
-                          <button type="submit" className="user">
+                          <button type="submit" className="user" disabled={isPhoneSubmitting}>
                             Confirm Phone Number
                           </button>
                         </span>
@@ -603,7 +624,7 @@ const Login = () => {
                     <div className="input-group-btn" style={{ display: "flex", justifyContent: "center" }}>
                       <p>
                         <span className="input-group-btn">
-                          <button type="submit" className="user">
+                          <button type="submit" className="user" disabled={isEmailSubmitting}>
                             Confirm Email Address
                           </button>
                         </span>
