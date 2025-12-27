@@ -1,3 +1,7 @@
+# redirect non-www/https to www / https
+http://www.karmacall.com/* https://www.karmacall.com/:splat 301!
+https://karmacall.com/* https://www.karmacall.com/:splat 301!
+http://karmacall.com/* https://www.karmacall.com/:splat 301!
 # general redirects
 /karmacallwhitepaper  /white-paper-original-scam-calls  301
 /white-paper  /white-paper-original-scam-calls  301
