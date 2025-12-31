@@ -8,7 +8,6 @@ import { useLocation } from "@reach/router"
 import { getBrowserEnvironment } from "../utils/browserUtils"
 import { loginRevenueCatUser, isRevenueCatUserSet } from "../utils/revenueCat"
 import "../components/cash-out-email.css"
-import CookieConsentEEA from "../components/CookieConsentEEA"
 import ClientOnly from "../components/ClientOnly"
 
 const CashOutEmail = () => {
@@ -230,7 +229,6 @@ const CashOutEmail = () => {
 
   return (
     <div className="cash-out-email">
-      <CookieConsentEEA />
       <Seo title="Claim Your Nano - KarmaCall" description="Claim the Nano that was sent to you via KarmaCall" />
       <Header />
       <div className="cash-out-email-content">

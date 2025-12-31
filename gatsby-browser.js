@@ -5,7 +5,7 @@
  */
 
 import React from "react"
-import CookieConsentEEA from "./src/components/CookieConsentEEA"
+import CookieConsentManager from "./src/components/CookieConsentManager"
 import { trackPageView } from "./src/utils/analyticsLoader"
 // Implement replaceHydrateFunction to use React 18's createRoot API
 // This helps resolve hydration issues by using React's concurrent rendering
@@ -19,7 +19,7 @@ export const wrapRootElement = ({ element }) => {
   return (
     <>
       {element}
-      <CookieConsentEEA />
+      <CookieConsentManager />
     </>
   )
 }

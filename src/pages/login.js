@@ -11,7 +11,6 @@ import { getBrowserEnvironment } from "../utils/browserUtils"
 import { configureRevenueCat, loginRevenueCatUser, isRevenueCatUserSet } from "../utils/revenueCat"
 import { getPlatformInfo } from "../utils/platformDetection"
 import "../components/login.css" // Import the login-specific CSS
-import CookieConsentEEA from "../components/CookieConsentEEA"
 import ClientOnly from "../components/ClientOnly"
 
 const Login = () => {
@@ -569,7 +568,6 @@ const Login = () => {
 
   return (
     <div className="login">
-      <CookieConsentEEA />
       <Seo title="Login KarmaCall" description="A simple login page to let you manage your account" pathname="/login" />
       <Header />
       <div className="AppText">
