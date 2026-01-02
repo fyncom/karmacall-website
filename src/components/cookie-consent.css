@@ -74,18 +74,12 @@
   line-height: 1.4;
 }
 
-.cc-banner-text h2 {
-  margin: 0 0 4px 0;
-  font-size: 1rem;
-  font-weight: 700;
-}
-
 .cc-banner-text p {
-  margin: 0 0 6px 0;
+  margin: 0;
   color: var(--cc-muted);
 }
 
-.cc-banner-links a {
+.cc-banner-copy a {
   color: var(--cc-text);
   text-decoration: underline;
 }
@@ -245,6 +239,33 @@
 @media (max-width: 720px) {
   .cc-banner-inner {
     align-items: flex-start;
+  }
+
+  .cc-banner {
+    padding: 12px;
+  }
+
+  .cc-banner-text {
+    font-size: 0.9rem;
+    text-align: left;
+  }
+
+  .cc-banner-copy {
+    text-align: left !important;
+  }
+
+  .cc-banner-actions {
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .cc-banner-actions .cc-button {
+    flex: 1 1 0;
+    padding: 8px 10px;
+    font-size: 0.82rem;
+    text-align: center;
   }
 
   .cc-modal {

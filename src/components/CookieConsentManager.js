@@ -168,18 +168,16 @@ const CookieConsentManager = () => {
           <div className="cc-banner" role="dialog" aria-label="Cookie preferences">
             <div className="cc-banner-inner">
               <div className="cc-banner-text">
-                <h2>Cookie preferences</h2>
-                <p>
-                  We use essential cookies to run the site and optional cookies for performance, marketing, and account
-                  convenience. Choose what you want to allow.
-                </p>
-                <p className="cc-banner-links">
-                  <a href="/privacy-policy">Privacy policy</a>
+                <p className="cc-banner-copy">
+                  <b>
+                    We respect your <a href="/privacy-policy">privacy</a>
+                  </b>
+                  . We use cookies to keep the site working, remember preferences, measure performance, and support marketing insights. Choose what's ok.
                 </p>
               </div>
               <div className="cc-banner-actions">
                 <button type="button" className="cc-button cc-button-ghost" onClick={handleRejectAll}>
-                  Reject non-essential
+                  Reject all
                 </button>
                 <button type="button" className="cc-button cc-button-secondary" onClick={openModal}>
                   Customize
@@ -194,22 +192,14 @@ const CookieConsentManager = () => {
 
         {isModalOpen && (
           <div className="cc-modal-backdrop" role="presentation" onClick={closeModal}>
-            <div
-              className="cc-modal"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="cc-modal-title"
-              onClick={event => event.stopPropagation()}
-            >
+            <div className="cc-modal" role="dialog" aria-modal="true" aria-labelledby="cc-modal-title" onClick={event => event.stopPropagation()}>
               <div className="cc-modal-header">
                 <h2 id="cc-modal-title">Cookie preferences</h2>
                 <button type="button" className="cc-button cc-button-ghost" onClick={closeModal}>
                   Close
                 </button>
               </div>
-              <p className="cc-modal-intro">
-                Choose which cookies we can use. You can update these settings any time from the footer.
-              </p>
+              <p className="cc-modal-intro">Choose which cookies we can use. You can update these settings any time from the footer.</p>
 
               <div className="cc-toggle-list">
                 <div className="cc-toggle cc-toggle-essential">
@@ -225,12 +215,7 @@ const CookieConsentManager = () => {
                     <h3>Functional</h3>
                     <p>Remember login convenience and saved preferences for your account.</p>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={draftPreferences.functional}
-                    onChange={() => handleToggle("functional")}
-                    aria-label="Functional cookies"
-                  />
+                  <input type="checkbox" checked={draftPreferences.functional} onChange={() => handleToggle("functional")} aria-label="Functional cookies" />
                 </div>
 
                 <div className="cc-toggle">
@@ -238,12 +223,7 @@ const CookieConsentManager = () => {
                     <h3>Performance</h3>
                     <p>Help us improve the site with analytics and session replay (Google Analytics + PostHog).</p>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={draftPreferences.performance}
-                    onChange={() => handleToggle("performance")}
-                    aria-label="Performance cookies"
-                  />
+                  <input type="checkbox" checked={draftPreferences.performance} onChange={() => handleToggle("performance")} aria-label="Performance cookies" />
                 </div>
 
                 <div className="cc-toggle">
@@ -251,18 +231,13 @@ const CookieConsentManager = () => {
                     <h3>Marketing</h3>
                     <p>Measure campaigns and audiences (Facebook Pixel).</p>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={draftPreferences.marketing}
-                    onChange={() => handleToggle("marketing")}
-                    aria-label="Marketing cookies"
-                  />
+                  <input type="checkbox" checked={draftPreferences.marketing} onChange={() => handleToggle("marketing")} aria-label="Marketing cookies" />
                 </div>
               </div>
 
               <div className="cc-modal-actions">
                 <button type="button" className="cc-button cc-button-ghost" onClick={handleRejectAll}>
-                  Reject non-essential
+                  Reject all
                 </button>
                 <button type="button" className="cc-button cc-button-secondary" onClick={handleSavePreferences}>
                   Save preferences
