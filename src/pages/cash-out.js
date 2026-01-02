@@ -8,7 +8,8 @@ import { GiftCardModal, NanoNotEnoughModal, NanoSentModal, ReferralAppDownloadMo
 import AppDownloadButton from "../components/AppDownloadButton"
 import SolanaWalletConnect, { sendSolanaTransaction } from "../components/SolanaWalletConnect"
 import ReactGA from "react-ga4"
-import { Link } from "gatsby"
+import { Link, navigate } from "gatsby"
+import { logoutRevenueCatUser } from "../utils/revenueCat"
 
 const CashOut = () => {
   const isBrowser = typeof window !== "undefined"
@@ -570,6 +571,33 @@ const CashOut = () => {
     setIsGiftCardModalOpen(false)
   }
 
+  const handleLogout = async () => {
+    if (!isBrowser) return
+
+    try {
+      await logoutRevenueCatUser()
+    } catch (error) {
+      console.error("failed to logout revenuecat user:", error)
+    }
+
+    const keysToClear = [
+      "sessionId",
+      "phoneNumber",
+      "email",
+      "countryCode",
+      "otp",
+      "nanoAccount",
+      "userId",
+      "nanoBalanceInFiat",
+      "fiatType",
+      "pendingReferralCode",
+      "revenuecat_user_set",
+    ]
+
+    keysToClear.forEach(key => localStorage.removeItem(key))
+    navigate("/login")
+  }
+
   return (
     <div className="cash-out">
       <Seo title="Wallet Page" description="Manage your KarmaCall account here." />
@@ -634,6 +662,14 @@ const CashOut = () => {
             <AppDownloadButton />
           </div>
 
+          <div className="cash-out-section logout-section">
+            <h3>Log Out</h3>
+            <p>Clear your saved session on this device.</p>
+            <button type="button" className="logout-button" onClick={handleLogout}>
+              Log Out
+            </button>
+          </div>
+
           {/* solana wallet connector */}
           <div className="cash-out-section">
             <h2>Solana Wallet & Subscriptions</h2>
@@ -647,10 +683,7 @@ const CashOut = () => {
               >
                 Browser Wallet
               </button>
-              <button
-                onClick={() => setSolanaDepositMode("qr")}
-                className={`mode-toggle-btn qr ${solanaDepositMode === "qr" ? "active" : ""}`}
-              >
+              <button onClick={() => setSolanaDepositMode("qr")} className={`mode-toggle-btn qr ${solanaDepositMode === "qr" ? "active" : ""}`}>
                 Mobile QR
               </button>
             </div>
@@ -671,9 +704,7 @@ const CashOut = () => {
                 </div>
               ) : (
                 <div className="info-box warning">
-                  <p>
-                    We couldn't detect a Solana browser wallet on this device. If you have Phantom or Solflare installed, click below to connect.
-                  </p>
+                  <p>We couldn't detect a Solana browser wallet on this device. If you have Phantom or Solflare installed, click below to connect.</p>
                   <button onClick={() => setShowSolanaConnect(true)} className="connect-wallet-btn">
                     Connect Solana Wallet
                   </button>
@@ -706,13 +737,9 @@ const CashOut = () => {
               </div>
             )}
 
-            {depositError && (
-              <div className="alert error">{depositError}</div>
-            )}
+            {depositError && <div className="alert error">{depositError}</div>}
 
-            {depositSuccess && (
-              <div className="alert success">{depositSuccess}</div>
-            )}
+            {depositSuccess && <div className="alert success">{depositSuccess}</div>}
 
             <h3 className="margin-bottom-16">Subscription Plans</h3>
             {solUsdRate && <p>Current rate: 1 SOL = ${solUsdRate.toFixed(2)} USD</p>}
@@ -792,23 +819,11 @@ const CashOut = () => {
                 <label>1. Select Plan</label>
                 <div className="radio-group">
                   <label className="radio-label">
-                    <input
-                      type="radio"
-                      name="customPlan"
-                      value="premium"
-                      checked={customPlan === "premium"}
-                      onChange={() => setCustomPlan("premium")}
-                    />
+                    <input type="radio" name="customPlan" value="premium" checked={customPlan === "premium"} onChange={() => setCustomPlan("premium")} />
                     Premium (${subscriptionPlans.premium.price}/mo)
                   </label>
                   <label className="radio-label">
-                    <input
-                      type="radio"
-                      name="customPlan"
-                      value="supreme"
-                      checked={customPlan === "supreme"}
-                      onChange={() => setCustomPlan("supreme")}
-                    />
+                    <input type="radio" name="customPlan" value="supreme" checked={customPlan === "supreme"} onChange={() => setCustomPlan("supreme")} />
                     Supreme (${subscriptionPlans.supreme.price}/mo)
                   </label>
                 </div>
@@ -816,14 +831,7 @@ const CashOut = () => {
 
               <div className="form-group">
                 <label>2. Enter Amount (SOL)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  placeholder="0.00"
-                  value={customAmount}
-                  onChange={e => setCustomAmount(e.target.value)}
-                />
+                <input type="number" step="0.01" min="0.01" placeholder="0.00" value={customAmount} onChange={e => setCustomAmount(e.target.value)} />
               </div>
 
               {customAmount && parseFloat(customAmount) > 0 && solUsdRate && (
@@ -878,16 +886,18 @@ const CashOut = () => {
               <a href={solanaPayUrl}>
                 <img src={qrCodeUrl} alt="Solana Pay QR code (click to open wallet)" />
               </a>
-              <p className="qr-code-hint">
-                💡 On mobile? Tap the QR code to open your wallet directly
-              </p>
+              <p className="qr-code-hint">💡 On mobile? Tap the QR code to open your wallet directly</p>
             </div>
 
             <div className="qr-instructions-box">
               <p>Instructions:</p>
               <ol>
-                <li><strong>Option 1:</strong> Tap the QR code above to open your wallet directly (mobile/tablet)</li>
-                <li><strong>Option 2:</strong> Open your Solana wallet, tap "Scan" or "Send", and scan the QR code</li>
+                <li>
+                  <strong>Option 1:</strong> Tap the QR code above to open your wallet directly (mobile/tablet)
+                </li>
+                <li>
+                  <strong>Option 2:</strong> Open your Solana wallet, tap "Scan" or "Send", and scan the QR code
+                </li>
                 <li>Review and confirm the transaction</li>
                 <li>Payment will be detected automatically within 60 seconds</li>
               </ol>
