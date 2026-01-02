@@ -13,6 +13,7 @@ const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef()
   const hamburgerRef = useRef() // Ref for the hamburger menu icon
+  const [hasAccountSession, setHasAccountSession] = useState(false)
   const toggleMenu = event => {
     event.stopPropagation()
     setMenuOpen(!isMenuOpen)
@@ -31,6 +32,39 @@ const Header = () => {
   useEffect(() => {
     setIsClient(true)
   }, [])
+
+  useEffect(() => {
+    if (!isClient || typeof window === "undefined") {
+      return
+    }
+
+    const updateAccountSession = () => {
+      const sessionId = window.localStorage.getItem("sessionId")
+      const stored = window.localStorage.getItem("karmacall_cookie_preferences")
+      let functionalConsent = false
+
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored)
+          const preferences = parsed.preferences || parsed
+          functionalConsent = Boolean(preferences && preferences.functional)
+        } catch (error) {
+          functionalConsent = false
+        }
+      }
+
+      setHasAccountSession(Boolean(sessionId) && functionalConsent)
+    }
+
+    updateAccountSession()
+    window.addEventListener("storage", updateAccountSession)
+    window.addEventListener("focus", updateAccountSession)
+
+    return () => {
+      window.removeEventListener("storage", updateAccountSession)
+      window.removeEventListener("focus", updateAccountSession)
+    }
+  }, [isClient])
 
   // Effect for setting the logo based on the system color scheme
   useEffect(() => {
@@ -59,6 +93,9 @@ const Header = () => {
     }
   }, [isMenuOpen])
 
+  const accountLabel = hasAccountSession ? "Account" : "Login"
+  const accountLink = hasAccountSession ? "/cash-out" : "/login"
+
   return (
     <header className="header-top">
       <div className="header-container">
@@ -85,7 +122,7 @@ const Header = () => {
         <nav ref={menuRef} id="mobile-menu" className={isMenuOpen ? "mobile-menu open" : "mobile-menu"}>
           <ul>
             <li className="mobile-menu-item">
-              <Link to="/login">Login</Link>
+              <Link to={accountLink}>{accountLabel}</Link>
             </li>
             <li className="mobile-menu-item">
               <Link to="/about">About</Link>
@@ -158,8 +195,8 @@ const Header = () => {
           </li> */}
         </ul>
         <div className="login-buttons">
-          <Link to="/login">
-            <button className="user">Login</button>
+          <Link to={accountLink}>
+            <button className="user">{accountLabel}</button>
           </Link>
         </div>
         {isHeaderModalOpen && (

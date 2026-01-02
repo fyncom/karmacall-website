@@ -11,6 +11,12 @@ const Footer = () => {
   const toggleFooterModal = () => {
     setFooterModalOpen(!isFooterModalOpen)
   }
+  const openCookiePreferences = event => {
+    event.preventDefault()
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("open-cookie-preferences"))
+    }
+  }
   return (
     <div>
       <footer>
@@ -56,6 +62,11 @@ const Footer = () => {
             </li>
             <li>
               <Link to="/terms-of-service">Terms of Service</Link>
+            </li>
+            <li>
+              <button type="button" className="footer-link-button" onClick={openCookiePreferences}>
+                Cookie Preferences
+              </button>
             </li>
             <li>
               <Link to="/sitemap-index.xml">Sitemap</Link>

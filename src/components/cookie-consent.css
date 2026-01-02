@@ -1,0 +1,310 @@
+.cookie-consent-root {
+  --cc-bg: #0f2b2a;
+  --cc-bg-accent: #153b39;
+  --cc-text: #f3f8f7;
+  --cc-muted: rgba(243, 248, 247, 0.7);
+  --cc-border: rgba(255, 255, 255, 0.16);
+  --cc-accent: #3cc89e;
+  --cc-accent-dark: #0d3b2e;
+  --cc-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  --cc-modal-bg: #f7fbfa;
+  --cc-modal-text: #0c1f1e;
+  --cc-modal-muted: #4b5563;
+  --cc-modal-border: #d8e4e2;
+  --cc-modal-card: #ffffff;
+  --cc-modal-card-alt: #eef4f3;
+  --cc-modal-link: #2a6a62;
+  --cc-modal-ghost-border: rgba(12, 31, 30, 0.25);
+  --cc-modal-ghost-text: #0c1f1e;
+  font-family: "Barlow", "Barlow SemiCondensed", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  .cookie-consent-root {
+    --cc-modal-bg: var(--color-background, #121212);
+    --cc-modal-text: var(--color-text, #eaeaea);
+    --cc-modal-muted: var(--color-text-secondary, #cbd5e1);
+    --cc-modal-border: var(--border-color, #2f3f3d);
+    --cc-modal-card: var(--color-background-alt, #1e2a28);
+    --cc-modal-card-alt: #182423;
+    --cc-modal-link: var(--color-link-custom, #13dcec);
+    --cc-modal-ghost-border: rgba(234, 234, 234, 0.25);
+    --cc-modal-ghost-text: var(--cc-modal-text);
+  }
+}
+
+:root[data-theme="dark"] .cookie-consent-root {
+  --cc-modal-bg: var(--color-background, #121212);
+  --cc-modal-text: var(--color-text, #eaeaea);
+  --cc-modal-muted: var(--color-text-secondary, #cbd5e1);
+  --cc-modal-border: var(--border-color, #2f3f3d);
+  --cc-modal-card: var(--color-background-alt, #1e2a28);
+  --cc-modal-card-alt: #182423;
+  --cc-modal-link: var(--color-link-custom, #13dcec);
+  --cc-modal-ghost-border: rgba(234, 234, 234, 0.25);
+  --cc-modal-ghost-text: var(--cc-modal-text);
+}
+
+.cc-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(130deg, var(--cc-bg), var(--cc-bg-accent));
+  color: var(--cc-text);
+  padding: 16px;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25);
+  z-index: 1100;
+  animation: cc-slide-up 220ms ease-out;
+}
+
+.cc-banner-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cc-banner-text {
+  flex: 1 1 320px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.cc-banner-text p {
+  margin: 0;
+  color: var(--cc-muted);
+}
+
+.cc-banner-copy a {
+  color: var(--cc-text);
+  text-decoration: underline;
+}
+
+.cc-banner-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cc-button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: auto;
+  margin: 0;
+  min-height: auto;
+  background: transparent;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.cc-button:focus-visible {
+  outline: 2px solid var(--cc-accent);
+  outline-offset: 2px;
+}
+
+.cc-button-primary {
+  background: var(--cc-accent);
+  color: var(--cc-accent-dark);
+  border-color: var(--cc-accent);
+}
+
+.cc-button-secondary {
+  background: #f3f8f7;
+  color: var(--cc-bg);
+  border-color: #f3f8f7;
+}
+
+.cc-button-ghost {
+  background: transparent;
+  color: var(--cc-text);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.cc-modal .cc-button-ghost {
+  color: var(--cc-modal-ghost-text);
+  border-color: var(--cc-modal-ghost-border);
+}
+
+.cc-modal .cc-button-secondary {
+  background: var(--cc-modal-card);
+  color: var(--cc-modal-text);
+  border-color: var(--cc-modal-border);
+}
+
+.cc-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1200;
+  animation: cc-fade-in 180ms ease-out;
+}
+
+.cc-modal {
+  background: var(--cc-modal-bg);
+  color: var(--cc-modal-text);
+  border-radius: 12px;
+  max-width: 640px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  animation: cc-pop-in 200ms ease-out;
+}
+
+.cc-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.cc-modal-header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.cc-modal-intro {
+  margin: 0 0 16px 0;
+  color: var(--cc-modal-muted);
+  line-height: 1.5;
+}
+
+.cc-toggle-list {
+  display: grid;
+  gap: 12px;
+}
+
+.cc-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--cc-modal-border);
+  background: var(--cc-modal-card);
+}
+
+.cc-toggle h3 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+}
+
+.cc-toggle p {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: var(--cc-modal-muted);
+}
+
+.cc-toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--cc-accent);
+}
+
+.cc-toggle-essential {
+  background: var(--cc-modal-card-alt);
+}
+
+.cc-modal-actions {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.cc-modal-footer {
+  margin: 16px 0 0 0;
+  font-size: 13px;
+  color: var(--cc-modal-muted);
+}
+
+.cc-modal-footer a {
+  color: var(--cc-modal-link);
+  text-decoration: underline;
+}
+
+@media (max-width: 720px) {
+  .cc-banner-inner {
+    align-items: flex-start;
+  }
+
+  .cc-banner {
+    padding: 12px;
+  }
+
+  .cc-banner-text {
+    font-size: 0.9rem;
+    text-align: left;
+  }
+
+  .cc-banner-copy {
+    text-align: left !important;
+  }
+
+  .cc-banner-actions {
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .cc-banner-actions .cc-button {
+    flex: 1 1 0;
+    padding: 8px 10px;
+    font-size: 0.82rem;
+    text-align: center;
+  }
+
+  .cc-modal {
+    padding: 20px;
+  }
+
+  .cc-toggle {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@keyframes cc-slide-up {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes cc-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cc-pop-in {
+  from {
+    transform: scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

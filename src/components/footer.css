@@ -47,11 +47,22 @@ footer {
   margin-bottom: 0.5rem; /* Spacing between links */
 }
 .footer-links a,
+.footer-links button,
 .info-container a {
   color: #fff;
   text-decoration: none;
 }
+.footer-link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
 .footer-links a:hover {
+  text-decoration: underline;
+}
+.footer-link-button:hover {
   text-decoration: underline;
 }
 
