@@ -166,26 +166,28 @@ const CookieConsentManager = () => {
       <div className="cookie-consent-root">
         {isBannerOpen && (
           <div className="cc-banner" role="dialog" aria-label="Cookie preferences">
-            <div className="cc-banner-text">
-              <h2>Cookie preferences</h2>
-              <p>
-                We use essential cookies to run the site and optional cookies for performance, marketing, and account
-                convenience. Choose what you want to allow.
-              </p>
-              <p className="cc-banner-links">
-                <a href="/privacy-policy">Privacy policy</a>
-              </p>
-            </div>
-            <div className="cc-banner-actions">
-              <button type="button" className="cc-button cc-button-ghost" onClick={handleRejectAll}>
-                Reject non-essential
-              </button>
-              <button type="button" className="cc-button cc-button-secondary" onClick={openModal}>
-                Customize
-              </button>
-              <button type="button" className="cc-button cc-button-primary" onClick={handleAcceptAll}>
-                Accept all
-              </button>
+            <div className="cc-banner-inner">
+              <div className="cc-banner-text">
+                <h2>Cookie preferences</h2>
+                <p>
+                  We use essential cookies to run the site and optional cookies for performance, marketing, and account
+                  convenience. Choose what you want to allow.
+                </p>
+                <p className="cc-banner-links">
+                  <a href="/privacy-policy">Privacy policy</a>
+                </p>
+              </div>
+              <div className="cc-banner-actions">
+                <button type="button" className="cc-button cc-button-ghost" onClick={handleRejectAll}>
+                  Reject non-essential
+                </button>
+                <button type="button" className="cc-button cc-button-secondary" onClick={openModal}>
+                  Customize
+                </button>
+                <button type="button" className="cc-button cc-button-primary" onClick={handleAcceptAll}>
+                  Accept all
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -200,77 +202,61 @@ const CookieConsentManager = () => {
               onClick={event => event.stopPropagation()}
             >
               <div className="cc-modal-header">
-                <div>
-                  <p className="cc-modal-eyebrow">Your choices</p>
-                  <h2 id="cc-modal-title">Cookie preferences</h2>
-                </div>
-                <button type="button" className="cc-icon-button" onClick={closeModal} aria-label="Close preferences">
-                  <span aria-hidden="true">x</span>
+                <h2 id="cc-modal-title">Cookie preferences</h2>
+                <button type="button" className="cc-button cc-button-ghost" onClick={closeModal}>
+                  Close
                 </button>
               </div>
               <p className="cc-modal-intro">
                 Choose which cookies we can use. You can update these settings any time from the footer.
               </p>
 
-              <div className="cc-category-list">
-                <div className="cc-category cc-category-essential">
+              <div className="cc-toggle-list">
+                <div className="cc-toggle cc-toggle-essential">
                   <div>
                     <h3>Essential</h3>
                     <p>Required for core site functions like security, load balancing, and form submissions.</p>
                   </div>
-                  <div className="cc-toggle">
-                    <input type="checkbox" checked readOnly disabled />
-                    <span className="cc-toggle-slider" aria-hidden="true" />
-                    <span className="cc-toggle-state">Always on</span>
-                  </div>
+                  <input type="checkbox" checked readOnly disabled aria-label="Essential cookies enabled" />
                 </div>
 
-                <div className="cc-category">
+                <div className="cc-toggle">
                   <div>
                     <h3>Functional</h3>
                     <p>Remember login convenience and saved preferences for your account.</p>
                   </div>
-                  <label className="cc-toggle">
-                    <input
-                      type="checkbox"
-                      checked={draftPreferences.functional}
-                      onChange={() => handleToggle("functional")}
-                    />
-                    <span className="cc-toggle-slider" aria-hidden="true" />
-                    <span className="cc-sr-only">Toggle functional cookies</span>
-                  </label>
+                  <input
+                    type="checkbox"
+                    checked={draftPreferences.functional}
+                    onChange={() => handleToggle("functional")}
+                    aria-label="Functional cookies"
+                  />
                 </div>
 
-                <div className="cc-category">
+                <div className="cc-toggle">
                   <div>
                     <h3>Performance</h3>
                     <p>Help us improve the site with analytics and session replay (Google Analytics + PostHog).</p>
                   </div>
-                  <label className="cc-toggle">
-                    <input
-                      type="checkbox"
-                      checked={draftPreferences.performance}
-                      onChange={() => handleToggle("performance")}
-                    />
-                    <span className="cc-toggle-slider" aria-hidden="true" />
-                    <span className="cc-sr-only">Toggle performance cookies</span>
-                  </label>
+                  <input
+                    type="checkbox"
+                    checked={draftPreferences.performance}
+                    onChange={() => handleToggle("performance")}
+                    aria-label="Performance cookies"
+                  />
                 </div>
 
-                <div className="cc-category">
+                <div className="cc-toggle">
                   <div>
                     <h3>Marketing</h3>
                     <p>Measure campaigns and audiences (Facebook Pixel).</p>
                   </div>
-                  <label className="cc-toggle">
-                    <input
-                      type="checkbox"
-                      checked={draftPreferences.marketing}
-                      onChange={() => handleToggle("marketing")}
-                    />
-                    <span className="cc-toggle-slider" aria-hidden="true" />
-                    <span className="cc-sr-only">Toggle marketing cookies</span>
-                  </label>
+                  <input
+                    type="checkbox"
+                    checked={draftPreferences.marketing}
+                    onChange={() => handleToggle("marketing")}
+                    aria-label="Marketing cookies"
+                  />
                 </div>
               </div>
 
