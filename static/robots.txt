@@ -1,5 +1,0 @@
-User-agent: *
-Disallow:
-
-Sitemap: https://www.karmacall.com/sitemap-index.xml
-Sitemap: https://www.karmacall.com/video-sitemap.xml

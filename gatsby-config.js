@@ -18,13 +18,21 @@ module.exports = {
       resolve: "gatsby-plugin-robots-txt",
       options: {
         host: "https://www.karmacall.com",
-        sitemap: "https://www.karmacall.com/sitemap-index.xml",
+        sitemap: ["https://www.karmacall.com/sitemap-index.xml", "https://www.karmacall.com/video-sitemap.xml"],
         policy: [
           {
             userAgent: "*",
             allow: "/",
-            disallow: ["/login?*", "/login/?*"]
-          }
+            disallow: ["/login?*", "/login/?*"],
+          },
+          {
+            userAgent: "Google-adstxt",
+            allow: "/",
+          },
+          {
+            userAgent: "Googlebot",
+            allow: "/",
+          },
         ],
       },
     },
