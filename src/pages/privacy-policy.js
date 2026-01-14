@@ -231,13 +231,17 @@ const PrivacyPolicy = () => {
                 of company assets, financing, or acquisition of all or a portion of our business to another company.
               </li>
               <li>
-                <strong>Third-Party Advertisers.</strong> We don&#x27;t sell your data to 3rd parties and we don&#x27;t serve ads. The entire purpose of this
-                venture is change the way your data is processed. Our goal is to convince 3rd parties that we would all be much better off if 3rd parties just
-                directly paid you for your data, as opposed to the status quo where companies make their riches by selling your data without paying you for it.
-                The KarmaCall app is the first example of how we&#x27;ll accomplish that, by ignoring any unknown calls unless they come with a deposit. By
-                joining us, you are reducing the supply of phone numbers that answer unknown calls and that will increase the demand for phone numbers that do
-                answer those calls. The only time third-parties will buy your data is if you set your own market rate and they agree to pay YOU that market rate
-                through our platform.
+                <strong>Third-Party Advertisers.</strong> We work with third-party advertising partners (such as Google AdMob) to serve advertisements in our Apps.
+                These partners may collect and use information about your device (including Device ID, Advertising ID, and IP address) and your interaction with ads
+                to provide personalized advertising and analyze the effectiveness of ads.
+                <br />
+                <br />
+                We may also display ads from other networks. You can learn more about how Google uses information from sites or apps that use its services here: 
+                <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">https://policies.google.com/technologies/partner-sites</a>.
+                <br />
+                <br />
+                Our goal remains to empower you. While we now offer an ad-supported free tier, our premium tiers allow you to enjoy a reduced-ad or ad-free experience,
+                continuing our mission to value your time and attention.
               </li>
             </ul>
           </div>
