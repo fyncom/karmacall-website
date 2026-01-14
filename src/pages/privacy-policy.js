@@ -18,7 +18,7 @@ const PrivacyPolicy = () => {
           <p>
             <strong>
               <br />
-              Last updated November 25, 2023
+              Last updated January 14, 2026
             </strong>
             <br />
             <br />
@@ -231,17 +231,20 @@ const PrivacyPolicy = () => {
                 of company assets, financing, or acquisition of all or a portion of our business to another company.
               </li>
               <li>
-                <strong>Third-Party Advertisers.</strong> We work with third-party advertising partners (such as Google AdMob) to serve advertisements in our Apps.
-                These partners may collect and use information about your device (including Device ID, Advertising ID, and IP address) and your interaction with ads
-                to provide personalized advertising and analyze the effectiveness of ads.
+                <strong>Third-Party Advertisers.</strong> We work with third-party advertising partners (such as Google AdMob) to serve advertisements in our
+                Apps. These partners may collect and use information about your device (including Device ID, Advertising ID, and IP address) and your
+                interaction with ads to provide personalized advertising and analyze the effectiveness of ads.
                 <br />
                 <br />
-                We may also display ads from other networks. You can learn more about how Google uses information from sites or apps that use its services here: 
-                <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">https://policies.google.com/technologies/partner-sites</a>.
+                We may also display ads from other networks. You can learn more about how Google uses information from sites or apps that use its services here:
+                <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">
+                  https://policies.google.com/technologies/partner-sites
+                </a>
+                .
                 <br />
                 <br />
-                Our goal remains to empower you. While we now offer an ad-supported free tier, our premium tiers allow you to enjoy a reduced-ad or ad-free experience,
-                continuing our mission to value your time and attention.
+                Our goal remains to empower you. While we now offer an ad-supported free tier, our premium tiers allow you to enjoy 50% reduced-ad while our
+                supreme tier allows you to enjoy an ad-free experience, continuing our mission to value your time and attention. Thank you for your support.
               </li>
             </ul>
           </div>
