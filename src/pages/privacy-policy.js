@@ -80,6 +80,9 @@ const PrivacyPolicy = () => {
               <li>
                 <a href="#section-11">HOW CAN YOU CONTACT US ABOUT THIS POLICY?</a>
               </li>
+              <li>
+                <a href="#sms-text-messaging">SMS / TEXT MESSAGING PRIVACY &amp; TERMS</a>
+              </li>
             </ol>
           </div>
 
@@ -442,6 +445,61 @@ const PrivacyPolicy = () => {
               information, or delete it in some circumstances. To request to review, update, or delete your personal information, please submit a request form
               by emailing us at suppport@karmacall.com. We will respond to your request within 30 days.
             </p>
+          </div>
+
+          <div className="legal-text-container">
+            <ol start="12" id="section-12">
+              <li>
+                <strong> SMS / TEXT MESSAGING PRIVACY &amp; TERMS</strong>
+              </li>
+            </ol>
+            <p id="sms-text-messaging">
+              <strong>
+                <em>In Short: </em>
+              </strong>
+              <em>
+                We do not share your mobile information or SMS consent with any third parties or affiliates for marketing or promotional purposes.
+              </em>
+              <br />
+              <br />
+              This section describes how RoboCash Inc., DBA FynCom ("we," "us," or "KarmaCall") handles mobile phone numbers and text-messaging consent. It
+              supplements this Privacy Policy and applies to text messages sent to or from our phone numbers. In the event of any conflict between this section
+              and the rest of this Privacy Policy with respect to mobile or SMS information, this section controls.
+            </p>
+            <p>
+              <strong>No sharing of mobile information.</strong> No mobile information — including your phone number, SMS opt-in, or consent to receive text
+              messages — will be shared with, sold to, or rented to any third parties or affiliates for marketing or promotional purposes. Information sharing
+              with the subcontractors who directly support our messaging services (for example, our SMS delivery provider) is limited to what is necessary to
+              deliver the messaging service and is never for marketing purposes.
+            </p>
+            <p>
+              <strong>Types of messages.</strong> Depending on how you use KarmaCall, our text messages may include:
+            </p>
+            <ul>
+              <li>One-time passcodes (OTP) and account verification messages.</li>
+              <li>Account, security, and transaction notifications.</li>
+              <li>Conversational customer-care and support replies.</li>
+            </ul>
+            <p>
+              <strong>Consent and opt-in.</strong> We send text messages only to individuals who have provided their mobile number and consent — for example,
+              by entering your phone number to register or verify your account within the KarmaCall app, or by texting us first. We do not text individuals who
+              have not opted in.
+            </p>
+            <p>
+              <strong>Frequency, rates, opt-out, and help.</strong>
+            </p>
+            <ul>
+              <li>Message frequency varies based on your interactions with us.</li>
+              <li>Message and data rates may apply.</li>
+              <li>
+                You can opt out at any time by replying <strong>STOP</strong> to any message; we will send one confirmation and stop sending non-essential
+                messages.
+              </li>
+              <li>
+                For help, reply <strong>HELP</strong> to any message or email <a href="mailto:support@karmacall.com">support@karmacall.com</a>.
+              </li>
+              <li>Carriers are not liable for delayed or undelivered messages.</li>
+            </ul>
           </div>
         </div>
       </div>
