@@ -92,6 +92,9 @@ const TermsOfService = () => {
                 <li>
                   <a href="#section-15">MISCELLANEOUS</a>
                 </li>
+                <li>
+                  <a href="#section-16">SMS / TEXT MESSAGING TERMS</a>
+                </li>
               </ol>
             </div>
             <div className="legal-text-container">
@@ -337,6 +340,35 @@ const TermsOfService = () => {
               <br />
               <br />
               15.2 Collateral agreements, changes and amendments are only valid if laid down in writing. The preceding clause can only be waived in writing.
+              <br />
+            </div>
+            <div className="legal-text-container">
+              <ol start="16" id="section-16">
+                <li>
+                  <strong>SMS / TEXT MESSAGING TERMS</strong>
+                </li>
+              </ol>
+              <span id="sms-text-messaging">
+                16.1 RoboCash, Inc. (DBA FynCom), maker of KarmaCall, operates SMS/text-messaging programs. By providing your mobile number and opting in, you
+                agree to receive text messages from us. Message types may include one-time passcodes and account verification, account and transaction
+                notifications, and conversational customer-care and support replies.
+              </span>
+              <br />
+              <br />
+              16.2 <strong>Consent.</strong> We send text messages only to individuals who have opted in — for example, by entering your phone number to
+              register or verify your account in the KarmaCall app, or by texting our published business number first. Opt-in and consent are never a condition
+              of purchase.
+              <br />
+              <br />
+              16.3 <strong>No sharing of mobile information.</strong> No mobile information — including your phone number, SMS opt-in, or consent to receive
+              text messages — will be shared with, sold to, or rented to any third parties or affiliates for marketing or promotional purposes. See our{" "}
+              <Link to="/privacy-policy#sms-text-messaging">Privacy Policy</Link> for details.
+              <br />
+              <br />
+              16.4 <strong>Frequency, rates, opt-out, and help.</strong> Message frequency varies based on your interactions with us. Message and data rates
+              may apply. You can opt out at any time by replying <strong>STOP</strong> to any message; we will send one confirmation and stop sending
+              non-essential messages. For help, reply <strong>HELP</strong> to any message or email{" "}
+              <a href="mailto:support@karmacall.com">support@karmacall.com</a>. Carriers are not liable for delayed or undelivered messages.
               <br />
             </div>
           </p>{" "}
