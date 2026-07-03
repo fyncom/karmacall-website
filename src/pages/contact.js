@@ -73,6 +73,22 @@ const Contact = () => {
       <main className="contact-container">
         <h1>Contact Us</h1>
         <p>If you have any questions or inquiries, feel free to reach out to us.</p>
+
+        <section id="text-support" className="text-support">
+          <h2>Text us for support</h2>
+          <p>
+            Prefer texting? Reach KarmaCall support directly at <a href="sms:+19499795597">+1 (949) 979-5597</a>. Send a text with your question and we&#x27;ll
+            reply from this number.
+          </p>
+          <p>
+            By texting <a href="sms:+19499795597">+1 (949) 979-5597</a>, you agree to receive SMS replies from KarmaCall (RoboCash, Inc.) about your inquiry.
+            This is a one-to-one support line — we only reply to people who message us first, and we never send marketing, promotional, or bulk texts. Message
+            frequency varies and message &amp; data rates may apply. Reply <strong>STOP</strong> to opt out or <strong>HELP</strong> for help. See our{" "}
+            <Link to="/privacy-policy#sms-text-messaging">Privacy Policy</Link> and <Link to="/terms-of-service#sms-text-messaging">Terms of Service</Link> for
+            details on how we handle your mobile information.
+          </p>
+        </section>
+
         <form className="contact-form" onSubmit={handleSubmit}>
           <label htmlFor="name">Name:</label>
           <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
